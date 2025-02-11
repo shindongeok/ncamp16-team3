@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html class="h-full bg-white">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <style type="text/tailwindcss">
+        .font-roboto {
+            font-family: "Roboto", serif;
+        }
+        @theme {
+            --color-main-sky: #00a3ed;
+        }
+        /* PC에서 모바일 크기로 고정 */
+        @media screen and (min-width: 769px) {
+            .mobile-container {
+                width: 375px;
+                margin: 0 auto;
+                background: white;
+                box-shadow: 0 0 10px rgba(0,0,0,0.1);
+                min-height: 100vh;
+            }
+        }
+
+        /* 모바일에서는 전체 너비 사용 */
+        @media screen and (max-width: 768px) {
+            .mobile-container {
+                width: 100%;
+                background: white;
+                min-height: 100vh;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="flex flex-col w-full mobile-container pt-8">
+    <div class="flex justify-between items-center w-full p-4">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+             class="w-6 h-6 text-gray-700 cursor-pointer hover:text-gray-900">
+            <line x1="4" x2="20" y1="12" y2="12"/>
+            <line x1="4" x2="20" y1="6" y2="6"/>
+            <line x1="4" x2="20" y1="18" y2="18"/>
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+             class="w-6 h-6 text-gray-700 cursor-pointer hover:text-gray-900">
+            <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/>
+            <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
+        </svg>
+    </div><br>
+
+    <h1 class="text-2xl font-bold mb-6"></h1>
+
+
+
+
+</div>
+
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // h1 태그 찾기
+        const alarmTitle = document.querySelector("h1.text-2xl.font-bold.mb-6");
+
+        // 새로운 알람 목록 추가
+        const alarmList = document.createElement("ul");
+        alarmList.innerHTML = `
+        <li class="text-gray-700">🔔 알람 1</li>
+        <li class="text-gray-700">🔔 알람 2</li>
+        <li class="text-gray-700">🔔 알람 3</li>
+    `;
+
+        // h1 태그 아래에 리스트 삽입
+        alarmTitle.after(alarmList);
+    });
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const alarmTitle = document.querySelector("h1.text-2xl.font-bold.mb-6");
+        if (alarmTitle) {
+            alarmTitle.textContent = "📢 지난 알림 목록";
+        }
+    });
+
+
+
+
+</script>
+
+
+</body>
