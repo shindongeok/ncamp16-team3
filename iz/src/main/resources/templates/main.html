@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Izikgram</title>
+    <link rel="stylesheet" href="../static/css/mainStyle.css">
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <style type="text/tailwindcss">
+        .font-roboto {
+            font-family: "Roboto", serif;
+        }
+        @theme {
+            --color-main-sky-highlight: #00a3ed;
+            --color-main-sky-basic: #9bdcfd;
+            --color-main-red-highlight: #ff5353;
+            --color-main-red-basic: #ff9898;
+            --color-main-yellow-highlight: #fbc159ff;
+            --color-main-yellow-basic: #fdd391;
+            --color-main-black: #2C2C2C;
+            /* gray-400*/
+            --color-light-text: oklch(0.704 0.04 256.788);
+            /* gray-600 */
+            --color-basic-text: oklch(0.446 0.043 257.281);
+            /* gray-900 */
+            --color-bold-text: oklch(0.208 0.042 265.755);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #f0f0f0;
+        }
+
+        /* PC에서 모바일 크기로 고정 */
+        @media screen and (min-width: 769px) {
+            .main-container {
+                width: 600px;
+                margin: 0 auto;
+                background: white;
+                box-shadow: 0 0 10px rgba(0,0,0,0.1);
+                min-height: 100vh;
+            }
+        }
+
+        /* 모바일에서는 전체 너비 사용 */
+        @media screen and (max-width: 768px) {
+            .main-container {
+                width: 100%;
+                background: white;
+                min-height: 100vh;
+            }
+        }
+
+        header {
+            padding: 15px;
+            text-align: center;
+        }
+
+        .header-button-section {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .sidebar-button {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+        }
+
+        .alarm-icon {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+        }
+
+        .page-title {
+            padding-left: 15px;
+            font-size: 1.7rem;
+            font-weight: bold;
+            color: #2C2C2C;
+        }
+
+        .popular-posting-section {
+            padding: 12px 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .popular-board {
+            font-size: 1rem;
+            color: #666;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* 말풍선 컨테이너 스타일 */
+        .popular-content-bubble {
+            background: #f8f9fa;
+            border-radius: 18px;
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            position: relative;
+            flex: 1;
+        }
+
+        .popular-board-title {
+            font-size: 1rem;
+            color: #333;
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .like-count {
+            font-size: 0.9rem;
+            color: #666;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding-left: 8px;
+            border-left: 1px solid #eee;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            padding-left: 10px;
+        }
+
+        .calendar-section {
+            padding: 15px;
+        }
+
+        .today-date {
+            font-size: 1.2rem;
+            margin-bottom: 16px;
+            padding-left: 10px;
+        }
+
+        /* 달력 전체 컨테이너 */
+        .calendar-wrapper {
+            background: #f8f9fa;
+            border-radius: 16px;
+            padding: 16px;
+        }
+
+        /* 요일 그리드 */
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+            text-align: center;
+        }
+
+        /* 요일 라벨 */
+        .day-label {
+            font-size: 1.1rem;
+            padding: 8px 0;
+        }
+
+        /* 날짜 그리드 */
+        .calendar-grid:last-child {
+            margin-top: 8px;
+        }
+
+        /* 날짜 스타일 */
+        .calendar-date {
+            font-size: 1.2rem;
+            padding: 8px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        /* 오늘 날짜 강조 */
+        .calendar-date.active {
+            background: #b7e3ff;
+            color: #fff;
+            font-weight: 500;
+        }
+
+        /* 날짜 호버 효과 */
+        .calendar-date:hover:not(.active) {
+            background: #f0f0f0;
+        }
+
+        .overview-section {
+            padding: 15px;
+        }
+
+        .overview-card-section {
+            padding-top: 10px;
+            display: flex;
+            flex-direction: row;
+            flex-grow: 1;
+            gap: 15px;
+        }
+
+        .overview-card {
+            flex: 1;
+            padding: 16px;
+            background: #f8f9fa;
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        /* 아이콘과 subtitle을 감싸는 컨테이너 추가 */
+        .overview-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .overview-icon {
+            width: 32px;
+            height: 32px;
+            background: #f0f0f0;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0; /* 아이콘 크기 고정 */
+        }
+
+        .overview-subtitle {
+            font-size: 1.2rem;
+        }
+
+        .overview-content {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #2C2C2C;
+            text-align: right;
+        }
+
+        /* 특별히 퇴사지수가 증가하는 경우 빨간색으로 표시 */
+        .overview-card:last-child .overview-content {
+            color: #ff5353;
+        }
+
+        .stress-section {
+            padding: 15px;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: white;
+            gap: 2rem;
+            padding: 1rem;
+        }
+
+        .progress-container {
+            position: relative;
+        }
+
+        svg {
+            transform: rotate(-90deg);
+        }
+
+        circle {
+            transition: all 0.5s ease-in-out;
+        }
+
+        .circle-dot {
+            transform: rotate(90deg);
+            transform-origin: center;
+            fill: currentColor;
+            transition: all 0.5s ease-in-out;
+        }
+
+        .labels-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .label-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .color-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .label-text {
+            font-size: 1.2rem;
+            font-weight: 400;
+        }
+
+        .time-text {
+            margin-left: 0.75rem;
+            font-size: 1.2rem;
+        }
+
+        .section-title-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .time-settings-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 50%;
+            transition: background-color 0.2s;
+        }
+
+        .time-settings-btn:hover {
+            background-color: #f0f0f0;
+        }
+
+        /* 모달 스타일 */
+        .time-settings-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 400px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .close-modal-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .time-input-group {
+            margin-bottom: 16px;
+        }
+
+        .time-input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .time-input-group input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .modal-footer {
+            margin-top: 20px;
+            text-align: right;
+        }
+
+        .save-time-btn {
+            background: #9BDCFD;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .save-time-btn:hover {
+            background: #7fcdf8;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <header>
+            <div class="logo-section">logo</div>
+            <div class="header-button-section">
+                <span class="sidebar-button">🗂️</span>
+                <span class="alarm-button">🔔</span>
+            </div>
+        </header>
+        <div class="page-title">Dashboard</div>
+        <div class="popular-posting-section">
+            <span class="popular-board">🔥 인기게시글</span>
+            <div class="popular-content-bubble">
+                <span class="popular-board-title">나 오늘 이런 일 있었잖아</span>
+                <span class="like-count">👍 26</span>
+            </div>
+        </div>
+        <div class="calendar-section">
+            <div class="section-title">Calendar</div>
+            <div class="today-date"></div>
+            <div class="calendar-wrapper">
+                <div class="calendar-grid">
+                    <span class="day-label">M</span>
+                    <span class="day-label">T</span>
+                    <span class="day-label">W</span>
+                    <span class="day-label">T</span>
+                    <span class="day-label">F</span>
+                    <span class="day-label">S</span>
+                    <span class="day-label">S</span>
+                </div>
+                <div class="calendar-grid">
+                    <!-- 자동으로 채워질 날짜들 -->
+                </div>
+            </div>
+        </div>
+        <div class="overview-section">
+            <div class="section-title">Overview</div>
+            <div class="overview-card-section">
+                <div class="overview-card">
+                    <div class="overview-header">
+                        <span class="overview-icon">💸</span>
+                        <div class="overview-subtitle">월급까지</div>
+                    </div>
+                    <div class="overview-content">D-10</div>
+                </div>
+                <div class="overview-card">
+                    <div class="overview-header">
+                        <span class="overview-icon">📉</span>
+                        <div class="overview-subtitle">퇴사지수</div>
+                    </div>
+                    <div class="overview-content">+58%</div>
+                </div>
+            </div>
+        </div>
+        <div class="stress-section">
+            <!-- section-title 수정 -->
+            <div class="section-title-container">
+                <div class="section-title">Stress</div>
+                <button class="time-settings-btn">⚙️</button>
+            </div>
+
+            <!-- 모달 추가 -->
+            <div class="time-settings-modal" id="timeSettingsModal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>시간 설정</h3>
+                        <button class="close-modal-btn">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="time-input-group">
+                            <label for="workStartTime">출근 시간</label>
+                            <input type="time" id="workStartTime" value="09:00">
+                        </div>
+                        <div class="time-input-group">
+                            <label for="lunchTime">점심 시간</label>
+                            <input type="time" id="lunchTime" value="12:00">
+                        </div>
+                        <div class="time-input-group">
+                            <label for="workEndTime">퇴근 시간</label>
+                            <input type="time" id="workEndTime" value="18:00">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="save-time-btn">저장</button>
+                    </div>
+                </div>
+            </div>
+            <div class="stress-graph-section">
+                <div class="container">
+                    <div class="progress-container">
+                        <svg width="200" height="200">
+                            <!-- 가장 큰 원 (퇴근까지) -->
+                            <circle
+                                    cx="100"
+                                    cy="100"
+                                    r="90"
+                                    fill="none"
+                                    stroke="#C9F0FF"
+                                    stroke-width="15"
+                            />
+                            <circle
+                                    class="progress-circle"
+                                    cx="100"
+                                    cy="100"
+                                    r="90"
+                                    fill="none"
+                                    stroke="#9BDCFD"
+                                    stroke-width="15"
+                                    stroke-dasharray="565.49"
+                                    stroke-dashoffset="565.49"
+                                    stroke-linecap="round"
+                                    data-progress="0"
+                                    data-start="9"
+                                    data-end="18"
+                            />
+                            <circle class="circle-dot" cx="100" cy="100" r="5" color="white"/>
+                            <circle class="circle-dot" cx="100" cy="10" r="5" color="white"/>
+
+                            <!-- 중간 원 (업무 진행률) -->
+                            <circle
+                                    cx="100"
+                                    cy="100"
+                                    r="70"
+                                    fill="none"
+                                    stroke="#FFE5E5"
+                                    stroke-width="15"
+                            />
+                            <circle
+                                    class="progress-circle"
+                                    cx="100"
+                                    cy="100"
+                                    r="70"
+                                    fill="none"
+                                    stroke="#FF9898"
+                                    stroke-width="15"
+                                    stroke-dasharray="439.82"
+                                    stroke-dashoffset="439.82"
+                                    stroke-linecap="round"
+                                    data-progress="0"
+                                    data-start="9"
+                                    data-end="18"
+                            />
+                            <circle class="circle-dot" cx="100" cy="30" r="5" color="white"/>
+                            <circle class="circle-dot" cx="100" cy="30" r="5" color="white"/>
+
+                            <!-- 가장 작은 원 (점심까지) -->
+                            <circle
+                                    cx="100"
+                                    cy="100"
+                                    r="50"
+                                    fill="none"
+                                    stroke="#FFEFD7"
+                                    stroke-width="15"
+                            />
+                            <circle
+                                    class="progress-circle"
+                                    cx="100"
+                                    cy="100"
+                                    r="50"
+                                    fill="none"
+                                    stroke="#FFD188"
+                                    stroke-width="15"
+                                    stroke-dasharray="314.16"
+                                    stroke-dashoffset="314.16"
+                                    stroke-linecap="round"
+                                    data-progress="0"
+                                    data-start="9"
+                                    data-end="12"
+                            />
+                            <circle class="circle-dot" cx="100" cy="50" r="5" color="white"/>
+                            <circle class="circle-dot" cx="100" cy="50" r="5" color="white"/>
+                        </svg>
+                    </div>
+
+                    <div class="labels-container">
+                        <div class="label-item">
+                            <div class="color-indicator" style="background-color: #9BDCFD;"></div>
+                            <span class="label-text">퇴근까지</span>
+                            <span class="time-text">6h 46min</span>
+                        </div>
+                        <div class="label-item">
+                            <div class="color-indicator" style="background-color: #FF9898;"></div>
+                            <span class="label-text">퇴사지수</span>
+                            <span class="time-text">71%</span>
+                        </div>
+                        <div class="label-item">
+                            <div class="color-indicator" style="background-color: #FFD188;"></div>
+                            <span class="label-text">점심까지</span>
+                            <span class="time-text">1h 14min</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+</body>
+<script>
+    function updateCalendar() {
+        // 오늘 날짜 가져오기
+        const today = new Date();
+
+        // 이번 주의 월요일 찾기
+        const monday = new Date(today);
+        const diff = today.getDay() - 1; // 월요일을 기준으로 차이 계산 (월요일은 1)
+        monday.setDate(today.getDate() - diff);
+
+        // 월/연도 표시 업데이트
+        const monthNames = ["1월", "2월", "3월", "4월", "5월", "6월",
+            "7월", "8월", "9월", "10월", "11월", "12월"];
+        document.querySelector('.today-date').textContent = `${today.getFullYear()}년 ${monthNames[today.getMonth()]}`;
+
+        // 날짜 그리드 업데이트
+        const dateGrid = document.querySelector('.calendar-grid:last-child');
+        dateGrid.innerHTML = ''; // 기존 날짜 초기화
+
+        // 월요일부터 일요일까지 날짜 추가
+        for (let i = 0; i < 7; i++) {
+            const currentDate = new Date(monday);
+            currentDate.setDate(monday.getDate() + i);
+
+            const dateSpan = document.createElement('span');
+            dateSpan.className = 'calendar-date';
+            dateSpan.textContent = currentDate.getDate();
+
+            // 오늘 날짜인 경우 active 클래스 추가
+            if (currentDate.toDateString() === today.toDateString()) {
+                dateSpan.classList.add('active');
+            }
+
+            dateGrid.appendChild(dateSpan);
+        }
+    }
+
+    // 페이지 로드 시 캘린더 업데이트
+    updateCalendar();
+
+    // 매일 자정에 캘린더 업데이트 (선택사항)
+    function scheduleNextUpdate() {
+        const now = new Date();
+        const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+        const timeUntilMidnight = tomorrow - now;
+
+        setTimeout(() => {
+            updateCalendar();
+            scheduleNextUpdate();
+        }, timeUntilMidnight);
+    }
+
+    scheduleNextUpdate();
+    function calculateTimeRemaining(startHour, endHour) {
+        const now = new Date();
+        const currentHour = now.getHours();
+        const currentMinute = now.getMinutes();
+
+        const endTime = endHour * 60;
+        const currentTime = currentHour * 60 + currentMinute;
+
+        let remainingMinutes = endTime - currentTime;
+        if (remainingMinutes < 0) remainingMinutes = 0;
+
+        const hours = Math.floor(remainingMinutes / 60);
+        const minutes = remainingMinutes % 60;
+
+        return `${hours}h ${minutes}min`;
+    }
+
+    function calculateProgress(startHour, endHour) {
+        const now = new Date();
+        const currentHour = now.getHours();
+        const currentMinute = now.getMinutes();
+        const currentTime = currentHour + currentMinute / 60;
+
+        if (currentTime < startHour) return 0;
+        if (currentTime > endHour) return 100;
+
+        const duration = endHour - startHour;
+        const elapsed = currentTime - startHour;
+        return Math.min(100, Math.max(0, (elapsed / duration) * 100));
+    }
+
+    function updateCircleProgress(circle, progress) {
+        const circumference = parseFloat(circle.getAttribute('stroke-dasharray'));
+        const offset = circumference - (progress / 100) * circumference;
+        circle.setAttribute('stroke-dashoffset', offset);
+        circle.setAttribute('data-progress', progress);
+
+        const dot = circle.nextElementSibling;
+        const angle = (progress / 100) * 360 - 90;
+        const radius = parseFloat(circle.getAttribute('r'));
+        const cx = 100;
+        const cy = 100;
+        const x = cx + radius * Math.cos(angle * Math.PI / 180);
+        const y = cy + radius * Math.sin(angle * Math.PI / 180);
+        dot.setAttribute('cx', x);
+        dot.setAttribute('cy', y);
+    }
+
+    function updateAllProgress() {
+        const circles = document.querySelectorAll('.progress-circle');
+        const timeTexts = document.querySelectorAll('.time-text');
+
+        timeTexts[0].textContent = calculateTimeRemaining(9, 18);
+        timeTexts[2].textContent = calculateTimeRemaining(9, 12);
+
+        circles.forEach((circle, index) => {
+            const startHour = parseInt(circle.getAttribute('data-start'));
+            const endHour = parseInt(circle.getAttribute('data-end'));
+            const progress = Math.round(calculateProgress(startHour, endHour));
+
+            updateCircleProgress(circle, progress);
+
+            if (index === 1) {
+                updateCircleProgress(circle, 71);
+            }
+        });
+    }
+
+    updateAllProgress();
+    setInterval(updateAllProgress, 60000);
+
+    // 모달 관련 요소들
+    const modal = document.getElementById('timeSettingsModal');
+    const settingsBtn = document.querySelector('.time-settings-btn');
+    const closeBtn = document.querySelector('.close-modal-btn');
+    const saveBtn = document.querySelector('.save-time-btn');
+    const timeInputs = {
+        workStart: document.getElementById('workStartTime'),
+        lunch: document.getElementById('lunchTime'),
+        workEnd: document.getElementById('workEndTime')
+    };
+
+    // 모달 열기
+    settingsBtn.addEventListener('click', () => {
+        modal.style.display = 'flex';
+    });
+
+    // 모달 닫기
+    closeBtn.addEventListener('click', () => {
+        modal.style.display = 'none';
+    });
+
+    // 모달 외부 클릭 시 닫기
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
+
+    // 시간 저장
+    saveBtn.addEventListener('click', () => {
+        // 시간 값 가져오기
+        const workStartTime = timeInputs.workStart.value;
+        const lunchTime = timeInputs.lunch.value;
+        const workEndTime = timeInputs.workEnd.value;
+
+        // 시간 유효성 검사
+        if (!workStartTime || !lunchTime || !workEndTime) {
+            alert('모든 시간을 입력해주세요.');
+            return;
+        }
+
+        // 원형 프로그레스바의 시작/종료 시간 업데이트
+        const circles = document.querySelectorAll('.progress-circle');
+        circles[0].setAttribute('data-start', workStartTime.split(':')[0]);
+        circles[0].setAttribute('data-end', workEndTime.split(':')[0]);
+        circles[1].setAttribute('data-start', workStartTime.split(':')[0]);
+        circles[1].setAttribute('data-end', workEndTime.split(':')[0]);
+        circles[2].setAttribute('data-start', workStartTime.split(':')[0]);
+        circles[2].setAttribute('data-end', lunchTime.split(':')[0]);
+
+        // 진행률 다시 계산
+        updateAllProgress();
+
+        // 모달 닫기
+        modal.style.display = 'none';
+    });
+</script>
+</html>

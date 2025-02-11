@@ -1,57 +1,77 @@
 <!DOCTYPE html>
-<html class="h-full bg-white">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
-    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    <style type="text/tailwindcss">
-        .font-roboto {
-            font-family: "Roboto", serif;
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>러닝 프로그레스 바</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
         }
-        @theme {
-            --color-main-sky: #00a3ed;
+        .progress-container {
+            position: relative;
+            width: 80%;
+            height: 30px;
+            background-color: #ddd;
+            border-radius: 15px;
+            margin: 50px auto;
+            overflow: hidden;
+        }
+        .progress-bar {
+            position: absolute;
+            height: 100%;
+            width: 0%;
+            background-color: #4CAF50;
+            border-radius: 15px;
+            transition: width 0.1s linear;
+        }
+        .runner {
+            position: absolute;
+            top: -40px;
+            left: 0%;
+            width: 40px;
+            height: 40px;
+            background-image: url('https://upload.wikimedia.org/wikipedia/commons/8/8e/Emoji_u1f3c3.svg');
+            background-size: contain;
+            background-repeat: no-repeat;
+            transition: left 0.1s linear;
         }
     </style>
 </head>
-<body class="h-full font-roboto">
-<div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
-    <div class="sm:mx-auto sm:w-full sm:max-w-sm">
-        <h2 class="mt-10 text-center text-3xl tracking-tight text-gray-900">Sign in to your account</h2>
-    </div>
-    <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        <form class="space-y-6" action="#" method="POST">
-            <div>
-                <label for="email" class="block text-lg/6 text-gray-900">ID</label>
-                <div class="mt-2">
-                    <input type="email" name="email" id="email" autocomplete="email" required class="block w-full rounded-md bg-white px-3 py-1.5 text-lg text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
-                </div>
-            </div>
+<body>
 
-            <div>
-                <div class="flex items-center justify-between">
-                    <label for="password" class="block text-lg/6 text-gray-900">Password</label>
-                    <div class="text-lg">
-                        <a href="#" class="text-main-sky hover:text-sky-800">Forgot password?</a>
-                    </div>
-                </div>
-                <div class="mt-2">
-                    <input type="password" name="password" id="password" autocomplete="current-password" required class="block w-full rounded-md bg-white px-3 py-1.5 text-lg text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
-                </div>
-            </div>
-
-            <div>
-                <button type="submit" class="flex w-full justify-center rounded-md bg-main-sky px-3 py-1.5 text-lg/6 text-white shadow-xs hover:bg-sky-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-800">Sign in</button>
-            </div>
-        </form>
-
-        <p class="mt-10 text-center text-base/6 text-gray-500">
-            Not a member?
-            <a href="#" class="text-main-sky hover:text-sky-800">Sign up</a>
-        </p>
-    </div>
+<h2>러닝 프로그레스 바</h2>
+<div class="progress-container">
+    <div class="progress-bar"></div>
+    <div class="runner"></div>
 </div>
+
+<script>
+    const progressBar = document.querySelector(".progress-bar");
+    const runner = document.querySelector(".runner");
+
+    // 시작 및 종료 시간 설정 (밀리초)
+    const startTime = new Date().getTime();
+    const endTime = startTime + 10 * 1000; // 10초 동안 진행
+
+    function updateProgress() {
+        const now = new Date().getTime();
+        const elapsedTime = now - startTime;
+        const totalDuration = endTime - startTime;
+        const progress = Math.min((elapsedTime / totalDuration) * 100, 100);
+
+        progressBar.style.width = progress + "%";
+        runner.style.left = progress + "%";
+
+        if (progress < 100) {
+            requestAnimationFrame(updateProgress);
+        }
+    }
+
+    updateProgress(); // 애니메이션 시작
+</script>
+
 </body>
 </html>
