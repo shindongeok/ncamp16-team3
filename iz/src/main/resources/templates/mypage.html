@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html class="h-full bg-white">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <style type="text/tailwindcss">
+        @theme {
+            --color-main-sky-highlight: #00a3ed;
+            --color-main-sky-basic: #9bdcfd;
+            --color-main-red-highlight: #ff5353;
+            --color-main-red-basic: #ff9898;
+            --color-main-yellow-highlight: #fbc159ff;
+            --color-main-yellow-basic: #fdd391;
+        }
+
+        @media screen and (min-width: 769px) {
+            .mobile-container {
+                width: 600px;
+                margin: 0 auto;
+                background: white;
+                box-shadow: 0 0 10px rgba(0,0,0,0.1);
+                min-height: 100vh;
+            }
+        }
+
+        @media screen and (max-width: 768px) {
+            .mobile-container {
+                width: 100%;
+                background: white;
+                min-height: 100vh;
+            }
+        }
+
+        /* 게이지 애니메이션 추가 */
+        @keyframes fillGauge {
+            from { stroke-dasharray: 0 597; }
+            to { stroke-dasharray: 447.75 597; }
+        }
+
+        .gauge-progress {
+            animation: fillGauge 1.5s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="h-full font-roboto mobile-container">
+<div class="flex items-center justify-center">
+    <div class="flex flex-col items-center w-full max-w-sm px-6 py-12">
+        <div class="relative w-full flex flex-col items-center mb-10">
+            <img src="../static/images/izikgram.png" alt="프로필" class="mx-auto relative z-3 bottom-10 w-50 "/>
+            <div class="absolute -bottom-5 w-[600px] h-[300px] bg-gray-100 rounded-b-[300px]"
+                 style="background-color: var(--color-main-sky-basic);"></div>
+
+            <!-- 게이지와 프로필 이미지를 포함하는 컨테이너 -->
+            <div class="absolute top-25">
+                <!-- SVG 게이지 -->
+                <svg width="230" height="230" viewBox="0 0 220 220" class="absolute z-12">
+
+                    <!-- 진행도 원 (퇴사지수) -->
+                    <circle
+                            cx="97"
+                            cy="92"
+                            r="100"
+                            stroke="var(--color-main-red-highlight)"
+                            stroke-width="9"
+                            fill="none"
+                            stroke-linecap="round"
+                            transform="rotate(-90 100 100)"
+                            class="gauge-progress"
+                    />
+                </svg>
+                <!-- 프로필 이미지 -->
+                <img src="../static/images/chillguy.png" class="w-[185px] h-[185px] rounded-[200px] relative z-10 mt-3" alt="사용자프로필 이미지">
+            </div>
+        </div>
+
+        <div class="mt-6 text-center mt-15 w-100">
+            <div class="mt-6 text-center mt-15">
+                <div class="font-bold text-xl" th:text="${nickname}">2직이</div>
+                <div class="mt-2" th:text="${user.intro}">참을 인 세번이면 이직을 한다...</div>
+            </div>
+            <div class="mt-6 w-full p-4 border border-gray-300 rounded-lg p-4">
+                <div class="space-y-5">
+                    <div class="flex items-center gap-3">
+                        <img src="../static/images/people.png" alt="프로필">
+                        <div><span th:text="${user.name}">김비트</span></div>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-3">
+                            <img src="../static/images/email.png" class="w-8 h-8" alt="프로필">
+                            <div><span th:text="${user.email}">ijick2@naver.com</span></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-3">
+                            <img src="../static/images/phone.png">
+                            <div><span th:text="${user.phone_num}">010-1234-5678</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-6 w-full p-4 border border-gray-300 rounded-lg p-4">
+                <div class="space-y-5">
+                    <div>
+                        <div class="flex items-center gap-3">
+                            <img src="../static/images/edit.png" alt="정보수정 이미지">
+                            <a href="/update" th:href="@{/update}" class="cursor-pointer hover:text-blue-500">개인정보수정</a>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-3">
+                            <img src="../static/images/security.png" alt="보안 이미지">
+                            <a href="/accountManagement" th:href="@{/accountManagement}" class="cursor-pointer hover:text-blue-500">계정관리</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

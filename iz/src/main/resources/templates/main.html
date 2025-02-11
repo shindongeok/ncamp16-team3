@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Izikgram</title>
+    <link rel="stylesheet" th:href="@{/css/mainStyle.css}">
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <style type="text/tailwindcss">
+        @theme {
+            --color-main-sky-highlight: #00a3ed;
+            --color-main-sky-basic: #9bdcfd;
+            --color-main-red-highlight: #ff5353;
+            --color-main-red-basic: #ff9898;
+            --color-main-yellow-highlight: #fbc159ff;
+            --color-main-yellow-basic: #fdd391;
+            --color-main-black: #2C2C2C;
+            /* gray-400*/
+            --color-light-text: oklch(0.704 0.04 256.788);
+            /* gray-600 */
+            --color-basic-text: oklch(0.446 0.043 257.281);
+            /* gray-900 */
+            --color-bold-text: oklch(0.208 0.042 265.755);
+        }
+    </style>
+</head>
+<body>
+<div class="main-container">
+    <header>
+        <div class="logo-section">Izikgram</div>
+        <div class="header-button-section">
+            <span class="sidebar-button">🗂️</span>
+            <span class="alarm-button">🔔</span>
+        </div>
+    </header>
+    <div class="page-title">Dashboard</div>
+    <div class="popular-posting-section">
+        <span class="popular-board">🔥 인기게시글</span>
+        <div class="popular-content-bubble">
+            <span class="popular-board-title">나 오늘 이런 일 있었잖아</span>
+            <span class="like-count">👍 26</span>
+        </div>
+    </div>
+    <div class="calendar-section">
+        <div class="section-title">Calendar</div>
+        <div class="today-date"></div>
+        <div class="calendar-wrapper">
+            <div class="calendar-grid">
+                <span class="day-label">M</span>
+                <span class="day-label">T</span>
+                <span class="day-label">W</span>
+                <span class="day-label">T</span>
+                <span class="day-label">F</span>
+                <span class="day-label">S</span>
+                <span class="day-label">S</span>
+            </div>
+            <div class="calendar-grid">
+                <!-- 자동으로 채워질 날짜들 -->
+            </div>
+        </div>
+    </div>
+    <div class="overview-section">
+        <div class="section-title">Overview</div>
+        <div class="overview-card-section">
+            <div class="overview-card">
+                <div class="overview-header">
+                    <span class="overview-icon">💸</span>
+                    <div class="overview-subtitle">월급까지</div>
+                </div>
+                <div class="overview-content">D-10</div>
+            </div>
+            <div class="overview-card">
+                <div class="overview-header">
+                    <span class="overview-icon">📉</span>
+                    <div class="overview-subtitle">퇴사지수</div>
+                </div>
+                <div class="overview-content">+58%</div>
+            </div>
+        </div>
+    </div>
+    <div class="stress-section">
+        <!-- section-title 수정 -->
+        <div class="section-title-container">
+            <div class="section-title">Stress</div>
+            <button class="time-settings-btn">⚙️</button>
+        </div>
+
+        <!-- 모달 추가 -->
+        <div class="time-settings-modal" id="timeSettingsModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>시간 설정</h3>
+                    <button class="close-modal-btn">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="time-input-group">
+                        <label for="workStartTime">출근 시간</label>
+                        <input type="time" id="workStartTime" value="09:00">
+                    </div>
+                    <div class="time-input-group">
+                        <label for="lunchTime">점심 시간</label>
+                        <input type="time" id="lunchTime" value="12:00">
+                    </div>
+                    <div class="time-input-group">
+                        <label for="workEndTime">퇴근 시간</label>
+                        <input type="time" id="workEndTime" value="18:00">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="save-time-btn">저장</button>
+                </div>
+            </div>
+        </div>
+        <div class="stress-graph-section">
+            <div class="container">
+                <div class="progress-container">
+                    <svg width="200" height="200">
+                        <!-- 가장 큰 원 (퇴근까지) -->
+                        <circle
+                                cx="100"
+                                cy="100"
+                                r="90"
+                                fill="none"
+                                stroke="#C9F0FF"
+                                stroke-width="15"
+                        />
+                        <circle
+                                class="progress-circle"
+                                cx="100"
+                                cy="100"
+                                r="90"
+                                fill="none"
+                                stroke="#9BDCFD"
+                                stroke-width="15"
+                                stroke-dasharray="565.49"
+                                stroke-dashoffset="565.49"
+                                stroke-linecap="round"
+                                data-progress="0"
+                                data-start="9"
+                                data-end="18"
+                        />
+                        <circle class="circle-dot" cx="100" cy="100" r="5" color="white"/>
+                        <circle class="circle-dot" cx="100" cy="10" r="5" color="white"/>
+
+                        <!-- 중간 원 (업무 진행률) -->
+                        <circle
+                                cx="100"
+                                cy="100"
+                                r="70"
+                                fill="none"
+                                stroke="#FFE5E5"
+                                stroke-width="15"
+                        />
+                        <circle
+                                class="progress-circle"
+                                cx="100"
+                                cy="100"
+                                r="70"
+                                fill="none"
+                                stroke="#FF9898"
+                                stroke-width="15"
+                                stroke-dasharray="439.82"
+                                stroke-dashoffset="439.82"
+                                stroke-linecap="round"
+                                data-progress="0"
+                                data-start="9"
+                                data-end="18"
+                        />
+                        <circle class="circle-dot" cx="100" cy="30" r="5" color="white"/>
+                        <circle class="circle-dot" cx="100" cy="30" r="5" color="white"/>
+
+                        <!-- 가장 작은 원 (점심까지) -->
+                        <circle
+                                cx="100"
+                                cy="100"
+                                r="50"
+                                fill="none"
+                                stroke="#FFEFD7"
+                                stroke-width="15"
+                        />
+                        <circle
+                                class="progress-circle"
+                                cx="100"
+                                cy="100"
+                                r="50"
+                                fill="none"
+                                stroke="#FFD188"
+                                stroke-width="15"
+                                stroke-dasharray="314.16"
+                                stroke-dashoffset="314.16"
+                                stroke-linecap="round"
+                                data-progress="0"
+                                data-start="9"
+                                data-end="12"
+                        />
+                        <circle class="circle-dot" cx="100" cy="50" r="5" color="white"/>
+                        <circle class="circle-dot" cx="100" cy="50" r="5" color="white"/>
+                    </svg>
+                </div>
+
+                <div class="labels-container">
+                    <div class="label-item">
+                        <div class="color-indicator" style="background-color: #9BDCFD;"></div>
+                        <span class="label-text">퇴근까지</span>
+                        <span class="time-text">6h 46min</span>
+                    </div>
+                    <div class="label-item">
+                        <div class="color-indicator" style="background-color: #FF9898;"></div>
+                        <span class="label-text">퇴사지수</span>
+                        <span class="time-text">71%</span>
+                    </div>
+                    <div class="label-item">
+                        <div class="color-indicator" style="background-color: #FFD188;"></div>
+                        <span class="label-text">점심까지</span>
+                        <span class="time-text">1h 14min</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script th:src="@{/js/mainScript.js}"></script>
+</html>

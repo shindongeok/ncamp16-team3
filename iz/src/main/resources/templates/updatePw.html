@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html class="h-full bg-white">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <style type="text/tailwindcss">
+        @theme {
+            --color-main-sky-highlight: #00a3ed;
+            --color-main-sky-basic: #9bdcfd;
+            --color-main-red-highlight: #ff5353;
+            --color-main-red-basic: #ff9898;
+            --color-main-yellow-highlight: #fbc159ff;
+            --color-main-yellow-basic: #fdd391;
+        }
+
+        @media screen and (min-width: 769px) {
+            .mobile-container {
+                width: 600px;
+                margin: 0 auto;
+                background: white;
+                box-shadow: 0 0 10px rgba(0,0,0,0.1);
+                min-height: 100vh;
+            }
+        }
+
+        @media screen and (max-width: 768px) {
+            .mobile-container {
+                width: 100%;
+                background: white;
+                min-height: 100vh;
+            }
+        }
+
+    </style>
+</head>
+<body class="h-full font-roboto mobile-container">
+<div class="flex items-center justify-center">
+    <div class="flex flex-col items-center w-full max-w-sm px-6 py-12">
+        <div class="relative w-full flex flex-col items-center mb-10">
+            <img src="../static/images/izikgram.png" alt="프로필" class="mx-auto relative w-50"/>
+        </div>
+        <div class="border-2 border-gray-300 rounded-lg">
+            <div class="mt-6 text-center w-full">
+                <div class="mt-6 text-center">
+                    <div class="font-bold text-xl">비밀번호 변경</div>
+                </div>
+            </div>
+            <div class="flex m-10">
+                <div>
+                    <label for="password" class="block text-lg/6 text-gray-900">새 비밀번호 입력</label>
+                    <div class="mt-2">
+                        <input type="password" id="password" th:field="${user.password}" required class="block w-80 rounded-md bg-white px-3 py-1.5 text-lg text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+                    </div>
+                </div>
+            </div>
+            <div class="flex m-10">
+                <div>
+                    <label for="passwordCheck" class="block text-lg/6 text-gray-900">새 비밀번호 확인</label>
+                    <div class="mt-2">
+                        <input type="password" id="passwordCheck" required class="block w-80 rounded-md bg-white px-3 py-1.5 text-lg text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+                        <p id="passwordMismatch" class="text-red-500 text-sm mt-1 hidden">* 비밀번호가 일치하지 않아요.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="flex justify-center items-center m-10">
+                <div class="mt-4 w-30">
+                    <a onclick="submitPasswordChange()"
+                       class="cursor-pointer w-full bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                        수정 완료
+                    </a>
+                </div>
+                <div class="mt-4 w-20">
+                    <a href="/accountManagement" th:onclick="|location.href='@{/accountManagement}'|"
+                       class="cursor-pointer w-full bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400">
+                        취소
+                    </a>
+                </div>
+            </div>
+
+            <!-- 비밀번호 변경 완료 모달 -->
+            <div id="successModal" class="relative z-10 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+                <div class="fixed inset-0 bg-gray-500/75 transition-opacity"></div>
+
+                <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+                    <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                        <div class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+                            <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                                <div class="sm:flex sm:items-start">
+                                    <div class="mx-auto flex size-12 shrink-0 items-center justify-center rounded-full bg-green-100 sm:mx-0 sm:size-10">
+                                        <svg class="size-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                                        </svg>
+                                    </div>
+                                    <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                                        <h3 class="text-base font-semibold text-gray-900">비밀번호 변경 완료</h3>
+                                        <div class="mt-2">
+                                            <p class="text-sm text-gray-500">비밀번호가 성공적으로 변경되었습니다.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                                <button onclick="goToMyPage()" type="button"
+                                        class="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 sm:ml-3 sm:w-auto">
+                                    확인
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    const password = document.getElementById('password');
+    const passwordCheck = document.getElementById('passwordCheck');
+
+    //비밀번호가 일치하지 않았을 경우.
+    const passwordMismatch = document.getElementById('passwordMismatch');
+    const successModal = document.getElementById('successModal');
+
+    // 비밀번호 일치 검증
+    function validatePassword() {
+        // 비밀번호가 일치하지 않으면 경고문구
+        if (password.value !== passwordCheck.value) {
+            passwordMismatch.classList.remove('hidden');
+            return false;
+        }
+
+        //비밀번호가 일치하면 경고문구 숨김
+        passwordMismatch.classList.add('hidden');
+        return true;
+    }
+
+    // 비밀번호 변경 제출 시
+    function submitPasswordChange() {
+        if (validatePassword()) {
+            // 여기에 비밀번호 변경 API 호출 로직 추가
+
+            // 변경 성공 시, 성공 모달 띄움
+            successModal.classList.remove('hidden');
+        }
+    }
+
+    function goToMyPage() {
+        window.location.href = '/mypage';
+    }
+</script>
+</html>
