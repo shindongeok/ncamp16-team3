@@ -6,7 +6,7 @@
 <table>
   <tbody>
     <th align="center">강승민</th>
-    <th align="center">김태현</th>
+    <th align="center">🐹 김태현</th>
     <th align="center">신동억</th>
     <th align="center">임하형</th>
     <th align="center">차기석</th>
