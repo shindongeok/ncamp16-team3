@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Izikgram</title>
-    <link rel="stylesheet" href="../static/css/mainStyle.css">
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -28,6 +27,7 @@
             /* gray-900 */
             --color-bold-text: oklch(0.208 0.042 265.755);
         }
+
 
         * {
             margin: 0;
@@ -418,383 +418,502 @@
         .save-time-btn:hover {
             background: #7fcdf8;
         }
+
+        .time-picker {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .clock-toggle-btn {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 50%;
+        }
+
+        .clock-toggle-btn:hover {
+            background: #f0f0f0;
+        }
+
+        .clock-picker {
+            margin-top: 16px;
+        }
+
+        .time-display {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .time-number {
+            font-size: 2rem;
+            font-weight: 500;
+            color: #333;
+            width: 48px;
+            text-align: center;
+        }
+
+        .time-separator {
+            font-size: 2rem;
+            color: #666;
+        }
+
+        .mode-switch {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .mode-btn {
+            background: none;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .mode-btn.active {
+            background: #9BDCFD;
+            color: white;
+        }
+
+        .clock-face {
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            background: #f8f9fa;
+            position: relative;
+            margin: 0 auto;
+            margin-bottom: 20px;
+        }
+
+        .clock-hand {
+            position: absolute;
+            width: 2px;
+            height: 100px;
+            background: #9BDCFD;
+            bottom: 50%;
+            left: 50%;
+            transform-origin: bottom;
+            transform: rotate(0deg);
+        }
+
+        .clock-center {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: #9BDCFD;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .number {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            text-align: center;
+            line-height: 30px;
+            font-size: 1.1rem;
+            color: #666;
+            cursor: pointer;
+            border-radius: 50%;
+        }
+
+        .number:hover {
+            background: #e0e0e0;
+        }
+
+        .number.selected {
+            background: #9BDCFD;
+            color: white;
+        }
     </style>
+    <link rel="stylesheet" href="../static/css/mainStyle.css">
 </head>
 <body>
-    <div class="main-container">
-        <header>
-            <div class="logo-section">logo</div>
-            <div class="header-button-section">
-                <span class="sidebar-button">🗂️</span>
-                <span class="alarm-button">🔔</span>
+<div class="main-container">
+    <header>
+        <div class="logo-section">Izikgram</div>
+        <div class="header-button-section">
+            <span class="sidebar-button">🗂️</span>
+            <span class="alarm-button">🔔</span>
+        </div>
+    </header>
+    <div class="page-title">Dashboard</div>
+    <div class="popular-posting-section">
+        <span class="popular-board">🔥 인기게시글</span>
+        <div class="popular-content-bubble">
+            <span class="popular-board-title">나 오늘 이런 일 있었잖아</span>
+            <span class="like-count">👍 26</span>
+        </div>
+    </div>
+    <div class="calendar-section">
+        <div class="section-title">Calendar</div>
+        <div class="today-date"></div>
+        <div class="calendar-wrapper">
+            <div class="calendar-grid">
+                <span class="day-label">M</span>
+                <span class="day-label">T</span>
+                <span class="day-label">W</span>
+                <span class="day-label">T</span>
+                <span class="day-label">F</span>
+                <span class="day-label">S</span>
+                <span class="day-label">S</span>
             </div>
-        </header>
-        <div class="page-title">Dashboard</div>
-        <div class="popular-posting-section">
-            <span class="popular-board">🔥 인기게시글</span>
-            <div class="popular-content-bubble">
-                <span class="popular-board-title">나 오늘 이런 일 있었잖아</span>
-                <span class="like-count">👍 26</span>
+            <div class="calendar-grid">
+                <!-- 자동으로 채워질 날짜들 -->
             </div>
         </div>
-        <div class="calendar-section">
-            <div class="section-title">Calendar</div>
-            <div class="today-date"></div>
-            <div class="calendar-wrapper">
-                <div class="calendar-grid">
-                    <span class="day-label">M</span>
-                    <span class="day-label">T</span>
-                    <span class="day-label">W</span>
-                    <span class="day-label">T</span>
-                    <span class="day-label">F</span>
-                    <span class="day-label">S</span>
-                    <span class="day-label">S</span>
+    </div>
+    <div class="overview-section">
+        <div class="section-title">Overview</div>
+        <div class="overview-card-section">
+            <div class="overview-card">
+                <div class="overview-header">
+                    <span class="overview-icon">💸</span>
+                    <div class="overview-subtitle">월급까지</div>
                 </div>
-                <div class="calendar-grid">
-                    <!-- 자동으로 채워질 날짜들 -->
+                <div class="overview-content">D-10</div>
+            </div>
+            <div class="overview-card">
+                <div class="overview-header">
+                    <span class="overview-icon">📉</span>
+                    <div class="overview-subtitle">퇴사지수</div>
                 </div>
+                <div class="overview-content">+58%</div>
             </div>
         </div>
-        <div class="overview-section">
-            <div class="section-title">Overview</div>
-            <div class="overview-card-section">
-                <div class="overview-card">
-                    <div class="overview-header">
-                        <span class="overview-icon">💸</span>
-                        <div class="overview-subtitle">월급까지</div>
-                    </div>
-                    <div class="overview-content">D-10</div>
-                </div>
-                <div class="overview-card">
-                    <div class="overview-header">
-                        <span class="overview-icon">📉</span>
-                        <div class="overview-subtitle">퇴사지수</div>
-                    </div>
-                    <div class="overview-content">+58%</div>
-                </div>
-            </div>
+    </div>
+    <div class="stress-section">
+        <!-- section-title 수정 -->
+        <div class="section-title-container">
+            <div class="section-title">Stress</div>
+            <button class="time-settings-btn">⚙️</button>
         </div>
-        <div class="stress-section">
-            <!-- section-title 수정 -->
-            <div class="section-title-container">
-                <div class="section-title">Stress</div>
-                <button class="time-settings-btn">⚙️</button>
-            </div>
 
-            <!-- 모달 추가 -->
-            <div class="time-settings-modal" id="timeSettingsModal">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h3>시간 설정</h3>
-                        <button class="close-modal-btn">&times;</button>
+        <!-- 모달 추가 -->
+        <div class="time-settings-modal" id="timeSettingsModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>시간 설정</h3>
+                    <button class="close-modal-btn">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="time-input-group">
+                        <label for="workStartTime">출근 시간</label>
+                        <input type="time" id="workStartTime" value="09:00">
                     </div>
-                    <div class="modal-body">
-                        <div class="time-input-group">
-                            <label for="workStartTime">출근 시간</label>
-                            <input type="time" id="workStartTime" value="09:00">
-                        </div>
-                        <div class="time-input-group">
-                            <label for="lunchTime">점심 시간</label>
-                            <input type="time" id="lunchTime" value="12:00">
-                        </div>
-                        <div class="time-input-group">
-                            <label for="workEndTime">퇴근 시간</label>
-                            <input type="time" id="workEndTime" value="18:00">
-                        </div>
+                    <div class="time-input-group">
+                        <label for="lunchTime">점심 시간</label>
+                        <input type="time" id="lunchTime" value="12:00">
                     </div>
-                    <div class="modal-footer">
-                        <button class="save-time-btn">저장</button>
+                    <div class="time-input-group">
+                        <label for="workEndTime">퇴근 시간</label>
+                        <input type="time" id="workEndTime" value="18:00">
                     </div>
                 </div>
-            </div>
-            <div class="stress-graph-section">
-                <div class="container">
-                    <div class="progress-container">
-                        <svg width="200" height="200">
-                            <!-- 가장 큰 원 (퇴근까지) -->
-                            <circle
-                                    cx="100"
-                                    cy="100"
-                                    r="90"
-                                    fill="none"
-                                    stroke="#C9F0FF"
-                                    stroke-width="15"
-                            />
-                            <circle
-                                    class="progress-circle"
-                                    cx="100"
-                                    cy="100"
-                                    r="90"
-                                    fill="none"
-                                    stroke="#9BDCFD"
-                                    stroke-width="15"
-                                    stroke-dasharray="565.49"
-                                    stroke-dashoffset="565.49"
-                                    stroke-linecap="round"
-                                    data-progress="0"
-                                    data-start="9"
-                                    data-end="18"
-                            />
-                            <circle class="circle-dot" cx="100" cy="100" r="5" color="white"/>
-                            <circle class="circle-dot" cx="100" cy="10" r="5" color="white"/>
-
-                            <!-- 중간 원 (업무 진행률) -->
-                            <circle
-                                    cx="100"
-                                    cy="100"
-                                    r="70"
-                                    fill="none"
-                                    stroke="#FFE5E5"
-                                    stroke-width="15"
-                            />
-                            <circle
-                                    class="progress-circle"
-                                    cx="100"
-                                    cy="100"
-                                    r="70"
-                                    fill="none"
-                                    stroke="#FF9898"
-                                    stroke-width="15"
-                                    stroke-dasharray="439.82"
-                                    stroke-dashoffset="439.82"
-                                    stroke-linecap="round"
-                                    data-progress="0"
-                                    data-start="9"
-                                    data-end="18"
-                            />
-                            <circle class="circle-dot" cx="100" cy="30" r="5" color="white"/>
-                            <circle class="circle-dot" cx="100" cy="30" r="5" color="white"/>
-
-                            <!-- 가장 작은 원 (점심까지) -->
-                            <circle
-                                    cx="100"
-                                    cy="100"
-                                    r="50"
-                                    fill="none"
-                                    stroke="#FFEFD7"
-                                    stroke-width="15"
-                            />
-                            <circle
-                                    class="progress-circle"
-                                    cx="100"
-                                    cy="100"
-                                    r="50"
-                                    fill="none"
-                                    stroke="#FFD188"
-                                    stroke-width="15"
-                                    stroke-dasharray="314.16"
-                                    stroke-dashoffset="314.16"
-                                    stroke-linecap="round"
-                                    data-progress="0"
-                                    data-start="9"
-                                    data-end="12"
-                            />
-                            <circle class="circle-dot" cx="100" cy="50" r="5" color="white"/>
-                            <circle class="circle-dot" cx="100" cy="50" r="5" color="white"/>
-                        </svg>
-                    </div>
-
-                    <div class="labels-container">
-                        <div class="label-item">
-                            <div class="color-indicator" style="background-color: #9BDCFD;"></div>
-                            <span class="label-text">퇴근까지</span>
-                            <span class="time-text">6h 46min</span>
-                        </div>
-                        <div class="label-item">
-                            <div class="color-indicator" style="background-color: #FF9898;"></div>
-                            <span class="label-text">퇴사지수</span>
-                            <span class="time-text">71%</span>
-                        </div>
-                        <div class="label-item">
-                            <div class="color-indicator" style="background-color: #FFD188;"></div>
-                            <span class="label-text">점심까지</span>
-                            <span class="time-text">1h 14min</span>
-                        </div>
-                    </div>
+                <div class="modal-footer">
+                    <button class="save-time-btn">저장</button>
                 </div>
             </div>
         </div>
+        <div class="stress-graph-section">
+            <div class="container">
+                <div class="progress-container">
+                    <svg width="200" height="200">
+                        <!-- 가장 큰 원 (퇴근까지) -->
+                        <circle
+                                cx="100"
+                                cy="100"
+                                r="90"
+                                fill="none"
+                                stroke="#C9F0FF"
+                                stroke-width="15"
+                        />
+                        <circle
+                                class="progress-circle"
+                                cx="100"
+                                cy="100"
+                                r="90"
+                                fill="none"
+                                stroke="#9BDCFD"
+                                stroke-width="15"
+                                stroke-dasharray="565.49"
+                                stroke-dashoffset="565.49"
+                                stroke-linecap="round"
+                                data-progress="0"
+                                data-start="9"
+                                data-end="18"
+                        />
+                        <circle class="circle-dot" cx="100" cy="100" r="5" color="white"/>
+                        <circle class="circle-dot" cx="100" cy="10" r="5" color="white"/>
 
+                        <!-- 중간 원 (업무 진행률) -->
+                        <circle
+                                cx="100"
+                                cy="100"
+                                r="70"
+                                fill="none"
+                                stroke="#FFE5E5"
+                                stroke-width="15"
+                        />
+                        <circle
+                                class="progress-circle"
+                                cx="100"
+                                cy="100"
+                                r="70"
+                                fill="none"
+                                stroke="#FF9898"
+                                stroke-width="15"
+                                stroke-dasharray="439.82"
+                                stroke-dashoffset="439.82"
+                                stroke-linecap="round"
+                                data-progress="0"
+                                data-start="9"
+                                data-end="18"
+                        />
+                        <circle class="circle-dot" cx="100" cy="30" r="5" color="white"/>
+                        <circle class="circle-dot" cx="100" cy="30" r="5" color="white"/>
+
+                        <!-- 가장 작은 원 (점심까지) -->
+                        <circle
+                                cx="100"
+                                cy="100"
+                                r="50"
+                                fill="none"
+                                stroke="#FFEFD7"
+                                stroke-width="15"
+                        />
+                        <circle
+                                class="progress-circle"
+                                cx="100"
+                                cy="100"
+                                r="50"
+                                fill="none"
+                                stroke="#FFD188"
+                                stroke-width="15"
+                                stroke-dasharray="314.16"
+                                stroke-dashoffset="314.16"
+                                stroke-linecap="round"
+                                data-progress="0"
+                                data-start="9"
+                                data-end="12"
+                        />
+                        <circle class="circle-dot" cx="100" cy="50" r="5" color="white"/>
+                        <circle class="circle-dot" cx="100" cy="50" r="5" color="white"/>
+                    </svg>
+                </div>
+
+                <div class="labels-container">
+                    <div class="label-item">
+                        <div class="color-indicator" style="background-color: #9BDCFD;"></div>
+                        <span class="label-text">퇴근까지</span>
+                        <span class="time-text">6h 46min</span>
+                    </div>
+                    <div class="label-item">
+                        <div class="color-indicator" style="background-color: #FF9898;"></div>
+                        <span class="label-text">퇴사지수</span>
+                        <span class="time-text">71%</span>
+                    </div>
+                    <div class="label-item">
+                        <div class="color-indicator" style="background-color: #FFD188;"></div>
+                        <span class="label-text">점심까지</span>
+                        <span class="time-text">1h 14min</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
-<script>
-    function updateCalendar() {
-        // 오늘 날짜 가져오기
-        const today = new Date();
+<script src="../static/js/mainScript.js"></script>
+<script>function updateCalendar() {
+    // 오늘 날짜 가져오기
+    const today = new Date();
 
-        // 이번 주의 월요일 찾기
-        const monday = new Date(today);
-        const diff = today.getDay() - 1; // 월요일을 기준으로 차이 계산 (월요일은 1)
-        monday.setDate(today.getDate() - diff);
+    // 이번 주의 월요일 찾기
+    const monday = new Date(today);
+    const diff = today.getDay() - 1; // 월요일을 기준으로 차이 계산 (월요일은 1)
+    monday.setDate(today.getDate() - diff);
 
-        // 월/연도 표시 업데이트
-        const monthNames = ["1월", "2월", "3월", "4월", "5월", "6월",
-            "7월", "8월", "9월", "10월", "11월", "12월"];
-        document.querySelector('.today-date').textContent = `${today.getFullYear()}년 ${monthNames[today.getMonth()]}`;
+    // 월/연도 표시 업데이트
+    const monthNames = ["1월", "2월", "3월", "4월", "5월", "6월",
+        "7월", "8월", "9월", "10월", "11월", "12월"];
+    document.querySelector('.today-date').textContent = `${today.getFullYear()}년 ${monthNames[today.getMonth()]}`;
 
-        // 날짜 그리드 업데이트
-        const dateGrid = document.querySelector('.calendar-grid:last-child');
-        dateGrid.innerHTML = ''; // 기존 날짜 초기화
+    // 날짜 그리드 업데이트
+    const dateGrid = document.querySelector('.calendar-grid:last-child');
+    dateGrid.innerHTML = ''; // 기존 날짜 초기화
 
-        // 월요일부터 일요일까지 날짜 추가
-        for (let i = 0; i < 7; i++) {
-            const currentDate = new Date(monday);
-            currentDate.setDate(monday.getDate() + i);
+    // 월요일부터 일요일까지 날짜 추가
+    for (let i = 0; i < 7; i++) {
+        const currentDate = new Date(monday);
+        currentDate.setDate(monday.getDate() + i);
 
-            const dateSpan = document.createElement('span');
-            dateSpan.className = 'calendar-date';
-            dateSpan.textContent = currentDate.getDate();
+        const dateSpan = document.createElement('span');
+        dateSpan.className = 'calendar-date';
+        dateSpan.textContent = currentDate.getDate();
 
-            // 오늘 날짜인 경우 active 클래스 추가
-            if (currentDate.toDateString() === today.toDateString()) {
-                dateSpan.classList.add('active');
-            }
-
-            dateGrid.appendChild(dateSpan);
+        // 오늘 날짜인 경우 active 클래스 추가
+        if (currentDate.toDateString() === today.toDateString()) {
+            dateSpan.classList.add('active');
         }
+
+        dateGrid.appendChild(dateSpan);
     }
+}
 
-    // 페이지 로드 시 캘린더 업데이트
-    updateCalendar();
+// 페이지 로드 시 캘린더 업데이트
+updateCalendar();
 
-    // 매일 자정에 캘린더 업데이트 (선택사항)
-    function scheduleNextUpdate() {
-        const now = new Date();
-        const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
-        const timeUntilMidnight = tomorrow - now;
+// 매일 자정에 캘린더 업데이트 (선택사항)
+function scheduleNextUpdate() {
+    const now = new Date();
+    const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+    const timeUntilMidnight = tomorrow - now;
 
-        setTimeout(() => {
-            updateCalendar();
-            scheduleNextUpdate();
-        }, timeUntilMidnight);
-    }
+    setTimeout(() => {
+        updateCalendar();
+        scheduleNextUpdate();
+    }, timeUntilMidnight);
+}
 
-    scheduleNextUpdate();
-    function calculateTimeRemaining(startHour, endHour) {
-        const now = new Date();
-        const currentHour = now.getHours();
-        const currentMinute = now.getMinutes();
+scheduleNextUpdate();
+function calculateTimeRemaining(startHour, endHour) {
+    const now = new Date();
+    const currentHour = now.getHours();
+    const currentMinute = now.getMinutes();
 
-        const endTime = endHour * 60;
-        const currentTime = currentHour * 60 + currentMinute;
+    const endTime = endHour * 60;
+    const currentTime = currentHour * 60 + currentMinute;
 
-        let remainingMinutes = endTime - currentTime;
-        if (remainingMinutes < 0) remainingMinutes = 0;
+    let remainingMinutes = endTime - currentTime;
+    if (remainingMinutes < 0) remainingMinutes = 0;
 
-        const hours = Math.floor(remainingMinutes / 60);
-        const minutes = remainingMinutes % 60;
+    const hours = Math.floor(remainingMinutes / 60);
+    const minutes = remainingMinutes % 60;
 
-        return `${hours}h ${minutes}min`;
-    }
+    return `${hours}h ${minutes}min`;
+}
 
-    function calculateProgress(startHour, endHour) {
-        const now = new Date();
-        const currentHour = now.getHours();
-        const currentMinute = now.getMinutes();
-        const currentTime = currentHour + currentMinute / 60;
+function calculateProgress(startHour, endHour) {
+    const now = new Date();
+    const currentHour = now.getHours();
+    const currentMinute = now.getMinutes();
+    const currentTime = currentHour + currentMinute / 60;
 
-        if (currentTime < startHour) return 0;
-        if (currentTime > endHour) return 100;
+    if (currentTime < startHour) return 0;
+    if (currentTime > endHour) return 100;
 
-        const duration = endHour - startHour;
-        const elapsed = currentTime - startHour;
-        return Math.min(100, Math.max(0, (elapsed / duration) * 100));
-    }
+    const duration = endHour - startHour;
+    const elapsed = currentTime - startHour;
+    return Math.min(100, Math.max(0, (elapsed / duration) * 100));
+}
 
-    function updateCircleProgress(circle, progress) {
-        const circumference = parseFloat(circle.getAttribute('stroke-dasharray'));
-        const offset = circumference - (progress / 100) * circumference;
-        circle.setAttribute('stroke-dashoffset', offset);
-        circle.setAttribute('data-progress', progress);
+function updateCircleProgress(circle, progress) {
+    const circumference = parseFloat(circle.getAttribute('stroke-dasharray'));
+    const offset = circumference - (progress / 100) * circumference;
+    circle.setAttribute('stroke-dashoffset', offset);
+    circle.setAttribute('data-progress', progress);
 
-        const dot = circle.nextElementSibling;
-        const angle = (progress / 100) * 360 - 90;
-        const radius = parseFloat(circle.getAttribute('r'));
-        const cx = 100;
-        const cy = 100;
-        const x = cx + radius * Math.cos(angle * Math.PI / 180);
-        const y = cy + radius * Math.sin(angle * Math.PI / 180);
-        dot.setAttribute('cx', x);
-        dot.setAttribute('cy', y);
-    }
+    const dot = circle.nextElementSibling;
+    const angle = (progress / 100) * 360 - 90;
+    const radius = parseFloat(circle.getAttribute('r'));
+    const cx = 100;
+    const cy = 100;
+    const x = cx + radius * Math.cos(angle * Math.PI / 180);
+    const y = cy + radius * Math.sin(angle * Math.PI / 180);
+    dot.setAttribute('cx', x);
+    dot.setAttribute('cy', y);
+}
 
-    function updateAllProgress() {
-        const circles = document.querySelectorAll('.progress-circle');
-        const timeTexts = document.querySelectorAll('.time-text');
+function updateAllProgress() {
+    const circles = document.querySelectorAll('.progress-circle');
+    const timeTexts = document.querySelectorAll('.time-text');
 
-        timeTexts[0].textContent = calculateTimeRemaining(9, 18);
-        timeTexts[2].textContent = calculateTimeRemaining(9, 12);
+    timeTexts[0].textContent = calculateTimeRemaining(9, 18);
+    timeTexts[2].textContent = calculateTimeRemaining(9, 12);
 
-        circles.forEach((circle, index) => {
-            const startHour = parseInt(circle.getAttribute('data-start'));
-            const endHour = parseInt(circle.getAttribute('data-end'));
-            const progress = Math.round(calculateProgress(startHour, endHour));
+    circles.forEach((circle, index) => {
+        const startHour = parseInt(circle.getAttribute('data-start'));
+        const endHour = parseInt(circle.getAttribute('data-end'));
+        const progress = Math.round(calculateProgress(startHour, endHour));
 
-            updateCircleProgress(circle, progress);
+        updateCircleProgress(circle, progress);
 
-            if (index === 1) {
-                updateCircleProgress(circle, 71);
-            }
-        });
-    }
-
-    updateAllProgress();
-    setInterval(updateAllProgress, 60000);
-
-    // 모달 관련 요소들
-    const modal = document.getElementById('timeSettingsModal');
-    const settingsBtn = document.querySelector('.time-settings-btn');
-    const closeBtn = document.querySelector('.close-modal-btn');
-    const saveBtn = document.querySelector('.save-time-btn');
-    const timeInputs = {
-        workStart: document.getElementById('workStartTime'),
-        lunch: document.getElementById('lunchTime'),
-        workEnd: document.getElementById('workEndTime')
-    };
-
-    // 모달 열기
-    settingsBtn.addEventListener('click', () => {
-        modal.style.display = 'flex';
+        if (index === 1) {
+            updateCircleProgress(circle, 71);
+        }
     });
+}
+
+updateAllProgress();
+setInterval(updateAllProgress, 60000);
+
+// 모달 관련 요소들
+const modal = document.getElementById('timeSettingsModal');
+const settingsBtn = document.querySelector('.time-settings-btn');
+const closeBtn = document.querySelector('.close-modal-btn');
+const saveBtn = document.querySelector('.save-time-btn');
+const timeInputs = {
+    workStart: document.getElementById('workStartTime'),
+    lunch: document.getElementById('lunchTime'),
+    workEnd: document.getElementById('workEndTime')
+};
+
+// 모달 열기
+settingsBtn.addEventListener('click', () => {
+    modal.style.display = 'flex';
+});
+
+// 모달 닫기
+closeBtn.addEventListener('click', () => {
+    modal.style.display = 'none';
+});
+
+// 모달 외부 클릭 시 닫기
+modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+        modal.style.display = 'none';
+    }
+});
+
+// 시간 저장
+saveBtn.addEventListener('click', () => {
+    // 시간 값 가져오기
+    const workStartTime = timeInputs.workStart.value;
+    const lunchTime = timeInputs.lunch.value;
+    const workEndTime = timeInputs.workEnd.value;
+
+    // 시간 유효성 검사
+    if (!workStartTime || !lunchTime || !workEndTime) {
+        alert('모든 시간을 입력해주세요.');
+        return;
+    }
+
+    // 원형 프로그레스바의 시작/종료 시간 업데이트
+    const circles = document.querySelectorAll('.progress-circle');
+    circles[0].setAttribute('data-start', workStartTime.split(':')[0]);
+    circles[0].setAttribute('data-end', workEndTime.split(':')[0]);
+    circles[1].setAttribute('data-start', workStartTime.split(':')[0]);
+    circles[1].setAttribute('data-end', workEndTime.split(':')[0]);
+    circles[2].setAttribute('data-start', workStartTime.split(':')[0]);
+    circles[2].setAttribute('data-end', lunchTime.split(':')[0]);
+
+    // 진행률 다시 계산
+    updateAllProgress();
 
     // 모달 닫기
-    closeBtn.addEventListener('click', () => {
-        modal.style.display = 'none';
-    });
-
-    // 모달 외부 클릭 시 닫기
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
-            modal.style.display = 'none';
-        }
-    });
-
-    // 시간 저장
-    saveBtn.addEventListener('click', () => {
-        // 시간 값 가져오기
-        const workStartTime = timeInputs.workStart.value;
-        const lunchTime = timeInputs.lunch.value;
-        const workEndTime = timeInputs.workEnd.value;
-
-        // 시간 유효성 검사
-        if (!workStartTime || !lunchTime || !workEndTime) {
-            alert('모든 시간을 입력해주세요.');
-            return;
-        }
-
-        // 원형 프로그레스바의 시작/종료 시간 업데이트
-        const circles = document.querySelectorAll('.progress-circle');
-        circles[0].setAttribute('data-start', workStartTime.split(':')[0]);
-        circles[0].setAttribute('data-end', workEndTime.split(':')[0]);
-        circles[1].setAttribute('data-start', workStartTime.split(':')[0]);
-        circles[1].setAttribute('data-end', workEndTime.split(':')[0]);
-        circles[2].setAttribute('data-start', workStartTime.split(':')[0]);
-        circles[2].setAttribute('data-end', lunchTime.split(':')[0]);
-
-        // 진행률 다시 계산
-        updateAllProgress();
-
-        // 모달 닫기
-        modal.style.display = 'none';
-    });
-</script>
+    modal.style.display = 'none';
+});</script>
 </html>
