@@ -14,4 +14,10 @@ public class UserService {
     public void register(User user) {
         userMapper.insertUser(user);
     }
+
+    public User getUserInfo(String member_id) {
+        return userMapper.getUserInfo(member_id);
+    }
+
+
 }

@@ -3,6 +3,7 @@ package com.iz.repository;
 import com.iz.entity.User;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 @Mapper
@@ -17,4 +18,7 @@ public interface UserMapper {
 
     @Select("SELECT NOW()")
     String getCurrentTime();
+
+    @Select("select * from iz_member where member_id=#{member_id}")
+    User getUserInfo(@Param("member_id") String member_id);
 }
