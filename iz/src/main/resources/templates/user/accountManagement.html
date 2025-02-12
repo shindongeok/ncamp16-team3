@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html class="h-full bg-white">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <style type="text/tailwindcss">
+        @theme {
+            --color-main-sky-highlight: #00a3ed;
+            --color-main-sky-basic: #9bdcfd;
+            --color-main-red-highlight: #ff5353;
+            --color-main-red-basic: #ff9898;
+            --color-main-yellow-highlight: #fbc159ff;
+            --color-main-yellow-basic: #fdd391;
+        }
+
+        @media screen and (min-width: 769px) {
+            .mobile-container {
+                width: 600px;
+                margin: 0 auto;
+                background: white;
+                box-shadow: 0 0 10px rgba(0,0,0,0.1);
+                min-height: 100vh;
+            }
+        }
+
+        @media screen and (max-width: 768px) {
+            .mobile-container {
+                width: 100%;
+                background: white;
+                min-height: 100vh;
+            }
+        }
+
+    </style>
+    <script>
+        function openModal() {
+            document.getElementById('deleteModal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('deleteModal').classList.add('hidden');
+        }
+
+        function deleteAccount() {
+            fetch('/delete', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({}) // 필요한 데이터 담아서 보내면 됨
+            }).then(response => {
+                if (response.ok) {
+                    alert("회원 탈퇴가 완료되었습니다.");
+                    window.location.href = '/';
+                } else {
+                    alert("회원 탈퇴 실패");
+                }
+            });
+        }
+    </script>
+</head>
+<body class="h-full font-roboto mobile-container">
+<div class="flex items-center justify-center">
+    <div class="flex flex-col items-center w-full max-w-sm px-6 py-12">
+        <div class="relative w-full flex flex-col items-center mb-10">
+            <img src="../../static/images/izikgram.png" alt="프로필" class="mx-auto relative w-50"/>
+        </div>
+        <div class="border-2 border-gray-300 rounded-lg">
+            <div class="mt-6 text-center w-full">
+                <div class="mt-6 text-center">
+                    <div class="font-bold text-xl">계정관리</div>
+                </div>
+            </div>
+            <div class="flex m-10 gap-10">
+                <!-- 비밀번호 변경 -->
+                <div class="mt-4 w-40">
+                    <button onclick="location.href='/checkPwd'"
+                            class="cursor-pointer w-full bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                        비밀번호 변경
+                    </button>
+                </div>
+
+                <!-- 회원 탈퇴 (모달 띄우기) -->
+                <div class="mt-4 w-40">
+                    <button onclick="openModal()"
+                            class="cursor-pointer w-full bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400">
+                        회원 탈퇴
+                    </button>
+                </div>
+            </div>
+
+            <!-- 회원 탈퇴 모달 -->
+            <div id="deleteModal" class="relative z-10 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+                <div class="fixed inset-0 bg-gray-500/75 transition-opacity" aria-hidden="true"></div>
+
+                <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+                    <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                        <div class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+                            <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                                <div class="sm:flex sm:items-start">
+                                    <div class="mx-auto flex size-12 shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:size-10">
+                                        <svg class="size-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+                                        </svg>
+                                    </div>
+                                    <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                                        <h3 class="text-base font-semibold text-gray-900" id="modal-title">회원 탈퇴</h3>
+                                        <div class="mt-2">
+                                            <p class="text-sm text-gray-500">정말로 회원 탈퇴를 진행하시겠습니까?</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                                <button onclick="deleteAccount()" type="button"
+                                        class="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-red-500 sm:ml-3 sm:w-auto">
+                                    탈퇴하기
+                                </button>
+                                <button onclick="closeModal()" type="button"
+                                        class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 shadow-xs ring-gray-300 ring-inset hover:bg-gray-50 sm:mt-0 sm:w-auto">
+                                    취소
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>
