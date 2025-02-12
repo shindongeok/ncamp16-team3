@@ -38,7 +38,7 @@
 <div class="flex items-center justify-center">
     <div class="flex flex-col items-center w-full max-w-sm px-6 py-12">
         <div class="relative w-full flex flex-col items-center mb-10">
-            <img src="../static/images/izikgram.png" alt="프로필" class="mx-auto relative w-50"/>
+            <img th:src="@{/images/izikgram.png}" alt="프로필" class="mx-auto relative w-50"/>
         </div>
         <div class="border-2 border-gray-300 rounded-lg">
             <div class="mt-6 text-center w-full">
@@ -71,7 +71,7 @@
                     </a>
                 </div>
                 <div class="mt-4 w-20">
-                    <a href="/accountManagement" th:onclick="|location.href='@{/accountManagement}'|"
+                    <a href="/user/accountManagement" th:href="@{/user/accountManagement}"
                        class="cursor-pointer w-full bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400">
                         취소
                     </a>
@@ -146,7 +146,7 @@
     }
 
     function goToMyPage() {
-        window.location.href = '/mypage';
+        window.location.href = '/user/mypage';
     }
 </script>
 </html>

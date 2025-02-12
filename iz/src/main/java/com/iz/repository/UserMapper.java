@@ -16,6 +16,9 @@ public interface UserMapper {
             "#{payday}, #{start_time}, #{end_time}, #{lunch_time}, #{loc_mod}, #{ind_cd}, #{edu_lv})")
     void insertUser(User user);
 
+    @Select("select * from iz_member where member_id=#{member_id} and password=#{password}")
+    void login(@Param("member_id") String member_id, @Param("password") String password);
+
     @Select("SELECT NOW()")
     String getCurrentTime();
 
