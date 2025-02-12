@@ -5,6 +5,7 @@ import com.izikgram.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,6 +28,43 @@ public class UserController {
         timeSubstring(user);
 
         userService.register(user);
+        return "redirect:/";
+    }
+
+    @GetMapping("/findId")
+    public String findId() {
+        return "/user/findId";
+    }
+
+    @PostMapping("/findId")
+    public String findId(String name, Model model) {
+        String id = userService.findId(name);
+        model.addAttribute("member_id", id);
+        return "/user/findIdResult";
+    }
+
+    @GetMapping("/findPw")
+    public String findPw() {
+        return "/user/findPw";
+    }
+
+    @PostMapping("/findPw")
+    public String findPw(String member_id, Model model) {
+        boolean object = userService.findPassword(member_id);
+//        log.info("member_id: " + member_id + ", object: " + object);
+        if (object) {
+            model.addAttribute("member_id", member_id);
+//            log.info("member_id: " + member_id);
+            return "/user/findPwResult";
+        } else {
+            return "redirect:/user/findPw";
+        }
+    }
+
+    @PostMapping("/resetPw")
+    public String resetPw(String member_id, String password) {
+//        log.info("member_id: " + member_id + ", password: " + password);
+        userService.updatePassword(member_id, password);
         return "redirect:/";
     }
 

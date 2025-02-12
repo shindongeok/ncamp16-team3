@@ -18,4 +18,21 @@ public class UserService {
     public User getUserById(String member_id) {
         return userMapper.findUserById(member_id);
     }
+
+    public String findId(String name) {
+        return userMapper.findIdByName(name);
+    }
+
+    public boolean findPassword(String member_id) {
+        User userById = userMapper.findUserById(member_id);
+        if (userById == null) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public void updatePassword(String member_id, String password) {
+        userMapper.updateUserPw(password, member_id);
+    }
 }
