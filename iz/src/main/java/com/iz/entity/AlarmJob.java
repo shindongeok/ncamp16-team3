@@ -3,13 +3,13 @@ package com.iz.entity;
 import lombok.Data;
 
 @Data
-public class AlarmComment {
+public class AlarmJob {
 
     private int alarm_id;
     private String member_id;
-    private int board_type;
-    private int board_id;
-    private String title;
+    private String job_rec_id;
+    private String company_name;
+    private String expiration_timestamp;
     private String alarm_date;
 
 }
