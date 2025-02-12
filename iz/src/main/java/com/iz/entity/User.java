@@ -14,7 +14,7 @@ public class User {
     private String email;
     private int payday;
     private String gender;
-    private String create_time;
+    private String start_time;
     private String lunch_time;
     private String end_time;
     private String intro;
