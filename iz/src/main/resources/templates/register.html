@@ -8,14 +8,14 @@
 
     <!-- calender -->
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
-    <script src="../static/js/locale.js"></script>
-    <script src="../static/js/bootstrap-material-datetimepicker.js"></script>
-    <link rel="stylesheet" href="../static/css/bootstrap-material-datetimepicker.css">
+    <script th:src="@{/js/locale.js}"></script>
+    <script th:src="@{/js/bootstrap-material-datetimepicker.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/bootstrap-material-datetimepicker.css}">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
     <!-- timepicki -->
-    <link rel="stylesheet" href="../static/css/timepicki.css">
-    <script src="../static/js/timepicki.js"></script>
+    <link rel="stylesheet" th:href="@{/css/timepicki.css}">
+    <script th:src="@{/js/timepicki.js}"></script>
     <script>
         $(document).ready(function(){
             // $(".time_element").timepicki();
@@ -141,10 +141,10 @@
 
             <div>
                 <div class="flex items-center justify-between">
-                    <label class="block text-lg/6 text-gray-900">생년월일</label>
+                    <label for="birth_date" class="block text-lg/6 text-gray-900">생년월일</label>
                 </div>
                 <div class="mt-2">
-                    <input type="date" name="birth" id="birth" class="block w-full rounded-md bg-white px-3 py-1.5 text-lg text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+                    <input type="date" name="birth_date" id="birth_date" class="block w-full rounded-md bg-white px-3 py-1.5 text-lg text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
                 </div>
             </div>
 
@@ -170,12 +170,12 @@
                 <div class="flex">
                     <label for="payday" class="w-20 max-w-12 text-bold-text mr-4">월급날</label>
                     <select id="payday" class="w-20 max-h-5 outline rounded-md text-bold-text text-right">
-                        <option th:each="i : ${#numbers.sequence(1, 31)}" th:value="${i}" th:text="${i + '일'}"></option>
+                        <option th:each="i : ${#numbers.sequence(1, 31)}" th:value="${i}" th:text="${i + '일'}" th:default="1"></option>
                     </select>
                 </div>
                 <div class="flex">
                     <label for="start_time" class="w-15 text-bold-text ml-9">출근시간</label>
-                    <input type="text" name="start_time" id="start_time" placeholder="09:00 AM" class="time_element w-20 h-5 outline rounded-md text-bold-text text-right">
+                    <input type="text" name="start_time" id="start_time" placeholder="09:00 AM" th:default="${'09:00:00'}" class="time_element w-20 h-5 outline rounded-md text-bold-text text-right">
                 </div>
             </div>
 
@@ -183,13 +183,13 @@
                 <div class="flex">
                     <div class="flex">
                         <label for="end_time" class="w-15 text-bold-text mr-1">퇴근시간</label>
-                        <input type="text" name="end_time" id="end_time" placeholder="06:00 PM" class="time_element w-20 h-5 outline rounded-md text-bold-text text-right">
+                        <input type="text" name="end_time" id="end_time" placeholder="06:00 PM" th:default="${'18:00:00'}" class="time_element w-20 h-5 outline rounded-md text-bold-text text-right">
                     </div>
                 </div>
                 <div class="flex absolute left-45">
                     <div class="flex">
                         <label for="lunch_time" class="w-15 text-bold-text">점심시간</label>
-                        <input type="text" name="lunch_time" id="lunch_time" placeholder="12:00 PM" class="time_element w-20 h-5 outline rounded-md text-bold-text text-right">
+                        <input type="text" name="lunch_time" id="lunch_time" placeholder="12:00 PM" th:default="${'12:00:00'}" class="time_element w-20 h-5 outline rounded-md text-bold-text text-right">
                     </div>
                 </div>
             </div>
@@ -230,7 +230,7 @@
 
     <!-- calender -->
     <script>
-        $('#birth').bootstrapMaterialDatePicker();
+        $('#birth_date').bootstrapMaterialDatePicker();
     </script>
 
     <!-- failModal -->
