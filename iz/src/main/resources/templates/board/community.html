@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-<!--    <link rel="stylesheet" th:href="@{/css/postDetail.css}">-->
+    <!--    <link rel="stylesheet" th:href="@{/css/postDetail.css}">-->
     <style type="text/tailwindcss">
         .font-roboto {
             font-family: "Roboto", serif;
@@ -47,8 +47,8 @@
 <div class=" mobile-container p-6">
     <div class="border-b  pb-2">
         <div class="flex items-center flex items-center justify-between gap-6">
-            <!-- 게시판 이름 부분-->
-            <h2 class="text-4xl font-black">하소연게시판</h2>
+            <!-- 게시판 종류-->
+            <h2 class="text-4xl font-black" th:text="${boardName}"></h2>
             <!-- //-->
             <select id="#" class="border border-gray-500 rounded-xl px-1 py-1 text-gray-500">
                 <option selected>최신순</option>
@@ -69,15 +69,15 @@
     <table class="w-full text-left">
         <tbody>
         <!-- 리스트부분분 -->
-        <tr class="border-b-3 border-gray-400 border-gray-200">
+        <tr th:each="board : ${listBoard}" class="border-b-3 border-gray-400 border-gray-200">
             <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                 <div class="mb-2 text-xl font-black">
-                    <a href="#">제목입니다.</a>
+                    <a href="#" th:text="${board.title}"></a>
                 </div>
-                <div class="mb-2">
-                    내용입니다.
+                <div class="mb-2" th:text="${board.content}">
+                    <!-- 게시판 내용 -->
                 </div>
-                <div class="text-gray-500 text-xs">
+                <div class="text-gray-500 text-xs" th:text="${board.reg_date}">
                     13분전....
                 </div>
             </th>
@@ -105,237 +105,6 @@
         <!-- //리스트부분분 -->
 
 
-        <tr class="border-b-3 border-gray-400 border-gray-200">
-            <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                <div class="mb-2 text-xl font-black">
-                    <a href="#">제목입니다.</a>
-                </div>
-                <div class="mb-2">
-                    내용입니다.
-                </div>
-                <div class="text-gray-500 text-xs">
-                    13분전....
-                </div>
-            </th>
-            <td class="">
-                <div class="flex justify-end mb-2">
-                    <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                        <img src="https://img.icons8.com/?size=100&id=82788&format=png&color=000000" alt="like_button" class="w-5 h-5">
-                    </a>
-                    <span class="w-6 h-6 ml-2 text-main-red-highlight text-right">22</span>
-                </div>
-                <div class="flex justify-end mb-2">
-                    <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                        <img src="https://img.icons8.com/?size=100&id=82788&format=png&color=000000" alt="like_button" class="w-5 h-5 rotate-180">
-                    </a>
-                    <span class="w-6 h-6 ml-2 text-main-sky-highlight text-right">100</span>
-                </div>
-                <div class="flex justify-end">
-                    <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                        <img src="https://img.icons8.com/?size=100&id=6520&format=png&color=000000" alt="like_button" class="w-5 h-5">
-                    </a>
-                    <span class="w-6 h-6 ml-2 text-right" >0</span>
-                </div>
-            </td>
-        </tr>
-        <tr class="border-b-3 border-gray-400 border-gray-200">
-            <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                <div class="mb-2 text-xl font-black">
-                    <a href="#">제목입니다.</a>
-                </div>
-                <div class="mb-2">
-                    내용입니다.
-                </div>
-                <div class="text-gray-500 text-xs">
-                    13분전....
-                </div>
-            </th>
-            <td class="">
-                <div class="flex justify-end mb-2">
-                    <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                        <img src="https://img.icons8.com/?size=100&id=82788&format=png&color=000000" alt="like_button" class="w-5 h-5">
-                    </a>
-                    <span class="w-6 h-6 ml-2 text-main-red-highlight text-right">22</span>
-                </div>
-                <div class="flex justify-end mb-2">
-                    <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                        <img src="https://img.icons8.com/?size=100&id=82788&format=png&color=000000" alt="like_button" class="w-5 h-5 rotate-180">
-                    </a>
-                    <span class="w-6 h-6 ml-2 text-main-sky-highlight text-right">100</span>
-                </div>
-                <div class="flex justify-end">
-                    <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                        <img src="https://img.icons8.com/?size=100&id=6520&format=png&color=000000" alt="like_button" class="w-5 h-5">
-                    </a>
-                    <span class="w-6 h-6 ml-2 text-right" >0</span>
-                </div>
-            </td>
-        </tr>
-        <tr class="border-b-3 border-gray-400 border-gray-200">
-            <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                <div class="mb-2 text-xl font-black">
-                    <a href="#">제목입니다.</a>
-                </div>
-                <div class="mb-2">
-                    내용입니다.
-                </div>
-                <div class="text-gray-500 text-xs">
-                    13분전....
-                </div>
-            </th>
-            <td class="">
-                <div class="flex justify-end mb-2">
-                    <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                        <img src="https://img.icons8.com/?size=100&id=82788&format=png&color=000000" alt="like_button" class="w-5 h-5">
-                    </a>
-                    <span class="w-6 h-6 ml-2 text-main-red-highlight text-right">22</span>
-                </div>
-                <div class="flex justify-end mb-2">
-                    <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                        <img src="https://img.icons8.com/?size=100&id=82788&format=png&color=000000" alt="like_button" class="w-5 h-5 rotate-180">
-                    </a>
-                    <span class="w-6 h-6 ml-2 text-main-sky-highlight text-right">100</span>
-                </div>
-                <div class="flex justify-end">
-                    <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                        <img src="https://img.icons8.com/?size=100&id=6520&format=png&color=000000" alt="like_button" class="w-5 h-5">
-                    </a>
-                    <span class="w-6 h-6 ml-2 text-right" >0</span>
-                </div>
-            </td>
-        </tr>
-        <tr class="border-b-3 border-gray-400 border-gray-200">
-            <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                <div class="mb-2 text-xl font-black">
-                    <a href="#">제목입니다.</a>
-                </div>
-                <div class="mb-2">
-                    내용입니다.
-                </div>
-                <div class="text-gray-500 text-xs">
-                    13분전....
-                </div>
-            </th>
-            <td class="">
-                <div class="flex justify-end mb-2">
-                    <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                        <img src="https://img.icons8.com/?size=100&id=82788&format=png&color=000000" alt="like_button" class="w-5 h-5">
-                    </a>
-                    <span class="w-6 h-6 ml-2 text-main-red-highlight text-right">22</span>
-                </div>
-                <div class="flex justify-end mb-2">
-                    <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                        <img src="https://img.icons8.com/?size=100&id=82788&format=png&color=000000" alt="like_button" class="w-5 h-5 rotate-180">
-                    </a>
-                    <span class="w-6 h-6 ml-2 text-main-sky-highlight text-right">100</span>
-                </div>
-                <div class="flex justify-end">
-                    <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                        <img src="https://img.icons8.com/?size=100&id=6520&format=png&color=000000" alt="like_button" class="w-5 h-5">
-                    </a>
-                    <span class="w-6 h-6 ml-2 text-right" >0</span>
-                </div>
-            </td>
-        </tr>
-        <tr class="border-b-3 border-gray-400 border-gray-200">
-            <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                <div class="mb-2 text-xl font-black">
-                    <a href="#">제목입니다.</a>
-                </div>
-                <div class="mb-2">
-                    내용입니다.
-                </div>
-                <div class="text-gray-500 text-xs">
-                    13분전....
-                </div>
-            </th>
-            <td class="">
-                <div class="flex justify-end mb-2">
-                    <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                        <img src="https://img.icons8.com/?size=100&id=82788&format=png&color=000000" alt="like_button" class="w-5 h-5">
-                    </a>
-                    <span class="w-6 h-6 ml-2 text-main-red-highlight text-right">22</span>
-                </div>
-                <div class="flex justify-end mb-2">
-                    <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                        <img src="https://img.icons8.com/?size=100&id=82788&format=png&color=000000" alt="like_button" class="w-5 h-5 rotate-180">
-                    </a>
-                    <span class="w-6 h-6 ml-2 text-main-sky-highlight text-right">100</span>
-                </div>
-                <div class="flex justify-end">
-                    <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                        <img src="https://img.icons8.com/?size=100&id=6520&format=png&color=000000" alt="like_button" class="w-5 h-5">
-                    </a>
-                    <span class="w-6 h-6 ml-2 text-right" >0</span>
-                </div>
-            </td>
-        </tr>
-        <tr class="border-b-3 border-gray-400 border-gray-200">
-            <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                <div class="mb-2 text-xl font-black">
-                    <a href="#">제목입니다.</a>
-                </div>
-                <div class="mb-2">
-                    내용입니다.
-                </div>
-                <div class="text-gray-500 text-xs">
-                    13분전....
-                </div>
-            </th>
-            <td class="">
-                <div class="flex justify-end mb-2">
-                    <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                        <img src="https://img.icons8.com/?size=100&id=82788&format=png&color=000000" alt="like_button" class="w-5 h-5">
-                    </a>
-                    <span class="w-6 h-6 ml-2 text-main-red-highlight text-right">22</span>
-                </div>
-                <div class="flex justify-end mb-2">
-                    <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                        <img src="https://img.icons8.com/?size=100&id=82788&format=png&color=000000" alt="like_button" class="w-5 h-5 rotate-180">
-                    </a>
-                    <span class="w-6 h-6 ml-2 text-main-sky-highlight text-right">100</span>
-                </div>
-                <div class="flex justify-end">
-                    <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                        <img src="https://img.icons8.com/?size=100&id=6520&format=png&color=000000" alt="like_button" class="w-5 h-5">
-                    </a>
-                    <span class="w-6 h-6 ml-2 text-right" >0</span>
-                </div>
-            </td>
-        </tr>
-        <tr class="border-b-3 border-gray-400 border-gray-200">
-            <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                <div class="mb-2 text-xl font-black">
-                    <a href="#">제목입니다.</a>
-                </div>
-                <div class="mb-2">
-                    내용입니다.
-                </div>
-                <div class="text-gray-500 text-xs">
-                    13분전....
-                </div>
-            </th>
-            <td class="">
-                <div class="flex justify-end mb-2">
-                    <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                        <img src="https://img.icons8.com/?size=100&id=82788&format=png&color=000000" alt="like_button" class="w-5 h-5">
-                    </a>
-                    <span class="w-6 h-6 ml-2 text-main-red-highlight text-right">22</span>
-                </div>
-                <div class="flex justify-end mb-2">
-                    <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                        <img src="https://img.icons8.com/?size=100&id=82788&format=png&color=000000" alt="like_button" class="w-5 h-5 rotate-180">
-                    </a>
-                    <span class="w-6 h-6 ml-2 text-main-sky-highlight text-right">100</span>
-                </div>
-                <div class="flex justify-end">
-                    <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                        <img src="https://img.icons8.com/?size=100&id=6520&format=png&color=000000" alt="like_button" class="w-5 h-5">
-                    </a>
-                    <span class="w-6 h-6 ml-2 text-right" >0</span>
-                </div>
-            </td>
-        </tr>
         </tbody>
     </table>
 </div>
