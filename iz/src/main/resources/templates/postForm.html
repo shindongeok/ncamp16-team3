@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html class="h-full bg-white">
+<head>
+    <meta charset="UTF-8">
+    <title>수정/삭제 게시글</title>
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <style type="text/tailwindcss">
+        .font-roboto {
+            font-family: "Roboto", serif;
+        }
+
+        @theme {
+            --color-main-sky-highlight: #00a3ed;
+            --color-main-sky-basic: #9bdcfd;
+            --color-main-red-highlight: #ff5353;
+            --color-main-red-basic: #ff9898;
+            --color-main-yellow-highlight: #fbc159ff;
+            --color-main-yellow-basic: #fdd391;
+        }
+        @media screen and (min-width: 769px) {
+            .mobile-container {
+                width: 600px;
+                margin: 0 auto;
+                background: white;
+                box-shadow: 0 0 10px rgba(0,0,0,0.1);
+                min-height: 100vh;
+            }
+        }
+        @media screen and (max-width: 768px) {
+            .mobile-container {
+                width: 100%;
+                background: white;
+                min-height: 100vh;
+            }
+        }
+    </style>
+</head>
+<body class="font-roboto flex justify-center">
+<div class="mobile-container p-6">
+    <form>
+        <div class="border-b pb-2">
+            <h2 class="text-4xl font-black">게시글 작성 / 수정</h2>
+        </div>
+        <input type="text" placeholder="제목 입력" class="border border-gray-300 rounded-md p-2 w-full my-5">
+        <div class="h-100">
+            <textarea class="w-full h-full p-2 mt-2 border border-gray-300 rounded-xl text-gray-700 focus:outline-none resize-none"></textarea>
+        </div>
+        <div class="flex justify-center text-right mt-10 my-5 gap-6">
+            <button type="button" onclick="openModal()" class="px-20 py-4 bg-main-sky-highlight text-black rounded hover:bg-main-sky-basic rounded-xl cursor-pointer">
+                등록
+            </button>
+            <button type="button" onclick="openModal()" class="px-20 py-4 bg-gray-300 text-black rounded hover:bg-main-sky-basic rounded-xl cursor-pointer">
+                삭제
+            </button>
+        </div>
+    </form>
+</body>
+</html>
