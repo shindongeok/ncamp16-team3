@@ -46,37 +46,46 @@
                     <div class="font-bold text-xl">비밀번호 변경</div>
                 </div>
             </div>
-            <div class="flex m-10">
-                <div>
-                    <label for="password" class="block text-lg/6 text-gray-900">새 비밀번호 입력</label>
-                    <div class="mt-2">
-                        <input type="password" id="password" th:field="${user.password}" required class="block w-80 rounded-md bg-white px-3 py-1.5 text-lg text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+
+            <form action="/user/updatePw" method="POST" id="passwordForm">
+                <div class="flex m-10">
+                    <div>
+                        <label for="password" class="block text-lg/6 text-gray-900">새 비밀번호 입력</label>
+                        <div class="mt-2">
+                            <input type="password"
+                                   id="password"
+                                   name="password"
+                                   required
+                                   class="block w-80 rounded-md bg-white px-3 py-1.5 text-lg text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="flex m-10">
-                <div>
-                    <label for="passwordCheck" class="block text-lg/6 text-gray-900">새 비밀번호 확인</label>
-                    <div class="mt-2">
-                        <input type="password" id="passwordCheck" required class="block w-80 rounded-md bg-white px-3 py-1.5 text-lg text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
-                        <p id="passwordMismatch" class="text-red-500 text-sm mt-1 hidden">* 비밀번호가 일치하지 않아요.</p>
+                <div class="flex m-10">
+                    <div>
+                        <label for="passwordCheck" class="block text-lg/6 text-gray-900">새 비밀번호 확인</label>
+                        <div class="mt-2">
+                            <input type="password"
+                                   id="passwordCheck"
+                                   name="passwordCheck"
+                                   required
+                                   class="block w-80 rounded-md bg-white px-3 py-1.5 text-lg text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+                            <p id="passwordMismatch" class="text-red-500 text-sm mt-1 hidden">* 비밀번호가 일치하지 않아요.</p>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="flex justify-center items-center m-10">
-                <div class="mt-4 w-30">
-                    <a onclick="submitPasswordChange()"
-                       class="cursor-pointer w-full bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                <div class="flex justify-center items-center m-10 gap-4">
+                    <button type="submit" onclick="submitPasswordChange()"
+                            class="mt-4 w-30 cursor-pointer bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400">
                         수정 완료
-                    </a>
-                </div>
-                <div class="mt-4 w-20">
-                    <a href="/user/accountManagement" th:href="@{/user/accountManagement}"
-                       class="cursor-pointer w-full bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400">
+                    </button>
+                    <a href="/user/accountManagement"
+                       th:href="@{/user/accountManagement}"
+                       class="mt-4 w-20 cursor-pointer bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 text-center">
                         취소
                     </a>
                 </div>
-            </div>
+            </form>
+
 
             <!-- 비밀번호 변경 완료 모달 -->
             <div id="successModal" class="relative z-10 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
@@ -135,18 +144,36 @@
         return true;
     }
 
-    // 비밀번호 변경 제출 시
-    function submitPasswordChange() {
-        if (validatePassword()) {
-            // 여기에 비밀번호 변경 API 호출 로직 추가
+    async function submitPasswordChange(event) {
+        event.preventDefault(); // 기본 form 제출 동작 방지
 
-            // 변경 성공 시, 성공 모달 띄움
-            successModal.classList.remove('hidden');
+        if (!validatePassword()) return; // 비밀번호 일치 확인
+
+        try {
+            const response = await fetch('/user/updatePw', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: new URLSearchParams({ password: password.value })
+            });
+
+            if (response.ok) {
+                successModal.classList.remove('hidden'); // 성공 모달 표시
+            } else {
+                alert('비밀번호 변경에 실패했습니다. 다시 시도해주세요.'); // 실패 시 경고
+            }
+        } catch (error) {
+            console.error('비밀번호 변경 오류:', error);
+            alert('서버 오류가 발생했습니다. 나중에 다시 시도해주세요.');
         }
     }
 
     function goToMyPage() {
-        window.location.href = '/user/mypage';
+        window.location.href = '/';
     }
+
+    document.getElementById('passwordForm').addEventListener('submit', submitPasswordChange);
+
 </script>
 </html>

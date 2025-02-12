@@ -76,25 +76,25 @@
 
         <div class="mt-6 text-center mt-15 w-100">
             <div class="mt-6 text-center mt-15">
-                <div class="font-bold text-xl" th:text="${user.nickname}">2직이</div>
-                <div class="mt-2" th:text="${user.intro}">참을 인 세번이면 이직을 한다...</div>
+<!--                <div class="font-bold text-xl" th:text="${session.user.nickname}">2직이</div>-->
+<!--                <div class="mt-2" th:text="${user.intro}">참을 인 세번이면 이직을 한다...</div>-->
             </div>
             <div class="mt-6 w-full p-4 border border-gray-300 rounded-lg p-4">
                 <div class="space-y-5">
                     <div class="flex items-center gap-3">
                         <img th:src="@{/images/people.png}" alt="프로필">
-                        <div><span th:text="${user.name}">김비트</span></div>
+                        <div><span th:text="${session.user.name}">김비트</span></div>
                     </div>
                     <div>
                         <div class="flex items-center gap-3">
                             <img th:src="@{/images/email.png}" class="w-8 h-8" alt="프로필">
-                            <div><span th:text="${user.email}">ijick2@naver.com</span></div>
+                            <div><span th:text="${session.user.email}">ijick2@naver.com</span></div>
                         </div>
                     </div>
                     <div>
                         <div class="flex items-center gap-3">
                             <img th:src="@{/images/phone.png}">
-                            <div><span th:text="${user.phone_num}">010-1234-5678</span></div>
+                            <div><span th:text="${session.user.phone_num}">010-1234-5678</span></div>
                         </div>
                     </div>
                 </div>

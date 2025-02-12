@@ -30,6 +30,7 @@ public class LoginController {
 //        log.info("password: " + password);
         User user = loginService.login(member_id, password);
         session.setAttribute("user", user);
+        log.info("로그인객체: {}", user);
         return "redirect:/main";
     }
 

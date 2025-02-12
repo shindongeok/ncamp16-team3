@@ -1,7 +1,7 @@
-package com.iz.service;
+package com.izikgram.user.service;
 
-import com.iz.entity.User;
-import com.iz.repository.UserMapper;
+import com.izikgram.user.entity.User;
+import com.izikgram.user.repository.UserMapper;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,8 +12,6 @@ public class UserService {
     @Autowired
     private UserMapper userMapper;
 
-    @Autowired
-    private HttpSession session;
 
     public void register(User user) {
         userMapper.insertUser(user);
@@ -31,6 +29,13 @@ public class UserService {
 
         //탈퇴 후 user 객체를 제거해서 로그아웃됨
 //        session.removeAttribute("user");
+    }
 
+    public boolean updateUserPw(String memberId, String rawPassword) {
+        // 비밀번호 업데이트
+        int updatedRows = userMapper.updateUserPw(rawPassword, memberId);
+
+        // 업데이트 성공 여부 반환
+        return updatedRows > 0;
     }
 }

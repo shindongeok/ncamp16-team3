@@ -1,10 +1,7 @@
 package com.izikgram.user.repository;
 
 import com.izikgram.user.entity.User;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 @Mapper
 public interface UserMapper {
@@ -26,5 +23,12 @@ public interface UserMapper {
     String getCurrentTime();
 
     @Select("select * from iz_member where member_id=#{member_id}")
-    User getUserInfo(@Param("member_id") String member_id);
+    User getUserInfo(String member_id);
+
+    @Delete("delete from iz_member where member_id=#{member_id}")
+    void deleteUser(String member_id);
+
+    @Update("UPDATE iz_member SET password = #{password} WHERE member_id = #{member_id}")
+    int updateUserPw(@Param("password") String password,@Param("member_id") String member_id);
+
 }
