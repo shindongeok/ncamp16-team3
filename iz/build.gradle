@@ -38,6 +38,11 @@ dependencies {
 	runtimeOnly 'com.mysql:mysql-connector-j'
 
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+	// MyBatis & Database
+	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'
+	implementation 'com.zaxxer:HikariCP:5.1.0'
+	implementation 'mysql:mysql-connector-java:8.0.33'
 }
 
 tasks.named('test') {
