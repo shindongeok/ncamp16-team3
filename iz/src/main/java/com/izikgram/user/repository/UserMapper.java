@@ -19,6 +19,9 @@ public interface UserMapper {
     @Select("select * from iz_member where member_id=#{member_id}")
     User findUserById(@Param("member_id") String member_id);
 
+    @Select("select member_id from iz_member where name=#{name}")
+    String findIdByName(String name);
+
     @Select("SELECT NOW()")
     String getCurrentTime();
 

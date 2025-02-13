@@ -38,4 +38,21 @@ public class UserService {
         // 업데이트 성공 여부 반환
         return updatedRows > 0;
     }
+
+    public String findId(String name) {
+        return userMapper.findIdByName(name);
+    }
+
+    public boolean findPassword(String member_id) {
+        User userById = userMapper.findUserById(member_id);
+        if (userById == null) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public void updatePassword(String member_id, String password) {
+        userMapper.updateUserPw(password, member_id);
+    }
 }
