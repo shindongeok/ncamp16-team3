@@ -150,7 +150,7 @@ public class UserController {
         updatefield.setEdu_lv(user.getEdu_lv());
         updatefield.setPayday(user.getPayday());
 
-        userService.updateUser(updatefield);  // member_id가 포함된 객체 전달
+        userService.updateUser(updatefield);
         log.info("변경된 User 객체 = {}", updatefield);
         session.setAttribute("user", updatefield);
 
