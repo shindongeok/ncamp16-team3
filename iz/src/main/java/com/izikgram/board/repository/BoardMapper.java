@@ -1,6 +1,7 @@
 package com.izikgram.board.repository;
 
 import com.izikgram.board.entity.Board;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -14,7 +15,7 @@ public interface BoardMapper {
     @Select("select board_name " +
             "from iz_board_type " +
             "where board_type = #{board_type}")
-    String getBoardName(@Param("board_type") int boardType);
+    String getBoardName(@Param("board_type") int board_type);
 
     //게시판 전체 조회
     @Select("SELECT " +
@@ -53,8 +54,20 @@ public interface BoardMapper {
             "FROM iz_board_type iz " +
             "LEFT JOIN iz_board01 b1 ON iz.board_type = b1.board_type " +
             "LEFT JOIN iz_board02 b2 ON iz.board_type = b2.board_type " +
-            "WHERE iz.board_type = #{board_type}")
-    List<Board> selectBoardList(@Param("board_type") int boardType);
+            "WHERE iz.board_type = #{board_type} " +
+            "ORDER BY board_id DESC")
+    List<Board> selectBoardList(@Param("board_type") int board_type);
 
+    //글작성 하기
+    //insertPost 빨간색인데 무시해도 되는거 같아요..
+    @Insert({
+            "CALL insertPost(#{writer_id}, #{title}, #{content}, #{board_type})"
+    })
+    void insertPost(
+            @Param("writer_id") String writer_id,
+            @Param("title") String title,
+            @Param("content") String content,
+            @Param("board_type") int board_type
+    );
 
 }

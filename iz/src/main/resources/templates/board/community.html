@@ -48,7 +48,7 @@
     <div class="border-b  pb-2">
         <div class="flex items-center flex items-center justify-between gap-6">
             <!-- 게시판 종류-->
-            <h2 class="text-4xl font-black" th:text="${boardName}"></h2>
+            <h2 class="text-4xl font-black" th:text="${board_name}"></h2>
             <!-- //-->
             <select id="#" class="border border-gray-500 rounded-xl px-1 py-1 text-gray-500">
                 <option selected>최신순</option>
@@ -56,9 +56,9 @@
                 <option value="newFirst01">댓글순</option>
                 <option value="newFirst01">존버해</option>
             </select>
-            <button class="px-4 py-2 bg-main-sky-basic text-black rounded hover:bg-main-sky-highlight rounded-xl">
+            <a th:href="@{/board/postForm(board_type=${board_type})}"  class="px-4 py-2 bg-main-sky-basic text-black rounded hover:bg-main-sky-highlight rounded-xl" >
                 하소연하기
-            </button>
+            </a>
             <!--
             <button class="px-4 py-2 bg-main-sky-basic text-black rounded hover:bg-main-sky-highlight rounded-xl">
                 글 작성하기
@@ -71,10 +71,12 @@
         <!-- 리스트부분분 -->
         <tr th:each="board : ${listBoard}" class="border-b-3 border-gray-400 border-gray-200">
             <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                <div class="mb-2 text-xl font-black">
-                    <a href="#" th:text="${board.title}"></a>
+                <div class="mb-2 text-xl font-black ">
+                    <span class="flex items-center">게시글
+                        <a class="inline-block w-40 truncate" href="#" th:text="${board.board_id}"></a>
+                    </span>
                 </div>
-                <div class="mb-2" th:text="${board.content}">
+                <div class="mb-2 block w-40 truncate" th:text="${board.title}">
                     <!-- 게시판 내용 -->
                 </div>
                 <div class="text-gray-500 text-xs" th:text="${board.reg_date}">
@@ -102,7 +104,7 @@
                 </div>
             </td>
         </tr>
-        <!-- //리스트부분분 -->
+        <!-- //리스트부분 -->
 
 
         </tbody>
