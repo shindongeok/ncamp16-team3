@@ -60,14 +60,20 @@ public interface BoardMapper {
 
     //글작성 하기
     //insertPost 빨간색인데 무시해도 되는거 같아요..
-    @Insert({
-            "CALL insertPost(#{writer_id}, #{title}, #{content}, #{board_type})"
-    })
-    void insertPost(
-            @Param("writer_id") String writer_id,
-            @Param("title") String title,
-            @Param("content") String content,
-            @Param("board_type") int board_type
-    );
+    @Insert("CALL insertPost(#{writer_id}, #{title}, #{content}, #{board_type})")
+    void insertPost(@Param("writer_id") String writer_id, @Param("title") String title, @Param("content") String content,
+                    @Param("board_type") int board_type);
+
+    //게시글 상세보기
+    @Select("SELECT board_type, board_id, writer_id, title, content, reg_date " +
+            "FROM (SELECT b1.board_type, b1.board_id, b1.writer_id, b1.title, b1.content, b1.reg_date " +
+            "    FROM iz_board01 b1 " +
+            "    WHERE b1.board_type = #{board_type} AND b1.board_id = #{board_id} " +
+            "    UNION ALL " +
+            "    SELECT b2.board_type, b2.board_id, b2.writer_id, b2.title, b2.content, b2.reg_date " +
+            "    FROM iz_board02 b2  " +
+            "    WHERE b2.board_type = #{board_type} AND b2.board_id = #{board_id} " +
+            ") AS board ")
+    Board selectBoard(@Param("board_id") int board_id, @Param("board_type") int board_type);
 
 }

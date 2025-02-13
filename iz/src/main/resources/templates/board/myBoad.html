@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="h-full bg-white">
+<html>
 <head>
     <meta charset="UTF-8">
     <title>내가 작성한 게시글</title>
@@ -7,6 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/default.css}">
     <style type="text/tailwindcss">
         .font-roboto {
             font-family: "Roboto", serif;
@@ -18,25 +19,6 @@
             --color-main-red-basic: #ff9898;
             --color-main-yellow-highlight: #fbc159ff;
             --color-main-yellow-basic: #fdd391;
-        }
-        /* PC에서 모바일 크기로 고정 */
-        @media screen and (min-width: 769px) {
-            .mobile-container {
-                width: 600px;
-                margin: 0 auto;
-                background: white;
-                box-shadow: 0 0 10px rgba(0,0,0,0.1);
-                min-height: 100vh;
-            }
-        }
-
-        /* 모바일에서는 전체 너비 사용 */
-        @media screen and (max-width: 768px) {
-            .mobile-container {
-                width: 100%;
-                background: white;
-                min-height: 100vh;
-            }
         }
     </style>
 </head>
