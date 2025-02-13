@@ -7,10 +7,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 @Controller
@@ -31,6 +32,17 @@ public class UserController {
 
         userService.register(user);
         return "redirect:/";
+    }
+
+    @ResponseBody
+    @GetMapping("/checkId/{member_id}")
+    public Map<String, Boolean> checkUsername(@PathVariable String member_id) {
+        Map<String, Boolean> result = new HashMap<>();
+        boolean isExist = userService.userIdCheck(member_id);
+//        log.info("check id {}", member_id);
+//        log.info("isExist {}", isExist);
+        result.put("exist", isExist);
+        return result;
     }
 
     @GetMapping("/findId")

@@ -76,6 +76,35 @@
                 min-height: 100vh;
             }
         }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 30%;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover, .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body class="h-full">
@@ -100,7 +129,7 @@
                     <div class="relative">
                         <input placeholder="아이디를 입력해주세요" type="text" name="member_id" id="member_id" required class="block w-full rounded-md bg-white px-3 py-1.5 text-lg text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
                         <div class="absolute bottom-6 right-1">
-                            <button class="flex w-23 h-7 justify-center rounded-md bg-main-sky-highlight px-3 py-1.5 text-xs text-white shadow-xs hover:bg-sky-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-800">중복 확인</button>
+                            <button id="checkButton" type="button" class="flex w-23 h-7 justify-center rounded-md bg-main-sky-highlight px-3 py-1.5 text-xs text-white shadow-xs hover:bg-sky-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-800">중복 확인</button>
                         </div>
                         <div class="flex items-center justify-between">
                             <p class="block text-red-400 text-sm">* 아이디를 확인해주세요</p>
@@ -231,9 +260,40 @@
         </form>
     </div>
 
+    <!-- 모달 -->
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <p id="modalMessage"></p>
+        </div>
+    </div>
+
     <!-- calender -->
     <script>
         $('#birth_date').bootstrapMaterialDatePicker();
+    </script>
+
+    <!-- 아이디 중복체크 -->
+    <script>
+        $("#checkButton").click(function() {
+            let memberId = $("#member_id").val();
+            $.ajax({
+                url: "/user/checkId/" + memberId,
+                type: "GET",
+                success: function(response) {
+                    if (!response.exist) {
+                        $("#modalMessage").text("사용 가능한 아이디입니다.");
+                    } else {
+                        $("#modalMessage").text("이미 사용 중인 아이디입니다.");
+                    }
+                    $("#myModal").show();
+                }
+            });
+        });
+
+        $(".close").click(function() {
+            $("#myModal").hide();
+        });
     </script>
 
     <!-- failModal -->

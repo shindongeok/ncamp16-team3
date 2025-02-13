@@ -17,6 +17,15 @@ public class UserService {
         userMapper.insertUser(user);
     }
 
+    public boolean userIdCheck(String member_id) {
+        int exist = userMapper.existUserCheck(member_id);
+        if (exist > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public User getUserInfo(String member_id) {
         return userMapper.getUserInfo(member_id);
     }
