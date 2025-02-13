@@ -34,4 +34,15 @@ public interface UserMapper {
     @Update("UPDATE iz_member SET password = #{password} WHERE member_id = #{member_id}")
     int updateUserPw(@Param("password") String password,@Param("member_id") String member_id);
 
+    @Update("update iz_member set " +
+            "nickname = #{nickname}, " +
+            "email = #{email}, " +
+            "intro = #{intro}, " +
+            "birth_date = #{birth_date}, " +
+            "loc_mod = #{loc_mod}, " +
+            "ind_cd = #{ind_cd}," +
+            "edu_lv = #{edu_lv}, " +
+            "payday = #{payday} " +
+            "where member_id = #{member_id}")
+    void updateUser(User user);
 }

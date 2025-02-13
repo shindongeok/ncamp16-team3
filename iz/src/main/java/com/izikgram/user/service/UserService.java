@@ -55,4 +55,8 @@ public class UserService {
     public void updatePassword(String member_id, String password) {
         userMapper.updateUserPw(password, member_id);
     }
+
+    public void updateUser(User user) {
+        userMapper.updateUser(user);
+    }
 }
