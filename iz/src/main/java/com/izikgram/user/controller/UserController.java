@@ -120,19 +120,43 @@ public class UserController {
         return "/user/mypage";
     }
 
-    //개인 정보 수정
-    @GetMapping("/update")
-    public String update(HttpSession session) {
+    //계정 관리
+    @GetMapping("/accountManagement")
+    public String accountManagement(HttpSession session) {
         User user = (User) session.getAttribute("user");
         log.info("User: {}", user);
+        return "/user/accountManagement";
+    }
+
+    //개인 정보 수정
+    @GetMapping("/update")
+    public String update(HttpSession session, Model model) {
+        User user = (User) session.getAttribute("user");
+        model.addAttribute("user", user);
         return "/user/update";
     }
 
-    //계정 관리
-    @GetMapping("/accountManagement")
-    public String accountManagement() {
-        return "/user/accountManagement";
+    @PostMapping("/update")
+    public String updateUser(User user, HttpSession session) {
+        User updatefield = (User) session.getAttribute("user");
+
+        // 폼에서 전송된 데이터만 업데이트
+        updatefield.setNickname(user.getNickname());
+        updatefield.setEmail(user.getEmail());
+        updatefield.setIntro(user.getIntro());
+        updatefield.setBirth_date(user.getBirth_date());
+        updatefield.setLoc_mod(user.getLoc_mod());
+        updatefield.setInd_cd(user.getInd_cd());
+        updatefield.setEdu_lv(user.getEdu_lv());
+        updatefield.setPayday(user.getPayday());
+
+        userService.updateUser(updatefield);  // member_id가 포함된 객체 전달
+        log.info("변경된 User 객체 = {}", updatefield);
+        session.setAttribute("user", updatefield);
+
+        return "redirect:/main";
     }
+
 
     //비밀번호 확인(비밀번호 변경 클릭시)
     @GetMapping("/checkPwd")
@@ -180,7 +204,6 @@ public class UserController {
         }
     }
 
-
     // 비밀번호 변경 페이지 보여주기
     @GetMapping("/updatePw")
     public String updatePw() {
@@ -188,9 +211,10 @@ public class UserController {
     }
 
     @PostMapping("/delete")
-    public String user_delete(String member_id) {
-        log.info("User id: {}", member_id);
-        userService.deleteUser(member_id);
+    public String user_delete(HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        log.info("User id: {}", user.getMember_id());
+        userService.deleteUser(user.getMember_id());
         return "redirect:/";
     }
 
