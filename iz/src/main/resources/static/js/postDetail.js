@@ -1,5 +1,4 @@
 
-
 function openDeleteModal() {
     document.getElementById("communityDeleteModal").classList.remove("hidden");
 }

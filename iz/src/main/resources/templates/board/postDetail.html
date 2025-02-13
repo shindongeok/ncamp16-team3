@@ -1,5 +1,6 @@
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <!DOCTYPE html>
-<html class="h-full bg-white">
+<html>
 <head>
     <meta charset="UTF-8">
     <title>게시글 상세보기</title>
@@ -7,24 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/js/postDetail.js">
-    <script>
-        function openDeleteModal() {
-            document.getElementById("communityDeleteModal").classList.remove("hidden");
-        }
-
-        function closeDeleteModal() {
-            document.getElementById("communityDeleteModal").classList.add("hidden");
-        }
-
-        function openUpdateModal() {
-            document.getElementById("communityUpdateModal").classList.remove("hidden");
-        }
-
-        function closeUpdateModal() {
-            document.getElementById("communityUpdateModal").classList.add("hidden");
-        }
-    </script>
+    <link rel="stylesheet" th:href="@{/css/default.css}">
     <style type="text/tailwindcss">
         .font-roboto {
             font-family: "Roboto", serif;
@@ -37,46 +21,27 @@
             --color-main-yellow-highlight: #fbc159ff;
             --color-main-yellow-basic: #fdd391;
         }
-        /* PC에서 모바일 크기로 고정 */
-        @media screen and (min-width: 769px) {
-            .mobile-container {
-                width: 600px;
-                margin: 0 auto;
-                background: white;
-                box-shadow: 0 0 10px rgba(0,0,0,0.1);
-                min-height: 100vh;
-            }
-        }
-
-        /* 모바일에서는 전체 너비 사용 */
-        @media screen and (max-width: 768px) {
-            .mobile-container {
-                width: 100%;
-                background: white;
-                min-height: 100vh;
-            }
-        }
     </style>
 </head>
 <body class="font-roboto  flex justify-center">
 <div class=" mobile-container p-6">
     <div class="border-b  pb-2">
-        <h2 class="text-4xl font-black">나 오늘 이런 일 있었잖어</h2>
+        <h2 class="text-4xl font-black" th:text="${board.title}"></h2>
     </div>
-    <div class="text-gray-500 text-xs p-3 ">
+    <div class="text-gray-500 text-xs p-3 " th:text="${board.reg_date}">
         13분전....
     </div>
     <hr class="border-b border-gray-200">
     <!-- 상세내용-->
     <div class="h-80">
-        <textarea class="w-full p-2 mt-2 border border-transparent text-gray-700 focus:outline-none resize-none" readonly></textarea>
+        <textarea class="w-full p-2 mt-2 border border-transparent text-gray-700 focus:outline-none resize-none" readonly th:text="${board.content}"></textarea>
     </div>
     <!-- // 상세내용-->
     <hr class="border-b border-gray-200">
     <hr class="border-b border-gray-200">
     <div class="flex items-center flex items-center justify-between gap-6 my-5">
         <div class="w-55 flex justify-between">
-            <button class="px-4 py-2 bg-main-sky-basic text-black rounded hover:bg-main-sky-highlight rounded-xl cursor-pointer">
+            <button onclick="like" class="px-4 py-2 bg-main-sky-basic text-black rounded hover:bg-main-sky-highlight rounded-xl cursor-pointer">
                 이직해 26
             </button>
             <button class="px-4 py-2 bg-main-sky-basic text-black rounded hover:bg-main-sky-highlight rounded-xl cursor-pointer">
@@ -131,9 +96,9 @@
     </div>
     <!-- //작성자일 경우 -->
     <div class="text-right mt-10 my-5">
-        <button class="px-15 py-4  bg-main-sky-highlight text-black rounded hover:bg-main-sky-basic rounded-xl cursor-pointer">
+        <a th:href="@{/board/{board_type}(board_type=${board_type})}" class="px-15 py-4  bg-main-sky-highlight text-black rounded hover:bg-main-sky-basic rounded-xl cursor-pointer">
             목록으로
-        </button>
+        </a>
     </div>
 
     <!-- 삭제 모달 창 -->
@@ -197,7 +162,9 @@
                 </div>
             </div>
         </div>
-    </div
+    </div>
 </div>
+<script src="https://code.jquery.com/jquery-3.6.4.js"></script>
+<script th:src="@{/js/postDetail.js}"></script>
 </body>
 </html>

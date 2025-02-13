@@ -2,6 +2,7 @@ package com.izikgram.board.service;
 
 import com.izikgram.board.entity.Board;
 import com.izikgram.board.repository.BoardMapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -40,7 +41,21 @@ public class BoardService {
 
     //작성글 삽입
     public void insertPost(int board_type, String writer_id, String title, String content) {
+
         boardMapper.insertPost(writer_id, title, content, board_type);
+    }
+
+    //게시글 상세보기
+    public Board selectDetail(int board_id, int board_type){
+        Board board = boardMapper.selectBoard(board_id, board_type);
+
+        // 각 게시판의 reg_date를 "몇 분 전" 형태로 변환하여 바로 넣기
+
+        String formattedTime = formatTimeDifference(board.getReg_date());
+        board.setReg_date(formattedTime);  // reg_date 필드를 변형된 시간으로 설정
+        System.out.println("Board - " + formattedTime);
+
+        return board;
     }
 
     // reg_date를 "몇 분 전"으로 변환하는 메서드

@@ -2,6 +2,7 @@ package com.izikgram.board.controller;
 
 import com.izikgram.board.entity.Board;
 import com.izikgram.board.service.BoardService;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,15 +12,15 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/board")
-public class BoardController {
+public class  BoardController {
 
     @Autowired
     private BoardService boardService;
 
-    //자유,하소연 게시판
+    //자유,하소연 게시판 리스트
     @GetMapping("/{board_type}")
     public String boardCommunity(@PathVariable("board_type") int board_type, Model model){
-
+        System.out.println("board_type: " + board_type);  // 확인용 로그
         if (board_type != 1 && board_type != 2) {
             model.addAttribute("error", "유효하지 않은 게시판 타입입니다.");
             return "redirect:/";
@@ -32,6 +33,7 @@ public class BoardController {
         model.addAttribute("board_name", board_name);
         model.addAttribute("listBoard", listBoard);
         model.addAttribute("board_type", board_type);
+
 
         return "/board/community";
     }
@@ -77,6 +79,7 @@ public class BoardController {
         return "redirect:/board/" + board_type;
     }
 
+
     //인기게시판
     @GetMapping("/hot")
     public String hotCommunity(){
@@ -85,7 +88,11 @@ public class BoardController {
 
     //자유,하소연 상세보기
     @GetMapping("/{board_type}/{board_id}")
-    public String postDetail(){
+    public String postDetail(@PathVariable("board_type") int board_type,
+                             @PathVariable("board_id") int board_id, Model model ){
+        Board board  = boardService.selectDetail(board_id,board_type);
+        model.addAttribute("board", board);
+
         return "/board/postDetail";
     }
 
