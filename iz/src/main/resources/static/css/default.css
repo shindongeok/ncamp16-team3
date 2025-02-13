@@ -1,0 +1,23 @@
+/* PC에서 모바일 크기로 고정 */
+@media screen and (min-width: 769px) {
+    .mobile-container {
+        width: 600px;
+        margin: 0 auto;
+        background: white;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        min-height: 100vh;
+    }
+}
+
+/* 모바일에서는 전체 너비 사용 */
+@media screen and (max-width: 768px) {
+    .mobile-container {
+        width: 100%;
+        background: white;
+        min-height: 100vh;
+    }
+}
+
+html {
+    background-color: #f0f0f0;
+}
