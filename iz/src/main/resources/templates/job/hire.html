@@ -69,6 +69,7 @@
 
 
     <div class="p-4">
+
         <h1 class="text-2xl font-bold mb-6">채용공고</h1>
         <div class="flex justify-between text-xs font-medium text-gray-700 px-2">
             <label class="w-1/3 text-center">근무지</label>
@@ -79,6 +80,7 @@
         <div class="flex items-center gap-3 mb-1">
             <div class="relative flex-1">
                 <select class="w-full px-1 py-0.5 border rounded-lg text-xs appearance-none bg-white">
+                    <option th:value="${user.loc_mod}" selected></option>
                     <option>서울</option>
                     <option>경기</option>
                     <option>부산</option>
@@ -86,11 +88,13 @@
             </div>
             <div class="relative flex-1">
                 <select class="w-full px-1 py-0.5 border rounded-lg text-xs appearance-none bg-white">
+                    <option th:value="${user.ind_cd}" selected></option>
                     <option>IT/소프트웨어</option>
                 </select>
             </div>
             <div class="relative flex-1">
                 <select class="w-full px-1 py-0.5 border rounded-lg text-xs appearance-none bg-white">
+                    <option th:value="${user.edu_lv}" selected></option>
                     <option>대졸4년제</option>
                     <option>대졸2년제</option>
                     <option>고졸</option>
