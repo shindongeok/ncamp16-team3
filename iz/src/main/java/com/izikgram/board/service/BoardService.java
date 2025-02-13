@@ -17,15 +17,15 @@ public class BoardService {
     private BoardMapper boardMapper;
 
     //게시판 종류 조회
-    public String findBoardName(int boardType){
-        String boardName = boardMapper.getBoardName(boardType);
+    public String findBoardName(int board_type){
+        String boardName = boardMapper.getBoardName(board_type);
         System.out.println(boardName);
         return boardName;
     }
 
     // 게시판 리스트 조회
-    public List<Board> findBoardList(int boardType) {
-        List<Board> boards = boardMapper.selectBoardList(boardType);
+    public List<Board> findBoardList(int board_type) {
+        List<Board> boards = boardMapper.selectBoardList(board_type);
         System.out.println("Boards retrieved: " + boards);  // 리스트 내용 확인
 
         // 각 게시판의 reg_date를 "몇 분 전" 형태로 변환하여 바로 넣기
@@ -36,6 +36,11 @@ public class BoardService {
         }
 
         return boards;
+    }
+
+    //작성글 삽입
+    public void insertPost(int board_type, String writer_id, String title, String content) {
+        boardMapper.insertPost(writer_id, title, content, board_type);
     }
 
     // reg_date를 "몇 분 전"으로 변환하는 메서드

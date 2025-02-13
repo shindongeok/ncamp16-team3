@@ -1,3 +1,4 @@
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <!DOCTYPE html>
 <html class="h-full bg-white">
 <head>
@@ -39,23 +40,35 @@
     </style>
 </head>
 <body class="font-roboto flex justify-center">
-<div class="mobile-container p-6">
-    <form>
+    <div class="mobile-container p-6">
         <div class="border-b pb-2">
-            <h2 class="text-4xl font-black">게시글 작성 / 수정</h2>
+            <h2 class="text-4xl font-black" th:text="${board_name == '자유게시판' ? '자유글 작성하기' : (board_name == '하소연 게시판' ? '하소연 작성하기' : '잘못된 요청이다.')}"></h2>
         </div>
-        <input type="text" placeholder="제목 입력" class="border border-gray-300 rounded-md p-2 w-full my-5">
-        <div class="h-100">
-            <textarea class="w-full h-full p-2 mt-2 border border-gray-300 rounded-xl text-gray-700 focus:outline-none resize-none"></textarea>
-        </div>
-        <div class="flex justify-center text-right mt-10 my-5 gap-6">
-            <button type="button" onclick="openModal()" class="px-20 py-4 bg-main-sky-highlight text-black rounded hover:bg-main-sky-basic rounded-xl cursor-pointer">
-                등록
-            </button>
-            <button type="button" onclick="openModal()" class="px-20 py-4 bg-gray-300 text-black rounded hover:bg-main-sky-basic rounded-xl cursor-pointer">
-                삭제
-            </button>
-        </div>
-    </form>
+        <form th:action="@{/board/{board_type}/post(board_type=${board_type})}" method="post">
+            <!-- board_type 값을 동적으로 URL에 포함시켜 전달 -->
+            <input type="hidden" name="board_type" th:value="${board_type}">
+
+            <!-- writer_id는 세션에서 받아와서 히든 필드로 전달 -->
+            <input type="hidden" name="writer_id" th:value="hello">
+            <!-- 제목 입력 -->
+            <input type="text" name="title"  placeholder="제목 입력" class="border border-gray-300 rounded-md p-2 w-full my-5" maxlength="50">
+
+            <div class="h-100">
+                <!-- 내용 입력 -->
+                <textarea name="content" class="w-full h-full p-2 mt-2 border border-gray-300 rounded-xl text-gray-700 focus:outline-none resize-none"></textarea>
+            </div>
+
+            <div class="flex justify-center text-right mt-10 my-5 gap-6">
+                <!-- 등록 버튼 -->
+                <button type="submit" class="px-20 py-4 bg-main-sky-highlight text-black rounded hover:bg-main-sky-basic rounded-xl cursor-pointer">
+                    등록
+                </button>
+                <!-- 삭제 버튼 (삭제 기능 구현 시 사용) -->
+                <button type="button" onclick="deleteButton()" class="px-20 py-4 bg-gray-300 text-black rounded hover:bg-main-sky-basic rounded-xl cursor-pointer">
+                    삭제
+                </button>
+            </div>
+        </form>
+    </div>
 </body>
 </html>
