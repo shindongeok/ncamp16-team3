@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html class="h-full bg-white">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <style type="text/tailwindcss">
+        .font-roboto {
+            font-family: "Roboto", serif;
+        }
+        @theme {
+            --color-main-sky: #00a3ed;
+        }
+        /* PC에서 모바일 크기로 고정 */
+        @media screen and (min-width: 769px) {
+            .mobile-container {
+                width: 375px;
+                margin: 0 auto;
+                background: white;
+                box-shadow: 0 0 10px rgba(0,0,0,0.1);
+                min-height: 100vh;
+            }
+        }
+
+        /* 모바일에서는 전체 너비 사용 */
+        @media screen and (max-width: 768px) {
+            .mobile-container {
+                width: 100%;
+                background: white;
+                min-height: 100vh;
+            }
+        }
+    </style>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="flex flex-col w-full mobile-container pt-8">
+    <div class="p-4">
+        <h1 class="text-2xl font-bold mb-6">찜 해놓은 채용공고</h1>
+
+        <div x-data="{ bookmarked: true }" class="bg-white shadow-md rounded-lg p-4 mb-4 relative">
+            <button @click="bookmarked = !bookmarked"
+                    class="absolute top-4 right-4 transition-colors duration-200">
+                <i class="fas fa-star text-xl" :class="bookmarked ? 'text-yellow-400' : 'text-gray-300'"></i>
+            </button>
+            <h2 class="text-lg font-semibold">🔹 삼성전자</h2>
+            <p class="text-gray-600">소프트웨어 엔지니어</p>
+            <p class="text-gray-500 text-sm">서울특별시 강남구</p>
+        </div>
+
+        <div x-data="{ bookmarked: true }" class="bg-white shadow-md rounded-lg p-4 mb-4 relative">
+            <button @click="bookmarked = !bookmarked"
+                    class="absolute top-4 right-4 transition-colors duration-200">
+                <i class="fas fa-star text-xl" :class="bookmarked ? 'text-yellow-400' : 'text-gray-300'"></i>
+            </button>
+            <h2 class="text-lg font-semibold">🔹 네이버</h2>
+            <p class="text-gray-600">백엔드 개발자</p>
+            <p class="text-gray-500 text-sm">경기도 성남시</p>
+        </div>
+
+        <div x-data="{ bookmarked: true }" class="bg-white shadow-md rounded-lg p-4 mb-4 relative">
+            <button @click="bookmarked = !bookmarked"
+                    class="absolute top-4 right-4 transition-colors duration-200">
+                <i class="fas fa-star text-xl" :class="bookmarked ? 'text-yellow-400' : 'text-gray-300'"></i>
+            </button>
+            <h2 class="text-lg font-semibold">🔹 카카오</h2>
+            <p class="text-gray-600">프론트엔드 개발자</p>
+            <p class="text-gray-500 text-sm">제주특별자치도</p>
+        </div>
+
+        <div x-data="{ bookmarked: true }" class="bg-white shadow-md rounded-lg p-4 mb-4 relative">
+            <button @click="bookmarked = !bookmarked"
+                    class="absolute top-4 right-4 transition-colors duration-200">
+                <i class="fas fa-star text-xl" :class="bookmarked ? 'text-yellow-400' : 'text-gray-300'"></i>
+            </button>
+            <h2 class="text-lg font-semibold">🔹 짱구야</h2>
+            <p class="text-gray-600">그라면 안돼</p>
+            <p class="text-gray-500 text-sm">ㅇㅇ</p>
+        </div>
+
+
+    </div>
+</div>
+
+</body>
+</html>
