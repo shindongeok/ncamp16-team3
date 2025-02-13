@@ -22,9 +22,16 @@ public interface UserMapper {
     @Select("select member_id from iz_member where name=#{name}")
     String findIdByName(String name);
 
-    @Update("update iz_member set password=#{password} where member_id=#{member_id}")
-    void updateUserPw(@Param("password") String password, @Param("member_id") String member_id);
-
     @Select("SELECT NOW()")
     String getCurrentTime();
+
+    @Select("select * from iz_member where member_id=#{member_id}")
+    User getUserInfo(String member_id);
+
+    @Delete("delete from iz_member where member_id=#{member_id}")
+    void deleteUser(String member_id);
+
+    @Update("UPDATE iz_member SET password = #{password} WHERE member_id = #{member_id}")
+    int updateUserPw(@Param("password") String password,@Param("member_id") String member_id);
+
 }

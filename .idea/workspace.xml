@@ -5,11 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="54793bb7-8cf6-49f6-974c-6d21ae95ef06" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/ncamp16-team3.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/iz/src/main/java/com/iz/config/DataSourceConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/iz/src/main/java/com/iz/config/DataSourceConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/iz/src/main/java/com/iz/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/iz/src/main/java/com/iz/controller/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/iz/src/main/java/com/iz/repository/UserMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/iz/src/main/java/com/iz/repository/UserMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/iz/src/main/java/com/iz/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/iz/src/main/java/com/iz/service/UserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/iz/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/iz/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/iz/src/main/resources/templates/mypage.html" beforeDir="false" afterPath="$PROJECT_DIR$/iz/src/main/resources/templates/mypage.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -19,9 +20,9 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 8
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 8
+}</component>
   <component name="ProjectId" id="2sqSyChqZUGLB7WtYltkgWTGaeS" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
@@ -31,7 +32,9 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "kisuk",
     "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "F:/izikgram/ncamp16-team3/iz/build.gradle",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -60,8 +63,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9f38398b9061-39b83d9b5494-intellij.indexing.shared.core-IU-241.18968.26" />
-        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-IU-241.18968.26" />
+        <option value="bundled-jdk-9823dce3aa75-28b599e66164-intellij.indexing.shared.core-IU-242.23726.103" />
+        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-IU-242.23726.103" />
       </set>
     </attachedChunks>
   </component>
@@ -74,6 +77,7 @@
       <option name="presentableId" value="Default" />
       <updated>1739181864755</updated>
       <workItem from="1739181866587" duration="504000" />
+      <workItem from="1739330635997" duration="23000" />
     </task>
     <servers />
   </component>
