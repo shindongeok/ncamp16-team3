@@ -23,9 +23,11 @@ public class CustomUserDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException("User not found: " + member_id);
         }
 
-        return org.springframework.security.core.userdetails.User
-                .withUsername(user.getMember_id())
-                .password("{noop}" + user.getPassword())  // 암호화 없이 사용
-                .build();
+        // return org.springframework.security.core.userdetails.User
+        //         .withUsername(user.getMember_id())
+        //         .password("{noop}" + user.getPassword())
+        //         .build();
+
+        return new CustomUserDetails(user);
     }
 }
