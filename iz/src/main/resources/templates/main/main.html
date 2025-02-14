@@ -37,8 +37,14 @@
     <div class="popular-posting-section">
         <span class="popular-board">🔥 인기게시글</span>
         <div class="popular-content-bubble">
-            <span class="popular-board-title">나 오늘 이런 일 있었잖아</span>
-            <span class="like-count">👍 26</span>
+            <div class="popular-content-bubble-item" th:each="board, iterStat : ${popularBoardList}"
+                 th:if="${iterStat.index < 3}">
+                <a th:href="@{/board/{board_type}/{board_id}(board_type=${board.board_type}, board_id=${board.board_id})}"
+                   class="popular-board-title-link">
+                    <span class="popular-board-title" th:text="${board.title}"></span>
+                    <span class="like-count">👍 <span th:text="${board.like_count}"></span></span>
+                </a>
+            </div>
         </div>
     </div>
     <div class="calendar-section">
@@ -221,4 +227,16 @@
 </div>
 </body>
 <script th:src="@{/js/mainScript.js}"></script>
+<script th:inline="javascript">
+    var feelingList = /*[[${feelingList}]]*/ [];
+    console.log("Feeling List:", feelingList);
+    console.log("Feeling List Type:", typeof feelingList);
+    console.log("Feeling List Length:", feelingList.length);
+
+    document.addEventListener('DOMContentLoaded', () => {
+        console.log("DOM Loaded");
+        console.log("feelingList before init:", feelingList);
+        initializeCalendar(feelingList);
+    });
+</script>
 </html>
