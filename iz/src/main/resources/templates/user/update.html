@@ -1,3 +1,5 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <!DOCTYPE html>
 <html class="h-full bg-white">
 <head>
@@ -36,36 +38,36 @@
     </div>
     <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
         <!--수정완료 후 메인으로 이동-->
-        <form class="space-y-6" action="/user/update" th:action="@{/user/update}" th:object="${user}" method="POST">
+        <form class="space-y-6" action="/user/update" th:action="@{/user/update}" method="POST">
             <div>
                 <label for="nickname" class="block text-lg/6 text-gray-900">별명</label>
                 <div class="mt-2">
-                    <input type="text" id="nickname" th:field="*{nickname}" required placeholder="자신만의 별명을 지어보세요!" class="block w-full rounded-md bg-white px-3 py-1.5 text-lg text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+                    <input type="text" id="nickname" name="nickname" th:value="${#authentication.getPrincipal().getUser().getNickname()}" required placeholder="자신만의 별명을 지어보세요!" class="block w-full rounded-md bg-white px-3 py-1.5 text-lg text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+
                 </div>
             </div>
             <div>
                 <label for="email" class="block text-lg/6 text-gray-900">이메일</label>
                 <div class="mt-2">
-                    <input type="email" id="email" th:field="*{email}" required class="block w-full rounded-md bg-white px-3 py-1.5 text-lg text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+                    <input type="email" id="email" name="email" th:value="${#authentication.getPrincipal().getUser().getEmail()}" required class="block w-full rounded-md bg-white px-3 py-1.5 text-lg text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
                 </div>
             </div>
             <div>
                 <label for="intro" class="block text-lg/6 text-gray-900">자기소개(최대 30자)</label>
                 <div class="mt-2">
-                    <input type="text" id="intro" th:field="*{intro}" required class="block w-full rounded-md bg-white px-3 py-1.5 text-lg text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+                    <input type="text" id="intro" name="intro" th:value="${#authentication.getPrincipal().getUser().getIntro()}" required class="block w-full rounded-md bg-white px-3 py-1.5 text-lg text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
                 </div>
             </div>
             <div>
                 <label for="birth_date" class="block text-lg/6 text-gray-900">생년월일</label>
                 <div class="mt-2">
-                    <input type="date" id="birth_date" th:field="*{birth_date}" required class="block w-full rounded-md bg-white px-3 py-1.5 text-lg text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+                    <input type="date" id="birth_date" name="birth_date" th:value="${#authentication.getPrincipal().getUser().getBirth_date()}" required class="block w-full rounded-md bg-white px-3 py-1.5 text-lg text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
                 </div>
             </div>
             <div>
                 <label for="loc_mod" class="block text-lg/6 text-gray-900">희망 근무지</label>
                 <div class="mt-2">
-                    <select id="loc_mod" th:field="*{loc_mod}" required class="block w-full rounded-md bg-white px-3 py-1.5 text-lg text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
-                        <option value="" disabled selected>희망 근무지 선택해주세요.</option>
+                    <select id="loc_mod" name="loc_mod" th:value="${#authentication.getPrincipal().getUser().getLoc_mod()}" required class="block w-full rounded-md bg-white px-3 py-1.5 text-lg text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
                         <option value="seoul">서울특별시</option>
                         <option value="gyeonggi">경기도</option>
                         <option value="busan">부산광역시</option>
@@ -77,11 +79,11 @@
             <div class="flex space-x-4">
                 <!-- 산업/업종 -->
                 <div class="flex-1">
-                    <label for="loc_mod1" class="block text-lg/6 text-gray-900">산업/업종</label>
+                    <label for="ind_cd" class="block text-lg/6 text-gray-900">산업/업종</label>
                     <div class="mt-2">
-                        <select id="loc_mod1" th:field="*{ind_cd}" required class="block w-full rounded-md bg-white px-3 py-1.5 text-lg text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
-                            <option value="IT" th:selected="${'IT' == user.loc_mod}">IT/소프트웨어</option>
-                            <option value="marketing" th:selected="${'marketing' == user.loc_mod}">마케팅</option>
+                        <select id="ind_cd" name="ind_cd" required>
+                            <option value="IT" th:selected="${'IT' == #authentication.getPrincipal().getUser().getInd_cd()}">IT/소프트웨어</option>
+                            <option value="marketing" th:selected="${'marketing' == #authentication.getPrincipal().getUser().getInd_cd()}">마케팅</option>
                         </select>
                     </div>
                 </div>
@@ -90,10 +92,10 @@
                 <div class="flex-1">
                     <label for="edu_lv" class="block text-lg/6 text-gray-900">학력</label>
                     <div class="mt-2">
-                        <select id="edu_lv" th:field="*{edu_lv}" required class="block w-full rounded-md bg-white px-3 py-1.5 text-lg text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
-                            <option value="universe4" th:selected="${user.edu_lv == 'universe4'}">대졸 4년제</option>
-                            <option value="universe2" th:selected="${user.edu_lv == 'universe2'}">대졸 2년제</option>
-                            <option value="high" th:selected="${user.edu_lv == 'highschool'}">고등학교 졸업</option>
+                        <select id="edu_lv" name="edu_lv" th:value="${#authentication.getPrincipal().getUser().getEdu_lv()}">
+                            <option value="universe4" th:selected="${#authentication.getPrincipal().getUser().getEdu_lv() == 'universe4'}">대졸 4년제</option>
+                            <option value="universe2" th:selected="${#authentication.getPrincipal().getUser().getEdu_lv() == 'universe2'}">대졸 2년제</option>
+                            <option value="highschool" th:selected="${#authentication.getPrincipal().getUser().getEdu_lv() == 'highschool'}">고등학교 졸업</option>
                         </select>
                     </div>
                 </div>
@@ -102,9 +104,14 @@
                 <div class="flex-1">
                     <label for="payday" class="block text-lg/6 text-gray-900">월급날</label>
                     <div class="mt-2">
-                        <select id="payday" th:field="*{payday}" required class="block w-full rounded-md bg-white px-3 py-1.5 text-lg text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
-                            <option th:each="payday : ${#numbers.sequence(1, 31)}" th:value="${payday}" th:text="${payday}" th:selected="${payday == user.payday}"></option>
+                        <select id="payday" name="payday" required>
+                            <option th:each="payday : ${#numbers.sequence(1, 31)}"
+                                    th:value="${payday}"
+                                    th:text="${payday}"
+                                    th:selected="${payday == #authentication.getPrincipal().getUser().getPayday()}">
+                            </option>
                         </select>
+
                     </div>
                 </div>
             </div>
