@@ -57,35 +57,6 @@
             /* gray-900 */
             --color-bold-text: oklch(0.208 0.042 265.755);
         }
-
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.4);
-        }
-        .modal-content {
-            background-color: #fefefe;
-            margin: 15% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 30%;
-        }
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-        }
-        .close:hover, .close:focus {
-            color: black;
-            text-decoration: none;
-            cursor: pointer;
-        }
     </style>
 </head>
 <body class="font-roboto mobile-container">
@@ -179,13 +150,13 @@
             <div class="flex justify-between">
                 <div class="flex">
                     <label for="payday" class="w-20 max-w-12 text-bold-text mr-4">월급날</label>
-                    <select id="payday" class="w-20 max-h-5 outline rounded-md text-bold-text text-right">
+                    <select id="payday" class="w-22 max-h-5 outline rounded-md text-bold-text text-right">
                         <option th:each="i : ${#numbers.sequence(1, 31)}" th:value="${i}" th:text="${i + '일'}" th:default="1"></option>
                     </select>
                 </div>
                 <div class="flex">
-                    <label for="start_time" class="w-15 text-bold-text ml-9">출근시간</label>
-                    <input type="text" name="start_time" id="start_time" placeholder="09:00 AM" th:default="${'09:00:00'}" class="time_element w-20 h-5 outline rounded-md text-bold-text text-right">
+                    <label for="start_time" class="w-15 text-bold-text ml-5">출근시간</label>
+                    <input type="text" name="start_time" id="start_time" placeholder="09:00 AM" th:default="${'09:00:00'}" class="p-2 time_element w-22 h-5 outline rounded-md text-bold-text text-right">
                 </div>
             </div>
 
@@ -193,13 +164,13 @@
                 <div class="flex">
                     <div class="flex">
                         <label for="end_time" class="w-15 text-bold-text mr-1">퇴근시간</label>
-                        <input type="text" name="end_time" id="end_time" placeholder="06:00 PM" th:default="${'18:00:00'}" class="time_element w-20 h-5 outline rounded-md text-bold-text text-right">
+                        <input type="text" name="end_time" id="end_time" placeholder="06:00 PM" th:default="${'18:00:00'}" class="p-2 time_element w-22 h-5 outline rounded-md text-bold-text text-right">
                     </div>
                 </div>
-                <div class="flex absolute left-45">
+                <div class="flex absolute left-43">
                     <div class="flex">
                         <label for="lunch_time" class="w-15 text-bold-text">점심시간</label>
-                        <input type="text" name="lunch_time" id="lunch_time" placeholder="12:00 PM" th:default="${'12:00:00'}" class="time_element w-20 h-5 outline rounded-md text-bold-text text-right">
+                        <input type="text" name="lunch_time" id="lunch_time" placeholder="12:00 PM" th:default="${'12:00:00'}" class="p-2 time_element w-22 h-5 outline rounded-md text-bold-text text-right">
                     </div>
                 </div>
             </div>
@@ -241,11 +212,51 @@
         </form>
     </div>
 
-    <!-- 모달 -->
-    <div id="myModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <p id="modalMessage"></p>
+    <div id="Modal" class="relative z-10 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <!--
+          Background backdrop, show/hide based on modal state.
+
+          Entering: "ease-out duration-300"
+            From: "opacity-0"
+            To: "opacity-100"
+          Leaving: "ease-in duration-200"
+            From: "opacity-100"
+            To: "opacity-0"
+        -->
+        <div class="fixed inset-0 bg-gray-500/75 transition-opacity" aria-hidden="true"></div>
+
+        <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+            <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                <!--
+                  Modal panel, show/hide based on modal state.
+
+                  Entering: "ease-out duration-300"
+                    From: "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                    To: "opacity-100 translate-y-0 sm:scale-100"
+                  Leaving: "ease-in duration-200"
+                    From: "opacity-100 translate-y-0 sm:scale-100"
+                    To: "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                -->
+                <div class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+                    <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                        <div class="sm:flex sm:items-start">
+                            <div id="modalIcon" class="mx-auto flex size-12 shrink-0 items-center justify-center rounded-full sm:mx-0 sm:size-10">
+                                <img width="48" height="48" src="https://img.icons8.com/color/48/checked-checkbox.png" alt="checked-checkbox"/>
+                            </div>
+                            <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                                <h3 id="modalTitle" class="text-base font-semibold text-gray-900"></h3>
+                                <div class="mt-2">
+                                    <p id="modalMessage" class="text-sm text-gray-500"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                        <button type="button" class="closeBtn mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 shadow-xs ring-gray-300 ring-inset hover:bg-gray-50 sm:mt-0 sm:w-auto sm:ml-3">확인</button>
+                        <!--                        <button type="button" class="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-red-500 sm:w-auto">Deactivate</button>-->
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -258,125 +269,43 @@
     <script>
         $("#checkButton").click(function() {
             let memberId = $("#member_id").val();
+            if (memberId == "") {
+                $("#modalTitle").text("아이디 공백!")
+                $("#modalIcon").html(
+                    "<svg class=\"size-6 text-red-600\" fill=\"none\" viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" aria-hidden=\"true\" data-slot=\"icon\">\n" +
+                    "    <path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z\" />\n" +
+                    "</svg>"
+                )
+                $("#modalMessage").text("아이디를 입력해주세요");
+                $("#Modal").show();
+                return;
+            }
             $.ajax({
                 url: "/user/checkId/" + memberId,
                 type: "GET",
                 success: function(response) {
                     if (!response.exist) {
-                        $("#modalMessage").text("사용 가능한 아이디입니다.");
+                        $("#modalTitle").text("사용 가능한 아이디!")
+                        $("#modalIcon").html("<img width=\"48\" height=\"48\" src=\"https://img.icons8.com/color/48/checked-checkbox.png\" alt=\"checked-checkbox\"/>")
+                        $("#modalMessage").text("사용 가능한 아이디입니다");
                     } else {
-                        $("#modalMessage").text("이미 사용 중인 아이디입니다.");
+                        $("#modalTitle").text("사용 불가능한 아이디!")
+                        $("#modalIcon").html(
+                            "<svg class=\"size-6 text-red-600\" fill=\"none\" viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" aria-hidden=\"true\" data-slot=\"icon\">\n" +
+                            "    <path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z\" />\n" +
+                            "</svg>"
+                        )
+                        $("#modalMessage").text("이미 사용 중인 아이디입니다");
                     }
-                    $("#myModal").show();
+                    $("#Modal").show();
                 }
             });
         });
 
-        $(".close").click(function() {
-            $("#myModal").hide();
+        $(".closeBtn").click(function() {
+            $("#Modal").hide();
         });
     </script>
-
-    <!-- failModal -->
-<!--    <div class="relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true">-->
-<!--        &lt;!&ndash;-->
-<!--          Background backdrop, show/hide based on modal state.-->
-
-<!--          Entering: "ease-out duration-300"-->
-<!--            From: "opacity-0"-->
-<!--            To: "opacity-100"-->
-<!--          Leaving: "ease-in duration-200"-->
-<!--            From: "opacity-100"-->
-<!--            To: "opacity-0"-->
-<!--        &ndash;&gt;-->
-<!--        <div class="fixed inset-0 bg-gray-500/75 transition-opacity" aria-hidden="true"></div>-->
-
-<!--        <div class="fixed inset-0 z-10 w-screen overflow-y-auto">-->
-<!--            <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">-->
-<!--                &lt;!&ndash;-->
-<!--                  Modal panel, show/hide based on modal state.-->
-
-<!--                  Entering: "ease-out duration-300"-->
-<!--                    From: "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"-->
-<!--                    To: "opacity-100 translate-y-0 sm:scale-100"-->
-<!--                  Leaving: "ease-in duration-200"-->
-<!--                    From: "opacity-100 translate-y-0 sm:scale-100"-->
-<!--                    To: "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"-->
-<!--                &ndash;&gt;-->
-<!--                <div class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">-->
-<!--                    <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">-->
-<!--                        <div class="sm:flex sm:items-start">-->
-<!--                            <div class="mx-auto flex size-12 shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:size-10">-->
-<!--                                <svg class="size-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon">-->
-<!--                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />-->
-<!--                                </svg>-->
-<!--                            </div>-->
-<!--                            <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">-->
-<!--                                <h3 class="text-base font-semibold text-gray-900" id="modal-title">#{아이디 중복!}</h3>-->
-<!--                                <div class="mt-2">-->
-<!--                                    <p class="text-sm text-gray-500">#{사용 불가능한 아이디입니다}</p>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                    <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">-->
-<!--                        <button type="button" class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 shadow-xs ring-gray-300 ring-inset hover:bg-gray-50 sm:mt-0 sm:w-auto sm:ml-3">확인</button>-->
-<!--&lt;!&ndash;                        <button type="button" class="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-red-500 sm:w-auto">Deactivate</button>&ndash;&gt;-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </div>-->
-
-    <!-- successModal -->
-<!--    <div class="relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true">-->
-<!--        &lt;!&ndash;-->
-<!--          Background backdrop, show/hide based on modal state.-->
-
-<!--          Entering: "ease-out duration-300"-->
-<!--            From: "opacity-0"-->
-<!--            To: "opacity-100"-->
-<!--          Leaving: "ease-in duration-200"-->
-<!--            From: "opacity-100"-->
-<!--            To: "opacity-0"-->
-<!--        &ndash;&gt;-->
-<!--        <div class="fixed inset-0 bg-gray-500/75 transition-opacity" aria-hidden="true"></div>-->
-
-<!--        <div class="fixed inset-0 z-10 w-screen overflow-y-auto">-->
-<!--            <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">-->
-<!--                &lt;!&ndash;-->
-<!--                  Modal panel, show/hide based on modal state.-->
-
-<!--                  Entering: "ease-out duration-300"-->
-<!--                    From: "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"-->
-<!--                    To: "opacity-100 translate-y-0 sm:scale-100"-->
-<!--                  Leaving: "ease-in duration-200"-->
-<!--                    From: "opacity-100 translate-y-0 sm:scale-100"-->
-<!--                    To: "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"-->
-<!--                &ndash;&gt;-->
-<!--                <div class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">-->
-<!--                    <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">-->
-<!--                        <div class="sm:flex sm:items-start">-->
-<!--                            <div class="mx-auto flex size-12 shrink-0 items-center justify-center rounded-full sm:mx-0 sm:size-10">-->
-<!--                                <img width="48" height="48" src="https://img.icons8.com/color/48/checked-checkbox.png" alt="checked-checkbox"/>-->
-<!--                            </div>-->
-<!--                            <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">-->
-<!--                                <h3 class="text-base font-semibold text-gray-900" id="modal-title">#{아이디 사용가능!}</h3>-->
-<!--                                <div class="mt-2">-->
-<!--                                    <p class="text-sm text-gray-500">#{사용 가능한 아이디입니다}</p>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                    <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">-->
-<!--                        <button type="button" class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 shadow-xs ring-gray-300 ring-inset hover:bg-gray-50 sm:mt-0 sm:w-auto sm:ml-3">확인</button>-->
-<!--                        &lt;!&ndash;                        <button type="button" class="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-red-500 sm:w-auto">Deactivate</button>&ndash;&gt;-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    </div>-->
-
 </div>
 </body>
 </html>
