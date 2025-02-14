@@ -50,37 +50,29 @@
 
             <!-- form 태그 추가 -->
             <form action="/user/checkPwd" method="POST">
-                <div class="flex m-10 gap-10">
+                <div class="flex m-10">
                     <div>
                         <label for="password" class="block text-lg/6 text-gray-900">비밀번호 확인</label>
                         <div class="mt-2">
                             <input type="password" id="password" name="password"
                             required
-                            class="block w-80 rounded-md bg-white px-3 py-1.5 text-lg text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+                            class="block w-85 rounded-md bg-white px-3 py-1.5 text-lg text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
                         </div>
                         <div th:if="${param.error}" class="mt-2 text-red-600 text-sm">
-                            비밀번호 변경에 실패했습니다.
+                            * 비밀번호가 일치하지 않아요.
                         </div>
                     </div>
                 </div>
-
-                <div class="flex m-10">
-                    <div class="mt-4 w-40">
-                        <button type="submit" class="cursor-pointer w-full bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400">
-                            다음
-                        </button>
-                    </div>
-
-                    <div class="mt-4 w-40">
-                        <a href="/user/accountManagement" th:href="@{/user/accountManagement}" class="cursor-pointer w-full bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400">
-                            취소
-                        </a>
-                    </div>
+                <div class="flex justify-center items-center space-x-3 m-10">
+                    <button type="submit" class="w-40 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 text-center">
+                        다음
+                    </button>
+                    <a href="/user/accountManagement" th:href="@{/user/accountManagement}" class="w-40 bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 text-center">
+                        취소
+                    </a>
                 </div>
-            </form> <!-- form 태그 끝 -->
-
+            </form>
         </div>
-
     </div>
 </div>
 </body>

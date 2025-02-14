@@ -5,6 +5,8 @@ import com.izikgram.user.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -125,12 +127,25 @@ public class UserController {
     }
 
     // 마이페이지
+//    @GetMapping("/mypage")
+//    public String mypage(HttpSession session) {
+//        User user = (User) session.getAttribute("user");
+//        log.info("User: {}", user);
+//        return "/user/mypage";
+//    }
     @GetMapping("/mypage")
-    public String mypage(HttpSession session) {
-        User user = (User) session.getAttribute("user");
-        log.info("User: {}", user);
+    public String mypage(Authentication authentication, Model model) {
+        // Authentication 객체에서 사용자 정보 가져오기
+        String member_id = authentication.getName(); // 로그인한 사용자 이름
+        User user = userService.getUserInfo(member_id); // 사용자 정보 조회
+        log.info("User = {}", user);
+
+        // 모델에 사용자 정보를 담아 뷰로 전달
+        model.addAttribute("user", user);
+
         return "/user/mypage";
     }
+
 
     //계정 관리
     @GetMapping("/accountManagement")
@@ -141,9 +156,19 @@ public class UserController {
     }
 
     //개인 정보 수정
+//    @GetMapping("/update")
+//    public String update(HttpSession session, Model model) {
+//        User user = (User) session.getAttribute("user");
+//        model.addAttribute("user", user);
+//        return "/user/update";
+//    }
+
     @GetMapping("/update")
-    public String update(HttpSession session, Model model) {
-        User user = (User) session.getAttribute("user");
+    public String update(Authentication authentication, Model model) {
+        String member_id = authentication.getName();
+        User user = userService.getUserInfo(member_id);
+        log.info("User = {}", user);
+
         model.addAttribute("user", user);
         return "/user/update";
     }
