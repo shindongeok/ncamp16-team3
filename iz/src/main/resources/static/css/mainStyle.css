@@ -57,6 +57,7 @@ header {
     color: #2C2C2C;
 }
 
+/* 인기 게시글 섹션 스타일 */
 .popular-posting-section {
     padding: 12px 15px;
     display: flex;
@@ -72,17 +73,43 @@ header {
     gap: 4px;
 }
 
-/* 말풍선 컨테이너 스타일 */
+/* 말풍선 스타일 */
 .popular-content-bubble {
-    background: #f8f9fa;
-    border-radius: 18px;
-    padding: 8px 16px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
     position: relative;
+    height: 48px;
+    overflow: hidden;
+    background: #f8f9fa;
+    border-radius: 24px;
     flex: 1;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.popular-content-bubble-item {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    opacity: 0;
+    transform: translateY(100%);
+    animation: slide 12s infinite;
+}
+
+/* 각 아이템 애니메이션 딜레이 */
+.popular-content-bubble-item:nth-child(1) { animation-delay: 0s; }
+.popular-content-bubble-item:nth-child(2) { animation-delay: 4s; }
+.popular-content-bubble-item:nth-child(3) { animation-delay: 8s; }
+
+/* 링크 스타일 */
+.popular-board-title-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 0 16px;
+    text-decoration: none;
+    color: inherit;
 }
 
 .popular-board-title {
@@ -92,16 +119,35 @@ header {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    margin-right: 12px;
 }
 
 .like-count {
     font-size: 0.9rem;
     color: #666;
+    white-space: nowrap;
     display: flex;
     align-items: center;
     gap: 4px;
-    padding-left: 8px;
-    border-left: 1px solid #eee;
+}
+
+@keyframes slide {
+    0% {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+    5%, 30% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    35% {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
 }
 
 .section-title {
@@ -158,7 +204,26 @@ header {
 
 /* 오늘 날짜 강조 */
 .calendar-date.active {
-    background: #b7e3ff;
+    font-weight: bold;
+}
+
+.verybad {
+    background: #ff5353;
+    color: #fff;
+    font-weight: 500;
+}
+.bad {
+    background: #ff9898;
+    color: #fff;
+    font-weight: 500;
+}
+.good {
+    background: #9bdcfd;
+    color: #fff;
+    font-weight: 500;
+}
+.verygood {
+    background: #00a3ed;
     color: #fff;
     font-weight: 500;
 }
@@ -190,7 +255,6 @@ header {
     gap: 8px;
 }
 
-/* 아이콘과 subtitle을 감싸는 컨테이너 추가 */
 .overview-header {
     display: flex;
     align-items: center;
@@ -206,7 +270,7 @@ header {
     align-items: center;
     justify-content: center;
     font-size: 1.2rem;
-    flex-shrink: 0; /* 아이콘 크기 고정 */
+    flex-shrink: 0;
 }
 
 .overview-subtitle {
@@ -220,7 +284,6 @@ header {
     text-align: right;
 }
 
-/* 특별히 퇴사지수가 증가하는 경우 빨간색으로 표시 */
 .overview-card:last-child .overview-content {
     color: #ff5353;
 }

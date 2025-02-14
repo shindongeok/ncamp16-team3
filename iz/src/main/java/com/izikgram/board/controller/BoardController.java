@@ -87,6 +87,7 @@ public class  BoardController {
     }
 
     //자유,하소연 상세보기
+
     @GetMapping("/{board_type}/{board_id}")
     public String postDetail(@PathVariable("board_type") int board_type,
                              @PathVariable("board_id") int board_id, Model model ){
