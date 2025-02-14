@@ -31,7 +31,8 @@
         <img th:src="@{/images/izikgram.png}" class="mx-auto relative z-3 bottom-10 w-50 "/>
     </div>
     <div class="sm:mx-auto sm:w-full sm:max-w-sm rounded-md outline text-gray-300 p-8 pb-10 mb-20">
-        <form id="loginForm" class="space-y-6">
+        <form id="loginForm" class="space-y-6" action="/login" th:action="@{/login}" method="POST">
+<!--            <input type="hidden" name="_csrf" th:value="${_csrf.token}">-->
             <div>
                 <label for="member_id" class="block text-lg/6 text-gray-900">아이디</label>
                 <div class="mt-2">
