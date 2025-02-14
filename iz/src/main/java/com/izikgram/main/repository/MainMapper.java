@@ -40,4 +40,20 @@ public interface MainMapper {
             @Param("date") String date
     );
 
+    @Select("SELECT payday FROM iz_member WHERE member_id = #{member_id}")
+    int getPayday(@Param("member_id") String member_id);
+
+    @Select("SELECT start_time FROM iz_member WHERE member_id = #{member_id}")
+    String getStartTime(@Param("member_id") String member_id);
+
+    @Select("SELECT lunch_time FROM iz_member WHERE member_id = #{member_id}")
+    String getLunchTime(@Param("member_id") String member_id);
+
+    @Select("SELECT end_time FROM iz_member WHERE member_id = #{member_id}")
+    String getEndTime(@Param("member_id") String member_id);
+
+    @Select("SELECT stress_num FROM iz_member_stress_info " +
+            "WHERE member_id = #{member_id} " +
+            "AND DATE_FORMAT(date, '%Y-%m-%d') = DATE_FORMAT(NOW(), '%Y-%m-%d')")
+    int getStressNum(@Param("member_id") String member_id);
 }

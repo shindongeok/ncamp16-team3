@@ -80,10 +80,37 @@ function initializeCalendar(feelingList = []) {
     scheduleNextUpdate();
 }
 
-// Thymeleaf를 사용하는 경우
 document.addEventListener('DOMContentLoaded', () => {
     // Thymeleaf의 feelingList 변수 사용
     initializeCalendar(feelingList);
+});
+
+function calculatePaydayDday(payday) {
+    const today = new Date();
+    const currentYear = today.getFullYear();
+    const currentMonth = today.getMonth();
+
+    // 이번 달 월급일
+    let payDate = new Date(currentYear, currentMonth, payday);
+
+    // 만약 월급일이 오늘보다 이전이라면 다음 달로 설정
+    if (payDate <= today) {
+        payDate = new Date(currentYear, currentMonth + 1, payday);
+    }
+
+    // D-day 계산
+    const timeDiff = payDate.getTime() - today.getTime();
+    const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+    return `D-${daysDiff}`;
+}
+
+// 페이지 로드 시 실행
+document.addEventListener('DOMContentLoaded', () => {
+    const paydayElement = document.querySelector('.overview-content');
+    if (paydayElement && typeof payday !== 'undefined') {
+        paydayElement.innerHTML = calculatePaydayDday(payday);
+    }
 });
 
 function calculateTimeRemaining(startHour, endHour) {
@@ -134,28 +161,53 @@ function updateCircleProgress(circle, progress) {
     dot.setAttribute('cy', y);
 }
 
-function updateAllProgress() {
-    const circles = document.querySelectorAll('.progress-circle');
-    const timeTexts = document.querySelectorAll('.time-text');
+document.addEventListener('DOMContentLoaded', () => {
+    function updateAllProgress() {
+        // 시간 값 파싱
+        const [startHour, startMinute] = startTime.split(':').map(Number);
+        const [lunchHour, lunchMinute] = lunchTime.split(':').map(Number);
+        const [endHour, endMinute] = endTime.split(':').map(Number);
 
-    timeTexts[0].textContent = calculateTimeRemaining(9, 18);
-    timeTexts[2].textContent = calculateTimeRemaining(9, 12);
+        const circles = document.querySelectorAll('.progress-circle');
+        const timeTexts = document.querySelectorAll('.time-text');
 
-    circles.forEach((circle, index) => {
-        const startHour = parseInt(circle.getAttribute('data-start'));
-        const endHour = parseInt(circle.getAttribute('data-end'));
-        const progress = Math.round(calculateProgress(startHour, endHour));
+        // 첫 번째 텍스트: 퇴근까지 남은 시간
+        timeTexts[0].textContent = calculateTimeRemaining(startHour, endHour);
 
-        updateCircleProgress(circle, progress);
+        // 세 번째 텍스트: 점심까지 남은 시간
+        timeTexts[2].textContent = calculateTimeRemaining(startHour, lunchHour);
 
-        if (index === 1) {
-            updateCircleProgress(circle, 71);
-        }
-    });
-}
+        circles.forEach((circle, index) => {
+            let progress;
+            if (index === 0) {
+                // 첫 번째 원: 퇴근까지 전체 시간
+                progress = Math.round(calculateProgress(startHour, endHour));
+            } else if (index === 1) {
+                // 두 번째 원: 퇴사 지수
+                progress = stressNum;
+            } else if (index === 2) {
+                // 세 번째 원: 점심까지 시간
+                progress = Math.round(calculateProgress(startHour, lunchHour));
+            }
 
-updateAllProgress();
-setInterval(updateAllProgress, 60000);
+            // 각 원의 시작/종료 시간 업데이트
+            circle.setAttribute('data-start', startHour);
+            circle.setAttribute('data-end', index === 0 ? endHour : (index === 2 ? lunchHour : endHour));
+
+            updateCircleProgress(circle, progress);
+        });
+
+        // 두 번째 라벨의 텍스트를 stressNum으로 업데이트
+        const stressText = document.querySelectorAll('.time-text')[1];
+        stressText.textContent = `${stressNum > 0 ? '+' : ''}${stressNum}%`;
+    }
+
+    // 초기 업데이트
+    updateAllProgress();
+
+    // 1분마다 업데이트
+    setInterval(updateAllProgress, 60000);
+});
 
 // 모달 관련 요소들
 const modal = document.getElementById('timeSettingsModal');

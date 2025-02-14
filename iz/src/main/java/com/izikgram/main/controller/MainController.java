@@ -36,8 +36,22 @@ public class MainController {
                 user.getMember_id(),
                 now.format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM"))
         );
-        System.out.println("Controller - feelingList size: " + feelingList.size());
         model.addAttribute("feelingList", feelingList);
+
+        // 월급날 d-day 계산
+        int payday = mainService.getPayday(user.getMember_id());
+        model.addAttribute("payday", payday);
+
+
+        // 남은 시간 그래프 설정
+        String startTime = mainService.getStartTime(user.getMember_id());
+        String lunchTime = mainService.getLunchTime(user.getMember_id());
+        String endTime = mainService.getEndTime(user.getMember_id());
+        int stressNum = mainService.getStressNum(user.getMember_id());
+        model.addAttribute("startTime", startTime);
+        model.addAttribute("lunchTime", lunchTime);
+        model.addAttribute("endTime", endTime);
+        model.addAttribute("stressNum", stressNum);
 
         return "/main/main";
     }

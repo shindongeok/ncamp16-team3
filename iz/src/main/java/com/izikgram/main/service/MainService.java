@@ -27,4 +27,23 @@ public class MainService {
         return feelingList;
     }
 
+    public int getPayday(String member_id) {
+        return mainMapper.getPayday(member_id);
+    }
+
+    public String getStartTime(String member_id) {
+        return mainMapper.getStartTime(member_id);
+    }
+
+    public String getLunchTime(String member_id) {
+        return mainMapper.getLunchTime(member_id);
+    }
+
+    public String getEndTime(String member_id) {
+        return mainMapper.getEndTime(member_id);
+    }
+
+    public int getStressNum(String member_id) {
+        return mainMapper.getStressNum(member_id);
+    }
 }
