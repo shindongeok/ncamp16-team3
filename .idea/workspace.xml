@@ -4,14 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="54793bb7-8cf6-49f6-974c-6d21ae95ef06" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/iz/src/main/java/com/iz/config/DataSourceConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/iz/src/main/java/com/iz/config/DataSourceConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/iz/src/main/java/com/iz/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/iz/src/main/java/com/iz/controller/UserController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/iz/src/main/java/com/iz/repository/UserMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/iz/src/main/java/com/iz/repository/UserMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/iz/src/main/java/com/iz/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/iz/src/main/java/com/iz/service/UserService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/iz/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/iz/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/iz/src/main/resources/templates/mypage.html" beforeDir="false" afterPath="$PROJECT_DIR$/iz/src/main/resources/templates/mypage.html" afterDir="false" />
-    </list>
+    <list default="true" id="54793bb7-8cf6-49f6-974c-6d21ae95ef06" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -34,7 +27,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "kisuk",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "F:/izikgram/ncamp16-team3/iz/build.gradle",
+    "last_opened_file_path": "C:/ncamp16-team3/iz/build.gradle",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -63,8 +56,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-28b599e66164-intellij.indexing.shared.core-IU-242.23726.103" />
-        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-IU-242.23726.103" />
+        <option value="bundled-jdk-9823dce3aa75-125ca727e0f0-intellij.indexing.shared.core-IU-243.24978.46" />
+        <option value="bundled-js-predefined-d6986cc7102b-76f8388c3a79-JavaScript-IU-243.24978.46" />
       </set>
     </attachedChunks>
   </component>
@@ -78,6 +71,7 @@
       <updated>1739181864755</updated>
       <workItem from="1739181866587" duration="504000" />
       <workItem from="1739330635997" duration="23000" />
+      <workItem from="1739437623540" duration="391000" />
     </task>
     <servers />
   </component>

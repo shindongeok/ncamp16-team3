@@ -19,7 +19,12 @@ public class MainService {
     }
 
     public List<Map<String, Object>> getMonthlyFeeling(String member_id, String date) {
-        return mainMapper.getMonthlyFeeling(member_id, date);
+        List<Map<String, Object>> feelingList = mainMapper.getMonthlyFeeling(member_id, date);
+        System.out.println("feelingList size: " + feelingList.size());
+        for (Map<String, Object> feeling : feelingList) {
+            System.out.println("feeling: " + feeling);
+        }
+        return feelingList;
     }
 
 }

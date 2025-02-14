@@ -1,16 +1,16 @@
-function updateCalendar() {
+function updateCalendar(feelingList = []) {
     // 오늘 날짜 가져오기
     const today = new Date();
 
     // 이번 주의 월요일 찾기
     const monday = new Date(today);
-    const diff = today.getDay() - 1; // 월요일을 기준으로 차이 계산 (월요일은 1)
+    const diff = today.getDay() === 0 ? 6 : today.getDay() - 1; // 일요일 처리
     monday.setDate(today.getDate() - diff);
 
     // 월/연도 표시 업데이트
     const monthNames = ["1월", "2월", "3월", "4월", "5월", "6월",
         "7월", "8월", "9월", "10월", "11월", "12월"];
-    document.querySelector('.today-date').textContent = `${today.getFullYear()}년 ${monthNames[today.getMonth()]}`;
+    document.querySelector('.today-date').textContent = `${monday.getFullYear()}년 ${monthNames[monday.getMonth()]}`;
 
     // 날짜 그리드 업데이트
     const dateGrid = document.querySelector('.calendar-grid:last-child');
@@ -30,26 +30,62 @@ function updateCalendar() {
             dateSpan.classList.add('active');
         }
 
+        // 감정 데이터에 따라 배경색 설정
+        const formattedDate = currentDate.toISOString().split('T')[0];
+        const feelingData = feelingList.find(item => {
+            const itemDate = new Date(item.date).toISOString().split('T')[0];
+            return itemDate === formattedDate;
+        });
+
+        if (feelingData) {
+            // 기존 클래스들 제거
+            dateSpan.classList.remove('verybad', 'bad', 'good', 'verygood');
+
+            // 감정 번호에 따라 클래스 추가
+            const feelingNum = feelingData.feeling_num;
+            if (feelingNum <= -6) {
+                dateSpan.classList.add('verybad');
+            } else if (feelingNum >= -5 && feelingNum <= -2) {
+                dateSpan.classList.add('bad');
+            } else if (feelingNum >= -1 && feelingNum <= 1) {
+                // 보통인 경우 기본 스타일 유지 (클래스 추가 없음)
+                // 여기서는 다음으로 넘어감
+            } else if (feelingNum >= 2 && feelingNum <= 5) {
+                dateSpan.classList.add('good');
+            } else if (feelingNum >= 6) {
+                dateSpan.classList.add('verygood');
+            }
+        }
+
         dateGrid.appendChild(dateSpan);
     }
 }
 
 // 페이지 로드 시 캘린더 업데이트
-updateCalendar();
+function initializeCalendar(feelingList = []) {
+    updateCalendar(feelingList);
 
-// 매일 자정에 캘린더 업데이트 (선택사항)
-function scheduleNextUpdate() {
-    const now = new Date();
-    const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
-    const timeUntilMidnight = tomorrow - now;
+    // 매일 자정에 캘린더 업데이트 (선택사항)
+    function scheduleNextUpdate() {
+        const now = new Date();
+        const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+        const timeUntilMidnight = tomorrow - now;
 
-    setTimeout(() => {
-        updateCalendar();
-        scheduleNextUpdate();
-    }, timeUntilMidnight);
+        setTimeout(() => {
+            updateCalendar(feelingList);
+            scheduleNextUpdate();
+        }, timeUntilMidnight);
+    }
+
+    scheduleNextUpdate();
 }
 
-scheduleNextUpdate();
+// Thymeleaf를 사용하는 경우
+document.addEventListener('DOMContentLoaded', () => {
+    // Thymeleaf의 feelingList 변수 사용
+    initializeCalendar(feelingList);
+});
+
 function calculateTimeRemaining(startHour, endHour) {
     const now = new Date();
     const currentHour = now.getHours();

@@ -225,18 +225,9 @@
         </div>
     </div>
 </div>
-</body>
-<script th:src="@{/js/mainScript.js}"></script>
 <script th:inline="javascript">
     var feelingList = /*[[${feelingList}]]*/ [];
-    console.log("Feeling List:", feelingList);
-    console.log("Feeling List Type:", typeof feelingList);
-    console.log("Feeling List Length:", feelingList.length);
-
-    document.addEventListener('DOMContentLoaded', () => {
-        console.log("DOM Loaded");
-        console.log("feelingList before init:", feelingList);
-        initializeCalendar(feelingList);
-    });
 </script>
+</body>
+<script th:src="@{/js/mainScript.js}"></script>
 </html>
