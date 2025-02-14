@@ -32,7 +32,11 @@ public class MainController {
         // 캘린더 feeling 가져오기
         User user = (User) session.getAttribute("user");
         LocalDate now = LocalDate.now();
-        List<Map<String, Object>> feelingList = mainService.getMonthlyFeeling(user.getMember_id(), now.format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM")));
+        List<Map<String, Object>> feelingList = mainService.getMonthlyFeeling(
+                user.getMember_id(),
+                now.format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM"))
+        );
+        System.out.println("Controller - feelingList size: " + feelingList.size());
         model.addAttribute("feelingList", feelingList);
 
         return "/main/main";
