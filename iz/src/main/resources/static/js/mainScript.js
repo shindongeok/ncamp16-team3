@@ -161,28 +161,53 @@ function updateCircleProgress(circle, progress) {
     dot.setAttribute('cy', y);
 }
 
-function updateAllProgress() {
-    const circles = document.querySelectorAll('.progress-circle');
-    const timeTexts = document.querySelectorAll('.time-text');
+document.addEventListener('DOMContentLoaded', () => {
+    function updateAllProgress() {
+        // 시간 값 파싱
+        const [startHour, startMinute] = startTime.split(':').map(Number);
+        const [lunchHour, lunchMinute] = lunchTime.split(':').map(Number);
+        const [endHour, endMinute] = endTime.split(':').map(Number);
 
-    timeTexts[0].textContent = calculateTimeRemaining(9, 18);
-    timeTexts[2].textContent = calculateTimeRemaining(9, 12);
+        const circles = document.querySelectorAll('.progress-circle');
+        const timeTexts = document.querySelectorAll('.time-text');
 
-    circles.forEach((circle, index) => {
-        const startHour = parseInt(circle.getAttribute('data-start'));
-        const endHour = parseInt(circle.getAttribute('data-end'));
-        const progress = Math.round(calculateProgress(startHour, endHour));
+        // 첫 번째 텍스트: 퇴근까지 남은 시간
+        timeTexts[0].textContent = calculateTimeRemaining(startHour, endHour);
 
-        updateCircleProgress(circle, progress);
+        // 세 번째 텍스트: 점심까지 남은 시간
+        timeTexts[2].textContent = calculateTimeRemaining(startHour, lunchHour);
 
-        if (index === 1) {
-            updateCircleProgress(circle, 71);
-        }
-    });
-}
+        circles.forEach((circle, index) => {
+            let progress;
+            if (index === 0) {
+                // 첫 번째 원: 퇴근까지 전체 시간
+                progress = Math.round(calculateProgress(startHour, endHour));
+            } else if (index === 1) {
+                // 두 번째 원: 퇴사 지수
+                progress = stressNum;
+            } else if (index === 2) {
+                // 세 번째 원: 점심까지 시간
+                progress = Math.round(calculateProgress(startHour, lunchHour));
+            }
 
-updateAllProgress();
-setInterval(updateAllProgress, 60000);
+            // 각 원의 시작/종료 시간 업데이트
+            circle.setAttribute('data-start', startHour);
+            circle.setAttribute('data-end', index === 0 ? endHour : (index === 2 ? lunchHour : endHour));
+
+            updateCircleProgress(circle, progress);
+        });
+
+        // 두 번째 라벨의 텍스트를 stressNum으로 업데이트
+        const stressText = document.querySelectorAll('.time-text')[1];
+        stressText.textContent = `${stressNum > 0 ? '+' : ''}${stressNum}%`;
+    }
+
+    // 초기 업데이트
+    updateAllProgress();
+
+    // 1분마다 업데이트
+    setInterval(updateAllProgress, 60000);
+});
 
 // 모달 관련 요소들
 const modal = document.getElementById('timeSettingsModal');

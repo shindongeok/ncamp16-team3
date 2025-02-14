@@ -208,17 +208,17 @@
                     <div class="label-item">
                         <div class="color-indicator" style="background-color: #9BDCFD;"></div>
                         <span class="label-text">퇴근까지</span>
-                        <span class="time-text">6h 46min</span>
+                        <span class="time-text"></span>
                     </div>
                     <div class="label-item">
                         <div class="color-indicator" style="background-color: #FF9898;"></div>
                         <span class="label-text">퇴사지수</span>
-                        <span class="time-text">71%</span>
+                        <span class="time-text"></span>
                     </div>
                     <div class="label-item">
                         <div class="color-indicator" style="background-color: #FFD188;"></div>
                         <span class="label-text">점심까지</span>
-                        <span class="time-text">1h 14min</span>
+                        <span class="time-text"></span>
                     </div>
                 </div>
             </div>
@@ -228,6 +228,10 @@
 <script th:inline="javascript">
     var feelingList = /*[[${feelingList}]]*/ [];
     var payday = /*[[${payday}]]*/ 15; // 기본값 설정 (서버에서 받은 값 사용)
+    var startTime = /*[[${startTime}]]*/ '09:00';
+    var lunchTime = /*[[${lunchTime}]]*/ '12:00';
+    var endTime = /*[[${endTime}]]*/ '18:00';
+    var stressNum = /*[[${stressNum}]]*/ 0;
 </script>
 </body>
 <script th:src="@{/js/mainScript.js}"></script>
