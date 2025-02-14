@@ -40,4 +40,6 @@ public interface MainMapper {
             @Param("date") String date
     );
 
+    @Select("SELECT payday FROM iz_member WHERE member_id = #{member_id}")
+    int getPayday(@Param("member_id") String member_id);
 }

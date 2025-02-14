@@ -73,12 +73,12 @@
                     <span class="overview-icon">💸</span>
                     <div class="overview-subtitle">월급까지</div>
                 </div>
-                <div class="overview-content">D-10</div>
+                <div class="overview-content"></div>
             </div>
             <div class="overview-card">
                 <div class="overview-header">
                     <span class="overview-icon">📉</span>
-                    <div class="overview-subtitle">퇴사지수</div>
+                    <div class="overview-subtitle">이번주 평균 퇴사지수</div>
                 </div>
                 <div class="overview-content">+58%</div>
             </div>
@@ -227,6 +227,7 @@
 </div>
 <script th:inline="javascript">
     var feelingList = /*[[${feelingList}]]*/ [];
+    var payday = /*[[${payday}]]*/ 15; // 기본값 설정 (서버에서 받은 값 사용)
 </script>
 </body>
 <script th:src="@{/js/mainScript.js}"></script>

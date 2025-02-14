@@ -36,8 +36,11 @@ public class MainController {
                 user.getMember_id(),
                 now.format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM"))
         );
-        System.out.println("Controller - feelingList size: " + feelingList.size());
         model.addAttribute("feelingList", feelingList);
+
+        // 월급날 d-day 계산
+        int payday = mainService.getPayday(user.getMember_id());
+        model.addAttribute("payday", payday);
 
         return "/main/main";
     }

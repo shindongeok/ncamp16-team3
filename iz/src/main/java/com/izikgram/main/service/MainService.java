@@ -27,4 +27,7 @@ public class MainService {
         return feelingList;
     }
 
+    public int getPayday(String member_id) {
+        return mainMapper.getPayday(member_id);
+    }
 }

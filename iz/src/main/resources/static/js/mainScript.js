@@ -80,10 +80,37 @@ function initializeCalendar(feelingList = []) {
     scheduleNextUpdate();
 }
 
-// Thymeleaf를 사용하는 경우
 document.addEventListener('DOMContentLoaded', () => {
     // Thymeleaf의 feelingList 변수 사용
     initializeCalendar(feelingList);
+});
+
+function calculatePaydayDday(payday) {
+    const today = new Date();
+    const currentYear = today.getFullYear();
+    const currentMonth = today.getMonth();
+
+    // 이번 달 월급일
+    let payDate = new Date(currentYear, currentMonth, payday);
+
+    // 만약 월급일이 오늘보다 이전이라면 다음 달로 설정
+    if (payDate <= today) {
+        payDate = new Date(currentYear, currentMonth + 1, payday);
+    }
+
+    // D-day 계산
+    const timeDiff = payDate.getTime() - today.getTime();
+    const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+    return `D-${daysDiff}`;
+}
+
+// 페이지 로드 시 실행
+document.addEventListener('DOMContentLoaded', () => {
+    const paydayElement = document.querySelector('.overview-content');
+    if (paydayElement && typeof payday !== 'undefined') {
+        paydayElement.innerHTML = calculatePaydayDday(payday);
+    }
 });
 
 function calculateTimeRemaining(startHour, endHour) {
