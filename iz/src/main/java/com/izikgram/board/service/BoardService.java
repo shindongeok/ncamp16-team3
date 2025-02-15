@@ -58,6 +58,26 @@ public class BoardService {
         return board;
     }
 
+    //자유/하소연 게시글 업데이트
+    public boolean modifyBoard(int board_id, String title, String content, int board_type) {
+        int result = 0;
+
+        if (board_type == 1) {
+            System.out.println("수정하는 타입(자유게시판) : " + title + " " + content);
+            result = boardMapper.updateFreeBoard(board_id, title, content);
+        } else if (board_type == 2) {
+            System.out.println("수정하는 타입(하소연게시판) : " + title + " " + content);
+            result = boardMapper.updateDiscontentBoard(board_id, title, content);
+        } else {
+            System.out.println("잘못된 board_type 값: " + board_type);
+            return false;
+        }
+
+        return result > 0; // 영향받은 행이 1개 이상이면 true 반환
+    }
+
+
+
     // reg_date를 "몇 분 전"으로 변환하는 메서드
     private String formatTimeDifference(String regDateStr) {
         try {
