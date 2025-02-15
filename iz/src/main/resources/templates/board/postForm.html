@@ -29,18 +29,16 @@
         <div class="border-b pb-2">
             <h2 class="text-4xl font-black" th:text="${board_name == '자유게시판' ? '자유글 작성하기' : (board_name == '하소연 게시판' ? '하소연 작성하기' : '잘못된 요청이다.')}"></h2>
         </div>
-        <form th:action="@{/board/{board_type}/post(board_type=${board_type})}" method="post">
-            <!-- board_type 값을 동적으로 URL에 포함시켜 전달 -->
-            <input type="hidden" name="board_type" th:value="${board_type}">
-
+        <form  th:action="@{/board/{board_type}/post(board_type=${board_type})}" method="post" onsubmit="return PostFormInsertBut()">
+<!--            <input type="hidden" name="board_id" th:value="${board_id}">-->
             <!-- writer_id는 세션에서 받아와서 히든 필드로 전달 -->
-            <input type="hidden" name="writer_id" th:value="hello">
+<!--            <input type="hidden"  name="writer_id" th:value="${writer_id}">-->
             <!-- 제목 입력 -->
-            <input type="text" name="title"  placeholder="제목 입력" class="border border-gray-300 rounded-md p-2 w-full my-5" maxlength="50">
+            <input type="text" id="writer_id" name="title"  placeholder="제목 입력" class="border border-gray-300 rounded-md p-2 w-full my-5" maxlength="50">
 
             <div class="h-100">
                 <!-- 내용 입력 -->
-                <textarea name="content" class="w-full h-full p-2 mt-2 border border-gray-300 rounded-xl text-gray-700 focus:outline-none resize-none"></textarea>
+                <textarea id="content" name="content" class="w-full h-full p-2 mt-2 border border-gray-300 rounded-xl text-gray-700 focus:outline-none resize-none"></textarea>
             </div>
 
             <div class="flex justify-center text-right mt-10 my-5 gap-6">
@@ -55,5 +53,7 @@
             </div>
         </form>
     </div>
+
+    <script th:src="@{/js/postDetail.js}"></script>
 </body>
 </html>
