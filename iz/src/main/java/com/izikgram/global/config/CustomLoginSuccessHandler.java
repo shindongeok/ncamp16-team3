@@ -28,8 +28,8 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler {
         User user = userMapper.findUserById(member_Id); // DB에서 사용자 정보 조회
 
         if (user != null) {
-            HttpSession session = request.getSession();
-            session.setAttribute("user", user); // 세션에 사용자 정보 저장
+//            HttpSession session = request.getSession();
+//            session.setAttribute("user", user); // 세션에 사용자 정보 저장
             log.info("로그인 성공!!!!!: {} -> /main 이동", user.getMember_id());
             log.info("사용자 정보 : {}", user);
             response.sendRedirect("/main"); // 로그인 성공 후 /main 페이지로 이동

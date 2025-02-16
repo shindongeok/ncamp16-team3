@@ -1,5 +1,7 @@
 package com.izikgram.user.controller;
 
+import com.izikgram.global.config.CustomUserDetails;
+import com.izikgram.global.config.CustomUserDetailsService;
 import com.izikgram.user.entity.User;
 import com.izikgram.user.service.UserService;
 import jakarta.servlet.http.HttpSession;
@@ -7,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +26,8 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @GetMapping("/register")
     public String register() {
@@ -126,118 +132,56 @@ public class UserController {
         return time;
     }
 
-    // 마이페이지
-//    @GetMapping("/mypage")
-//    public String mypage(HttpSession session) {
-//        User user = (User) session.getAttribute("user");
-//        log.info("User: {}", user);
-//        return "/user/mypage";
-//    }
     @GetMapping("/mypage")
-    public String mypage(Authentication authentication, Model model) {
-        // Authentication 객체에서 사용자 정보 가져오기
-        String member_id = authentication.getName(); // 로그인한 사용자 이름
-        User user = userService.getUserInfo(member_id); // 사용자 정보 조회
-        log.info("User = {}", user);
-
-        // 모델에 사용자 정보를 담아 뷰로 전달
-        model.addAttribute("user", user);
-
+    public String mypage() {
         return "/user/mypage";
     }
 
-
     //계정 관리
     @GetMapping("/accountManagement")
-    public String accountManagement(HttpSession session) {
-        User user = (User) session.getAttribute("user");
-        log.info("User: {}", user);
+    public String accountManagement() {
         return "/user/accountManagement";
     }
 
-    //개인 정보 수정
-//    @GetMapping("/update")
-//    public String update(HttpSession session, Model model) {
-//        User user = (User) session.getAttribute("user");
-//        model.addAttribute("user", user);
-//        return "/user/update";
-//    }
 
     @GetMapping("/update")
-    public String update(Authentication authentication, Model model) {
-        String member_id = authentication.getName();
-        User user = userService.getUserInfo(member_id);
-        log.info("User = {}", user);
-
-        model.addAttribute("user", user);
+    public String update() {
         return "/user/update";
     }
 
     @PostMapping("/update")
-    public String updateUser(User user, HttpSession session) {
-        User updatefield = (User) session.getAttribute("user");
+    public String updateUser(@AuthenticationPrincipal CustomUserDetails userDetails, User user) {
+        User loginUser = userDetails.getUser();
+        loginUser.setNickname(user.getNickname());
+        loginUser.setEmail(user.getEmail());
+        loginUser.setIntro(user.getIntro());
+        loginUser.setBirth_date(user.getBirth_date());
+        loginUser.setLoc_mod(user.getLoc_mod());
+        loginUser.setInd_cd(user.getInd_cd());
+        loginUser.setEdu_lv(user.getEdu_lv());
+        loginUser.setPayday(user.getPayday());
+        userService.updateUser(loginUser);
 
-        // 폼에서 전송된 데이터만 업데이트
-        updatefield.setNickname(user.getNickname());
-        updatefield.setEmail(user.getEmail());
-        updatefield.setIntro(user.getIntro());
-        updatefield.setBirth_date(user.getBirth_date());
-        updatefield.setLoc_mod(user.getLoc_mod());
-        updatefield.setInd_cd(user.getInd_cd());
-        updatefield.setEdu_lv(user.getEdu_lv());
-        updatefield.setPayday(user.getPayday());
-
-        userService.updateUser(updatefield);
-        log.info("변경된 User 객체 = {}", updatefield);
-        session.setAttribute("user", updatefield);
-
+        log.info("변경된 사용자 정보 : {}", loginUser);
         return "redirect:/main";
     }
 
 
     //비밀번호 확인(비밀번호 변경 클릭시)
     @GetMapping("/checkPwd")
-    public String checkPwd(HttpSession session) {
-        User user = (User) session.getAttribute("user");
-        System.out.println("세션비밀번호: " + user.getPassword());
-
-        log.info("User: {}", user);
+    public String checkPwd() {
         return "/user/checkPwd";
     }
 
     @PostMapping("/checkPwd")
-    public String verifyPassword(@RequestParam("password") String password, HttpSession session) {
-
-        User user = (User) session.getAttribute("user");
-        log.info("세션 유저: {}", user);
-
-        if (user != null) {
-            log.info("세션비밀번호: {}", user.getPassword());
+    public String verifyPassword(@AuthenticationPrincipal CustomUserDetails userDetails, User user,
+                                 @RequestParam("password") String password) {
+        if(passwordEncoder.matches(password, userDetails.getUser().getPassword())) {
+            log.info("사용자 현재 비밀번호: {}", userDetails.getUser().getPassword());
             log.info("입력한 비밀번호: {}", password);
-
-            if (user.getPassword().equals(password)) {
-                return "redirect:/user/updatePw";
-            } else {
-                return "redirect:/user/checkPwd";
-            }
-        }
-        return "redirect:/user/checkPwd";
-    }
-
-
-    @PostMapping("/updatePw")
-    public String updatePw(@RequestParam("password") String password, HttpSession session) {
-        // 세션에서 로그인된 사용자 정보 가져오기
-        User user = (User) session.getAttribute("user");
-
-        // 비밀번호 변경 로직 실행 1이면 변경 성공 0이면 실패
-        boolean isUpdated = userService.updateUserPw(user.getMember_id(), password);
-
-        if (isUpdated) {
-            session.invalidate(); // 비밀번호 변경 후 로그아웃
-            return "redirect:/"; // 성공 시 로그인 페이지로 이동
+            return "redirect:/user/updatePw";
         } else {
-            return "redirect:/user/updatePw"; // 실패 시 다시 비밀번호 변경 페이지
+            return "redirect:/user/checkPwd";
         }
     }
 
@@ -247,12 +191,21 @@ public class UserController {
         return "/user/updatePw";
     }
 
-    @PostMapping("/delete")
-    public String user_delete(HttpSession session) {
-        User user = (User) session.getAttribute("user");
-        log.info("User id: {}", user.getMember_id());
-        userService.deleteUser(user.getMember_id());
+    @PostMapping("/updatePw")
+    public String updatePw(@AuthenticationPrincipal CustomUserDetails userDetails, User user,
+                           @RequestParam("password") String newPassword) {
+        String encodedPassword = passwordEncoder.encode(newPassword);
+        User loginUser = userDetails.getUser();
+        loginUser.setPassword(encodedPassword);
+        userService.updateUserPw(loginUser.getPassword(), loginUser.getMember_id());
         return "redirect:/";
     }
 
+
+    @PostMapping("/delete")
+    public String user_delete(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        User loginUser = userDetails.getUser();
+        userService.deleteUser(loginUser.getMember_id());
+        return "redirect:/";
+    }
 }
