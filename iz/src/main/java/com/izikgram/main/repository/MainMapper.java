@@ -40,6 +40,14 @@ public interface MainMapper {
             @Param("date") String date
     );
 
+    @Select("SELECT stress_num, date FROM iz_member_stress_info " +
+            "WHERE member_id = #{member_id} " +
+            "AND DATE_FORMAT(date, '%Y-%m') = #{date}")
+    List<Map<String, Object>> getMonthlyStress(
+            @Param("member_id") String member_id,
+            @Param("date") String date
+    );
+
     @Select("SELECT payday FROM iz_member WHERE member_id = #{member_id}")
     int getPayday(@Param("member_id") String member_id);
 

@@ -49,7 +49,6 @@ function updateCalendar(feelingList = []) {
                 dateSpan.classList.add('bad');
             } else if (feelingNum >= -1 && feelingNum <= 1) {
                 // 보통인 경우 기본 스타일 유지 (클래스 추가 없음)
-                // 여기서는 다음으로 넘어감
             } else if (feelingNum >= 2 && feelingNum <= 5) {
                 dateSpan.classList.add('good');
             } else if (feelingNum >= 6) {
@@ -80,11 +79,6 @@ function initializeCalendar(feelingList = []) {
     scheduleNextUpdate();
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    // Thymeleaf의 feelingList 변수 사용
-    initializeCalendar(feelingList);
-});
-
 function calculatePaydayDday(payday) {
     const today = new Date();
     const currentYear = today.getFullYear();
@@ -104,14 +98,6 @@ function calculatePaydayDday(payday) {
 
     return `D-${daysDiff}`;
 }
-
-// 페이지 로드 시 실행
-document.addEventListener('DOMContentLoaded', () => {
-    const paydayElement = document.querySelector('.overview-content');
-    if (paydayElement && typeof payday !== 'undefined') {
-        paydayElement.innerHTML = calculatePaydayDday(payday);
-    }
-});
 
 function calculateTimeRemaining(startHour, endHour) {
     const now = new Date();
@@ -162,8 +148,49 @@ function updateCircleProgress(circle, progress) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Thymeleaf의 feelingList 변수 사용
+    initializeCalendar(feelingList);
+
+    const paydayElement = document.getElementById('payday');
+    if (paydayElement && typeof payday !== 'undefined') {
+        paydayElement.innerHTML = calculatePaydayDday(payday);
+    }
+
+    function calculateWeeklyAverageStress(stressList) {
+        const today = new Date();
+        const dayOfWeek = today.getDay();
+
+        const monday = new Date(today);
+        monday.setDate(today.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
+
+        const yesterday = new Date(today);
+        yesterday.setDate(today.getDate() - 1);
+
+        const weeklyStress = stressList.filter(item => {
+            const itemDate = new Date(item.date);
+            return itemDate >= monday && itemDate <= yesterday;
+        });
+
+        if (weeklyStress.length === 0) return 0;
+
+        const averageStress = weeklyStress.reduce((sum, item) => sum + item.stress_num, 0) / weeklyStress.length;
+        return Math.round(averageStress);
+    }
+
+    function displayWeeklyAverageStress() {
+        const averageStressElement = document.getElementById('stressNum');
+        const averageStress = calculateWeeklyAverageStress(stressList);
+
+        if (averageStressElement) {
+            averageStressElement.textContent = `${averageStress > 0 ? '+' : ''}${averageStress}%`;
+        }
+    }
+
+    displayWeeklyAverageStress();
+});
+
+document.addEventListener('DOMContentLoaded', () => {
     function updateAllProgress() {
-        // 시간 값 파싱
         const [startHour, startMinute] = startTime.split(':').map(Number);
         const [lunchHour, lunchMinute] = lunchTime.split(':').map(Number);
         const [endHour, endMinute] = endTime.split(':').map(Number);
@@ -171,41 +198,30 @@ document.addEventListener('DOMContentLoaded', () => {
         const circles = document.querySelectorAll('.progress-circle');
         const timeTexts = document.querySelectorAll('.time-text');
 
-        // 첫 번째 텍스트: 퇴근까지 남은 시간
         timeTexts[0].textContent = calculateTimeRemaining(startHour, endHour);
-
-        // 세 번째 텍스트: 점심까지 남은 시간
         timeTexts[2].textContent = calculateTimeRemaining(startHour, lunchHour);
 
         circles.forEach((circle, index) => {
             let progress;
             if (index === 0) {
-                // 첫 번째 원: 퇴근까지 전체 시간
                 progress = Math.round(calculateProgress(startHour, endHour));
             } else if (index === 1) {
-                // 두 번째 원: 퇴사 지수
                 progress = stressNum;
             } else if (index === 2) {
-                // 세 번째 원: 점심까지 시간
                 progress = Math.round(calculateProgress(startHour, lunchHour));
             }
 
-            // 각 원의 시작/종료 시간 업데이트
             circle.setAttribute('data-start', startHour);
             circle.setAttribute('data-end', index === 0 ? endHour : (index === 2 ? lunchHour : endHour));
 
             updateCircleProgress(circle, progress);
         });
 
-        // 두 번째 라벨의 텍스트를 stressNum으로 업데이트
         const stressText = document.querySelectorAll('.time-text')[1];
         stressText.textContent = `${stressNum > 0 ? '+' : ''}${stressNum}%`;
     }
 
-    // 초기 업데이트
     updateAllProgress();
-
-    // 1분마다 업데이트
     setInterval(updateAllProgress, 60000);
 });
 
@@ -220,37 +236,30 @@ const timeInputs = {
     workEnd: document.getElementById('workEndTime')
 };
 
-// 모달 열기
 settingsBtn.addEventListener('click', () => {
     modal.style.display = 'flex';
 });
 
-// 모달 닫기
 closeBtn.addEventListener('click', () => {
     modal.style.display = 'none';
 });
 
-// 모달 외부 클릭 시 닫기
 modal.addEventListener('click', (e) => {
     if (e.target === modal) {
         modal.style.display = 'none';
     }
 });
 
-// 시간 저장
 saveBtn.addEventListener('click', () => {
-    // 시간 값 가져오기
     const workStartTime = timeInputs.workStart.value;
     const lunchTime = timeInputs.lunch.value;
     const workEndTime = timeInputs.workEnd.value;
 
-    // 시간 유효성 검사
     if (!workStartTime || !lunchTime || !workEndTime) {
         alert('모든 시간을 입력해주세요.');
         return;
     }
 
-    // 원형 프로그레스바의 시작/종료 시간 업데이트
     const circles = document.querySelectorAll('.progress-circle');
     circles[0].setAttribute('data-start', workStartTime.split(':')[0]);
     circles[0].setAttribute('data-end', workEndTime.split(':')[0]);
@@ -259,9 +268,6 @@ saveBtn.addEventListener('click', () => {
     circles[2].setAttribute('data-start', workStartTime.split(':')[0]);
     circles[2].setAttribute('data-end', lunchTime.split(':')[0]);
 
-    // 진행률 다시 계산
     updateAllProgress();
-
-    // 모달 닫기
     modal.style.display = 'none';
 });

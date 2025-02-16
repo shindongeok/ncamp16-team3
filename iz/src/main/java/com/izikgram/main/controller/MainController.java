@@ -42,6 +42,12 @@ public class MainController {
         int payday = mainService.getPayday(user.getMember_id());
         model.addAttribute("payday", payday);
 
+        // 월별 스트레스 지수 list 가져오기
+        List<Map<String, Object>> stressList = mainService.getMonthlyFeeling(
+                user.getMember_id(),
+                now.format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM"))
+        );
+        model.addAttribute("stressList", stressList);
 
         // 남은 시간 그래프 설정
         String startTime = mainService.getStartTime(user.getMember_id());
