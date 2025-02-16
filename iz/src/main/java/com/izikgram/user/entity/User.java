@@ -26,4 +26,6 @@ public class User {
     // 학력조건
     private String edu_lv;
 
+
+
 }

@@ -4,6 +4,7 @@ import com.izikgram.user.entity.User;
 import com.izikgram.user.repository.UserMapper;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -12,8 +13,12 @@ public class UserService {
     @Autowired
     private UserMapper userMapper;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
 
     public void register(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userMapper.insertUser(user);
     }
 
@@ -40,12 +45,8 @@ public class UserService {
         //session.removeAttribute("user");
     }
 
-    public boolean updateUserPw(String memberId, String rawPassword) {
-        // 비밀번호 업데이트
-        int updatedRows = userMapper.updateUserPw(rawPassword, memberId);
-
-        // 업데이트 성공 여부 반환
-        return updatedRows > 0;
+    public void updateUserPw(String encodedPassword, String memberId) {
+        userMapper.updateUserPw(encodedPassword, memberId);
     }
 
     public String findId(String name) {

@@ -1,10 +1,7 @@
 package com.izikgram.board.repository;
 
 import com.izikgram.board.entity.Board;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -60,6 +57,28 @@ public interface BoardMapper {
 
     //글작성 하기
     //insertPost 빨간색인데 무시해도 되는거 같아요..
+    /*
+    DELIMITER $$
+
+    CREATE PROCEDURE insertPost(
+            IN p_writer_id VARCHAR(50),
+    IN p_title VARCHAR(255),
+    IN p_content TEXT,
+    IN p_board_type INT
+    )
+    BEGIN
+    -- 조건에 맞는 테이블에 삽입
+    IF p_board_type = 1 THEN
+    INSERT INTO iz_board01 (writer_id, title, content, board_type)
+    VALUES (p_writer_id, p_title, p_content, p_board_type);
+    ELSEIF p_board_type = 2 THEN
+    INSERT INTO iz_board02 (writer_id, title, content, board_type)
+    VALUES (p_writer_id, p_title, p_content, p_board_type);
+    END IF;
+    END $$
+
+    DELIMITER ;
+     */
     @Insert("CALL insertPost(#{writer_id}, #{title}, #{content}, #{board_type})")
     void insertPost(@Param("writer_id") String writer_id, @Param("title") String title, @Param("content") String content,
                     @Param("board_type") int board_type);
@@ -75,5 +94,30 @@ public interface BoardMapper {
             "    WHERE b2.board_type = #{board_type} AND b2.board_id = #{board_id} " +
             ") AS board ")
     Board selectBoard(@Param("board_id") int board_id, @Param("board_type") int board_type);
+
+
+    //자유게시글 업데이트
+    @Update("UPDATE iz_board01 " +
+            "SET " +
+            "    title = #{title}, " +
+            "    content = #{content}, " +
+            "    reg_date = current_timestamp " +
+            "WHERE " +
+            "    board_id = #{board_id} ")
+    int updateFreeBoard(@Param("board_id") int board_id,
+                          @Param("title") String title,
+                          @Param("content")String content);
+
+    //하소연게시글 업데이트
+    @Update("UPDATE iz_board02 " +
+            "SET " +
+            "    title = #{title}, " +
+            "    content = #{content}, " +
+            "    reg_date = current_timestamp " +
+            "WHERE " +
+            "    board_id = #{board_id} ")
+    int updateDiscontentBoard(@Param("board_id") int board_id,
+                                @Param("title") String title,
+                                @Param("content")String content);
 
 }
