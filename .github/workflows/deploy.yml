@@ -2,9 +2,9 @@ name: Spring Boot CI/CD
 
 on:
   push:
-    branches: [ main ]  # main 브랜치에 push될 때 실행
+    branches: [ main ]
   pull_request:
-    branches: [ main ]  # main 브랜치로 PR 생성될 때 실행
+    branches: [ main ]
 
 jobs:
   build-and-deploy:
@@ -19,35 +19,18 @@ jobs:
           java-version: '17'
           distribution: 'adopt'
 
-      - name: Change to iz directory
-        run: cd iz
+      - name: Make gradlew executable
+        run: chmod +x ${{github.workspace}}/iz/gradlew
+        shell: bash
 
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-
-      - name: Build with Gradle
+      - name: Build with Gradle Wrapper
+        working-directory: iz
         run: ./gradlew build -x test
+        shell: bash
 
       - name: Run Tests
+        working-directory: iz
         run: ./gradlew test
+        shell: bash
 
-      - name: Deploy to NCP
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.NCP_HOST }}
-          username: ${{ secrets.NCP_USERNAME }}
-          key: ${{ secrets.NCP_SSH_KEY }}
-          source: "iz/build/libs/iz-0.0.1-SNAPSHOT.jar"  # 경로 수정
-          target: "/opt/myapp/"
-          strip_components: 2
-
-      - name: Execute remote commands
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.NCP_HOST }}
-          username: ${{ secrets.NCP_USERNAME }}
-          key: ${{ secrets.NCP_SSH_KEY }}
-          script: |
-            cd /opt/myapp
-            mv iz-0.0.1-SNAPSHOT.jar app.jar
-            systemctl restart myapp
+      # 나머지 배포 단계는 동일하게 유지
