@@ -269,6 +269,7 @@
     <script>
         $("#checkButton").click(function() {
             let memberId = $("#member_id").val();
+            console.log(memberId);
             if (memberId == "") {
                 $("#modalTitle").text("아이디 공백!")
                 $("#modalIcon").html(
@@ -284,6 +285,7 @@
                 url: "/user/checkId/" + memberId,
                 type: "GET",
                 success: function(response) {
+                    console.log(response);
                     if (!response.exist) {
                         $("#modalTitle").text("사용 가능한 아이디!")
                         $("#modalIcon").html("<img width=\"48\" height=\"48\" src=\"https://img.icons8.com/color/48/checked-checkbox.png\" alt=\"checked-checkbox\"/>")
