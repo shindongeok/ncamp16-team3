@@ -119,32 +119,30 @@
 
     <script>
         $("#loginForm").submit(function(event) {
-            event.preventDefault(); // 기본 제출 방지
-
-            let formData = {
-                member_id: $("#member_id").val(),
-                password: $("#password").val()
-            };
+            event.preventDefault(); // 기본 제출 동작 방지
 
             $.ajax({
                 type: "POST",
                 url: "/login",
-                data: formData,
-                success: function(response) {
-                    window.location.href = "/main"; // 로그인 성공 시 페이지 이동
+                data: $(this).serialize(), // form 데이터를 URL 인코딩 형식으로 변환
+                contentType: "application/x-www-form-urlencoded",
+                success: function() {
+                    window.location.href = "/main"; // 로그인 성공 시 이동
                 },
                 error: function(xhr) {
-                    let errorMessage = xhr.responseJSON?.message || "로그인 실패";
-                    $("#modalTitle").text("로그인 실패");
-                    $("#modalMessage").text(errorMessage);
-                    $("#Modal").show(); // 모달 표시
+                    if (xhr.status === 401) {
+                        const response = JSON.parse(xhr.responseText);
+                        $("#modalTitle").text(response.title);
+                        $("#modalMessage").text(response.message);
+                        $("#Modal").show();
+                    }
                 }
             });
-
-            $(".closeBtn").click(function () {
-                $("#Modal").hide();
-            })
         });
+
+        $(".closeBtn").click(function () {
+            $("#Modal").hide();
+        })
     </script>
 </div>
 </body>

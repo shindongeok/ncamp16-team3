@@ -1,5 +1,6 @@
 package com.izikgram.global.config;
 
+import com.izikgram.user.controller.CustomLoginSuccessHandler;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -44,7 +45,8 @@ public class SecurityConfig {
                         .failureHandler((request, response, exception) -> {
                             response.setContentType("application/json;charset=UTF-8");
                             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                            response.getWriter().write("{\"message\": \"아이디 또는 비밀번호가 올바르지 않습니다.\"}");
+                            String jsonResponse = "{\"title\": \"로그인 실패!\", \"message\": \"아이디 또는 비밀번호가 올바르지 않습니다.\"}";
+                            response.getWriter().write(jsonResponse);
                         })
                         .permitAll()
                 )
