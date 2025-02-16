@@ -73,14 +73,14 @@
                     <span class="overview-icon">💸</span>
                     <div class="overview-subtitle">월급까지</div>
                 </div>
-                <div class="overview-content"></div>
+                <div class="overview-content" id="payday"></div>
             </div>
             <div class="overview-card">
                 <div class="overview-header">
                     <span class="overview-icon">📉</span>
                     <div class="overview-subtitle">이번주 평균 퇴사지수</div>
                 </div>
-                <div class="overview-content">+58%</div>
+                <div class="overview-content" id="stressNum"></div>
             </div>
         </div>
     </div>
@@ -228,6 +228,7 @@
 <script th:inline="javascript">
     var feelingList = /*[[${feelingList}]]*/ [];
     var payday = /*[[${payday}]]*/ 15; // 기본값 설정 (서버에서 받은 값 사용)
+    var stressList = /*[[${stressList}]]*/ [];
     var startTime = /*[[${startTime}]]*/ '09:00';
     var lunchTime = /*[[${lunchTime}]]*/ '12:00';
     var endTime = /*[[${endTime}]]*/ '18:00';

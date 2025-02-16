@@ -20,11 +20,16 @@ public class MainService {
 
     public List<Map<String, Object>> getMonthlyFeeling(String member_id, String date) {
         List<Map<String, Object>> feelingList = mainMapper.getMonthlyFeeling(member_id, date);
-        System.out.println("feelingList size: " + feelingList.size());
-        for (Map<String, Object> feeling : feelingList) {
-            System.out.println("feeling: " + feeling);
-        }
         return feelingList;
+    }
+
+    public List<Map<String, Object>> getMonthlyStress(String member_id, String date) {
+        List<Map<String, Object>> stressList = mainMapper.getMonthlyStress(member_id, date);
+        System.out.println("stressList size: " + stressList.size());
+        for (Map<String, Object> stress : stressList) {
+            System.out.println("stress: " + stress);
+        }
+        return stressList;
     }
 
     public int getPayday(String member_id) {
