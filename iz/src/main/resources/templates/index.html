@@ -31,7 +31,7 @@
         <img th:src="@{/images/izikgram.png}" class="mx-auto relative z-3 bottom-10 w-50 "/>
     </div>
     <div class="sm:mx-auto sm:w-full sm:max-w-sm rounded-md outline text-gray-300 p-8 pb-10 mb-20">
-        <form id="loginForm" class="space-y-6">
+        <form id="loginForm" class="space-y-6" action="/login" method="post">
 <!--            <input type="hidden" name="_csrf" th:value="${_csrf.token}">-->
             <div>
                 <label for="member_id" class="block text-lg/6 text-gray-900">아이디</label>
@@ -119,32 +119,30 @@
 
     <script>
         $("#loginForm").submit(function(event) {
-            event.preventDefault(); // 기본 제출 방지
-
-            let formData = {
-                member_id: $("#member_id").val(),
-                password: $("#password").val()
-            };
+            event.preventDefault(); // 기본 제출 동작 방지
 
             $.ajax({
                 type: "POST",
                 url: "/login",
-                data: formData,
-                success: function(response) {
-                    window.location.href = "/main"; // 로그인 성공 시 페이지 이동
+                data: $(this).serialize(), // form 데이터를 URL 인코딩 형식으로 변환
+                contentType: "application/x-www-form-urlencoded",
+                success: function() {
+                    window.location.href = "/main"; // 로그인 성공 시 이동
                 },
                 error: function(xhr) {
-                    let errorMessage = xhr.responseJSON?.message || "로그인 실패";
-                    $("#modalTitle").text("로그인 실패");
-                    $("#modalMessage").text(errorMessage);
-                    $("#Modal").show(); // 모달 표시
+                    if (xhr.status === 401) {
+                        const response = JSON.parse(xhr.responseText);
+                        $("#modalTitle").text(response.title);
+                        $("#modalMessage").text(response.message);
+                        $("#Modal").show();
+                    }
                 }
             });
-
-            $(".closeBtn").click(function () {
-                $("#Modal").hide();
-            })
         });
+
+        $(".closeBtn").click(function () {
+            $("#Modal").hide();
+        })
     </script>
 </div>
 </body>
