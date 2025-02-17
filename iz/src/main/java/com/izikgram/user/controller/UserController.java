@@ -54,10 +54,17 @@ public class UserController {
         return "/user/findId";
     }
 
-    @PostMapping("/findId")
-    public String findId(String name, Model model) {
-        String id = userService.findId(name);
-        model.addAttribute("member_id", id);
+//    @PostMapping("/findId")
+//    public String findId(String name, Model model) {
+//        String id = userService.findId(name);
+//        model.addAttribute("member_id", id);
+//        return "/user/findIdResult";
+//    }
+
+    @GetMapping("/findIdResult")
+    public String findIdResult(@RequestParam String phone_num, Model model) {
+        String member_id = userService.findUserByPhoneNumber(phone_num);
+        model.addAttribute("member_id", member_id);
         return "/user/findIdResult";
     }
 
