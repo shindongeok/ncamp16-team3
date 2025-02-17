@@ -32,6 +32,8 @@ public class UserController {
 
     @PostMapping("/register")
     public String register(User user) {
+//        log.info("payday: {}", user.getPayday());
+//        log.info("user: {}", user);
         timeSubstring(user);
 
         userService.register(user);
@@ -97,6 +99,7 @@ public class UserController {
         String startTime = user.getStart_time();
         String endTime = user.getEnd_time();
         String lunchTime = user.getLunch_time();
+//        log.info("startTime : {}, endTime : {}, lunchTime : {}", startTime, endTime, lunchTime);
 
         startTime = AmPm(startTime);
         endTime = AmPm(endTime);
