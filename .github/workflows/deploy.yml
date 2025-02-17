@@ -1,41 +1,49 @@
 name: Spring Boot CI/CD
+
 on:
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+
       - name: Set up JDK 17
         uses: actions/setup-java@v2
         with:
           java-version: '17'
           distribution: 'adopt'
+
       - name: Make gradlew executable
         run: chmod +x ${{github.workspace}}/iz/gradlew
         shell: bash
+
       - name: Build with Gradle Wrapper
         working-directory: iz
         run: ./gradlew build -x test
         shell: bash
+
       - name: Run Tests
         working-directory: iz
         run: ./gradlew test
         shell: bash
+
       - name: Deploy to NCP
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.NCP_HOST }}
           username: ${{ secrets.NCP_USERNAME }}
-          key: ${{ secrets.NCP_SSH_PRIVATE_KEY }}
+          password: ${{ secrets.NCP_SSH_PASSWORD }}
           script: |
+            echo "Connected successfully"
             mkdir -p ~/app
             cd ~/app
             # JAR 파일 전송 (아래 경로는 실제 JAR 파일 위치에 맞게 수정해야 함)
             scp ${{github.workspace}}/iz/build/libs/*.jar .
             # 기존 프로세스 종료 및 새 JAR 실행
-            pkill -f 'java -jar'
+            pkill -f 'java -jar' || true
             nohup java -jar *.jar > app.log 2>&1 &
