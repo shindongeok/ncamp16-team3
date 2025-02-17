@@ -51,30 +51,22 @@ jobs:
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.NCP_HOST }}
-          username: root  # root 계정 사용
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}  # SSH 키 인증
+          username: root
+          key: ${{ secrets.SSH_PRIVATE_KEY }}  # 비공개 키를 사용
           script: |
             echo "Connected successfully"
             mkdir -p ~/app
             cd ~/app
-
-            # SSH 키 검증 비활성화
-            export RSYNC_RSH="ssh -o StrictHostKeyChecking=no"
-
             echo "Copying JAR file..."
-            rsync -avz -e "ssh -o StrictHostKeyChecking=no" ${{ github.workspace }}/iz/build/libs/iz-0.0.1-SNAPSHOT.jar root@${{ secrets.NCP_HOST }}:~/app/
-
+            rsync -avz -e "ssh -o StrictHostKeyChecking=no" $GITHUB_WORKSPACE/iz/build/libs/iz-0.0.1-SNAPSHOT.jar root@${{ secrets.NCP_HOST }}:~/app/
             echo "Verifying file copy..."
             ls -l ~/app/
-
             echo "Stopping existing application..."
             pkill -f 'iz-0.0.1-SNAPSHOT.jar' || true
-
             echo "Starting new application..."
             nohup java -jar iz-0.0.1-SNAPSHOT.jar > app.log 2>&1 &
-
             echo "Checking if the application is running..."
             sleep 5
             ps aux | grep 'iz-0.0.1-SNAPSHOT.jar'
-
             echo "Application started"
+
