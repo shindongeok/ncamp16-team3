@@ -60,8 +60,8 @@ public interface MainMapper {
     @Select("SELECT end_time FROM iz_member WHERE member_id = #{member_id}")
     String getEndTime(@Param("member_id") String member_id);
 
-    @Select("SELECT stress_num FROM iz_member_stress_info " +
+    @Select("SELECT NULLIF(stress_num, 0) as stress_num FROM iz_member_stress_info " +  // NULLIF 추가
             "WHERE member_id = #{member_id} " +
             "AND DATE_FORMAT(date, '%Y-%m-%d') = DATE_FORMAT(NOW(), '%Y-%m-%d')")
-    int getStressNum(@Param("member_id") String member_id);
+    Integer getStressNum(@Param("member_id") String member_id);  // int -> Integer로 변경
 }

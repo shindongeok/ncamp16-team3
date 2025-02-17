@@ -124,7 +124,7 @@ function calculateWeeklyAverageStress(monthlyStressList) {
         return itemDate >= mondayStr && itemDate <= todayStr;
     });
 
-    if (weeklyStress.length === 0) return 0;
+    if (weeklyStress.length === 0) return null;
 
     const sum = weeklyStress.reduce((acc, item) => acc + Number(item.stress_num), 0);
     const average = sum / weeklyStress.length;
@@ -185,9 +185,17 @@ document.addEventListener('DOMContentLoaded', () => {
     // 주간 평균 스트레스 계산 및 표시
     const weeklyAverageStress = calculateWeeklyAverageStress(monthlyStressList);
     const stressElement = document.getElementById('weeklyStressNum');
+    const noDataMessage = stressElement.parentElement.querySelector('.no-data-message');
+
     if (stressElement) {
-        const sign = weeklyAverageStress > 0 ? '+' : '';
-        stressElement.innerHTML = `${sign}${weeklyAverageStress}%`;
+        if (weeklyAverageStress === null) {
+            noDataMessage.style.display = 'block';
+            stressElement.innerHTML = '0%';
+        } else {
+            noDataMessage.style.display = 'none';
+            const sign = weeklyAverageStress > 0 ? '+' : '';
+            stressElement.innerHTML = `${sign}${weeklyAverageStress}%`;
+        }
     }
 
     // 진행 상태 업데이트 시작
