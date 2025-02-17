@@ -22,15 +22,25 @@ jobs:
         run: chmod +x ${{github.workspace}}/iz/gradlew
         shell: bash
 
+      - name: Debug workspace
+        run: |
+          echo "Workspace: ${{ github.workspace }}"
+          ls -R ${{ github.workspace }}
+
       - name: Build with Gradle Wrapper
         working-directory: iz
-        run: ./gradlew build -x test
+        run: ./gradlew build
         shell: bash
 
       - name: Run Tests
         working-directory: iz
         run: ./gradlew test
         shell: bash
+
+      - name: Debug build directory
+        run: |
+          echo "Build directory contents:"
+          ls -R ${{ github.workspace }}/iz/build/libs
 
       - name: Deploy to NCP
         uses: appleboy/ssh-action@master
@@ -42,8 +52,12 @@ jobs:
             echo "Connected successfully"
             mkdir -p ~/app
             cd ~/app
-            # JAR 파일 전송 (아래 경로는 실제 JAR 파일 위치에 맞게 수정해야 함)
-            scp ${{github.workspace}}/iz/build/libs/*.jar .
-            # 기존 프로세스 종료 및 새 JAR 실행
+            echo "Copying JAR file..."
+            scp ${{github.workspace}}/iz/build/libs/iz-0.0.1-SNAPSHOT.jar .
+            echo "Listing app directory:"
+            ls -l
+            echo "Stopping existing application..."
             pkill -f 'java -jar' || true
-            nohup java -jar *.jar > app.log 2>&1 &
+            echo "Starting new application..."
+            nohup java -jar iz-0.0.1-SNAPSHOT.jar > app.log 2>&1 &
+            echo "Application started"
