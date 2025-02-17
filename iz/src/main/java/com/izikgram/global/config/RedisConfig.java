@@ -20,7 +20,7 @@ public class RedisConfig {
         template.setKeySerializer(new StringRedisSerializer());
         template.setValueSerializer(new StringRedisSerializer());
 
-        log.info("template: {}", template);
+//        log.info("template: {}", template);
         return template;
     }
 }
