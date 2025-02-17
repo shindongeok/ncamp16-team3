@@ -107,16 +107,17 @@
         });
     </script>
 </head>
-<body class="h-full font-roboto mobile-container">
+<body class="h-full font-roboto mobile-container relative">
+<header th:replace="~{/header :: header} " class="pt-4"></header><br><br>
+<footer th:replace="~{/footer :: footer}" class="pt-4"></footer>
 <div class="flex items-center justify-center">
     <div class="flex flex-col items-center w-full max-w-sm px-6 py-12">
         <div class="relative w-full flex flex-col items-center mb-10">
-            <img src="/images/izikgram.png" th:src="@{/images/izikgram.png}" alt="Logo" class="mx-auto relative z-3 bottom-10 w-50 "/>
-            <div class="absolute -bottom-5 w-[600px] h-[300px] bg-gray-100 rounded-b-[300px]"
+            <div class="absolute -bottom-40 w-[600px] h-[300px] bg-gray-100 rounded-b-[300px]"
                  style="background-color: var(--color-main-sky-basic);"></div>
 
             <!-- 게이지와 프로필 이미지를 포함하는 컨테이너 -->
-            <div class="absolute top-25 flex items-center justify-center mt-5">
+            <div class="absolute top-15 flex items-center justify-center">
                 <!-- SVG 게이지 - 크기를 조정하고 중앙 정렬 -->
                 <svg width="230" height="230" viewBox="0 0 230 230" class="absolute" style="z-index: 1;">
                     <!-- 배경 원 (전체 게이지 틀) -->
@@ -155,7 +156,7 @@
             </div>
         </div>
 
-        <div class="mt-6 text-center mt-15 w-100">
+        <div class="mt-6 text-center mt-44 w-100">
             <div class="mt-6 text-center mt-15">
                 <div sec:authorize="isAuthenticated()">
                     <div th:text="${#authentication.getPrincipal().getUser().getNickname()}">phone123</div>
