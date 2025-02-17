@@ -1,6 +1,5 @@
-package com.izikgram.user.service;
+package com.izikgram.global.security;
 
-import com.izikgram.global.config.CustomUserDetails;
 import com.izikgram.user.entity.User;
 import com.izikgram.user.repository.UserMapper;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,16 +18,10 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String member_id) throws UsernameNotFoundException {
-        User user = userMapper.findUserById(member_id);
+        User user = userMapper.getUserInfo(member_id);
         if (user == null) {
             throw new UsernameNotFoundException("User not found: " + member_id);
         }
-
-        // return org.springframework.security.core.userdetails.User
-        //         .withUsername(user.getMember_id())
-        //         .password("{noop}" + user.getPassword())
-        //         .build();
-
         return new CustomUserDetails(user);
     }
 }
