@@ -82,7 +82,8 @@
                     <span class="overview-icon">📉</span>
                     <div class="overview-subtitle">이번주 평균 퇴사지수</div>
                 </div>
-                <div class="overview-content" id="stressNum"></div>
+                <div class="no-data-message" style="display: none; color: #666; font-size: 0.875rem; margin-bottom: 0.5rem;">데이터가 없습니다</div>
+                <div class="overview-content" id="weeklyStressNum"></div>
             </div>
         </div>
     </div>
@@ -223,6 +224,12 @@
 <script th:inline="javascript">
     // Spring Security를 통해 전달받은 데이터를 전역 변수로 설정
     const feelingList = /*[[${@mainService.getMonthlyFeeling(
+        #authentication.principal.user.member_id,
+        T(java.time.LocalDate).now().format(T(java.time.format.DateTimeFormatter).ofPattern('yyyy-MM'))
+    )}]]*/ [];
+
+    // 월별 stressNum 데이터 추가
+    const monthlyStressList = /*[[${@mainService.getMonthlyStress(
         #authentication.principal.user.member_id,
         T(java.time.LocalDate).now().format(T(java.time.format.DateTimeFormatter).ofPattern('yyyy-MM'))
     )}]]*/ [];

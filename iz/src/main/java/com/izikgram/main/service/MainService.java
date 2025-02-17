@@ -48,7 +48,8 @@ public class MainService {
         return mainMapper.getEndTime(member_id);
     }
 
-    public int getStressNum(String member_id) {
-        return mainMapper.getStressNum(member_id);
+    public Integer getStressNum(String member_id) {  // int -> Integer로 변경
+        Integer stressNum = mainMapper.getStressNum(member_id);
+        return stressNum;  // null이 반환될 수 있음
     }
 }

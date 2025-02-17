@@ -3,6 +3,7 @@ package com.izikgram.user.controller;
 import com.izikgram.global.security.CustomUserDetails;
 import com.izikgram.user.entity.User;
 import com.izikgram.user.service.UserService;
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -64,9 +65,11 @@ public class UserController {
 //    }
 
     @GetMapping("/findIdResult")
-    public String findIdResult(@RequestParam String phone_num, Model model) {
-        String member_id = userService.findUserByPhoneNumber(phone_num);
-        model.addAttribute("member_id", member_id);
+    public String findIdResult(HttpSession session) {
+        String phoneNum = (String) session.getAttribute("phone_num");
+        String member_id = userService.findUserByPhoneNumber(phoneNum);
+        session.setAttribute("member_id", member_id);
+//        log.info("findIdResult: phoneNum={}, member_id={}", phoneNum, member_id);
         return "/user/findIdResult";
     }
 

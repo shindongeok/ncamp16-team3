@@ -1,10 +1,9 @@
 package com.izikgram.user.controller;
 
 import com.izikgram.user.service.AuthService;
-import com.izikgram.user.service.UserService;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,10 +34,11 @@ public class AuthController {
 //    }
 
     @PostMapping("/verify")
-    public String verifyCode(@RequestParam String phone_num, @RequestParam String auth_num) {
-        log.info("phone_num: {}, code: {}", phone_num, auth_num);
+    public String verifyCode(@RequestParam String phone_num, @RequestParam String auth_num, HttpSession session) {
         if (authService.verifyCode(phone_num, auth_num)) {
-            return phone_num;
+            log.info("/vefiry -> phone_num: {}, code: {}", phone_num, auth_num);
+            session.setAttribute("phone_num", phone_num);
+            return "성공";
         } else {
             return "실패";
         }
