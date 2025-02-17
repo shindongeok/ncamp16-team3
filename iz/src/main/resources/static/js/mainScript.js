@@ -1,7 +1,3 @@
-// 타임리프에서 전달받은 데이터 활용
-// Thymeleaf를 통해 전달된 변수들은 HTML의 inline script에서 선언됨
-// feelingList, payday, stressList, startTime, lunchTime, endTime, stressNum
-
 // 캘린더 관련 함수들
 function updateCalendar(feelingList = []) {
     const today = new Date();
@@ -36,6 +32,7 @@ function updateCalendar(feelingList = []) {
         });
 
         if (feelingData) {
+            dateSpan.classList.remove('verybad', 'bad', 'good', 'verygood');
             const feelingNum = feelingData.feeling_num;
             if (feelingNum <= -6) dateSpan.classList.add('verybad');
             else if (feelingNum >= -5 && feelingNum <= -2) dateSpan.classList.add('bad');
@@ -113,12 +110,62 @@ function updateCircleProgress(circle, progress) {
     dot.setAttribute('cy', y);
 }
 
-// 페이지 로드 시 실행되는 초기화 함수들
+function calculateWeeklyAverageStress(monthlyStressList) {
+    const today = new Date();
+    const monday = new Date(today);
+    const diff = today.getDay() === 0 ? 6 : today.getDay() - 1;
+    monday.setDate(today.getDate() - diff);
+
+    const mondayStr = monday.toISOString().split('T')[0];
+    const todayStr = today.toISOString().split('T')[0];
+
+    const weeklyStress = monthlyStressList.filter(item => {
+        const itemDate = item.date;
+        return itemDate >= mondayStr && itemDate <= todayStr;
+    });
+
+    if (weeklyStress.length === 0) return 0;
+
+    const sum = weeklyStress.reduce((acc, item) => acc + Number(item.stress_num), 0);
+    const average = sum / weeklyStress.length;
+
+    return Math.round(average);
+}
+
+function updateAllProgress() {
+    const [startHour, startMinute] = startTime.split(':').map(Number);
+    const [lunchHour, lunchMinute] = lunchTime.split(':').map(Number);
+    const [endHour, endMinute] = endTime.split(':').map(Number);
+
+    const circles = document.querySelectorAll('.progress-circle');
+    const timeTexts = document.querySelectorAll('.time-text');
+
+    timeTexts[0].textContent = calculateTimeRemaining(startHour, endHour);
+    timeTexts[2].textContent = calculateTimeRemaining(startHour, lunchHour);
+
+    circles.forEach((circle, index) => {
+        let progress;
+        if (index === 0) {
+            progress = Math.round(calculateProgress(startHour, endHour));
+        } else if (index === 1) {
+            progress = stressNum;
+        } else if (index === 2) {
+            progress = Math.round(calculateProgress(startHour, lunchHour));
+        }
+
+        updateCircleProgress(circle, progress);
+    });
+
+    const stressText = document.querySelectorAll('.time-text')[1];
+    stressText.textContent = `${stressNum > 0 ? '+' : ''}${stressNum}%`;
+}
+
+// 초기화 및 이벤트 리스너
 document.addEventListener('DOMContentLoaded', () => {
     // 캘린더 초기화
     initializeCalendar(feelingList);
 
-    // 월급일 D-day 계산
+    // 월급일 D-day 계산 및 표시
     const paydayElement = document.getElementById('payday');
     if (paydayElement) {
         const today = new Date();
@@ -135,40 +182,20 @@ document.addEventListener('DOMContentLoaded', () => {
         paydayElement.innerHTML = `D-${daysDiff}`;
     }
 
-    // 스트레스 지수 업데이트
-    function updateAllProgress() {
-        const [startHour, startMinute] = startTime.split(':').map(Number);
-        const [lunchHour, lunchMinute] = lunchTime.split(':').map(Number);
-        const [endHour, endMinute] = endTime.split(':').map(Number);
-
-        const circles = document.querySelectorAll('.progress-circle');
-        const timeTexts = document.querySelectorAll('.time-text');
-
-        timeTexts[0].textContent = calculateTimeRemaining(startHour, endHour);
-        timeTexts[2].textContent = calculateTimeRemaining(startHour, lunchHour);
-
-        circles.forEach((circle, index) => {
-            let progress;
-            if (index === 0) {
-                progress = Math.round(calculateProgress(startHour, endHour));
-            } else if (index === 1) {
-                progress = stressNum;
-            } else if (index === 2) {
-                progress = Math.round(calculateProgress(startHour, lunchHour));
-            }
-
-            updateCircleProgress(circle, progress);
-        });
-
-        const stressText = document.querySelectorAll('.time-text')[1];
-        stressText.textContent = `${stressNum > 0 ? '+' : ''}${stressNum}%`;
+    // 주간 평균 스트레스 계산 및 표시
+    const weeklyAverageStress = calculateWeeklyAverageStress(monthlyStressList);
+    const stressElement = document.getElementById('weeklyStressNum');
+    if (stressElement) {
+        const sign = weeklyAverageStress > 0 ? '+' : '';
+        stressElement.innerHTML = `${sign}${weeklyAverageStress}%`;
     }
 
+    // 진행 상태 업데이트 시작
     updateAllProgress();
     setInterval(updateAllProgress, 60000);
 });
 
-// 모달 관련 이벤트 핸들러
+// 모달 관련 코드
 const modal = document.getElementById('timeSettingsModal');
 const settingsBtn = document.querySelector('.time-settings-btn');
 const closeBtn = document.querySelector('.close-modal-btn');
