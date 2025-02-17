@@ -2,75 +2,58 @@ name: Spring Boot CI/CD
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
   pull_request:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
       - name: Set up JDK 17
         uses: actions/setup-java@v2
         with:
           java-version: '17'
-          distribution: 'adopt'
+          distribution: 'adoptopenjdk'
 
       - name: Make gradlew executable
-        run: chmod +x ${{ github.workspace }}/iz/gradlew
-        shell: bash
+        run: chmod +x gradlew
 
-      - name: Debug workspace
-        run: |
-          echo "Workspace: ${{ github.workspace }}"
-          ls -R ${{ github.workspace }}
-
-      - name: Build with Gradle Wrapper
-        working-directory: iz
+      - name: Build with Gradle
         run: ./gradlew build
-        shell: bash
+        working-directory: iz
 
       - name: Run Tests
-        working-directory: iz
         run: ./gradlew test
-        shell: bash
+        working-directory: iz
 
       - name: Debug build directory
         run: |
           echo "Build directory contents:"
           ls -R ${{ github.workspace }}/iz/build/libs
 
-      - name: Deploy to NCP
-        uses: appleboy/ssh-action@master
+      - name: Set up SSH for deployment
+        uses: webfactory/ssh-agent@v0.5.3
         with:
-          host: ${{ secrets.NCP_HOST }}
-          username: ${{ secrets.NCP_USERNAME }}  # root 계정 사용
-          password: ${{ secrets.NCP_SSH_PASSWORD }}
-          script: |
-            echo "Connected successfully"
-            mkdir -p ~/app
-            cd ~/app
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-            # SSH 키 검증 비활성화
-            export RSYNC_RSH="ssh -o StrictHostKeyChecking=no"
-
-            echo "Copying JAR file..."
-            rsync -avz -e "ssh -o StrictHostKeyChecking=no" $GITHUB_WORKSPACE/iz/build/libs/iz-0.0.1-SNAPSHOT.jar root@${{ secrets.NCP_HOST }}:~/app/
-
-            echo "Verifying file copy..."
-            ls -l ~/app/
-
-            echo "Stopping existing application..."
-            pkill -f 'iz-0.0.1-SNAPSHOT.jar' || true
-
-            echo "Starting new application..."
-            nohup java -jar iz-0.0.1-SNAPSHOT.jar > app.log 2>&1 &
-
-            echo "Checking if the application is running..."
-            sleep 5
-            ps aux | grep 'iz-0.0.1-SNAPSHOT.jar'
-
-            echo "Application started"
-
+      - name: Deploy to NCP
+        run: |
+          echo "Connected successfully"
+          mkdir -p ~/app
+          cd ~/app
+          echo "Copying JAR file..."
+          scp -i ${{ secrets.SSH_PRIVATE_KEY }} ${{ github.workspace }}/iz/build/libs/iz-0.0.1-SNAPSHOT.jar root@223.130.150.215:/root/app/
+          echo "Listing app directory:"
+          ls -l
+          echo "Stopping existing application..."
+          pkill -f 'java -jar' || true
+          echo "Starting new application..."
+          nohup java -jar iz-0.0.1-SNAPSHOT.jar > app.log 2>&1 &
+          echo "Application started"
