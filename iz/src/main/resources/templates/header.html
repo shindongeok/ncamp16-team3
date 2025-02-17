@@ -1,4 +1,4 @@
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <!DOCTYPE html>
 <html class="h-full bg-white">
 <head>
@@ -19,7 +19,7 @@
         }
     </style>
 </head>
-<div th:fragment="header" class="absolute top-0 left-0 w-full">
+<div th:fragment="header" class="absolute top-0 left-0 w-full z-50" xmlns:sec="http://www.w3.org/1999/xhtml">
     <!-- 슬라이드 메뉴 (모바일 컨테이너 내부에서만 슬라이드) -->
     <div id="B" class="flex items-center justify-between px-4 py-3 text-white w-full gap-30">
         <!-- 첫 번째 버튼 (왼쪽에 정렬) -->
@@ -30,7 +30,7 @@
     </div>
 
     <!-- 상단 네비게이션 바 -->
-    <div id="slidePanel" class="absolute top-0 left-0 h-full w-full hidden">
+    <div id="slidePanel" class="absolute top-0 left-0 h-full w-full hidden opacity-0 visibility-hidden transition-all duration-1000 z-50">
         <div id="sidebar" class="absolute top-0 left-0 h-dvh bg-white shadow-lg p-5 z-50 w-3/5"> <!-- 사이드 바 크기 40%로 변경 -->
             <div class="absolute top-0 left-0 bg-blue-500 w-full h-20 shadow-lg p-5"></div>
             <!-- 닫기 버튼 -->
@@ -40,8 +40,10 @@
             <img th:src="@{/images/chillguy.png}" class="w-[52px] h-[52px] rounded-[40px] relative mt-7 left-20 top-12 z-10" alt="사용자프로필 이미지"> <!-- 이미지 크기 40%로 줄이기 -->
 
             <div class="text-center mt-14">
-                <p class="text-gray-700 font-bold text-sm">user@example.com</p>
-                <p class="text-gray-500 text-xs">안녕하세요! 퇴사 욕구를 측정하고 싶어요.</p>
+                <div sec:authorize="isAuthenticated()">
+                    <div th:text="${#authentication.getPrincipal() != null && #authentication.getPrincipal().getUser().getNickname() != null ? #authentication.getPrincipal().getUser().getNickname() : '닉네임을 정해주세요'}"></div>
+                    <div th:text="${#authentication.getPrincipal() != null && #authentication.getPrincipal().getUser().getIntro() != null ? #authentication.getPrincipal().getUser().getIntro() : '자기소개를 써주세요'}"></div>
+                </div>
             </div>
 
             <!-- 메뉴 리스트 -->
@@ -120,11 +122,21 @@
         <script>
             function closeTop() {
                 let target = document.getElementById('slidePanel');
-                target.style.display='none';
+                target.style.opacity = '0';
+                target.style.visibility = 'hidden';
+
+                setTimeout(function() {
+                    target.style.display = 'none';
+                }, 1000);  // 2초 후에 display: none
             }
+
             function openTop() {
                 let target = document.getElementById('slidePanel');
-                target.style.display='block';
+                target.style.display = 'block';
+                setTimeout(function() {
+                    target.style.opacity = '1';
+                    target.style.visibility = 'visible';
+                }, 0);  // 애니메이션을 즉시 시작하려면 0초로 설정
             }
         </script>
     </th:block>
