@@ -1,6 +1,6 @@
 package com.izikgram.user.controller;
 
-import com.izikgram.global.config.CustomUserDetails;
+import com.izikgram.global.security.CustomUserDetails;
 import com.izikgram.user.entity.User;
 import com.izikgram.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
