@@ -1,22 +1,22 @@
-function updateCalendar(feelingList = []) {
-    // 오늘 날짜 가져오기
-    const today = new Date();
+// 타임리프에서 전달받은 데이터 활용
+// Thymeleaf를 통해 전달된 변수들은 HTML의 inline script에서 선언됨
+// feelingList, payday, stressList, startTime, lunchTime, endTime, stressNum
 
-    // 이번 주의 월요일 찾기
+// 캘린더 관련 함수들
+function updateCalendar(feelingList = []) {
+    const today = new Date();
     const monday = new Date(today);
-    const diff = today.getDay() === 0 ? 6 : today.getDay() - 1; // 일요일 처리
+    const diff = today.getDay() === 0 ? 6 : today.getDay() - 1;
     monday.setDate(today.getDate() - diff);
 
-    // 월/연도 표시 업데이트
     const monthNames = ["1월", "2월", "3월", "4월", "5월", "6월",
         "7월", "8월", "9월", "10월", "11월", "12월"];
-    document.querySelector('.today-date').textContent = `${monday.getFullYear()}년 ${monthNames[monday.getMonth()]}`;
+    document.querySelector('.today-date').textContent =
+        `${monday.getFullYear()}년 ${monthNames[monday.getMonth()]}`;
 
-    // 날짜 그리드 업데이트
     const dateGrid = document.querySelector('.calendar-grid:last-child');
-    dateGrid.innerHTML = ''; // 기존 날짜 초기화
+    dateGrid.innerHTML = '';
 
-    // 월요일부터 일요일까지 날짜 추가
     for (let i = 0; i < 7; i++) {
         const currentDate = new Date(monday);
         currentDate.setDate(monday.getDate() + i);
@@ -25,12 +25,10 @@ function updateCalendar(feelingList = []) {
         dateSpan.className = 'calendar-date';
         dateSpan.textContent = currentDate.getDate();
 
-        // 오늘 날짜인 경우 active 클래스 추가
         if (currentDate.toDateString() === today.toDateString()) {
             dateSpan.classList.add('active');
         }
 
-        // 감정 데이터에 따라 배경색 설정
         const formattedDate = currentDate.toISOString().split('T')[0];
         const feelingData = feelingList.find(item => {
             const itemDate = new Date(item.date).toISOString().split('T')[0];
@@ -38,33 +36,20 @@ function updateCalendar(feelingList = []) {
         });
 
         if (feelingData) {
-            // 기존 클래스들 제거
-            dateSpan.classList.remove('verybad', 'bad', 'good', 'verygood');
-
-            // 감정 번호에 따라 클래스 추가
             const feelingNum = feelingData.feeling_num;
-            if (feelingNum <= -6) {
-                dateSpan.classList.add('verybad');
-            } else if (feelingNum >= -5 && feelingNum <= -2) {
-                dateSpan.classList.add('bad');
-            } else if (feelingNum >= -1 && feelingNum <= 1) {
-                // 보통인 경우 기본 스타일 유지 (클래스 추가 없음)
-            } else if (feelingNum >= 2 && feelingNum <= 5) {
-                dateSpan.classList.add('good');
-            } else if (feelingNum >= 6) {
-                dateSpan.classList.add('verygood');
-            }
+            if (feelingNum <= -6) dateSpan.classList.add('verybad');
+            else if (feelingNum >= -5 && feelingNum <= -2) dateSpan.classList.add('bad');
+            else if (feelingNum >= 2 && feelingNum <= 5) dateSpan.classList.add('good');
+            else if (feelingNum >= 6) dateSpan.classList.add('verygood');
         }
 
         dateGrid.appendChild(dateSpan);
     }
 }
 
-// 페이지 로드 시 캘린더 업데이트
 function initializeCalendar(feelingList = []) {
     updateCalendar(feelingList);
 
-    // 매일 자정에 캘린더 업데이트 (선택사항)
     function scheduleNextUpdate() {
         const now = new Date();
         const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
@@ -79,26 +64,7 @@ function initializeCalendar(feelingList = []) {
     scheduleNextUpdate();
 }
 
-function calculatePaydayDday(payday) {
-    const today = new Date();
-    const currentYear = today.getFullYear();
-    const currentMonth = today.getMonth();
-
-    // 이번 달 월급일
-    let payDate = new Date(currentYear, currentMonth, payday);
-
-    // 만약 월급일이 오늘보다 이전이라면 다음 달로 설정
-    if (payDate <= today) {
-        payDate = new Date(currentYear, currentMonth + 1, payday);
-    }
-
-    // D-day 계산
-    const timeDiff = payDate.getTime() - today.getTime();
-    const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
-
-    return `D-${daysDiff}`;
-}
-
+// 시간 계산 관련 함수들
 function calculateTimeRemaining(startHour, endHour) {
     const now = new Date();
     const currentHour = now.getHours();
@@ -147,49 +113,29 @@ function updateCircleProgress(circle, progress) {
     dot.setAttribute('cy', y);
 }
 
+// 페이지 로드 시 실행되는 초기화 함수들
 document.addEventListener('DOMContentLoaded', () => {
-    // Thymeleaf의 feelingList 변수 사용
+    // 캘린더 초기화
     initializeCalendar(feelingList);
 
+    // 월급일 D-day 계산
     const paydayElement = document.getElementById('payday');
-    if (paydayElement && typeof payday !== 'undefined') {
-        paydayElement.innerHTML = calculatePaydayDday(payday);
-    }
-
-    function calculateWeeklyAverageStress(stressList) {
+    if (paydayElement) {
         const today = new Date();
-        const dayOfWeek = today.getDay();
+        const currentYear = today.getFullYear();
+        const currentMonth = today.getMonth();
+        let payDate = new Date(currentYear, currentMonth, payday);
 
-        const monday = new Date(today);
-        monday.setDate(today.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
-
-        const yesterday = new Date(today);
-        yesterday.setDate(today.getDate() - 1);
-
-        const weeklyStress = stressList.filter(item => {
-            const itemDate = new Date(item.date);
-            return itemDate >= monday && itemDate <= yesterday;
-        });
-
-        if (weeklyStress.length === 0) return 0;
-
-        const averageStress = weeklyStress.reduce((sum, item) => sum + item.stress_num, 0) / weeklyStress.length;
-        return Math.round(averageStress);
-    }
-
-    function displayWeeklyAverageStress() {
-        const averageStressElement = document.getElementById('stressNum');
-        const averageStress = calculateWeeklyAverageStress(stressList);
-
-        if (averageStressElement) {
-            averageStressElement.textContent = `${averageStress > 0 ? '+' : ''}${averageStress}%`;
+        if (payDate <= today) {
+            payDate = new Date(currentYear, currentMonth + 1, payday);
         }
+
+        const timeDiff = payDate.getTime() - today.getTime();
+        const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+        paydayElement.innerHTML = `D-${daysDiff}`;
     }
 
-    displayWeeklyAverageStress();
-});
-
-document.addEventListener('DOMContentLoaded', () => {
+    // 스트레스 지수 업데이트
     function updateAllProgress() {
         const [startHour, startMinute] = startTime.split(':').map(Number);
         const [lunchHour, lunchMinute] = lunchTime.split(':').map(Number);
@@ -211,9 +157,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 progress = Math.round(calculateProgress(startHour, lunchHour));
             }
 
-            circle.setAttribute('data-start', startHour);
-            circle.setAttribute('data-end', index === 0 ? endHour : (index === 2 ? lunchHour : endHour));
-
             updateCircleProgress(circle, progress);
         });
 
@@ -225,7 +168,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setInterval(updateAllProgress, 60000);
 });
 
-// 모달 관련 요소들
+// 모달 관련 이벤트 핸들러
 const modal = document.getElementById('timeSettingsModal');
 const settingsBtn = document.querySelector('.time-settings-btn');
 const closeBtn = document.querySelector('.close-modal-btn');
@@ -236,21 +179,13 @@ const timeInputs = {
     workEnd: document.getElementById('workEndTime')
 };
 
-settingsBtn.addEventListener('click', () => {
-    modal.style.display = 'flex';
+settingsBtn?.addEventListener('click', () => modal.style.display = 'flex');
+closeBtn?.addEventListener('click', () => modal.style.display = 'none');
+modal?.addEventListener('click', (e) => {
+    if (e.target === modal) modal.style.display = 'none';
 });
 
-closeBtn.addEventListener('click', () => {
-    modal.style.display = 'none';
-});
-
-modal.addEventListener('click', (e) => {
-    if (e.target === modal) {
-        modal.style.display = 'none';
-    }
-});
-
-saveBtn.addEventListener('click', () => {
+saveBtn?.addEventListener('click', () => {
     const workStartTime = timeInputs.workStart.value;
     const lunchTime = timeInputs.lunch.value;
     const workEndTime = timeInputs.workEnd.value;
@@ -261,12 +196,11 @@ saveBtn.addEventListener('click', () => {
     }
 
     const circles = document.querySelectorAll('.progress-circle');
-    circles[0].setAttribute('data-start', workStartTime.split(':')[0]);
-    circles[0].setAttribute('data-end', workEndTime.split(':')[0]);
-    circles[1].setAttribute('data-start', workStartTime.split(':')[0]);
-    circles[1].setAttribute('data-end', workEndTime.split(':')[0]);
-    circles[2].setAttribute('data-start', workStartTime.split(':')[0]);
-    circles[2].setAttribute('data-end', lunchTime.split(':')[0]);
+    circles.forEach((circle, index) => {
+        circle.setAttribute('data-start', workStartTime.split(':')[0]);
+        circle.setAttribute('data-end',
+            index === 2 ? lunchTime.split(':')[0] : workEndTime.split(':')[0]);
+    });
 
     updateAllProgress();
     modal.style.display = 'none';
