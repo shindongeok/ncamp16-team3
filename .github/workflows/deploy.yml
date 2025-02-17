@@ -19,7 +19,7 @@ jobs:
           distribution: 'adopt'
 
       - name: Make gradlew executable
-        run: chmod +x ${{github.workspace}}/iz/gradlew
+        run: chmod +x ${{ github.workspace }}/iz/gradlew
         shell: bash
 
       - name: Debug workspace
@@ -42,6 +42,13 @@ jobs:
           echo "Build directory contents:"
           ls -R ${{ github.workspace }}/iz/build/libs
 
+      - name: Check if JAR file exists
+        run: |
+          if [ ! -f "${{ github.workspace }}/iz/build/libs/iz-0.0.1-SNAPSHOT.jar" ]; then
+            echo "Error: JAR file not found!"
+            exit 1
+          fi
+
       - name: Deploy to NCP
         uses: appleboy/ssh-action@master
         with:
@@ -53,11 +60,13 @@ jobs:
             mkdir -p ~/app
             cd ~/app
             echo "Copying JAR file..."
-            scp ${{github.workspace}}/iz/build/libs/iz-0.0.1-SNAPSHOT.jar .
+            rsync -avz ${{ github.workspace }}/iz/build/libs/iz-0.0.1-SNAPSHOT.jar ~/app/
             echo "Listing app directory:"
             ls -l
+
             echo "Stopping existing application..."
-            pkill -f 'java -jar' || true
+            pkill -f 'iz-0.0.1-SNAPSHOT.jar' || true
+
             echo "Starting new application..."
             nohup java -jar iz-0.0.1-SNAPSHOT.jar > app.log 2>&1 &
             echo "Application started"
