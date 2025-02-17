@@ -42,27 +42,23 @@ jobs:
           echo "Build directory contents:"
           ls -R ${{ github.workspace }}/iz/build/libs
 
-      - name: Verify JAR File Before Deployment
-        run: |
-          echo "Checking if JAR file exists..."
-          ls -l $GITHUB_WORKSPACE/iz/build/libs/
-          if [ ! -f "$GITHUB_WORKSPACE/iz/build/libs/iz-0.0.1-SNAPSHOT.jar" ]; then
-            echo "Error: JAR file not found!"
-            exit 1
-          fi
-
       - name: Deploy to NCP
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.NCP_HOST }}
-          username: ${{ secrets.NCP_USERNAME }}
+          username: ${{ secrets.NCP_USERNAME }}  # root 계정 사용
           password: ${{ secrets.NCP_SSH_PASSWORD }}
           script: |
             echo "Connected successfully"
             mkdir -p ~/app
             cd ~/app
+
+            # SSH 키 검증 비활성화
+            export RSYNC_RSH="ssh -o StrictHostKeyChecking=no"
+
             echo "Copying JAR file..."
-            rsync -avz $GITHUB_WORKSPACE/iz/build/libs/iz-0.0.1-SNAPSHOT.jar ${{ secrets.NCP_USERNAME }}@${{ secrets.NCP_HOST }}:~/app/
+            rsync -avz -e "ssh -o StrictHostKeyChecking=no" $GITHUB_WORKSPACE/iz/build/libs/iz-0.0.1-SNAPSHOT.jar root@${{ secrets.NCP_HOST }}:~/app/
+
             echo "Listing app directory:"
             ls -l
 
