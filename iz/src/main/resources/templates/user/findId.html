@@ -124,12 +124,13 @@
             contentType: "application/x-www-form-urlencoded",
             data: { phone_num: phone_num, auth_num: auth_num },
             success: function (response) {
+                console.log(this.url);
                 console.log(phone_num);
                 console.log(auth_num);
                 console.log(response);
                 if (response != '실패') {
-                    // window.location.href = "/user/findIdResult"; // 아이디 찾기 성공시 이동
-                    window.location.href = "/user/findIdResult?phone_num=" + encodeURIComponent(response);
+                    window.location.href = "/user/findIdResult"; // 아이디 찾기 성공시 이동
+                    // window.location.href = "/user/findIdResult?phone_num=" + encodeURIComponent(response);
                     alert("인증 성공!");
                 } else {
                     alert("인증 실패")
