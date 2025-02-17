@@ -59,12 +59,18 @@ jobs:
             echo "Copying JAR file..."
             rsync -avz -e "ssh -o StrictHostKeyChecking=no" $GITHUB_WORKSPACE/iz/build/libs/iz-0.0.1-SNAPSHOT.jar root@${{ secrets.NCP_HOST }}:~/app/
 
-            echo "Listing app directory:"
-            ls -l
+            echo "Verifying file copy..."
+            ls -l ~/app/
 
             echo "Stopping existing application..."
             pkill -f 'iz-0.0.1-SNAPSHOT.jar' || true
 
             echo "Starting new application..."
             nohup java -jar iz-0.0.1-SNAPSHOT.jar > app.log 2>&1 &
+
+            echo "Checking if the application is running..."
+            sleep 5
+            ps aux | grep 'iz-0.0.1-SNAPSHOT.jar'
+
             echo "Application started"
+
