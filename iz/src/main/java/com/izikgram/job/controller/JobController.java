@@ -1,6 +1,6 @@
 package com.izikgram.job.controller;
 
-import com.izikgram.global.config.CustomUserDetails;
+import com.izikgram.global.security.CustomUserDetails;
 import com.izikgram.job.service.JobService;
 import com.izikgram.user.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;

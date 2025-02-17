@@ -1,6 +1,6 @@
 package com.izikgram.user.controller;
 
-import com.izikgram.global.config.CustomUserDetails;
+import com.izikgram.global.security.CustomUserDetails;
 import com.izikgram.user.entity.User;
 import com.izikgram.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +32,8 @@ public class UserController {
 
     @PostMapping("/register")
     public String register(User user) {
+//        log.info("payday: {}", user.getPayday());
+//        log.info("user: {}", user);
         timeSubstring(user);
 
         userService.register(user);
@@ -54,10 +56,17 @@ public class UserController {
         return "/user/findId";
     }
 
-    @PostMapping("/findId")
-    public String findId(String name, Model model) {
-        String id = userService.findId(name);
-        model.addAttribute("member_id", id);
+//    @PostMapping("/findId")
+//    public String findId(String name, Model model) {
+//        String id = userService.findId(name);
+//        model.addAttribute("member_id", id);
+//        return "/user/findIdResult";
+//    }
+
+    @GetMapping("/findIdResult")
+    public String findIdResult(@RequestParam String phone_num, Model model) {
+        String member_id = userService.findUserByPhoneNumber(phone_num);
+        model.addAttribute("member_id", member_id);
         return "/user/findIdResult";
     }
 
@@ -90,6 +99,7 @@ public class UserController {
         String startTime = user.getStart_time();
         String endTime = user.getEnd_time();
         String lunchTime = user.getLunch_time();
+//        log.info("startTime : {}, endTime : {}, lunchTime : {}", startTime, endTime, lunchTime);
 
         startTime = AmPm(startTime);
         endTime = AmPm(endTime);

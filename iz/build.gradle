@@ -48,6 +48,12 @@ dependencies {
 	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'
 	implementation 'com.zaxxer:HikariCP:5.1.0'
 	implementation 'mysql:mysql-connector-java:8.0.33'
+
+	// coolsms
+	implementation 'net.nurigo:sdk:4.2.7'
+
+	// redis
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 }
 
 tasks.named('test') {

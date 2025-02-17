@@ -150,13 +150,13 @@
             <div class="flex justify-between">
                 <div class="flex">
                     <label for="payday" class="w-20 max-w-12 text-bold-text mr-4">월급날</label>
-                    <select id="payday" class="w-22 max-h-5 outline rounded-md text-bold-text text-right">
-                        <option th:each="i : ${#numbers.sequence(1, 31)}" th:value="${i}" th:text="${i + '일'}" th:default="1"></option>
+                    <select id="payday" name="payday" class="w-22 max-h-5 outline rounded-md text-bold-text text-right">
+                        <option th:each="i : ${#numbers.sequence(1, 31)}" th:value="${i}" th:text="${i + '일'}"></option>
                     </select>
                 </div>
                 <div class="flex">
                     <label for="start_time" class="w-15 text-bold-text ml-5">출근시간</label>
-                    <input type="text" name="start_time" id="start_time" placeholder="09:00 AM" th:default="${'09:00:00'}" class="p-2 time_element w-22 h-5 outline rounded-md text-bold-text text-right">
+                    <input type="text" name="start_time" id="start_time" th:value="${'09:00 AM'}" class="p-2 time_element w-22 h-5 outline rounded-md text-bold-text text-right">
                 </div>
             </div>
 
@@ -164,13 +164,13 @@
                 <div class="flex">
                     <div class="flex">
                         <label for="end_time" class="w-15 text-bold-text mr-1">퇴근시간</label>
-                        <input type="text" name="end_time" id="end_time" placeholder="06:00 PM" th:default="${'18:00:00'}" class="p-2 time_element w-22 h-5 outline rounded-md text-bold-text text-right">
+                        <input type="text" name="end_time" id="end_time" th:value="${'06:00 PM'}" class="p-2 time_element w-22 h-5 outline rounded-md text-bold-text text-right">
                     </div>
                 </div>
                 <div class="flex absolute left-43">
                     <div class="flex">
                         <label for="lunch_time" class="w-15 text-bold-text">점심시간</label>
-                        <input type="text" name="lunch_time" id="lunch_time" placeholder="12:00 PM" th:default="${'12:00:00'}" class="p-2 time_element w-22 h-5 outline rounded-md text-bold-text text-right">
+                        <input type="text" name="lunch_time" id="lunch_time" th:value="${'12:00 PM'}" class="p-2 time_element w-22 h-5 outline rounded-md text-bold-text text-right">
                     </div>
                 </div>
             </div>
@@ -206,7 +206,7 @@
             </div>
 
             <div class="flex mt-10">
-                <button type="submit" class="mr-5 w-1/2 rounded-md bg-main-sky-highlight px-3 py-1.5 text-lg/6 text-white shadow-xs hover:bg-sky-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-800">가입하기</button>
+                <button id="signupButton" type="submit" class="mr-5 w-1/2 rounded-md bg-main-sky-highlight px-3 py-1.5 text-lg/6 text-white shadow-xs hover:bg-sky-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-800">가입하기</button>
                 <button type="button" th:onclick="|location.href='@{/}'|" class="w-1/2 rounded-md bg-main-sky-highlight px-3 py-1.5 text-lg/6 text-white shadow-xs hover:bg-sky-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-800">취소</button>
             </div>
         </form>
@@ -260,49 +260,67 @@
         </div>
     </div>
 
-    <!-- calender -->
     <script>
+        // calender
         $('#birth_date').bootstrapMaterialDatePicker();
-    </script>
 
-    <!-- 아이디 중복체크 -->
-    <script>
+        //아이디 중복체크
+        let isIdChecked = false;
+
+        // 아이디 입력 시 중복 확인 다시 해야 함
+        $("#member_id").on("input", function() {
+            isIdChecked = false; // 아이디를 변경하면 다시 확인하도록 설정
+        });
+
+        // 아이디 중복체크 버튼 클릭 이벤트
         $("#checkButton").click(function() {
             let memberId = $("#member_id").val();
-            console.log(memberId);
+
             if (memberId == "") {
-                $("#modalTitle").text("아이디 공백!")
-                $("#modalIcon").html(
-                    "<svg class=\"size-6 text-red-600\" fill=\"none\" viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" aria-hidden=\"true\" data-slot=\"icon\">\n" +
-                    "    <path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z\" />\n" +
-                    "</svg>"
-                )
-                $("#modalMessage").text("아이디를 입력해주세요");
-                $("#Modal").show();
+                showModal("아이디 공백!", "아이디를 입력해주세요", false);
                 return;
             }
+
             $.ajax({
                 url: "/user/checkId/" + memberId,
                 type: "GET",
                 success: function(response) {
-                    console.log(response);
                     if (!response.exist) {
-                        $("#modalTitle").text("사용 가능한 아이디!")
-                        $("#modalIcon").html("<img width=\"48\" height=\"48\" src=\"https://img.icons8.com/color/48/checked-checkbox.png\" alt=\"checked-checkbox\"/>")
-                        $("#modalMessage").text("사용 가능한 아이디입니다");
+                        isIdChecked = true; // 중복 확인 완료
+                        showModal("사용 가능한 아이디!", "사용 가능한 아이디입니다", true);
                     } else {
-                        $("#modalTitle").text("사용 불가능한 아이디!")
-                        $("#modalIcon").html(
-                            "<svg class=\"size-6 text-red-600\" fill=\"none\" viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" aria-hidden=\"true\" data-slot=\"icon\">\n" +
-                            "    <path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z\" />\n" +
-                            "</svg>"
-                        )
-                        $("#modalMessage").text("이미 사용 중인 아이디입니다");
+                        isIdChecked = false;
+                        showModal("사용 불가능한 아이디!", "이미 사용 중인 아이디입니다", false);
                     }
-                    $("#Modal").show();
                 }
             });
         });
+
+        // 회원가입 버튼 클릭 이벤트
+        $("#signupButton").click(function(event) {
+            if (!isIdChecked) {
+                event.preventDefault(); // 회원가입 진행 막기
+                showModal("회원가입 불가!", "아이디 중복 확인을 해주세요", false);
+            }
+        });
+
+        // 모달 표시 함수
+        function showModal(title, message, isSuccess) {
+            $("#modalTitle").text(title);
+            $("#modalMessage").text(message);
+
+            if (isSuccess) {
+                $("#modalIcon").html("<img width=\"48\" height=\"48\" src=\"https://img.icons8.com/color/48/checked-checkbox.png\" alt=\"checked-checkbox\"/>");
+            } else {
+                $("#modalIcon").html(
+                    "<svg class=\"size-6 text-red-600\" fill=\"none\" viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" aria-hidden=\"true\">\n" +
+                    "    <path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z\" />\n" +
+                    "</svg>"
+                );
+            }
+
+            $("#Modal").show();
+        }
 
         $(".closeBtn").click(function() {
             $("#Modal").hide();

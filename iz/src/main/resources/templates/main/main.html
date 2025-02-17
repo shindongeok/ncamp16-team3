@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      class="h-full bg-white">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Izikgram</title>
-    <link rel="stylesheet" th:href="@{/css/mainStyle.css}">
-    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+
     <style type="text/tailwindcss">
         @theme {
             --color-main-sky-highlight: #00a3ed;
@@ -23,16 +24,20 @@
             --color-bold-text: oklch(0.208 0.042 265.755);
         }
     </style>
+
+    <link rel="stylesheet" th:href="@{/css/mainStyle.css}">
 </head>
 <body>
-<div class="main-container relative">
-    <header th:replace="~{/header :: header} " class="pt-4"></header><br><br>
+<div sec:authorize="isAuthenticated()" class="main-container relative">
+    <header th:replace="~{/header :: header} " class="pt-4"></header></br></br>
     <footer th:replace="~{/footer :: footer}" class="pt-4"></footer>
     <div class="page-title">Dashboard</div>
+
     <div class="popular-posting-section">
         <span class="popular-board">🔥 인기게시글</span>
         <div class="popular-content-bubble">
-            <div class="popular-content-bubble-item" th:each="board, iterStat : ${popularBoardList}"
+            <div class="popular-content-bubble-item"
+                 th:each="board, iterStat : ${@mainService.getPopularBoardList()}"
                  th:if="${iterStat.index < 3}">
                 <a th:href="@{/board/{board_type}/{board_id}(board_type=${board.board_type}, board_id=${board.board_id})}"
                    class="popular-board-title-link">
@@ -42,6 +47,7 @@
             </div>
         </div>
     </div>
+
     <div class="calendar-section">
         <div class="section-title">Calendar</div>
         <div class="today-date"></div>
@@ -56,10 +62,11 @@
                 <span class="day-label">S</span>
             </div>
             <div class="calendar-grid">
-                <!-- 자동으로 채워질 날짜들 -->
+                <!-- JavaScript로 동적 생성됨 -->
             </div>
         </div>
     </div>
+
     <div class="overview-section">
         <div class="section-title">Overview</div>
         <div class="overview-card-section">
@@ -79,14 +86,13 @@
             </div>
         </div>
     </div>
+
     <div class="stress-section">
-        <!-- section-title 수정 -->
         <div class="section-title-container">
             <div class="section-title">Stress</div>
             <button class="time-settings-btn">⚙️</button>
         </div>
 
-        <!-- 모달 추가 -->
         <div class="time-settings-modal" id="timeSettingsModal">
             <div class="modal-content">
                 <div class="modal-header">
@@ -96,15 +102,15 @@
                 <div class="modal-body">
                     <div class="time-input-group">
                         <label for="workStartTime">출근 시간</label>
-                        <input type="time" id="workStartTime" value="09:00">
+                        <input type="time" id="workStartTime" th:value="${@mainService.getStartTime(#authentication.principal.user.member_id)}">
                     </div>
                     <div class="time-input-group">
                         <label for="lunchTime">점심 시간</label>
-                        <input type="time" id="lunchTime" value="12:00">
+                        <input type="time" id="lunchTime" th:value="${@mainService.getLunchTime(#authentication.principal.user.member_id)}">
                     </div>
                     <div class="time-input-group">
                         <label for="workEndTime">퇴근 시간</label>
-                        <input type="time" id="workEndTime" value="18:00">
+                        <input type="time" id="workEndTime" th:value="${@mainService.getEndTime(#authentication.principal.user.member_id)}">
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -112,11 +118,12 @@
                 </div>
             </div>
         </div>
+
         <div class="stress-graph-section">
             <div class="container">
                 <div class="progress-container">
                     <svg width="200" height="200">
-                        <!-- 가장 큰 원 (퇴근까지) -->
+                        <!-- 퇴근까지 (가장 큰 원) -->
                         <circle
                                 cx="100"
                                 cy="100"
@@ -137,13 +144,11 @@
                                 stroke-dashoffset="565.49"
                                 stroke-linecap="round"
                                 data-progress="0"
-                                data-start="9"
-                                data-end="18"
                         />
                         <circle class="circle-dot" cx="100" cy="100" r="5" color="white"/>
                         <circle class="circle-dot" cx="100" cy="10" r="5" color="white"/>
 
-                        <!-- 중간 원 (업무 진행률) -->
+                        <!-- 업무 진행률 (중간 원) -->
                         <circle
                                 cx="100"
                                 cy="100"
@@ -164,13 +169,10 @@
                                 stroke-dashoffset="439.82"
                                 stroke-linecap="round"
                                 data-progress="0"
-                                data-start="9"
-                                data-end="18"
                         />
                         <circle class="circle-dot" cx="100" cy="30" r="5" color="white"/>
-                        <circle class="circle-dot" cx="100" cy="30" r="5" color="white"/>
 
-                        <!-- 가장 작은 원 (점심까지) -->
+                        <!-- 점심까지 (가장 작은 원) -->
                         <circle
                                 cx="100"
                                 cy="100"
@@ -191,10 +193,7 @@
                                 stroke-dashoffset="314.16"
                                 stroke-linecap="round"
                                 data-progress="0"
-                                data-start="9"
-                                data-end="12"
                         />
-                        <circle class="circle-dot" cx="100" cy="50" r="5" color="white"/>
                         <circle class="circle-dot" cx="100" cy="50" r="5" color="white"/>
                     </svg>
                 </div>
@@ -220,15 +219,20 @@
         </div>
     </div>
 </div>
+
 <script th:inline="javascript">
-    var feelingList = /*[[${feelingList}]]*/ [];
-    var payday = /*[[${payday}]]*/ 15; // 기본값 설정 (서버에서 받은 값 사용)
-    var stressList = /*[[${stressList}]]*/ [];
-    var startTime = /*[[${startTime}]]*/ '09:00';
-    var lunchTime = /*[[${lunchTime}]]*/ '12:00';
-    var endTime = /*[[${endTime}]]*/ '18:00';
-    var stressNum = /*[[${stressNum}]]*/ 0;
+    // Spring Security를 통해 전달받은 데이터를 전역 변수로 설정
+    const feelingList = /*[[${@mainService.getMonthlyFeeling(
+        #authentication.principal.user.member_id,
+        T(java.time.LocalDate).now().format(T(java.time.format.DateTimeFormatter).ofPattern('yyyy-MM'))
+    )}]]*/ [];
+
+    const payday = /*[[${@mainService.getPayday(#authentication.principal.user.member_id)}]]*/ 15;
+    const startTime = /*[[${@mainService.getStartTime(#authentication.principal.user.member_id)}]]*/ '09:00';
+    const lunchTime = /*[[${@mainService.getLunchTime(#authentication.principal.user.member_id)}]]*/ '12:00';
+    const endTime = /*[[${@mainService.getEndTime(#authentication.principal.user.member_id)}]]*/ '18:00';
+    const stressNum = /*[[${@mainService.getStressNum(#authentication.principal.user.member_id)}]]*/ 0;
 </script>
-</body>
 <script th:src="@{/js/mainScript.js}"></script>
+</body>
 </html>
