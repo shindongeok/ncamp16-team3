@@ -1,4 +1,4 @@
-package com.izikgram.global.config;
+package com.izikgram.global.security;
 
 import com.izikgram.user.entity.User;
 import lombok.AllArgsConstructor;

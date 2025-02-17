@@ -7,6 +7,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Izikgram</title>
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+
+    <!-- calender -->
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script th:src="@{/js/locale.js}"></script>
+    <script th:src="@{/js/bootstrap-material-datetimepicker.js}"></script>
+    <link rel="stylesheet" th:href="@{/css/bootstrap-material-datetimepicker.css}">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style type="text/tailwindcss">
         @theme {
             --color-main-sky: #00a3ed;
@@ -30,6 +37,7 @@
             }
         }
     </style>
+
 </head>
 <body class="h-full font-roboto mobile-container">
 <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
@@ -123,4 +131,8 @@
     </div>
 </div>
 </body>
+<!-- calender -->
+<script>
+    $('#birth_date').bootstrapMaterialDatePicker();
+</script>
 </html>

@@ -31,8 +31,15 @@ public interface UserMapper {
     @Select("SELECT NOW()")
     String getCurrentTime();
 
-    @Select("select * from iz_member where member_id=#{member_id}")
-    User getUserInfo(String member_id);
+    @Select("SELECT m.*, s.stress_num " +
+            "FROM iz_member m " +
+            "LEFT JOIN ( " +
+            "    SELECT member_id, stress_num, date " +
+            "    FROM iz_member_stress_info " +
+            "    WHERE member_id = #{member_id} " +
+            ") s ON m.member_id = s.member_id " +
+            "WHERE m.member_id = #{member_id}")
+    User getUserInfo(@Param("member_id") String member_id);
 
     @Delete("delete from iz_member where member_id=#{member_id}")
     void deleteUser(String member_id);
