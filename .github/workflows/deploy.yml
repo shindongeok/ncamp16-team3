@@ -42,9 +42,11 @@ jobs:
           echo "Build directory contents:"
           ls -R ${{ github.workspace }}/iz/build/libs
 
-      - name: Check if JAR file exists
+      - name: Verify JAR File Before Deployment
         run: |
-          if [ ! -f "${{ github.workspace }}/iz/build/libs/iz-0.0.1-SNAPSHOT.jar" ]; then
+          echo "Checking if JAR file exists..."
+          ls -l $GITHUB_WORKSPACE/iz/build/libs/
+          if [ ! -f "$GITHUB_WORKSPACE/iz/build/libs/iz-0.0.1-SNAPSHOT.jar" ]; then
             echo "Error: JAR file not found!"
             exit 1
           fi
@@ -60,7 +62,7 @@ jobs:
             mkdir -p ~/app
             cd ~/app
             echo "Copying JAR file..."
-            rsync -avz ${{ github.workspace }}/iz/build/libs/iz-0.0.1-SNAPSHOT.jar ~/app/
+            rsync -avz $GITHUB_WORKSPACE/iz/build/libs/iz-0.0.1-SNAPSHOT.jar ${{ secrets.NCP_USERNAME }}@${{ secrets.NCP_HOST }}:~/app/
             echo "Listing app directory:"
             ls -l
 
