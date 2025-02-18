@@ -40,8 +40,15 @@ public class CustomUserDetailsService implements UserDetailsService {
         }
 
         Stress stress = userMapper.getUserStress(member_id);
-        UserStressDTO userStressDTO = new UserStressDTO(user.getMember_id(), stress.getStress_num());
 
+        // stress가 null일 경우 처리 (기본값 설정)
+        if (stress == null) {
+            log.warn("스트레스 정보가 없습니다. 기본값을 설정합니다.");
+            stress = new Stress();
+            stress.setStress_num(0);  // 기본값을 0으로 설정
+        }
+
+        UserStressDTO userStressDTO = new UserStressDTO(user.getMember_id(), stress.getStress_num());
         log.info("userStressDTO 객체 : {}", userStressDTO);
 
         return new CustomUserDetails(user, userStressDTO);
