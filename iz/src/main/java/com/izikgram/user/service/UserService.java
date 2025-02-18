@@ -19,7 +19,6 @@ public class UserService {
     public void register(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userMapper.insertUser(user);
-//        userMapper.insertUserStressInfo(user.getMember_id());
     }
 
     public boolean userIdCheck(String member_id) {
