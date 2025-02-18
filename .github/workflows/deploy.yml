@@ -36,13 +36,13 @@ jobs:
         password: ${{ secrets.NCP_PASSWORD }}
         port: 22
         script: |
-          cd /opt/izikgram
+          cd /opt/izikgram;
           if pgrep -f 'java -jar'; then
-            pkill -f 'java -jar'
-            sleep 5
-          fi
-          rm -f *.jar
-          cp ${{ github.workspace }}/iz/build/libs/*.jar ./izikgram.jar
+            pkill -f 'java -jar';
+            sleep 5;
+          fi;
+          rm -f *.jar;
+          cp /home/runner/work/ncamp16-team3/ncamp16-team3/iz/build/libs/*.jar ./izikgram.jar;
           nohup java -jar izikgram.jar > app.log 2>&1 &
-          sleep 10
+          sleep 10;
           echo "Deployment completed"
