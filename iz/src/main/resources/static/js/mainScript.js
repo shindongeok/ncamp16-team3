@@ -139,6 +139,18 @@ function updateAllProgress() {
 
     const circles = document.querySelectorAll('.progress-circle');
     const timeTexts = document.querySelectorAll('.time-text');
+    const stressNoDataElements = document.querySelectorAll('.stress-no-data');
+
+    // stressNum이 null이거나 undefined인 경우 처리
+    if (stressNum === null || stressNum === undefined) {
+        stressNoDataElements.forEach(el => el.style.display = 'block');
+        // 그래프 컨테이너 숨기기
+        document.querySelector('.stress-graph-section .container').style.display = 'none';
+        return;
+    } else {
+        stressNoDataElements.forEach(el => el.style.display = 'none');
+        document.querySelector('.stress-graph-section .container').style.display = 'block';
+    }
 
     timeTexts[0].textContent = calculateTimeRemaining(startHour, endHour);
     timeTexts[2].textContent = calculateTimeRemaining(startHour, lunchHour);
@@ -185,14 +197,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // 주간 평균 스트레스 계산 및 표시
     const weeklyAverageStress = calculateWeeklyAverageStress(monthlyStressList);
     const stressElement = document.getElementById('weeklyStressNum');
-    const noDataMessage = stressElement.parentElement.querySelector('.no-data-message');
+    const stressNoData = stressElement.parentElement.querySelector('.stress-no-data');
 
     if (stressElement) {
         if (weeklyAverageStress === null) {
-            noDataMessage.style.display = 'block';
-            stressElement.innerHTML = '0%';
+            stressNoData.style.display = 'block';
+            stressElement.style.display = 'none';
         } else {
-            noDataMessage.style.display = 'none';
+            stressNoData.style.display = 'none';
+            stressElement.style.display = 'block';
             const sign = weeklyAverageStress > 0 ? '+' : '';
             stressElement.innerHTML = `${sign}${weeklyAverageStress}%`;
         }

@@ -55,6 +55,7 @@ header {
     font-size: 1.7rem;
     font-weight: bold;
     color: #2C2C2C;
+    margin-top: 20px;
 }
 
 /* 인기 게시글 섹션 스타일 */
@@ -148,6 +149,13 @@ header {
         transform: translateY(-100%);
         opacity: 0;
     }
+}
+
+.no-popular-posts {
+    color: #666;
+    font-size: 0.875rem;
+    text-align: center;
+    padding: 1rem;
 }
 
 .section-title {
@@ -278,10 +286,11 @@ header {
 }
 
 .overview-content {
-    font-size: 1.4rem;
+    font-size: 2rem;
     font-weight: 600;
     color: #2C2C2C;
     text-align: right;
+    margin-right: 20px;
 }
 
 .overview-card:last-child .overview-content {
@@ -568,4 +577,11 @@ circle {
 .number.selected {
     background: #9BDCFD;
     color: white;
+}
+
+.stress-no-data {
+    color: #666;
+    font-size: 0.875rem;
+    text-align: center;
+    padding: 1rem 0;
 }
