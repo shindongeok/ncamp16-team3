@@ -1,3 +1,8 @@
+// 전역 시간 변수들을 let으로 재선언
+let currentStartTime = startTime;  // 초기값은 서버에서 받은 값
+let currentLunchTime = lunchTime;
+let currentEndTime = endTime;
+
 // 캘린더 관련 함수들
 function updateCalendar(feelingList = []) {
     const today = new Date();
@@ -124,7 +129,7 @@ function calculateWeeklyAverageStress(monthlyStressList) {
     return Math.round(average);
 }
 
-function updateAllProgress() {
+function updateAllProgress(startTime = currentStartTime, lunchTime = currentLunchTime, endTime = currentEndTime) {
     const circles = document.querySelectorAll('.progress-circle');
     const timeTexts = document.querySelectorAll('.time-text');
     const stressNoDataElements = document.querySelectorAll('.stress-no-data');
@@ -145,7 +150,6 @@ function updateAllProgress() {
     updateCircleProgress(circles[0], workProgress);
 
     // 퇴사지수 (중간 원)
-    // stressNum 값을 0-100 사이로 정규화 (-10 ~ +10 범위를 0-100으로 변환)
     const normalizedStress = ((Number(stressNum) + 10) / 20) * 100;
     updateCircleProgress(circles[1], normalizedStress);
 
@@ -176,39 +180,6 @@ function updateAllProgress() {
     timeTexts[0].textContent = formatTimeRemaining(startTime, endTime);
     timeTexts[1].textContent = `${stressNum > 0 ? '+' : ''}${stressNum}%`;
     timeTexts[2].textContent = formatTimeRemaining(startTime, lunchTime);
-}
-
-// 모달 관련 코드
-const modal = document.getElementById('timeSettingsModal');
-const settingsBtn = document.querySelector('.time-settings-btn');
-const closeBtn = document.querySelector('.close-modal-btn');
-const saveBtn = document.querySelector('.save-time-btn');
-
-if (settingsBtn && closeBtn && saveBtn && modal) {
-    settingsBtn.addEventListener('click', () => modal.style.display = 'flex');
-    closeBtn.addEventListener('click', () => modal.style.display = 'none');
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) modal.style.display = 'none';
-    });
-
-    saveBtn.addEventListener('click', () => {
-        const workStartTime = document.getElementById('workStartTime').value;
-        const lunchTime = document.getElementById('lunchTime').value;
-        const workEndTime = document.getElementById('workEndTime').value;
-
-        if (!workStartTime || !lunchTime || !workEndTime) {
-            alert('모든 시간을 입력해주세요.');
-            return;
-        }
-
-        // 전역 변수 업데이트
-        startTime = workStartTime;
-        lunchTime = lunchTime;
-        endTime = workEndTime;
-
-        updateAllProgress();
-        modal.style.display = 'none';
-    });
 }
 
 // 초기화 및 이벤트 리스너
@@ -248,6 +219,72 @@ document.addEventListener('DOMContentLoaded', () => {
             const sign = weeklyAverageStress > 0 ? '+' : '';
             stressElement.innerHTML = `${sign}${weeklyAverageStress}%`;
         }
+    }
+
+    // 모달 관련 코드
+    const modal = document.getElementById('timeSettingsModal');
+    const settingsBtn = document.querySelector('.time-settings-btn');
+    const closeBtn = document.querySelector('.close-modal-btn');
+    const saveBtn = document.querySelector('.save-time-btn');
+
+    if (settingsBtn) {
+        settingsBtn.addEventListener('click', () => {
+            if (modal) {
+                modal.style.display = 'flex';
+            }
+        });
+    }
+
+    if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        });
+    }
+
+    if (modal) {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+    }
+
+    if (saveBtn) {
+        saveBtn.addEventListener('click', () => {
+            const workStartInput = document.getElementById('workStartTime');
+            const lunchInput = document.getElementById('lunchTime');
+            const workEndInput = document.getElementById('workEndTime');
+
+            if (!workStartInput || !lunchInput || !workEndInput) {
+                console.error('Some time inputs are missing');
+                return;
+            }
+
+            const newStartTime = workStartInput.value;
+            const newLunchTime = lunchInput.value;
+            const newEndTime = workEndInput.value;
+
+            if (!newStartTime || !newLunchTime || !newEndTime) {
+                alert('모든 시간을 입력해주세요.');
+                return;
+            }
+
+            // 전역 변수 업데이트
+            currentStartTime = newStartTime;
+            currentLunchTime = newLunchTime;
+            currentEndTime = newEndTime;
+
+            console.log('Times updated:', {
+                startTime: currentStartTime,
+                lunchTime: currentLunchTime,
+                endTime: currentEndTime
+            });
+
+            updateAllProgress(currentStartTime, currentLunchTime, currentEndTime);
+            modal.style.display = 'none';
+        });
     }
 
     // 진행 상태 업데이트 시작

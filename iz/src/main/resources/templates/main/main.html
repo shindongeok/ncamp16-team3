@@ -94,6 +94,31 @@
 
     <div class="stress-section">
         <div class="section-title-container">
+            <div class="time-settings-modal" id="timeSettingsModal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>시간 설정</h3>
+                        <button class="close-modal-btn">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="time-input-group">
+                            <label for="workStartTime">출근 시간</label>
+                            <input type="time" id="workStartTime" th:value="${@mainService.getStartTime(#authentication.principal.user.member_id)}">
+                        </div>
+                        <div class="time-input-group">
+                            <label for="lunchTime">점심 시간</label>
+                            <input type="time" id="lunchTime" th:value="${@mainService.getLunchTime(#authentication.principal.user.member_id)}">
+                        </div>
+                        <div class="time-input-group">
+                            <label for="workEndTime">퇴근 시간</label>
+                            <input type="time" id="workEndTime" th:value="${@mainService.getEndTime(#authentication.principal.user.member_id)}">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="save-time-btn">저장</button>
+                    </div>
+                </div>
+            </div>
             <div class="section-title">Stress</div>
             <button class="time-settings-btn">⚙️</button>
         </div>
