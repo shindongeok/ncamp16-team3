@@ -30,8 +30,8 @@ public interface UserMapper {
     @Select("select member_id from iz_member where name=#{name}")
     String findIdByName(String name);
 
-    @Select("select member_id from iz_member where phone_num=#{phone_num}")
-    String findIdByPhoneNumber(String phone_num);
+    @Select("select member_id from iz_member where name=#{name} and phone_num=#{phone_num}")
+    User findIdByPhoneNumber(@Param("name") String name, @Param("phone_num") String phone_num);
 
     @Select("SELECT NOW()")
     String getCurrentTime();
