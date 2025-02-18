@@ -2,7 +2,6 @@ package com.izikgram.user.service;
 
 import com.izikgram.user.entity.User;
 import com.izikgram.user.repository.UserMapper;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -40,13 +39,7 @@ public class UserService {
     }
 
     public void deleteUser(String member_id) {
-
-        //세션에서 user객체 가져옴
-        //User user = (User) session.getAttribute("user");
         userMapper.deleteUser(member_id);
-
-        //탈퇴 후 user 객체를 제거해서 로그아웃됨
-        //session.removeAttribute("user");
     }
 
     public void updateUserPw(String encodedPassword, String memberId) {

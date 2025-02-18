@@ -26,6 +26,7 @@ public class User {
     // 학력조건
     private String edu_lv;
 
-    private int stress_num;
+    // ACTIVE(default) : 활동중, DELETED : 탈퇴
+    private String status;
 
 }

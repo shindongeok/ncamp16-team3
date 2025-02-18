@@ -1,5 +1,6 @@
 package com.izikgram.global.security;
 
+import com.izikgram.user.entity.Stress;
 import com.izikgram.user.entity.User;
 import com.izikgram.user.repository.UserMapper;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,10 +24,16 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler {
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
-        String member_Id = authentication.getName(); // 로그인한 사용자 ID 가져오기
-        User loginuser = userMapper.getUserInfo(member_Id); // DB에서 사용자 정보 조회
-
-        log.info("로그인 성공!!!!!: {} -> /main 이동", loginuser.getMember_id());
-        log.info("사용자 정보 : {}", loginuser);
+        try {
+            String member_id = authentication.getName(); // 로그인한 사용자 ID 가져오기
+            User loginuser = userMapper.getUserInfo(member_id); // DB에서 사용자 정보 조회
+            Stress userStressDTO = userMapper.getUserStress(member_id); // member_id + stress 지수
+            log.info("로그인 성공!!!!!: {} -> /main 이동", loginuser.getMember_id());
+            log.info("사용자 정보 : {}", loginuser);
+            log.info("스트레스 지수 = {}", userStressDTO.getStress_num());
+            log.info("UserStressDTO 정보 : {}", userStressDTO);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

@@ -213,8 +213,8 @@ public class UserController {
 
     @PostMapping("/delete")
     public String user_delete(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        User loginUser = userDetails.getUser();
-        userService.deleteUser(loginUser.getMember_id());
+        User deleteUser = userDetails.getUser();
+        userService.deleteUser(deleteUser.getMember_id()); // DB에서 status 변경
         return "redirect:/";
     }
 }

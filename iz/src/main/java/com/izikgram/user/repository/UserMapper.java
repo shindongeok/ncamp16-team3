@@ -1,5 +1,6 @@
 package com.izikgram.user.repository;
 
+import com.izikgram.user.entity.Stress;
 import com.izikgram.user.entity.User;
 import org.apache.ibatis.annotations.*;
 
@@ -41,8 +42,14 @@ public interface UserMapper {
             "WHERE m.member_id = #{member_id}")
     User getUserInfo(@Param("member_id") String member_id);
 
-    @Delete("delete from iz_member where member_id=#{member_id}")
-    void deleteUser(String member_id);
+    @Select("SELECT stress_num FROM iz_member_stress_info " +
+            "where member_id = #{member_id}")
+    Stress getUserStress(String member_id);
+
+    @Update("update iz_member set member_id = null," +
+            " status = 'DELETED' " +
+            "where member_id=#{member_id}")
+    int deleteUser(String member_id);
 
     @Update("UPDATE iz_member SET password = #{password} WHERE member_id = #{member_id}")
     int updateUserPw(@Param("password") String password,@Param("member_id") String member_id);
