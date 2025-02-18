@@ -1,3 +1,5 @@
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <!DOCTYPE html>
 <html class="h-full bg-white">
 <head>
@@ -8,8 +10,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <style type="text/tailwindcss">
-        .font-roboto {
-            font-family: "Roboto", serif;
+        html {
+            background-color: #f0f0f0;
         }
         @theme {
             --color-main-sky: #00a3ed;
@@ -66,7 +68,9 @@
 <body>
 
 <div class="flex flex-col w-full mobile-container pt-8 relative">
-    <header th:replace="~{/header :: header} " class="pt-4"></header><br><br>
+
+    <div class="pt-20"><header th:replace="~{/header :: header} " class="pt-4"></header></div>
+
     <footer th:replace="~{/footer :: footer}" class="pt-4"></footer>
 
 
@@ -82,7 +86,7 @@
         <div class="flex items-center gap-3 mb-1">
             <div class="relative flex-1">
                 <select class="w-full px-1 py-0.5 border rounded-lg text-xs appearance-none bg-white">
-                    <!--                    <option th:value="${user.loc_mod}" selected></option>-->
+                    <option th:text="${#authentication.getPrincipal().getUser().getLoc_mod}" selected></option>
                     <option>서울</option>
                     <option>경기</option>
                     <option>부산</option>
@@ -90,13 +94,13 @@
             </div>
             <div class="relative flex-1">
                 <select class="w-full px-1 py-0.5 border rounded-lg text-xs appearance-none bg-white">
-                    <!--                    <option th:value="${user.ind_cd}" selected></option>-->
+                    <option th:text="${#authentication.getPrincipal().getUser().getInd_cd}" selected></option>
                     <option>IT/소프트웨어</option>
                 </select>
             </div>
             <div class="relative flex-1">
                 <select class="w-full px-1 py-0.5 border rounded-lg text-xs appearance-none bg-white">
-                    <!--                    <option th:value="${user.edu_lv}" selected></option>-->
+                    <option th:text="${#authentication.getPrincipal().getUser().getEdu_lv}" selected></option>
                     <option>대졸4년제</option>
                     <option>대졸2년제</option>
                     <option>고졸</option>

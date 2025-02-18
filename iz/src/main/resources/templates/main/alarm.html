@@ -8,9 +8,19 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <style type="text/tailwindcss">
-        @theme {
-            --color-main-sky: #00a3ed;
+        html {
+            background-color: #f0f0f0;
         }
+        @theme {
+            --color-main-sky-highlight: #00a3ed;
+            --color-main-sky-basic: #9bdcfd;
+            --color-main-red-highlight: #ff5353;
+            --color-main-red-basic: #ff9898;
+            --color-main-yellow-highlight: #fbc159ff;
+            --color-main-yellow-basic: #fdd391;
+            --color-main-black: #2C2C2C;
+        }
+
         /* PC에서 모바일 크기로 고정 */
         @media screen and (min-width: 769px) {
             .mobile-container {
@@ -35,45 +45,35 @@
 
 <body>
 
-<div class="flex flex-col w-full mobile-container pt-8 relative">
-    <div class="flex justify-between items-center w-full p-4">
-        <header th:replace="~{/header :: header} " class="pt-4"></header><br><br>
-        <footer th:replace="~{/footer :: footer}" class="pt-4"></footer>
-    </div><br>
+<body>
 
-    <h1 class="text-2xl font-bold mb-6"></h1>
+<div class="flex flex-col w-full mobile-container pt-8 relative bg-white rounded-lg shadow-lg mx-auto">
+    <div class="pt-28"><header th:replace="~{/header :: header} " class="pt-4"></header></div>
+    <footer th:replace="~{/footer :: footer}" class="pt-4"></footer>
 
+    <!-- 페이지 제목 -->
+    <h1 class="text-3xl font-bold text-gray-800 mb-6">📢 지난 알림 목록</h1><br>
 
-
-
+    <!-- 알림 목록 -->
+    <ul class="space-y-4">
+        <li class="flex items-center bg-white p-4 max-w-[580px] rounded-lg shadow-md hover:shadow-lg transition-transform transform hover:scale-102">
+            <span class="alarm-icon text-xl text-blue-500 mr-4">🔔</span>
+            <span class="text-gray-700">알림 1: 새로운 이벤트가 생겼어요!</span>
+        </li>
+        <li class="flex items-center bg-white p-4 max-w-[580px] rounded-lg shadow-md hover:shadow-lg transition-transform transform hover:scale-102">
+            <span class="alarm-icon text-xl text-blue-500 mr-4">🔔</span>
+            <span class="text-gray-700">알림 2: 할 일이 하나 추가되었습니다!</span>
+        </li>
+        <li class="flex items-center bg-white p-4 max-w-[580px] rounded-lg shadow-md hover:shadow-lg transition-transform transform hover:scale-102">
+            <span class="alarm-icon text-xl text-blue-500 mr-4">🔔</span>
+            <span class="text-gray-700">알림 3: 시스템 점검이 완료되었습니다.</span>
+        </li>
+    </ul>
 </div>
 
 
 
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        // h1 태그 찾기
-        const alarmTitle = document.querySelector("h1.text-2xl.font-bold.mb-6");
-
-        // 새로운 알람 목록 추가
-        const alarmList = document.createElement("ul");
-        alarmList.innerHTML = `
-        <li class="text-gray-700">🔔 알람 1</li>
-        <li class="text-gray-700">🔔 알람 2</li>
-        <li class="text-gray-700">🔔 알람 3</li>
-    `;
-
-        // h1 태그 아래에 리스트 삽입
-        alarmTitle.after(alarmList);
-    });
-
-
-    document.addEventListener("DOMContentLoaded", function () {
-        const alarmTitle = document.querySelector("h1.text-2xl.font-bold.mb-6");
-        if (alarmTitle) {
-            alarmTitle.textContent = "📢 지난 알림 목록";
-        }
-    });
 
 
 

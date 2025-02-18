@@ -8,8 +8,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <style type="text/tailwindcss">
-        @theme {
-            --color-main-sky: #00a3ed;
+        html {
+            background-color: #f0f0f0;
         }
         /* PC에서 모바일 크기로 고정 */
         @media screen and (min-width: 769px) {
@@ -36,7 +36,7 @@
 <body>
 
 <div class="flex flex-col w-full mobile-container pt-8 relative">
-    <header th:replace="~{/header :: header} " class="pt-4"></header><br><br>
+    <header th:replace="~{/header :: header} " class="pt-4"></header><br><br><br>
     <footer th:replace="~{/footer :: footer}" class="pt-4"></footer>
 
     <div class="p-4">
