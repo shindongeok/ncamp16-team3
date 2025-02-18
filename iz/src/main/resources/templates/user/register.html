@@ -302,7 +302,6 @@
                 event.preventDefault(); // 회원가입 진행 막기
                 showModal("회원가입 불가!", "아이디 중복 확인을 해주세요", false);
             } else {
-                event.preventDefault();
                 showModal("회원가입 성공!", "회원가입을 환영합니다!!", true);
                 $(".closeBtn").click(function() {
                     window.location.href = "/";
