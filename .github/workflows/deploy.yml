@@ -34,16 +34,19 @@ jobs:
         host: ${{ secrets.NCP_HOST }}
         username: root
         password: ${{ secrets.NCP_PASSWORD }}
-        key: ${{ secrets.NCP_PEM_KEY }}
         port: 22
         script: |
           cd /opt/izikgram
+          pkill -f 'java -jar' || true
+          sleep 5
+          find . -name "*.jar" -type f -delete
+          cp /home/runner/work/ncamp16-team3/ncamp16-team3/iz/build/libs/*.jar ./app.jar
+          nohup java -jar app.jar > /dev/null 2>&1 &
+          sleep 5
           if pgrep -f 'java -jar'; then
-            pkill -f 'java -jar'
-            sleep 5
+            echo "Application started successfully"
+            exit 0
+          else
+            echo "Failed to start application"
+            exit 1
           fi
-          rm -f *.jar
-          cp $GITHUB_WORKSPACE/iz/build/libs/*.jar ./izikgram.jar
-          setsid nohup java -jar izikgram.jar > app.log 2>&1 < /dev/null &
-          sleep 10
-          echo "Deployment completed"
