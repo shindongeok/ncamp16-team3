@@ -98,127 +98,100 @@
             <button class="time-settings-btn">⚙️</button>
         </div>
 
-        <div class="time-settings-modal" id="timeSettingsModal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3>시간 설정</h3>
-                    <button class="close-modal-btn">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <div class="time-input-group">
-                        <label for="workStartTime">출근 시간</label>
-                        <input type="time" id="workStartTime" th:value="${@mainService.getStartTime(#authentication.principal.user.member_id)}">
-                    </div>
-                    <div class="time-input-group">
-                        <label for="lunchTime">점심 시간</label>
-                        <input type="time" id="lunchTime" th:value="${@mainService.getLunchTime(#authentication.principal.user.member_id)}">
-                    </div>
-                    <div class="time-input-group">
-                        <label for="workEndTime">퇴근 시간</label>
-                        <input type="time" id="workEndTime" th:value="${@mainService.getEndTime(#authentication.principal.user.member_id)}">
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button class="save-time-btn">저장</button>
-                </div>
-            </div>
-        </div>
+        <div class="stress-no-data" style="display: none;">아직 기록된 퇴사지수가 없어요</div>
 
         <div class="stress-graph-section">
-            <div class="stress-no-data" style="display: none;">아직 기록된 퇴사지수가 없어요</div>
-            <div class="container">
-                <div class="progress-container">
-                    <svg width="200" height="200">
-                        <!-- 퇴근까지 (가장 큰 원) -->
-                        <circle
-                                cx="100"
-                                cy="100"
-                                r="90"
-                                fill="none"
-                                stroke="#C9F0FF"
-                                stroke-width="15"
-                        />
-                        <circle
-                                class="progress-circle"
-                                cx="100"
-                                cy="100"
-                                r="90"
-                                fill="none"
-                                stroke="#9BDCFD"
-                                stroke-width="15"
-                                stroke-dasharray="565.49"
-                                stroke-dashoffset="565.49"
-                                stroke-linecap="round"
-                                data-progress="0"
-                        />
-                        <circle class="circle-dot" cx="100" cy="100" r="5" color="white"/>
-                        <circle class="circle-dot" cx="100" cy="10" r="5" color="white"/>
+            <div class="progress-container">
+                <svg width="200" height="200">
+                    <!-- 퇴근까지 (가장 큰 원) -->
+                    <circle
+                            cx="100"
+                            cy="100"
+                            r="90"
+                            fill="none"
+                            stroke="#C9F0FF"
+                            stroke-width="15"
+                    />
+                    <circle
+                            class="progress-circle"
+                            cx="100"
+                            cy="100"
+                            r="90"
+                            fill="none"
+                            stroke="#9BDCFD"
+                            stroke-width="15"
+                            stroke-dasharray="565.49"
+                            stroke-dashoffset="565.49"
+                            stroke-linecap="round"
+                            data-progress="0"
+                    />
+                    <circle class="circle-dot" cx="100" cy="100" r="5" color="white"/>
+                    <circle class="circle-dot" cx="100" cy="10" r="5" color="white"/>
 
-                        <!-- 업무 진행률 (중간 원) -->
-                        <circle
-                                cx="100"
-                                cy="100"
-                                r="70"
-                                fill="none"
-                                stroke="#FFE5E5"
-                                stroke-width="15"
-                        />
-                        <circle
-                                class="progress-circle"
-                                cx="100"
-                                cy="100"
-                                r="70"
-                                fill="none"
-                                stroke="#FF9898"
-                                stroke-width="15"
-                                stroke-dasharray="439.82"
-                                stroke-dashoffset="439.82"
-                                stroke-linecap="round"
-                                data-progress="0"
-                        />
-                        <circle class="circle-dot" cx="100" cy="30" r="5" color="white"/>
+                    <!-- 업무 진행률 (중간 원) -->
+                    <circle
+                            cx="100"
+                            cy="100"
+                            r="70"
+                            fill="none"
+                            stroke="#FFE5E5"
+                            stroke-width="15"
+                    />
+                    <circle
+                            class="progress-circle"
+                            cx="100"
+                            cy="100"
+                            r="70"
+                            fill="none"
+                            stroke="#FF9898"
+                            stroke-width="15"
+                            stroke-dasharray="439.82"
+                            stroke-dashoffset="439.82"
+                            stroke-linecap="round"
+                            data-progress="0"
+                    />
+                    <circle class="circle-dot" cx="100" cy="30" r="5" color="white"/>
 
-                        <!-- 점심까지 (가장 작은 원) -->
-                        <circle
-                                cx="100"
-                                cy="100"
-                                r="50"
-                                fill="none"
-                                stroke="#FFEFD7"
-                                stroke-width="15"
-                        />
-                        <circle
-                                class="progress-circle"
-                                cx="100"
-                                cy="100"
-                                r="50"
-                                fill="none"
-                                stroke="#FFD188"
-                                stroke-width="15"
-                                stroke-dasharray="314.16"
-                                stroke-dashoffset="314.16"
-                                stroke-linecap="round"
-                                data-progress="0"
-                        />
-                        <circle class="circle-dot" cx="100" cy="50" r="5" color="white"/>
-                    </svg>
+                    <!-- 점심까지 (가장 작은 원) -->
+                    <circle
+                            cx="100"
+                            cy="100"
+                            r="50"
+                            fill="none"
+                            stroke="#FFEFD7"
+                            stroke-width="15"
+                    />
+                    <circle
+                            class="progress-circle"
+                            cx="100"
+                            cy="100"
+                            r="50"
+                            fill="none"
+                            stroke="#FFD188"
+                            stroke-width="15"
+                            stroke-dasharray="314.16"
+                            stroke-dashoffset="314.16"
+                            stroke-linecap="round"
+                            data-progress="0"
+                    />
+                    <circle class="circle-dot" cx="100" cy="50" r="5" color="white"/>
+                </svg>
+            </div>
+            <div class="labels-container">
+                <div class="label-item">
+                    <div class="color-indicator" style="background-color: #9BDCFD;"></div>
+                    <span class="label-text">퇴근까지</span>
+                    <span class="time-text"></span>
                 </div>
-                <div class="labels-container">
-                    <div class="label-item">
-                        <div class="color-indicator" style="background-color: #9BDCFD;"></div>
-                        <span class="label-text">퇴근까지</span>
-                        <span class="time-text"></span>
-                    </div>
-                    <div class="label-item">
-                        <div class="color-indicator" style="background-color: #FF9898;"></div>
-                        <span class="label-text">퇴사지수</span>
-                        <span class="time-text"></span>
-                    </div>
-                    <div class="label-item">
-                        <div class="color-indicator" style="background-color: #FFD188;"></div>
-                        <span class="label-text">점심까지</span>
-                        <span class="time-text"></span>
-                    </div>
+                <div class="label-item">
+                    <div class="color-indicator" style="background-color: #FF9898;"></div>
+                    <span class="label-text">퇴사지수</span>
+                    <span class="time-text"></span>
+                </div>
+                <div class="label-item">
+                    <div class="color-indicator" style="background-color: #FFD188;"></div>
+                    <span class="label-text">점심까지</span>
+                    <span class="time-text"></span>
                 </div>
             </div>
         </div>

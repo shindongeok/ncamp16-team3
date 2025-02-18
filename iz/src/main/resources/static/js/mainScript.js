@@ -61,53 +61,45 @@ function initializeCalendar(feelingList = []) {
     scheduleNextUpdate();
 }
 
-// 시간 계산 관련 함수들
-function calculateTimeRemaining(startHour, endHour) {
-    const now = new Date();
-    const currentHour = now.getHours();
-    const currentMinute = now.getMinutes();
-
-    const endTime = endHour * 60;
-    const currentTime = currentHour * 60 + currentMinute;
-
-    let remainingMinutes = endTime - currentTime;
-    if (remainingMinutes < 0) remainingMinutes = 0;
-
-    const hours = Math.floor(remainingMinutes / 60);
-    const minutes = remainingMinutes % 60;
-
-    return `${hours}h ${minutes}min`;
-}
-
-function calculateProgress(startHour, endHour) {
-    const now = new Date();
-    const currentHour = now.getHours();
-    const currentMinute = now.getMinutes();
-    const currentTime = currentHour + currentMinute / 60;
-
-    if (currentTime < startHour) return 0;
-    if (currentTime > endHour) return 100;
-
-    const duration = endHour - startHour;
-    const elapsed = currentTime - startHour;
-    return Math.min(100, Math.max(0, (elapsed / duration) * 100));
-}
-
+// 스트레스 그래프 관련 함수들
 function updateCircleProgress(circle, progress) {
+    // 진행률을 0-100 사이로 제한
+    progress = Math.min(100, Math.max(0, progress));
+
     const circumference = parseFloat(circle.getAttribute('stroke-dasharray'));
     const offset = circumference - (progress / 100) * circumference;
     circle.setAttribute('stroke-dashoffset', offset);
-    circle.setAttribute('data-progress', progress);
 
+    // 점 위치 업데이트
     const dot = circle.nextElementSibling;
-    const angle = (progress / 100) * 360 - 90;
-    const radius = parseFloat(circle.getAttribute('r'));
-    const cx = 100;
-    const cy = 100;
-    const x = cx + radius * Math.cos(angle * Math.PI / 180);
-    const y = cy + radius * Math.sin(angle * Math.PI / 180);
-    dot.setAttribute('cx', x);
-    dot.setAttribute('cy', y);
+    if (dot && dot.classList.contains('circle-dot')) {
+        const angle = (progress / 100) * 360 - 90; // -90도 오프셋으로 시작 위치 조정
+        const radius = parseFloat(circle.getAttribute('r'));
+        const cx = 100; // SVG 중심 X
+        const cy = 100; // SVG 중심 Y
+
+        // 극좌표를 데카르트 좌표로 변환
+        const x = cx + radius * Math.cos(angle * Math.PI / 180);
+        const y = cy + radius * Math.sin(angle * Math.PI / 180);
+
+        dot.setAttribute('cx', x);
+        dot.setAttribute('cy', y);
+    }
+}
+
+function calculateTimeProgress(startTime, endTime) {
+    const now = new Date();
+    const [startHour, startMinute] = startTime.split(':').map(Number);
+    const [endHour, endMinute] = endTime.split(':').map(Number);
+
+    const start = startHour * 60 + startMinute;
+    const end = endHour * 60 + endMinute;
+    const current = now.getHours() * 60 + now.getMinutes();
+
+    if (current < start) return 0;
+    if (current > end) return 100;
+
+    return ((current - start) / (end - start)) * 100;
 }
 
 function calculateWeeklyAverageStress(monthlyStressList) {
@@ -133,43 +125,90 @@ function calculateWeeklyAverageStress(monthlyStressList) {
 }
 
 function updateAllProgress() {
-    const [startHour, startMinute] = startTime.split(':').map(Number);
-    const [lunchHour, lunchMinute] = lunchTime.split(':').map(Number);
-    const [endHour, endMinute] = endTime.split(':').map(Number);
-
     const circles = document.querySelectorAll('.progress-circle');
     const timeTexts = document.querySelectorAll('.time-text');
     const stressNoDataElements = document.querySelectorAll('.stress-no-data');
+    const container = document.querySelector('.stress-graph-section .container');
 
     // stressNum이 null이거나 undefined인 경우 처리
     if (stressNum === null || stressNum === undefined) {
         stressNoDataElements.forEach(el => el.style.display = 'block');
-        // 그래프 컨테이너 숨기기
-        document.querySelector('.stress-graph-section .container').style.display = 'none';
+        if (container) container.style.display = 'none';
         return;
     } else {
         stressNoDataElements.forEach(el => el.style.display = 'none');
-        document.querySelector('.stress-graph-section .container').style.display = 'block';
+        if (container) container.style.display = 'flex';
     }
 
-    timeTexts[0].textContent = calculateTimeRemaining(startHour, endHour);
-    timeTexts[2].textContent = calculateTimeRemaining(startHour, lunchHour);
+    // 퇴근까지 남은 시간 (큰 원)
+    const workProgress = calculateTimeProgress(startTime, endTime);
+    updateCircleProgress(circles[0], workProgress);
 
-    circles.forEach((circle, index) => {
-        let progress;
-        if (index === 0) {
-            progress = Math.round(calculateProgress(startHour, endHour));
-        } else if (index === 1) {
-            progress = stressNum;
-        } else if (index === 2) {
-            progress = Math.round(calculateProgress(startHour, lunchHour));
-        }
+    // 퇴사지수 (중간 원)
+    // stressNum 값을 0-100 사이로 정규화 (-10 ~ +10 범위를 0-100으로 변환)
+    const normalizedStress = ((Number(stressNum) + 10) / 20) * 100;
+    updateCircleProgress(circles[1], normalizedStress);
 
-        updateCircleProgress(circle, progress);
+    // 점심까지 남은 시간 (작은 원)
+    const lunchProgress = calculateTimeProgress(startTime, lunchTime);
+    updateCircleProgress(circles[2], lunchProgress);
+
+    // 시간 텍스트 업데이트
+    function formatTimeRemaining(start, end) {
+        const [startHour, startMinute] = start.split(':').map(Number);
+        const [endHour, endMinute] = end.split(':').map(Number);
+        const now = new Date();
+        const currentHour = now.getHours();
+        const currentMinute = now.getMinutes();
+
+        const endTimeMinutes = endHour * 60 + endMinute;
+        const currentTimeMinutes = currentHour * 60 + currentMinute;
+
+        let remainingMinutes = endTimeMinutes - currentTimeMinutes;
+        if (remainingMinutes < 0) remainingMinutes = 0;
+
+        const hours = Math.floor(remainingMinutes / 60);
+        const minutes = remainingMinutes % 60;
+
+        return `${hours}h ${minutes}min`;
+    }
+
+    timeTexts[0].textContent = formatTimeRemaining(startTime, endTime);
+    timeTexts[1].textContent = `${stressNum > 0 ? '+' : ''}${stressNum}%`;
+    timeTexts[2].textContent = formatTimeRemaining(startTime, lunchTime);
+}
+
+// 모달 관련 코드
+const modal = document.getElementById('timeSettingsModal');
+const settingsBtn = document.querySelector('.time-settings-btn');
+const closeBtn = document.querySelector('.close-modal-btn');
+const saveBtn = document.querySelector('.save-time-btn');
+
+if (settingsBtn && closeBtn && saveBtn && modal) {
+    settingsBtn.addEventListener('click', () => modal.style.display = 'flex');
+    closeBtn.addEventListener('click', () => modal.style.display = 'none');
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) modal.style.display = 'none';
     });
 
-    const stressText = document.querySelectorAll('.time-text')[1];
-    stressText.textContent = `${stressNum > 0 ? '+' : ''}${stressNum}%`;
+    saveBtn.addEventListener('click', () => {
+        const workStartTime = document.getElementById('workStartTime').value;
+        const lunchTime = document.getElementById('lunchTime').value;
+        const workEndTime = document.getElementById('workEndTime').value;
+
+        if (!workStartTime || !lunchTime || !workEndTime) {
+            alert('모든 시간을 입력해주세요.');
+            return;
+        }
+
+        // 전역 변수 업데이트
+        startTime = workStartTime;
+        lunchTime = lunchTime;
+        endTime = workEndTime;
+
+        updateAllProgress();
+        modal.style.display = 'none';
+    });
 }
 
 // 초기화 및 이벤트 리스너
@@ -213,43 +252,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 진행 상태 업데이트 시작
     updateAllProgress();
-    setInterval(updateAllProgress, 60000);
-});
-
-// 모달 관련 코드
-const modal = document.getElementById('timeSettingsModal');
-const settingsBtn = document.querySelector('.time-settings-btn');
-const closeBtn = document.querySelector('.close-modal-btn');
-const saveBtn = document.querySelector('.save-time-btn');
-const timeInputs = {
-    workStart: document.getElementById('workStartTime'),
-    lunch: document.getElementById('lunchTime'),
-    workEnd: document.getElementById('workEndTime')
-};
-
-settingsBtn?.addEventListener('click', () => modal.style.display = 'flex');
-closeBtn?.addEventListener('click', () => modal.style.display = 'none');
-modal?.addEventListener('click', (e) => {
-    if (e.target === modal) modal.style.display = 'none';
-});
-
-saveBtn?.addEventListener('click', () => {
-    const workStartTime = timeInputs.workStart.value;
-    const lunchTime = timeInputs.lunch.value;
-    const workEndTime = timeInputs.workEnd.value;
-
-    if (!workStartTime || !lunchTime || !workEndTime) {
-        alert('모든 시간을 입력해주세요.');
-        return;
-    }
-
-    const circles = document.querySelectorAll('.progress-circle');
-    circles.forEach((circle, index) => {
-        circle.setAttribute('data-start', workStartTime.split(':')[0]);
-        circle.setAttribute('data-end',
-            index === 2 ? lunchTime.split(':')[0] : workEndTime.split(':')[0]);
-    });
-
-    updateAllProgress();
-    modal.style.display = 'none';
+    setInterval(updateAllProgress, 60000); // 1분마다 업데이트
 });
