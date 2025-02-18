@@ -32,7 +32,7 @@ jobs:
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.NCP_HOST }}
-        username: root
+        username: nbpmon
         password: ${{ secrets.NCP_PASSWORD }}
         key: ${{ secrets.NCP_PEM_KEY }}
         port: 22
