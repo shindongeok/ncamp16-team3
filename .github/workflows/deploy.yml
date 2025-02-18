@@ -1,25 +1,13 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-# This workflow will build a package using Gradle and then publish it to GitHub packages when a release is created
-# For more information see: https://github.com/actions/setup-java/blob/main/docs/advanced-usage.md#Publishing-using-gradle
-
 name: Deploy to NCP
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main ]  
 
 jobs:
   build-and-deploy:
-
     runs-on: ubuntu-latest
     
-    permissions:
-      contents: read
-      packages: write
-
     steps:
     - uses: actions/checkout@v4
     
@@ -28,16 +16,16 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
-
+    
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v4
-
+      
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
-
+      
     - name: Build with Gradle
       run: ./gradlew build -x test
-
+      
     - name: Deploy to NCP
       uses: appleboy/ssh-action@master
       with:
@@ -49,10 +37,5 @@ jobs:
           cd /opt/izikgram
           pkill -f 'java -jar' || true
           rm -f *.jar
-          echo "기존 프로세스 종료 및 jar 파일 삭제 완료"
           cp ${{ github.workspace }}/build/libs/*.jar ./izikgram.jar
-          echo "신규 jar 파일 복사 완료"
           nohup java -jar izikgram.jar > app.log 2>&1 &
-          echo "애플리케이션 실행 완료"
-        USERNAME: ${{ github.actor }}
-        TOKEN: ${{ secrets.GITHUB_TOKEN }}
