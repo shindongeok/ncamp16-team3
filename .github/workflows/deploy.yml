@@ -11,7 +11,7 @@ jobs:
         with:
           host: ${{secrets.NCP_HOST_IP}}
           username: nbpnom
-          password: ${{secrets.NCP_PASSWORD}}
+          key: ${{secrets.NCP_PEM_KEY}}
           port: 22
           script: |
             whoami
