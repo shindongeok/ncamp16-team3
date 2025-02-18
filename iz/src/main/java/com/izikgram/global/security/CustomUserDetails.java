@@ -1,5 +1,6 @@
 package com.izikgram.global.security;
 
+import com.izikgram.user.entity.Stress;
 import com.izikgram.user.entity.User;
 import com.izikgram.user.dto.UserStressDTO;
 import lombok.AllArgsConstructor;
@@ -14,7 +15,7 @@ import java.util.List;
 public class CustomUserDetails implements UserDetails {
 
     private User user;
-    private UserStressDTO userStressDTO;
+    private Stress stress;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -87,9 +87,9 @@
             <div class="flex space-x-4">
                 <!-- 산업/업종 -->
                 <div class="flex-1">
-                    <label for="ind_cd" class="block text-lg/6 text-gray-900">산업/업종</label>
+                    <label for="ind_cd" class="text-center block text-lg/6 text-gray-900">산업/업종</label>
                     <div class="mt-2">
-                        <select id="ind_cd" name="ind_cd" required>
+                        <select id="ind_cd" name="ind_cd" required class="block w-full rounded-md bg-white px-3 py-1.5 text-lg text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
                             <option value="IT" th:selected="${'IT' == #authentication.getPrincipal().getUser().getInd_cd()}">IT/소프트웨어</option>
                             <option value="marketing" th:selected="${'marketing' == #authentication.getPrincipal().getUser().getInd_cd()}">마케팅</option>
                         </select>
@@ -98,9 +98,9 @@
 
                 <!-- 학력 -->
                 <div class="flex-1">
-                    <label for="edu_lv" class="block text-lg/6 text-gray-900">학력</label>
+                    <label for="edu_lv" class="text-center block text-lg/6 text-gray-900">학력</label>
                     <div class="mt-2">
-                        <select id="edu_lv" name="edu_lv" th:value="${#authentication.getPrincipal().getUser().getEdu_lv()}">
+                        <select id="edu_lv" name="edu_lv" required class="block w-full rounded-md bg-white px-3 py-1.5 text-lg text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
                             <option value="universe4" th:selected="${#authentication.getPrincipal().getUser().getEdu_lv() == 'universe4'}">대졸 4년제</option>
                             <option value="universe2" th:selected="${#authentication.getPrincipal().getUser().getEdu_lv() == 'universe2'}">대졸 2년제</option>
                             <option value="highschool" th:selected="${#authentication.getPrincipal().getUser().getEdu_lv() == 'highschool'}">고등학교 졸업</option>
@@ -110,9 +110,9 @@
 
                 <!-- 월급날 -->
                 <div class="flex-1">
-                    <label for="payday" class="block text-lg/6 text-gray-900">월급날</label>
+                    <label for="payday" class="text-center block text-lg/6 text-gray-900">월급날</label>
                     <div class="mt-2">
-                        <select id="payday" name="payday" required>
+                        <select id="payday" name="payday" required class="block w-full rounded-md bg-white px-3 py-1.5 text-lg text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
                             <option th:each="payday : ${#numbers.sequence(1, 31)}"
                                     th:value="${payday}"
                                     th:text="${payday}"
@@ -125,7 +125,7 @@
             </div>
 
             <div>
-                <button type="submit" class="flex w-full justify-center rounded-md bg-main-sky px-3 py-1.5 text-lg/6 text-white shadow-xs hover:bg-sky-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-800">수정 완료</button>
+                <button type="submit" class="flex w-full justify-center rounded-md bg-main-sky px-3 py-1.5 text-lg/6 text-white shadow-xs hover:bg-sky-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-800 cursor-pointer">수정 완료</button>
             </div>
         </form>
     </div>
