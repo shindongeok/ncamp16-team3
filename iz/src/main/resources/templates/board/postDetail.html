@@ -1,6 +1,5 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <!DOCTYPE html>
-<html>
 <head>
     <meta charset="UTF-8">
     <title>게시글 상세보기</title>
@@ -10,9 +9,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/default.css}">
     <style type="text/tailwindcss">
-        .font-roboto {
-            font-family: "Roboto", serif;
-        }
+        /*.font-roboto {*/
+        /*    font-family: "Roboto", serif;*/
+        /*}*/
+
         @theme {
             --color-main-sky-highlight: #00a3ed;
             --color-main-sky-basic: #9bdcfd;
@@ -21,24 +21,22 @@
             --color-main-yellow-highlight: #fbc159ff;
             --color-main-yellow-basic: #fdd391;
         }
+        .likeBtn.active, .unlikeBtn.active {
+            background-color: #2C5282;
+            color: white;
+        }
     </style>
+
 </head>
 <body class="font-roboto  flex justify-center">
 <div class=" mobile-container p-6">
-    <!-- writer_id값   -->
-    <input type="hidden" id="writer_id" th:value="${board.writer_id}">
-    <input type="hidden" id="board_id" th:value="${board.board_id}">
-    <input type="hidden" id="board_type" th:value="${board.board_type}">
-    <!-- 로그인 id값   ${member_id}-->
-    <input type="hidden" id="member_id" th:value="hello">
-
     <div class="border-b  pb-2">
         <h2 class="text-4xl font-black" th:text="${board.title}"></h2>
     </div>
-    <div class="text-gray-500 text-xs p-3 " th:text="${board.reg_date}">13분전....</div>
+    <div class="text-gray-500 text-xs p-3 reg_date" th:data-reg-date="${board.reg_date}"  th:text="${board.reg_date}"></div>
     <hr class="border-b border-gray-200">
     <!-- 상세내용-->
-    <div class="h-80">
+    <div class="h-50">
         <textarea id="contentText" class="w-full p-2 mt-2 border border-transparent text-gray-700 focus:outline-none resize-none"
                   th:text="${board.content}" th:value="${board.content}" readonly></textarea>
     </div>
@@ -48,25 +46,31 @@
     <div class="flex items-center flex items-center justify-between gap-6 my-5">
         <!-- 좋아요 / 싫어요-->
         <div class="w-55 flex justify-between">
-            <button id="likeBtn" data-post-id="1" class="px-4 py-2 bg-main-sky-basic text-black rounded hover:bg-main-sky-highlight rounded-xl cursor-pointer">
-                이직해<span id="likeCount">26</span>
+            <!-- 좋아요 버튼 -->
+            <input id="boardType" type="hidden" th:value="${board_type}" />
+            <input id="boardId" type="hidden" th:value="${board.board_id}" />
+            <button id="like" class="likeBtn px-4 py-2 bg-main-sky-basic text-black rounded hover:bg-main-sky-highlight rounded-xl cursor-pointer"
+                    th:attr="data-board=${board.board_id}"
+                    th:onclick="|toggleLikeDislike(${board.board_id}, 'like')|">
+                이직해 <span class="" th:id="likeCount" th:text="${board.like_count}"></span>
             </button>
-            <button onclick="like_dislike()" class="px-4 py-2 bg-main-sky-basic text-black rounded hover:bg-main-sky-highlight rounded-xl cursor-pointer">
-                존버해<span id="likeCount">22</span>
+
+            <!-- 싫어요 버튼 -->
+            <button id="dislike" class="unlikeBtn px-4 py-2 bg-main-sky-basic text-black rounded hover:bg-main-sky-highlight rounded-xl cursor-pointer"
+                    th:attr="data-board=${board.board_id}"
+                    th:onclick="|toggleLikeDislike(${board.board_id}, 'dislike')|">
+                존버해 <span class="" th:id="dislikeCount" th:text="${board.dislike_count}"></span>
             </button>
         </div>
         <!-- 수정 페이지 이동  -->
-        <div id="updateDeleteBtn" class="updateDeleteBtn hidden">
-            <a th:href="@{/board/update/{board_type}/{board_id}(board_type=${board_type}, board_id=${board_id})}" class="ml-2 px-4 py-2 bg-main-sky-highlight text-black rounded hover:bg-main-sky-basic rounded-xl cursor-pointer">
+        <div th:if="${member_id == board.writer_id}">
+            <a th:href="@{/board/update/{board_type}/{board_id}(board_type=${board_type}, board_id=${board_id})}"
+               class="ml-2 px-4 py-2 bg-main-sky-highlight text-black rounded hover:bg-main-sky-basic rounded-xl cursor-pointer">
                 수정
             </a>
-            <a class="ml-2 px-4 py-2 bg-main-red-highlight text-black rounded hover:bg-main-red-basic rounded-xl cursor-pointer">
+            <a onclick="OpenDeleteModal()" class="ml-2 px-4 py-2 bg-main-red-highlight text-black rounded hover:bg-main-red-basic rounded-xl cursor-pointer">
                 삭제
             </a>
-<!--                &lt;!&ndash; 저장 버튼 추가 &ndash;&gt;-->
-<!--                <button type="button" id="saveButton" class="px-4 py-2 bg-main-sky-highlight text-black rounded hover:bg-main-sky-basic rounded-xl cursor-pointer" style="display: none;">-->
-<!--                    저장-->
-<!--                </button>-->
         </div>
     </div>
 
@@ -80,24 +84,15 @@
         </div>
     </form>
     <hr class="border-b border-gray-200">
-    <!-- 작성자가 아닐 경우 -->
-    <div class="border-b border-gray-200">
-        <div class="flex justify-between p-2" >
-            <div class="text-gray-500">익명01</div>
-            <div>2025-02-11</div>
-        </div>
-        <div class="p-2 text-xl font-black">댓글들어가는 곳</div>
-    </div>
-    <!-- //작성자가 아닐 경우 -->
 
     <!-- 작성자일 경우 -->
-    <div  class="border-b border-gray-200">
+    <div th:each="commentList : ${comment}" class="border-b border-gray-200">
         <div class="flex justify-between p-2" >
-            <div class="text-gray-500">익명01(작성자)</div>
-            <div>2025-02-11</div>
+            <div class="text-gray-500" th:text="${commentList.nickname}">익명01(작성자)</div>
+            <div class="text-gray-500 reg_date" th:data-reg-date="${commentList.reg_date}"  th:text="${commentList.reg_date}">2025-02-11</div>
         </div>
         <div class="flex justify-between">
-            <div class="p-2 text-xl font-black">댓글들어가는 곳</div>
+            <div class="p-2 text-xl font-black" th:text="${commentList.comment_content }">댓글들어가는 곳</div>
             <div class="p-2">
                 <button type="button" onclick="OpenUpdateModal()" class="px-2 py-1 bg-main-sky-highlight text-black rounded hover:bg-main-sky-basic rounded-xl cursor-pointer">
                     수정
@@ -131,7 +126,7 @@
                     </div>
                     <!-- 모달 버튼 영역 -->
                     <div class="px-4 pt-20 pb-5 sm:flex sm:flex-row-reverse sm:px-6">
-                        <button type="button" class="inline-flex w-full justify-center rounded-md bg-main-sky-basic px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-main-sky-highlight sm:ml-3 sm:w-auto">
+                        <button type="submit" class="inline-flex w-full justify-center rounded-md bg-main-sky-basic px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-main-sky-highlight sm:ml-3 sm:w-auto">
                             삭제
                         </button>
                         <button type="button" onclick="CloseDeleteModal()" class="mt-3 inline-flex w-full justify-center rounded-md bg-main-sky-basic px-3 py-2 text-sm font-semibold text-gray-900 ring-1 shadow-xs ring-gray-300 ring-inset hover:bg-gray-50 sm:mt-0 sm:w-auto">
@@ -143,44 +138,15 @@
         </div>
     </div>
 
-    <!-- 수정 모달 창 -->
-    <div id="communityUpdateModal" class="relative z-10 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-        <div class="fixed inset-0 bg-gray-500/75 transition-opacity max-w-[600px] mx-auto left-0 right-0"></div>
-        <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
-            <div class="flex min-h-full items-center justify-center p-4 text-center sm:items-center sm:p-0">
-                <div class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
-                    <!-- 모달 헤더 -->
-                    <div class="bg-main-sky-highlight sm:p-4 sm:pb-4">
-                        <div class="sm:flex sm:items-start">
-                            <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                                <h3 class="text-2xl font-semibold text-gray-900 p-2" id="modal-title">수정하시겠습니까?</h3>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- 모달 버튼 영역 -->
-                    <div class="px-4 pt-20 pb-5 sm:flex sm:flex-row-reverse sm:px-6">
-                        <button type="button" class="inline-flex w-full justify-center rounded-md bg-main-sky-basic px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-main-sky-highlight sm:ml-3 sm:w-auto">
-                            삭제
-                        </button>
-                        <button type="button" onclick="CloseUpdateModal()" class="mt-3 inline-flex w-full justify-center rounded-md bg-main-sky-basic px-3 py-2 text-sm font-semibold text-gray-900 ring-1 shadow-xs ring-gray-300 ring-inset hover:bg-gray-50 sm:mt-0 sm:w-auto">
-                            취소
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+
 </div>
 
+
+<script th:inline="javascript">
+
+</script>
 <script src="https://code.jquery.com/jquery-3.6.4.js"></script>
 <script th:src="@{/js/postDetail.js}"></script>
 <script th:src="@{/js/like.js}"></script>
-
-
-<script>
-
-
-
-</script>
 </body>
 </html>
