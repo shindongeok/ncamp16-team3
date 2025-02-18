@@ -14,6 +14,10 @@ public interface UserMapper {
             "#{payday}, #{start_time}, #{end_time}, #{lunch_time}, #{loc_mod}, #{ind_cd}, #{edu_lv})")
     void insertUser(User user);
 
+    @Insert({"INSERT INTO iz_member_stress_info (member_id, feeling_num, stress_num, date) ",
+             "VALUES (#{member_id}, 0, 0, NOW())"})
+    void insertUserStressInfo(@Param("member_id") String member_id);
+
     @Select("select count(*) from iz_member where member_id=#{member_id}")
     int existUserCheck(String member_id);
 
@@ -35,11 +39,12 @@ public interface UserMapper {
     @Select("SELECT m.*, s.stress_num " +
             "FROM iz_member m " +
             "LEFT JOIN ( " +
-            "    SELECT member_id, stress_num, date " +
+            "    SELECT member_id, stress_num " +
             "    FROM iz_member_stress_info " +
             "    WHERE member_id = #{member_id} " +
             ") s ON m.member_id = s.member_id " +
-            "WHERE m.member_id = #{member_id}")
+            "WHERE m.member_id = #{member_id} " +
+            "AND m.status = 'ACTIVE'")
     User getUserInfo(@Param("member_id") String member_id);
 
     @Select("SELECT stress_num FROM iz_member_stress_info " +

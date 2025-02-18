@@ -31,7 +31,7 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler {
             log.info("로그인 성공!!!!!: {} -> /main 이동", loginuser.getMember_id());
             log.info("사용자 정보 : {}", loginuser);
             log.info("스트레스 지수 = {}", userStressDTO.getStress_num());
-            log.info("UserStressDTO 정보 : {}", userStressDTO);
+            log.info("userStressDTO 정보 : {}", userStressDTO);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
