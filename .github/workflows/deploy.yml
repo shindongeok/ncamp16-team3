@@ -2,7 +2,7 @@ name: Deploy to NCP
 
 on:
   push:
-    branches: [ main ]  
+    branches: [ main ]  # 또는 master
 
 jobs:
   build-and-deploy:
@@ -21,10 +21,12 @@ jobs:
       uses: gradle/actions/setup-gradle@v4
       
     - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
+      run: chmod +x iz/gradlew   # 여기를 수정
+      working-directory: .       # 프로젝트 루트 디렉토리
       
     - name: Build with Gradle
       run: ./gradlew build -x test
+      working-directory: ./iz    # 빌드 명령을 실행할 디렉토리 지정
       
     - name: Deploy to NCP
       uses: appleboy/ssh-action@master
@@ -37,5 +39,5 @@ jobs:
           cd /opt/izikgram
           pkill -f 'java -jar' || true
           rm -f *.jar
-          cp ${{ github.workspace }}/build/libs/*.jar ./izikgram.jar
+          cp ${{ github.workspace }}/iz/build/libs/*.jar ./izikgram.jar
           nohup java -jar izikgram.jar > app.log 2>&1 &
