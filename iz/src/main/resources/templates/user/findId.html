@@ -65,7 +65,7 @@
                 <div class="mt-2">
                     <input type="text" name="auth_num" id="auth_num" required class="block w-full rounded-md bg-white px-3 py-1.5 text-lg text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
                     <div class="flex items-center justify-between">
-                        <p id="leftTime" class="block text-red-400 text-sm">* 남은시간 ${mm:ss}</p>
+                        <p id="leftTime" class="block text-red-400 text-sm"></p>
                     </div>
                 </div>
             </div>
@@ -82,7 +82,13 @@
     // 인증번호 전송
     $("#sendSmsBtn").click(function () {
         let phone_num = $("#phone_num").val(); // 입력된 전화번호 가져오기
-        console.log(phone_num);
+        let name = $("#name").val();
+        // console.log(phone_num);
+
+        if (name == "") {
+            alert("이름을 입력하세요.");
+            return;
+        }
 
         if (phone_num == "") {
             alert("전화번호를 입력하세요.");
@@ -97,15 +103,45 @@
             data: { phone_num: phone_num },
             // data: JSON.stringify(phone_num),
             success: function (response) {
-                console.log(this.url);
-                console.log(this.data);
-                console.log(response);
+                // console.log(this.url);
+                // console.log(this.data);
+                // console.log(response);
                 alert("인증번호가 전송되었습니다.");
             },
             error: function (xhr, status, error) {
                 alert("오류 발생: " + xhr.responseText);
             }
         });
+
+        // 3분 타이머
+        let countTime = 0;
+        let intervalCall;
+
+        $.time = function(time){
+            countTime = time;
+            intervalCall = setInterval(alertFunc, 1000);
+        }
+
+        $.closeTime = function(){
+            clearInterval(intervalCall);
+        }
+
+        function alertFunc() {
+            let min = Math.floor(countTime/60);
+            let sec = countTime - (60 * min);
+            if(sec > 9){
+                $("#leftTime").text('* ' + min + ':' + sec + '');
+            }else {
+                $("#leftTime").text('* ' + min + ':0' + sec + '');
+            }
+            if(countTime <= 0){
+                clearInterval(intervalCall);
+            }
+            countTime--;
+        }
+
+        $.time(179);
+
     });
 
     // 인증번호 확인
@@ -124,10 +160,10 @@
             contentType: "application/x-www-form-urlencoded",
             data: { phone_num: phone_num, auth_num: auth_num },
             success: function (response) {
-                console.log(this.url);
-                console.log(phone_num);
-                console.log(auth_num);
-                console.log(response);
+                // console.log(this.url);
+                // console.log(phone_num);
+                // console.log(auth_num);
+                // console.log(response);
                 if (response != '실패') {
                     window.location.href = "/user/findIdResult"; // 아이디 찾기 성공시 이동
                     // window.location.href = "/user/findIdResult?phone_num=" + encodeURIComponent(response);

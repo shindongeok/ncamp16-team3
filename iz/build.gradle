@@ -30,24 +30,17 @@ dependencies {
 	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6:3.1.2.RELEASE'
 	implementation 'com.auth0:java-jwt:4.4.0'
 
-
-	// mybatis
+	// MyBatis & Database
 	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.4'
-	testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.4'
-
-	compileOnly 'org.projectlombok:lombok'
-	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-
-	// mysql
+	implementation 'com.zaxxer:HikariCP:5.1.0'
 	runtimeOnly 'com.mysql:mysql-connector-j'
 
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	// lombok
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
 
-	// MyBatis & Database
-	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'
-	implementation 'com.zaxxer:HikariCP:5.1.0'
-	implementation 'mysql:mysql-connector-java:8.0.33'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
 	// coolsms
 	implementation 'net.nurigo:sdk:4.2.7'
