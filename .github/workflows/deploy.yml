@@ -34,7 +34,7 @@ jobs:
       with:
         host: ${{ secrets.NCP_HOST_IP }}
         username: nbpmon
-        key: ${{ secrets.NCP_PEM_KEY }}
+        password: ${{ secrets.NCP_PASSWORD }}
         port: 22
         script: |
           cd /opt/izikgram
