@@ -1,6 +1,7 @@
 package com.izikgram.global.security;
 
 import com.izikgram.user.entity.User;
+import com.izikgram.user.dto.UserStressDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
@@ -12,7 +13,8 @@ import java.util.List;
 @AllArgsConstructor
 public class CustomUserDetails implements UserDetails {
 
-     private User user;
+    private User user;
+    private UserStressDTO userStressDTO;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
