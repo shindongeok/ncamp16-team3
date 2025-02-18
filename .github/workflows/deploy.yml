@@ -1,9 +1,7 @@
 name: Deploy to NCP
-
 on:
   push:
     branches: [ main ]  # 또는 master
-
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -25,7 +23,10 @@ jobs:
       working-directory: ./iz
       
     - name: Build with Gradle
-      run: ./gradlew build --build-cache -x test
+      run: |
+        ./gradlew build --build-cache -x test
+        echo "JAR files found:"
+        find . -name "*.jar"
       working-directory: ./iz    
       
     - name: Deploy to NCP
@@ -41,7 +42,7 @@ jobs:
           pkill -f 'java -jar' || true
           sleep 5
           find . -name "*.jar" -type f -delete
-          cp /home/runner/work/ncamp16-team3/ncamp16-team3/iz/build/libs/*.jar ./app.jar
+          cp ${{ github.workspace }}/iz/build/libs/*.jar ./app.jar
           nohup java -jar app.jar > /dev/null 2>&1 &
           sleep 5
           if pgrep -f 'java -jar'; then
