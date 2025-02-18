@@ -34,6 +34,7 @@ jobs:
         host: ${{ secrets.NCP_HOST }}
         username: root
         password: ${{ secrets.NCP_PASSWORD }}
+        key: ${{ secrets.NCP_PEM_KEY }}
         port: 22
         script: |
           cd /opt/izikgram
