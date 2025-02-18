@@ -1,7 +1,7 @@
-// 전역 시간 변수들을 let으로 재선언
-let currentStartTime = startTime;  // 초기값은 서버에서 받은 값
-let currentLunchTime = lunchTime;
-let currentEndTime = endTime;
+// 전역 시간 변수들 선언
+let globalStartTime = startTime;
+let globalLunchTime = lunchTime;
+let globalEndTime = endTime;
 
 // 캘린더 관련 함수들
 function updateCalendar(feelingList = []) {
@@ -129,7 +129,26 @@ function calculateWeeklyAverageStress(monthlyStressList) {
     return Math.round(average);
 }
 
-function updateAllProgress(startTime = currentStartTime, lunchTime = currentLunchTime, endTime = currentEndTime) {
+function formatTimeRemaining(start, end) {
+    const [startHour, startMinute] = start.split(':').map(Number);
+    const [endHour, endMinute] = end.split(':').map(Number);
+    const now = new Date();
+    const currentHour = now.getHours();
+    const currentMinute = now.getMinutes();
+
+    const endTimeMinutes = endHour * 60 + endMinute;
+    const currentTimeMinutes = currentHour * 60 + currentMinute;
+
+    let remainingMinutes = endTimeMinutes - currentTimeMinutes;
+    if (remainingMinutes < 0) remainingMinutes = 0;
+
+    const hours = Math.floor(remainingMinutes / 60);
+    const minutes = remainingMinutes % 60;
+
+    return `${hours}h ${minutes}min`;
+}
+
+function updateAllProgress() {
     const circles = document.querySelectorAll('.progress-circle');
     const timeTexts = document.querySelectorAll('.time-text');
     const stressNoDataElements = document.querySelectorAll('.stress-no-data');
@@ -146,7 +165,7 @@ function updateAllProgress(startTime = currentStartTime, lunchTime = currentLunc
     }
 
     // 퇴근까지 남은 시간 (큰 원)
-    const workProgress = calculateTimeProgress(startTime, endTime);
+    const workProgress = calculateTimeProgress(globalStartTime, globalEndTime);
     updateCircleProgress(circles[0], workProgress);
 
     // 퇴사지수 (중간 원)
@@ -154,32 +173,13 @@ function updateAllProgress(startTime = currentStartTime, lunchTime = currentLunc
     updateCircleProgress(circles[1], normalizedStress);
 
     // 점심까지 남은 시간 (작은 원)
-    const lunchProgress = calculateTimeProgress(startTime, lunchTime);
+    const lunchProgress = calculateTimeProgress(globalStartTime, globalLunchTime);
     updateCircleProgress(circles[2], lunchProgress);
 
     // 시간 텍스트 업데이트
-    function formatTimeRemaining(start, end) {
-        const [startHour, startMinute] = start.split(':').map(Number);
-        const [endHour, endMinute] = end.split(':').map(Number);
-        const now = new Date();
-        const currentHour = now.getHours();
-        const currentMinute = now.getMinutes();
-
-        const endTimeMinutes = endHour * 60 + endMinute;
-        const currentTimeMinutes = currentHour * 60 + currentMinute;
-
-        let remainingMinutes = endTimeMinutes - currentTimeMinutes;
-        if (remainingMinutes < 0) remainingMinutes = 0;
-
-        const hours = Math.floor(remainingMinutes / 60);
-        const minutes = remainingMinutes % 60;
-
-        return `${hours}h ${minutes}min`;
-    }
-
-    timeTexts[0].textContent = formatTimeRemaining(startTime, endTime);
+    timeTexts[0].textContent = formatTimeRemaining(globalStartTime, globalEndTime);
     timeTexts[1].textContent = `${stressNum > 0 ? '+' : ''}${stressNum}%`;
-    timeTexts[2].textContent = formatTimeRemaining(startTime, lunchTime);
+    timeTexts[2].textContent = formatTimeRemaining(globalStartTime, globalLunchTime);
 }
 
 // 초기화 및 이벤트 리스너
@@ -207,9 +207,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // 주간 평균 스트레스 계산 및 표시
     const weeklyAverageStress = calculateWeeklyAverageStress(monthlyStressList);
     const stressElement = document.getElementById('weeklyStressNum');
-    const stressNoData = stressElement.parentElement.querySelector('.stress-no-data');
+    const stressNoData = stressElement?.parentElement.querySelector('.stress-no-data');
 
-    if (stressElement) {
+    if (stressElement && stressNoData) {
         if (weeklyAverageStress === null) {
             stressNoData.style.display = 'block';
             stressElement.style.display = 'none';
@@ -230,6 +230,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (settingsBtn) {
         settingsBtn.addEventListener('click', () => {
             if (modal) {
+                // 현재 설정된 시간 값들을 input에 설정
+                document.getElementById('workStartTime').value = globalStartTime;
+                document.getElementById('lunchTime').value = globalLunchTime;
+                document.getElementById('workEndTime').value = globalEndTime;
                 modal.style.display = 'flex';
             }
         });
@@ -237,17 +241,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (closeBtn) {
         closeBtn.addEventListener('click', () => {
-            if (modal) {
-                modal.style.display = 'none';
-            }
+            if (modal) modal.style.display = 'none';
         });
     }
 
     if (modal) {
         modal.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                modal.style.display = 'none';
-            }
+            if (e.target === modal) modal.style.display = 'none';
         });
     }
 
@@ -272,17 +272,14 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             // 전역 변수 업데이트
-            currentStartTime = newStartTime;
-            currentLunchTime = newLunchTime;
-            currentEndTime = newEndTime;
+            globalStartTime = newStartTime;
+            globalLunchTime = newLunchTime;
+            globalEndTime = newEndTime;
 
-            console.log('Times updated:', {
-                startTime: currentStartTime,
-                lunchTime: currentLunchTime,
-                endTime: currentEndTime
-            });
+            // 즉시 화면 업데이트
+            updateAllProgress();
 
-            updateAllProgress(currentStartTime, currentLunchTime, currentEndTime);
+            // 모달 닫기
             modal.style.display = 'none';
         });
     }
