@@ -66,10 +66,14 @@ public class UserController {
 
     @GetMapping("/findIdResult")
     public String findIdResult(HttpSession session) {
-        String phoneNum = (String) session.getAttribute("phone_num");
-        String member_id = userService.findUserByPhoneNumber(phoneNum);
-        session.setAttribute("member_id", member_id);
-//        log.info("findIdResult: phoneNum={}, member_id={}", phoneNum, member_id);
+        // 모두 AuthController에서 처리
+//        String phoneNum = (String) session.getAttribute("phone_num");
+//        String name = (String) session.getAttribute("name");
+////        log.info("phone_num: {}, name: {}", phoneNum, name);
+//        User user = userService.findUserByPhoneNumber(name, phoneNum);
+//        String member_id = user.getMember_id();
+//        session.setAttribute("member_id", member_id);
+////        log.info("findIdResult: phoneNum={}, member_id={}", phoneNum, member_id);
         return "/user/findIdResult";
     }
 
