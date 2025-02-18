@@ -126,11 +126,10 @@
 </div>
 
 <script>
-
     // 인증번호 전송
     $("#sendSmsBtn").click(function () {
-        let phone_num = $("#phone_num").val(); // 입력된 전화번호 가져오기
         let name = $("#name").val();
+        let phone_num = $("#phone_num").val(); // 입력된 전화번호 가져오기
         // console.log(phone_num);
 
         if (name == "") {
@@ -242,7 +241,7 @@
     });
 
     // 모달 표시 함수
-    function showModal(title, message, isSuccess, event) {
+    function showModal(title, message, isSuccess) {
         $("#modalTitle").text(title);
         $("#modalMessage").text(message);
 
@@ -257,7 +256,6 @@
         }
 
         $("#Modal").show();
-        // event.preventDefault();
     }
 
     $(".closeBtn").click(function() {

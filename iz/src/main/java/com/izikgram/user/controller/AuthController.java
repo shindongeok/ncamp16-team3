@@ -6,6 +6,7 @@ import com.izikgram.user.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -41,7 +42,17 @@ public class AuthController {
 
     @PostMapping("/verify")
     public String verifyCode(@RequestParam String name, @RequestParam String phone_num, @RequestParam String auth_num, HttpSession session) {
-        User user = userService.findUserByPhoneNumber(name, phone_num);
+        User user = userService.findUserFromFindId(name, phone_num);
+        return isUserExist(phone_num, auth_num, session, user);
+    }
+
+    @PostMapping("/verifyPw")
+    public String verifyPwCode(@RequestParam String member_id, @RequestParam String phone_num, @RequestParam String auth_num, HttpSession session) {
+        User user = userService.findUserFromFindPw(member_id, phone_num);
+        return isUserExist(phone_num, auth_num, session, user);
+    }
+
+    private @NotNull String isUserExist(String phone_num, String auth_num, HttpSession session, User user) {
         if (user != null) {
             if (authService.verifyCode(phone_num, auth_num)) {
 //            log.info("/vefiry -> name: {}, phone_num: {}, code: {}", name, phone_num, auth_num);

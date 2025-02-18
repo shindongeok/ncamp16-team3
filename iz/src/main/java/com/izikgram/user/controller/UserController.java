@@ -6,6 +6,8 @@ import com.izikgram.user.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -82,24 +84,48 @@ public class UserController {
         return "/user/findPw";
     }
 
-    @PostMapping("/findPw")
-    public String findPw(String member_id, Model model) {
-        boolean object = userService.findPassword(member_id);
-//        log.info("member_id: " + member_id + ", object: " + object);
-        if (object) {
-            model.addAttribute("member_id", member_id);
-//            log.info("member_id: " + member_id);
-            return "/user/findPwResult";
-        } else {
-            return "redirect:/user/findPw";
-        }
+//    @PostMapping("/findPw")
+//    public String findPw(String member_id, Model model) {
+//        boolean object = userService.findPassword(member_id);
+////        log.info("member_id: " + member_id + ", object: " + object);
+//        if (object) {
+//            model.addAttribute("member_id", member_id);
+////            log.info("member_id: " + member_id);
+//            return "/user/findPwResult";
+//        } else {
+//            return "redirect:/user/findPw";
+//        }
+//    }
+
+    @GetMapping("/findPwResult")
+    public String findPwResult() {
+        return "/user/findPwResult";
     }
 
+//    @PostMapping("/resetPw")
+//    public String resetPw(String password, HttpSession session) {;
+//        String member_id = (String) session.getAttribute("member_id");
+//        log.info("member_id: {}", member_id);
+//        log.info("password: {}", password);
+//        String encodePw = passwordEncoder.encode(password);
+//        userService.updatePassword(member_id, encodePw);
+//        return "redirect:/";
+//    }
+
     @PostMapping("/resetPw")
-    public String resetPw(String member_id, String password) {
-//        log.info("member_id: " + member_id + ", password: " + password);
-        userService.updatePassword(member_id, password);
-        return "redirect:/";
+    public ResponseEntity<?> resetPw(@RequestParam String password, HttpSession session) {
+        String member_id = (String) session.getAttribute("member_id");
+//        log.info("member_id: {}", member_id);
+//        log.info("password: {}", password);
+
+        if (member_id == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("세션 만료. 다시 로그인하세요.");
+        }
+
+        String encodePw = passwordEncoder.encode(password);
+        userService.updatePassword(member_id, encodePw);
+
+        return ResponseEntity.ok("비밀번호 변경 성공");
     }
 
     private static void timeSubstring(User user) {

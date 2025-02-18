@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
     <link rel="stylesheet" th:href="@{/css/default.css}">
     <style type="text/tailwindcss">
         @theme {
@@ -34,7 +35,8 @@
         <div class="sm:mx-auto sm:w-full sm:max-w-sm bg-light-text h-0.5"></div>
     </div>
     <div class="mt-3 sm:mx-auto sm:w-full sm:max-w-sm rounded-md outline text-gray-300 p-8 pb-10 mb-20">
-        <form class="space-y-6" th:action="@{/user/findPw}" method="POST">
+<!--        <form class="space-y-6" th:action="@{/user/findPw}" method="POST">-->
+        <div class="space-y-6">
             <div>
                 <label for="member_id" class="block text-lg/6 text-gray-900">아이디</label>
                 <div class="mt-2">
@@ -48,9 +50,9 @@
                 </div>
                 <div class="mt-2">
                     <div class="relative">
-                        <input placeholder="010-1234-5678" type="tel" name="phone_num" id="phone_num" required class="block w-full rounded-md bg-white px-3 py-1.5 text-lg text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+                        <input placeholder="01012345678" type="tel" name="phone_num" id="phone_num" required class="block w-full rounded-md bg-white px-3 py-1.5 text-lg text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
                         <div class="absolute bottom-1 right-1">
-                            <button type="submit" class="flex w-23 h-7 justify-center rounded-md bg-main-sky-highlight px-3 py-1.5 text-xs text-white shadow-xs hover:bg-sky-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-800">인증번호 받기</button>
+                            <button id="sendSmsBtn" type="button" class="flex w-23 h-7 justify-center rounded-md bg-main-sky-highlight px-3 py-1.5 text-xs text-white shadow-xs hover:bg-sky-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-800">인증번호 받기</button>
                         </div>
                     </div>
                 </div>
@@ -63,16 +65,202 @@
                 <div class="mt-2">
                     <input type="text" name="auth_num" id="auth_num" required class="block w-full rounded-md bg-white px-3 py-1.5 text-lg text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
                     <div class="flex items-center justify-between">
-                        <p class="block text-red-400 text-sm">* 남은시간 ${mm:ss}</p>
+                        <p id="leftTime" class="block text-red-400 text-sm"></p>
                     </div>
                 </div>
             </div>
 
             <div>
-                <button type="submit" class="flex w-full justify-center rounded-md bg-main-sky-highlight px-3 py-1.5 text-lg/6 text-white shadow-xs hover:bg-sky-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-800">확인</button>
+                <button id="verifyBtn" type="submit" class="flex w-full justify-center rounded-md bg-main-sky-highlight px-3 py-1.5 text-lg/6 text-white shadow-xs hover:bg-sky-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-800">확인</button>
             </div>
-        </form>
+        </div>
     </div>
 </div>
+
+<div id="Modal" class="relative z-10 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <!--
+      Background backdrop, show/hide based on modal state.
+
+      Entering: "ease-out duration-300"
+        From: "opacity-0"
+        To: "opacity-100"
+      Leaving: "ease-in duration-200"
+        From: "opacity-100"
+        To: "opacity-0"
+    -->
+    <div class="fixed inset-0 bg-gray-500/75 transition-opacity" aria-hidden="true"></div>
+
+    <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+        <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+            <!--
+              Modal panel, show/hide based on modal state.
+
+              Entering: "ease-out duration-300"
+                From: "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                To: "opacity-100 translate-y-0 sm:scale-100"
+              Leaving: "ease-in duration-200"
+                From: "opacity-100 translate-y-0 sm:scale-100"
+                To: "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+            -->
+            <div class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <div class="sm:flex sm:items-start">
+                        <div id="modalIcon" class="mx-auto flex size-12 shrink-0 items-center justify-center rounded-full sm:mx-0 sm:size-10">
+                            <img width="48" height="48" src="https://img.icons8.com/color/48/checked-checkbox.png" alt="checked-checkbox"/>
+                        </div>
+                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                            <h3 id="modalTitle" class="text-base font-semibold text-gray-900"></h3>
+                            <div class="mt-2">
+                                <p id="modalMessage" class="text-sm text-gray-500"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                    <button type="button" class="closeBtn mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 shadow-xs ring-gray-300 ring-inset hover:bg-gray-50 sm:mt-0 sm:w-auto sm:ml-3">확인</button>
+                    <!--                        <button type="button" class="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-red-500 sm:w-auto">Deactivate</button>-->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 인증번호 전송
+    $("#sendSmsBtn").click(function () {
+        let member_id = $("#member_id").val();
+        let phone_num = $("#phone_num").val(); // 입력된 전화번호 가져오기
+        // console.log(member_id);
+        // console.log(phone_num);
+
+        if (member_id == "") {
+            showModal("아이디 공백!", "아이디를 입력해주세요", false);
+            return;
+        }
+
+        if (phone_num == "") {
+            showModal("전화번호 공백!", "전화번호를 입력해주세요", false);
+            return;
+        }
+
+        $.ajax({
+            url: "/auth/send-sms",
+            type: "POST",
+            contentType: "application/x-www-form-urlencoded",
+            // contentType: "application/json",
+            data: { phone_num: phone_num },
+            // data: JSON.stringify(phone_num),
+            success: function (response) {
+                // console.log(this.url);
+                // console.log(this.data);
+                // console.log(response);
+                showModal("인증번호 전송완료!", "인증번호가 전송되었습니다", true)
+            },
+            error: function (xhr, status, error) {
+                alert("오류 발생: " + xhr.responseText);
+            }
+        });
+
+        // 타이머
+        let countTime = 0;
+        let intervalCall;
+
+        $.time = function(time){
+            countTime = time;
+            intervalCall = setInterval(alertFunc, 1000);
+        }
+
+        $.closeTime = function(){
+            clearInterval(intervalCall);
+        }
+
+        function alertFunc() {
+            let min = Math.floor(countTime/60);
+            let sec = countTime - (60 * min);
+            if(sec > 9){
+                $("#leftTime").text('* ' + min + ':' + sec + '');
+            }else {
+                $("#leftTime").text('* ' + min + ':0' + sec + '');
+            }
+            if(countTime <= 0){
+                clearInterval(intervalCall);
+            }
+            countTime--;
+        }
+
+        $.time(179);
+
+    });
+
+    // 인증번호 확인
+    $("#verifyBtn").click(function () {
+        let member_id = $("#member_id").val();
+        let phone_num = $("#phone_num").val();
+        let auth_num = $("#auth_num").val();
+
+        if (member_id == "") {
+            showModal("아이디 공백!", "아이디를 입력해주세요", false);
+            return;
+        }
+
+        if (phone_num == "") {
+            showModal("전화번호 공백!", "전화번호를 입력해주세요", false);
+            return;
+        }
+
+        if (auth_num == "") {
+            showModal("인증번호 공백!", "인증번호를 입력해주세요", false);
+            return;
+        }
+
+        $.ajax({
+            url: "/auth/verifyPw",
+            type: "POST",
+            contentType: "application/x-www-form-urlencoded",
+            data: { member_id: member_id, phone_num: phone_num, auth_num: auth_num },
+            success: function (response) {
+                // console.log(this.url);
+                // console.log(phone_num);
+                // console.log(auth_num);
+                // console.log(response);
+                if (response == "success") {
+                    showModal("인증 성공!", "인증에 성공했습니다", true);
+                    $(".closeBtn").click(function() {
+                        window.location.href = "/user/findPwResult"; // 비밀번호 찾기 성공시 이동
+                    });
+                } else if (response == "fail") {
+                    showModal("인증 실패!", "인증에 실패했습니다", false);
+                } else {
+                    showModal("비밀번호 재설정 실패!", "아이디와 휴대폰번호에 맞는 계정이 없습니다", false);
+                }
+            },
+            error: function (xhr) {
+                alert("인증 실패: " + xhr.responseText);
+            }
+        });
+    });
+
+    // 모달 표시 함수
+    function showModal(title, message, isSuccess) {
+        $("#modalTitle").text(title);
+        $("#modalMessage").text(message);
+
+        if (isSuccess) {
+            $("#modalIcon").html("<img width=\"48\" height=\"48\" src=\"https://img.icons8.com/color/48/checked-checkbox.png\" alt=\"checked-checkbox\"/>");
+        } else {
+            $("#modalIcon").html(
+                "<svg class=\"size-6 text-red-600\" fill=\"none\" viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" aria-hidden=\"true\">\n" +
+                "    <path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z\" />\n" +
+                "</svg>"
+            );
+        }
+
+        $("#Modal").show();
+    }
+
+    $(".closeBtn").click(function() {
+        $("#Modal").hide();
+    });
+</script>
 </body>
 </html>

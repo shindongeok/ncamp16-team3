@@ -31,8 +31,12 @@ public class UserService {
         }
     }
 
-    public User findUserByPhoneNumber(String name, String phoneNumber) {
-        return userMapper.findIdByPhoneNumber(name, phoneNumber);
+    public User findUserFromFindId(String name, String phoneNumber) {
+        return userMapper.findUserFromFindId(name, phoneNumber);
+    }
+
+    public User findUserFromFindPw(String name, String phoneNumber) {
+        return userMapper.findUserFromFindPw(name, phoneNumber);
     }
 
     public User getUserInfo(String member_id) {
