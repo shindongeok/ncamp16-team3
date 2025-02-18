@@ -1,7 +1,7 @@
 package com.izikgram.board.service;
 
 import com.izikgram.board.entity.Board;
-import com.izikgram.board.entity.Comment;
+
 import com.izikgram.board.entity.CommentDto;
 import com.izikgram.board.repository.BoardMapper;
 import lombok.extern.slf4j.Slf4j;

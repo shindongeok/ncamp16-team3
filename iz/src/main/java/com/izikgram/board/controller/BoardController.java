@@ -1,18 +1,14 @@
 package com.izikgram.board.controller;
 
 import com.izikgram.board.entity.Board;
-import com.izikgram.board.entity.Comment;
 import com.izikgram.board.entity.CommentDto;
 import com.izikgram.board.service.BoardService;
 import com.izikgram.user.entity.User;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -170,8 +166,7 @@ public class  BoardController {
                              @PathVariable("board_id") int board_id,
                              @RequestParam("title") String title,
                              @RequestParam("content") String content,
-                             HttpSession session,
-                             Model model) {
+                             HttpSession session) {
 
         User user = (User) session.getAttribute("user");
         String member_id = user.getMember_id();
