@@ -37,7 +37,12 @@ jobs:
         port: 22
         script: |
           cd /opt/izikgram
-          pkill -f 'java -jar' || true
+          if pgrep -f 'java -jar'; then
+            pkill -f 'java -jar'
+            sleep 5
+          fi
           rm -f *.jar
           cp ${{ github.workspace }}/iz/build/libs/*.jar ./izikgram.jar
           nohup java -jar izikgram.jar > app.log 2>&1 &
+          sleep 10
+          echo "Deployment completed"
