@@ -24,20 +24,26 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String member_id) throws UsernameNotFoundException {
 
-
         User user = userMapper.getUserInfo(member_id);
+
+        if(user == null) {
+            throw new UsernameNotFoundException("회원이 아닙니다.");
+        }
+
         if("DELETED".equals(user.getStatus())) {
             throw new DisabledException("삭제된 계정입니다.");
         }
 
-        Stress stress = userMapper.getUserStress(member_id);
-
-        UserStressDTO userStressDTO = new UserStressDTO(user.getMember_id(), stress.getStress_num());
-        log.info("userSTressDTO 객체 : {}", userStressDTO);
-
-        if (user == null) {
-            throw new UsernameNotFoundException("User not found: " + member_id);
+        User loginUser = userMapper.login(member_id, user.getPassword());
+        if(loginUser == null) {
+            throw new UsernameNotFoundException("비밀번호가 틀렸습니다.");
         }
+
+        Stress stress = userMapper.getUserStress(member_id);
+        UserStressDTO userStressDTO = new UserStressDTO(user.getMember_id(), stress.getStress_num());
+
+        log.info("userStressDTO 객체 : {}", userStressDTO);
+
         return new CustomUserDetails(user, userStressDTO);
     }
 }
