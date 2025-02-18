@@ -33,14 +33,33 @@ public class UserController {
         return "/user/register";
     }
 
+//    @PostMapping("/register")
+//    public String register(User user) {
+////        log.info("payday: {}", user.getPayday());
+////        log.info("user: {}", user);
+//        timeSubstring(user);
+//
+//        userService.register(user);
+//        return "redirect:/";
+//    }
+
     @PostMapping("/register")
-    public String register(User user) {
-//        log.info("payday: {}", user.getPayday());
-//        log.info("user: {}", user);
+    public ResponseEntity<?> register(@RequestBody User user) {
+        log.info("user: {}", user);
+
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("실패");
+        }
+
+        String password = user.getPassword();
+        String encodePw = passwordEncoder.encode(password);
+        user.setPassword(encodePw);
+
         timeSubstring(user);
 
         userService.register(user);
-        return "redirect:/";
+
+        return ResponseEntity.ok("비밀번호 변경 성공");
     }
 
     @ResponseBody
