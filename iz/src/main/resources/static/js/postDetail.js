@@ -35,16 +35,38 @@ function PostFormInsertBut(){
     }
 }
 
-//수정,삭제 버튼 띄우기
-document.addEventListener("DOMContentLoaded", function (){
-    const member_id = document.getElementById("member_id").value;
-    const writer_id = document.getElementById("writer_id").value;
-    const updateDeleteBtn = document.getElementById("updateDeleteBtn");
 
-    if(writer_id === member_id ){
-        updateDeleteBtn.classList.remove("hidden");
+//날짜 형식 변경
+// 날짜를 "몇일 전", "몇시간 전", "몇분 전" 형식으로 변환하는 함수
+function timeAgo(dateString) {
+    const now = new Date();
+    const date = new Date(dateString);  // 게시글의 등록일
+
+    const diffInSeconds = Math.floor((now - date) / 1000);
+    const diffInMinutes = Math.floor(diffInSeconds / 60);
+    const diffInHours = Math.floor(diffInMinutes / 60);
+    const diffInDays = Math.floor(diffInHours / 24);
+
+    if (diffInDays > 0) {
+        return `${diffInDays}일 전`;
+    } else if (diffInHours > 0) {
+        return `${diffInHours}시간 전`;
+    } else if (diffInMinutes > 0) {
+        return `${diffInMinutes}분 전`;
+    } else {
+        return `방금 전`;
     }
-});
+}
 
+$(document).ready(function() {
+    const regDateList = $(".reg_date");
+
+    // 각 reg_date에 대해 날짜 변환 적용
+    $(regDateList).each((a, b) => {
+        const regDate = $(b).data('reg-date');  // data-reg-date 속성에서 날짜를 가져옴
+        const timeAgoText = timeAgo(regDate);  // 변환된 시간 형식
+        $(b).text(timeAgoText);  // 해당 요소에 변경된 시간 넣기
+    });
+});
 
 

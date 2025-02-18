@@ -1,18 +1,25 @@
 package com.izikgram.board.controller;
 
 import com.izikgram.board.entity.Board;
+import com.izikgram.board.entity.Comment;
+import com.izikgram.board.entity.CommentDto;
 import com.izikgram.board.service.BoardService;
+import com.izikgram.user.entity.User;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
+
 
 @Controller
 @RequestMapping("/board")
 public class  BoardController {
+
 
     @Autowired
     private BoardService boardService;
@@ -22,76 +29,76 @@ public class  BoardController {
     public String boardCommunity(@PathVariable("board_type") int board_type, Model model){
 
         System.out.println("board_type: " + board_type);  // 확인용 로그
-
         if (board_type != 1 && board_type != 2) {
             model.addAttribute("error", "유효하지 않은 게시판 타입입니다.");
             return "redirect:/";
         }
 
         String board_name = boardService.findBoardName(board_type);
-        List<Board> listBoard  = boardService.findBoardList(board_type);
+        List<Board> listBoard;
+        if (board_type == 1) {
+            listBoard = boardService.SelectBoardList01(board_type);
+        } else {
+            listBoard = boardService.SelectBoardList02(board_type);
+        }
 
-        //확인용
-        System.out.println("조회게시글 list :" + listBoard);
-        System.out.println("글작성 board_type :" + board_type);
-
+        // 모델에 데이터 추가
         model.addAttribute("board_name", board_name);
         model.addAttribute("listBoard", listBoard);
-        model.addAttribute("board_type", board_type);
-
 
         return "/board/community";
     }
 
-
     //자유,하소연 작성하기 페이지 이동
     @GetMapping("/postForm")
-    public String postForm(@RequestParam("board_type")int board_type, Model model){
+    public String postForm(@RequestParam("board_type")int board_type,
+                           HttpSession session,
+                           Model model){
 
         if (board_type != 1 && board_type != 2) {
             // 사용하게 된다면..
             model.addAttribute("error", "유효하지 않은 게시판 타입입니다.");
             return "redirect:/";
         }
-        System.out.println("확인용 board_type :" + board_type);
-//        System.out.println("보드아이디아이디 :" + board_id);
 
+        // 로그인 확인
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            // 로그인되지 않은 경우 로그인 페이지로 리다이렉트
+            return "redirect:/login";  //
+        }
 
-//        Board board = boardService.selectDetail(board_id,board_type);
         String board_name = boardService.findBoardName(board_type);
-
 
         model.addAttribute("board_name", board_name);
         model.addAttribute("board_type", board_type);
-
+//        model.addAttribute("writer_id", writer_id);
 
         return "/board/postForm";
     }
 
     // 글작성
     @PostMapping("/{board_type}/post")
-    public String insertPost(
-            @PathVariable("board_type") int board_type,
-            HttpSession session,
-            @RequestParam("title") String title,
-            @RequestParam("content") String content) {
-
-        // 세션에서 writer_id 가져오기
-        // String writer_id = (String) session.getAttribute("writer_id");
-
-        String writer_id = "hello";
-
+    public String insertPost(@PathVariable("board_type") int board_type,
+                             HttpSession session,
+                             @RequestParam("title") String title,
+                             @RequestParam("content") String content) {
 
         // board_type 유효성 검사
         if (board_type != 1 && board_type != 2) {
-            return "/index";
+            return "redirect:/";
         }
 
-        // 게시글 삽입
-        boardService.insertPost(board_type, writer_id, title, content);
+        //member_id 가져오기..
+        User user = (User)session.getAttribute("user");
+        String writer_id = user.getMember_id();
 
-        //확인용
-        System.out.println("글 삽입 :" + board_type+ "," + writer_id + "," + title + "," + content);
+        // 게시글 삽입
+        if (board_type == 1) {
+            boardService.insertPost01(board_type, writer_id, title, content);
+        }else if (board_type == 2) {
+            boardService.insertPost02(board_type, writer_id, title, content);
+        }
 
         return "redirect:/board/" + board_type;
     }
@@ -104,13 +111,39 @@ public class  BoardController {
     }
 
     //자유,하소연 상세보기
-
     @GetMapping("/{board_type}/{board_id}")
     public String postDetail(@PathVariable("board_type") int board_type,
-                             @PathVariable("board_id") int board_id, Model model ){
+                             @PathVariable("board_id") int board_id,
+                             HttpSession session,
+                             Model model ){
 
-        Board board  = boardService.selectDetail(board_id,board_type);
+        //세션에서 User 객체 가져오기
+//        User user = (User)session.getAttribute("user");
+//        String writer_id = user.getMember_id();
+        //아이디 직접일단 입력...
+        String writer_id = "123";
+
+
+
+        Board board = new Board();
+        List<CommentDto> ListCommentDto;
+        if(board_type == 1){
+            ListCommentDto = boardService.selectComment01(board_id);
+            board = boardService.selectDetail01(board_id);
+        }else if(board_type == 2){
+            ListCommentDto = boardService.selectComment02(board_id);
+            board = boardService.selectDetail02(board_id);
+        }else {
+            // 유효하지 않은 board_type 처리
+            model.addAttribute("error", "유효하지 않은 게시판 타입입니다.");
+            return "redirect:/board/" + board_type;
+        }
+
+
+
         model.addAttribute("board", board);
+        model.addAttribute("member_id", writer_id);
+        model.addAttribute("comment", ListCommentDto);
 
         return "/board/postDetail";
     }
@@ -119,20 +152,58 @@ public class  BoardController {
     @GetMapping("/update/{board_type}/{board_id}")
     public String updatePost(@PathVariable("board_type") int board_type,
                              @PathVariable("board_id") int board_id, Model model){
-        Board board = boardService.selectDetail(board_id,board_type);
+        Board board = new Board();
+        if(board_type == 1){
+            board = boardService.selectDetail01(board_id);
+        }if(board_type == 2){
+            board = boardService.selectDetail02(board_id);
+        }
+
         model.addAttribute("board", board);
+
         return "/board/postFormModify";
     }
 
     //자유, 하소연 게시글 수정하기
     @PostMapping("/{board_type}/{board_id}")
-    public String modifyPost( Board board, Model model){
+    public String modifyPost(@PathVariable("board_type") int board_type,
+                             @PathVariable("board_id") int board_id,
+                             @RequestParam("title") String title,
+                             @RequestParam("content") String content,
+                             HttpSession session,
+                             Model model) {
 
-//        boardService.modifyBoard(int board_id, String title, String content, int board_type)
+        User user = (User) session.getAttribute("user");
+        String member_id = user.getMember_id();
 
-        return "redirect:/board/" + board.getBoard_type();
+        if (board_type == 1) {
+            Board board = boardService.selectDetail01(board_id);
+            String writer_id = board.getWriter_id();
+
+            if (member_id != null && member_id.equals(writer_id)) {
+                // 서버에서 조회한 writer_id와 세션에서 조회한 member_id가 같으면 수정
+                boardService.modifyBoard01(board_id, title, content);
+                return "redirect:/board/" + board_type; // 성공시 게시판으로 이동
+            }
+
+        } else if (board_type == 2) {
+            Board board = boardService.selectDetail02(board_id);
+            String writer_id = board.getWriter_id();
+
+            if (member_id != null && member_id.equals(writer_id)) {
+                // 서버에서 조회한 writer_id와 세션에서 조회한 member_id가 같으면 수정
+                boardService.modifyBoard02(board_id, title, content);
+                return "redirect:/board/" + board_type; // 성공시 게시판으로 이동
+            }
+        }
+        return "redirect:/board/" + board_type;
     }
 
-
-
 }
+
+
+
+//    좋아요 구현?================================================================================
+
+
+
