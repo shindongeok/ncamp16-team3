@@ -32,9 +32,8 @@ jobs:
     - name: Deploy to NCP
       uses: appleboy/ssh-action@master
       with:
-        host: ${{ secrets.NCP_HOST_IP }}  # IP 주소 사용
+        host: ${{ secrets.NCP_HOST_IP }}
         username: nbpmon
-        password: ${{ secrets.NCP_PASSWORD }}
         key: ${{ secrets.NCP_PEM_KEY }}
         port: 22
         script: |
