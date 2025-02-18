@@ -21,12 +21,12 @@ jobs:
       uses: gradle/actions/setup-gradle@v4
       
     - name: Grant execute permission for gradlew
-      run: chmod +x iz/gradlew   # 여기를 수정
-      working-directory: .       # 프로젝트 루트 디렉토리
+      run: chmod +x gradlew
+      working-directory: ./iz
       
     - name: Build with Gradle
-      run: ./gradlew build -x test
-      working-directory: ./iz    # 빌드 명령을 실행할 디렉토리 지정
+      run: ./gradlew build --build-cache -x test
+      working-directory: ./iz    
       
     - name: Deploy to NCP
       uses: appleboy/ssh-action@master
@@ -36,13 +36,13 @@ jobs:
         password: ${{ secrets.NCP_PASSWORD }}
         port: 22
         script: |
-          cd /opt/izikgram;
+          cd /opt/izikgram
           if pgrep -f 'java -jar'; then
-            pkill -f 'java -jar';
-            sleep 5;
-          fi;
-          rm -f *.jar;
-          cp /home/runner/work/ncamp16-team3/ncamp16-team3/iz/build/libs/*.jar ./izikgram.jar;
-          nohup java -jar izikgram.jar > app.log 2>&1 &
-          sleep 10;
+            pkill -f 'java -jar'
+            sleep 5
+          fi
+          rm -f *.jar
+          cp $GITHUB_WORKSPACE/iz/build/libs/*.jar ./izikgram.jar
+          nohup java -jar izikgram.jar > app.log 2>&1 & disown
+          sleep 10
           echo "Deployment completed"
