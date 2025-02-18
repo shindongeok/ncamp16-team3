@@ -60,7 +60,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // DB에서 가져올 stress_num 값 (예시: 75)
-            const stressNum = [[${#authentication.getPrincipal().getUserStressDTO().getStress_num()}]];  // Thymeleaf 값 삽입
+            const stressNum = [[${#authentication.getPrincipal().getStress().getStress_num()}]];  // Thymeleaf 값 삽입
 
             // 게이지 요소와 텍스트 요소 가져오기
             const gaugeElement = document.getElementById('gauge-progress');

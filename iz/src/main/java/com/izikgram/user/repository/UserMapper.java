@@ -26,8 +26,8 @@ public interface UserMapper {
     @Select("select member_id from iz_member where name=#{name}")
     String findIdByName(String name);
 
-    @Select("select member_id from iz_member where phone_num=#{phone_num}")
-    String findIdByPhoneNumber(String phone_num);
+    @Select("select member_id from iz_member where name=#{name} and phone_num=#{phone_num}")
+    User findIdByPhoneNumber(@Param("name") String name, @Param("phone_num") String phone_num);
 
     @Select("SELECT NOW()")
     String getCurrentTime();
@@ -35,11 +35,12 @@ public interface UserMapper {
     @Select("SELECT m.*, s.stress_num " +
             "FROM iz_member m " +
             "LEFT JOIN ( " +
-            "    SELECT member_id, stress_num, date " +
+            "    SELECT member_id, stress_num " +
             "    FROM iz_member_stress_info " +
             "    WHERE member_id = #{member_id} " +
             ") s ON m.member_id = s.member_id " +
-            "WHERE m.member_id = #{member_id}")
+            "WHERE m.member_id = #{member_id} " +
+            "AND m.status = 'ACTIVE'")
     User getUserInfo(@Param("member_id") String member_id);
 
     @Select("SELECT stress_num FROM iz_member_stress_info " +
