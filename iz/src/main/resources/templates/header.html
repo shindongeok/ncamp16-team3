@@ -19,8 +19,9 @@
         }
     </style>
 </head>
-<div th:fragment="header" class="absolute top-7 left-0 w-full z-50" xmlns:sec="http://www.w3.org/1999/xhtml">
+<div th:fragment="header" class="absolute top-0 left-0 w-full z-50" xmlns:sec="http://www.w3.org/1999/xhtml">
     <!-- 슬라이드 메뉴 (모바일 컨테이너 내부에서만 슬라이드) -->
+    <div class="mt-4">
     <div id="B" class="flex items-center px-4 py-2 text-white w-full h-16">
         <!-- 첫 번째 버튼 (왼쪽) -->
         <button id="openBtn" onclick="openTop()" class="text-black text-2xl cursor-pointer mt-[-6px]">☰</button>
@@ -28,7 +29,7 @@
         <!-- 로고 이미지 (가운데 정렬) -->
         <div class="flex-1 flex justify-center">
             <a th:href="@{/main}">
-                <img th:src="@{/images/izikgram.png}" alt="로고" class="h-8 w-[200px] h-[80px] mt-8px">
+                <img th:src="@{/images/izikgram.png}" alt="로고" class="h-8 w-[200px] h-[80px] mt-12px">
             </a>
         </div>
 
@@ -37,7 +38,7 @@
             <button class="text-xl cursor-pointer mt-[-6px]">🔔</button>
         </a>
     </div>
-
+    </div>
 
 
     <!-- 상단 네비게이션 바 -->
