@@ -19,7 +19,7 @@
         }
     </style>
 </head>
-<div th:fragment="header" class="absolute top-0 left-0 w-full z-50" xmlns:sec="http://www.w3.org/1999/xhtml">
+<div th:fragment="header" class="absolute top-7 left-0 w-full z-50" xmlns:sec="http://www.w3.org/1999/xhtml">
     <!-- 슬라이드 메뉴 (모바일 컨테이너 내부에서만 슬라이드) -->
     <div id="B" class="flex items-center px-4 py-2 text-white w-full h-16">
         <!-- 첫 번째 버튼 (왼쪽) -->
@@ -28,27 +28,27 @@
         <!-- 로고 이미지 (가운데 정렬) -->
         <div class="flex-1 flex justify-center">
             <a th:href="@{/main}">
-                <img th:src="@{/images/izikgram.png}" alt="로고" class="w-40 mt-8px">
+                <img th:src="@{/images/izikgram.png}" alt="로고" class="h-8 w-[200px] h-[80px] mt-8px">
             </a>
         </div>
 
         <!-- 두 번째 버튼 (오른쪽) -->
         <a th:href="@{/main/alarm}">
-        <button class="text-xl cursor-pointer mt-[-6px]">🔔</button>
+            <button class="text-xl cursor-pointer mt-[-6px]">🔔</button>
         </a>
     </div>
 
 
 
     <!-- 상단 네비게이션 바 -->
-    <div id="slidePanel" class="absolute top-0 left-0 h-full w-full hidden opacity-0 visibility-hidden transition-all duration-1000 z-50">
+    <div id="slidePanel" class="absolute top-0 left-0 h-full w-full hidden opacity-0 visibility-hidden transition-all duration-500 z-50">
         <div id="sidebar" class="absolute top-0 left-0 h-dvh bg-white shadow-lg p-5 z-50 w-3/5"> <!-- 사이드 바 크기 40%로 변경 -->
             <div class="absolute top-0 left-0 bg-blue-100 w-full h-20 p-5"></div>
             <!-- 닫기 버튼 -->
             <button id="closeBtn" type="button" onclick="closeTop()" class="absolute top-5 right-5 text-gray-500 hover:text-gray-700 text-sm cursor-pointer">✖</button> <!-- 버튼 크기 줄이기 -->
 
             <!-- 프로필 이미지 -->
-            <img th:src="@{/images/chillguy.png}" class="w-[82px] h-[82px] rounded-[40px] relative mt-7 left-30 top-12 z-10" alt="사용자프로필 이미지"> <!-- 이미지 크기 40%로 줄이기 -->
+            <img th:src="@{/images/chillguy.png}" class="w-[82px] h-[82px] rounded-[40px] relative mt-7 left-[7.5rem] top-12 z-10 " alt="사용자프로필 이미지"> <!-- 이미지 크기 40%로 줄이기 -->
             <div class="text-center mt-14">
                 <div sec:authorize="isAuthenticated()">
                     <div th:text="${#authentication.getPrincipal() != null && #authentication.getPrincipal().getUser().getNickname() != null ? #authentication.getPrincipal().getUser().getNickname() : '닉네임을 정해주세요'}"></div>
@@ -137,7 +137,7 @@
 
                 setTimeout(function() {
                     target.style.display = 'none';
-                }, 1000);  // 2초 후에 display: none
+                }, 0);
             }
 
             function openTop() {
@@ -146,7 +146,7 @@
                 setTimeout(function() {
                     target.style.opacity = '1';
                     target.style.visibility = 'visible';
-                }, 0);  // 애니메이션을 즉시 시작하려면 0초로 설정
+                }, 0);
             }
         </script>
     </th:block>
