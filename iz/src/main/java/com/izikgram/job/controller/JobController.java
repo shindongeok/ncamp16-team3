@@ -2,12 +2,10 @@ package com.izikgram.job.controller;
 
 import com.izikgram.global.security.CustomUserDetails;
 import com.izikgram.job.service.JobService;
-import com.izikgram.user.entity.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
