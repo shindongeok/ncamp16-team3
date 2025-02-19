@@ -3,9 +3,11 @@ package com.izikgram.board.controller;
 import com.izikgram.board.entity.Board;
 import com.izikgram.board.entity.CommentDto;
 import com.izikgram.board.service.BoardService;
+import com.izikgram.global.security.CustomUserDetails;
 import com.izikgram.user.entity.User;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -48,7 +50,7 @@ public class  BoardController {
     //자유,하소연 작성하기 페이지 이동
     @GetMapping("/postForm")
     public String postForm(@RequestParam("board_type")int board_type,
-                           HttpSession session,
+                           @AuthenticationPrincipal CustomUserDetails userDetails,
                            Model model){
 
         if (board_type != 1 && board_type != 2) {
@@ -58,17 +60,15 @@ public class  BoardController {
         }
 
         // 로그인 확인
-        User user = (User) session.getAttribute("user");
-        if (user == null) {
-            // 로그인되지 않은 경우 로그인 페이지로 리다이렉트
-            return "redirect:/login";  //
-        }
+        User user = userDetails.getUser();
+        String writer_id = user.getMember_id();
+
 
         String board_name = boardService.findBoardName(board_type);
 
         model.addAttribute("board_name", board_name);
         model.addAttribute("board_type", board_type);
-//        model.addAttribute("writer_id", writer_id);
+        model.addAttribute("writer_id", writer_id);
 
         return "/board/postForm";
     }
@@ -76,7 +76,7 @@ public class  BoardController {
     // 글작성
     @PostMapping("/{board_type}/post")
     public String insertPost(@PathVariable("board_type") int board_type,
-                             HttpSession session,
+                             @AuthenticationPrincipal CustomUserDetails userDetails,
                              @RequestParam("title") String title,
                              @RequestParam("content") String content) {
 
@@ -86,7 +86,7 @@ public class  BoardController {
         }
 
         //member_id 가져오기..
-        User user = (User)session.getAttribute("user");
+        User user = userDetails.getUser();
         String writer_id = user.getMember_id();
 
         // 게시글 삽입
@@ -110,16 +110,12 @@ public class  BoardController {
     @GetMapping("/{board_type}/{board_id}")
     public String postDetail(@PathVariable("board_type") int board_type,
                              @PathVariable("board_id") int board_id,
-                             HttpSession session,
+                             @AuthenticationPrincipal CustomUserDetails userDetails,
                              Model model ){
 
         //세션에서 User 객체 가져오기
-//        User user = (User)session.getAttribute("user");
-//        String writer_id = user.getMember_id();
-        //아이디 직접일단 입력...
-        String writer_id = "123";
-
-
+        User user = userDetails.getUser();
+        String writer_id = user.getMember_id();
 
         Board board = new Board();
         List<CommentDto> ListCommentDto;
@@ -166,14 +162,16 @@ public class  BoardController {
                              @PathVariable("board_id") int board_id,
                              @RequestParam("title") String title,
                              @RequestParam("content") String content,
-                             HttpSession session) {
+                             @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        User user = (User) session.getAttribute("user");
+        User user = userDetails.getUser();
         String member_id = user.getMember_id();
+
 
         if (board_type == 1) {
             Board board = boardService.selectDetail01(board_id);
             String writer_id = board.getWriter_id();
+            System.out.println("글 수정 writer_id 확인 : " + writer_id);
 
             if (member_id != null && member_id.equals(writer_id)) {
                 // 서버에서 조회한 writer_id와 세션에서 조회한 member_id가 같으면 수정
@@ -184,6 +182,7 @@ public class  BoardController {
         } else if (board_type == 2) {
             Board board = boardService.selectDetail02(board_id);
             String writer_id = board.getWriter_id();
+            System.out.println("글 수정 writer_id 확인 : " + writer_id);
 
             if (member_id != null && member_id.equals(writer_id)) {
                 // 서버에서 조회한 writer_id와 세션에서 조회한 member_id가 같으면 수정

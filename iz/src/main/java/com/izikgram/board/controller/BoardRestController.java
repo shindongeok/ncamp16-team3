@@ -2,10 +2,12 @@ package com.izikgram.board.controller;
 
 
 import com.izikgram.board.service.BoardService;
+import com.izikgram.global.security.CustomUserDetails;
 import com.izikgram.user.entity.User;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -26,12 +28,14 @@ public class BoardRestController {
     @PostMapping("/{boardId}/{boardType}/update")
     public Map<String, Integer> updateLikeCount(@PathVariable("boardId") int boardId,
                                                 @PathVariable("boardType") int boardType,
-                                                @RequestParam boolean isLiked, HttpSession session) {
+                                                @RequestParam boolean isLiked, @AuthenticationPrincipal CustomUserDetails userDetails) {
         log.info("요청 게시글 번호: {}", boardId);
         log.info("요청 종류: {}", isLiked);
 
-        User user = (User) session.getAttribute("user");
+        //유저 객체 처리해야함...
+        User user = userDetails.getUser();
         String memberId = user.getMember_id();
+
 
 
         // isLiked(true: 좋아요 요청, false: 싫어요 요청)
