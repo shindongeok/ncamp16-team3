@@ -60,15 +60,15 @@ public class  BoardController {
         }
 
         // 로그인 확인
-        User user = userDetails.getUser();
-        String writer_id = user.getMember_id();
+//        User user = userDetails.getUser();
+//        String writer_id = user.getMember_id();
 
 
         String board_name = boardService.findBoardName(board_type);
 
         model.addAttribute("board_name", board_name);
         model.addAttribute("board_type", board_type);
-        model.addAttribute("writer_id", writer_id);
+//        model.addAttribute("writer_id", writer_id);
 
         return "/board/postForm";
     }

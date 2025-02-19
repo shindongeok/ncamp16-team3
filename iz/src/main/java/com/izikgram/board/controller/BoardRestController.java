@@ -28,7 +28,8 @@ public class BoardRestController {
     @PostMapping("/{boardId}/{boardType}/update")
     public Map<String, Integer> updateLikeCount(@PathVariable("boardId") int boardId,
                                                 @PathVariable("boardType") int boardType,
-                                                @RequestParam boolean isLiked, @AuthenticationPrincipal CustomUserDetails userDetails) {
+                                                @RequestParam boolean isLiked,
+                                                @AuthenticationPrincipal CustomUserDetails userDetails) {
         log.info("요청 게시글 번호: {}", boardId);
         log.info("요청 종류: {}", isLiked);
 

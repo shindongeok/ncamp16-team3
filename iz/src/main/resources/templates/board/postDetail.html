@@ -83,10 +83,13 @@
         </div>
 
         <hr class="border-b border-gray-200">
-        <form>
+        <form onsubmit="saveComment(); return false;">
             <div class="flex justify-items-start  justify-between my-5">
-                <input type="text" placeholder="댓글을 입력해주세요." class="border border-gray-300 rounded-md p-2 w-100 ml-2">
-                <button class="px-8 py-2 bg-main-sky-highlight text-black rounded hover:bg-main-sky-basic rounded-xl cursor-pointer">
+                <input type="hidden" id="boardIdd" th:value="${board.board_id}">
+                <input type="hidden" id="boardTypee" th:value="${board.board_type}">
+
+                <input id="commentContent" type="text" placeholder="댓글을 입력해주세요." class="border border-gray-300 rounded-md p-2 w-100 ml-2">
+                <button type="submit" class="px-8 py-2 bg-main-sky-highlight text-black rounded hover:bg-main-sky-basic rounded-xl cursor-pointer">
                     등록
                 </button>
             </div>
@@ -152,7 +155,57 @@
     </div>
 </div>
 <script th:inline="javascript">
+    function saveComment() {
+        const content = document.getElementById('commentContent').value;
+        const boardId = document.getElementById('boardIdd').value;
+        const boardType = document.getElementById('boardTypee').value;  // 추가
 
+        if (!content.trim()) {
+            alert('댓글 내용을 입력해주세요.');
+            return;
+        }
+
+        $.ajax({
+            url: `/board/${boardId}/comment`,  // boardId를 동적으로 삽입
+            type: 'POST',
+            data: {
+                comment_content: content,
+                board_type: boardType  // 추가
+            },
+            success: function(response) {
+                if (response.success) {
+                    const newComment = `
+                <div class="border-b border-gray-200">
+                    <div class="flex justify-between p-2">
+                        <div class="text-gray-500">${response.nickname}</div>
+                        <div class="text-gray-500 reg_date">${response.reg_date}</div>
+                    </div>
+                    <div class="flex justify-between">
+                        <div class="p-2 text-xl font-black">${response.comment_content}</div>
+                        <div class="p-2">
+                            <button type="button" onclick="OpenUpdateModal()" class="px-2 py-1 bg-main-sky-highlight text-black rounded hover:bg-main-sky-basic rounded-xl cursor-pointer">수정</button>
+                            <button type="button" onclick="OpenDeleteModal()" class="px-2 py-1 bg-main-red-highlight text-black rounded hover:bg-main-red-basic rounded-xl cursor-pointer">삭제</button>
+                        </div>
+                    </div>
+                </div>`;
+
+                    // 댓글 목록의 최상단에 새 댓글 추가
+                    $('.comment-list').prepend(newComment);
+
+                    // 입력창 초기화
+                    $('#commentContent').val('');
+
+                    // 성공 메시지 표시 (선택사항)
+                    alert('댓글이 등록되었습니다.');
+                } else {
+                    alert('댓글 등록에 실패했습니다.');
+                }
+            },
+            error: function(xhr, status, error) {
+                alert('댓글 등록에 실패했습니다.');
+            }
+        });
+    }
 </script>
 <script src="https://code.jquery.com/jquery-3.6.4.js"></script>
 <script th:src="@{/js/postDetail.js}"></script>

@@ -36,7 +36,16 @@ public class BoardService {
         return boardMapper.getBoard02(board_type);
     }
 
+    // 댓글리스트 조회
+    public List<CommentDto> selectComment01(int board_id ){
+        return boardMapper.commentGetList01(board_id);
+    }
 
+    public List<CommentDto> selectComment02(int board_id){
+        return boardMapper.commentGetList02(board_id);
+    }
+
+    //댁슬 카운트 조회
 
     // 작성글 삽입
     public void insertPost01(int board_type, String writer_id, String title, String content) {
@@ -54,15 +63,6 @@ public class BoardService {
 
     public Board selectDetail02(int board_id){
         return boardMapper.selectBoard02(board_id);
-    }
-
-    // 댓글리스트 조회
-    public List<CommentDto> selectComment01(int board_id ){
-        return boardMapper.commentGetList01(board_id);
-    }
-
-    public List<CommentDto> selectComment02(int board_id){
-        return boardMapper.commentGetList02(board_id);
     }
 
     //자유/하소연 게시글 업데이트
@@ -226,6 +226,22 @@ public class BoardService {
         return map;
     }
 
-    //댓글 기능...
+    //댓글 저장
+    public void addComment01(int board_id, String writer_id, String comment){
+        boardMapper.addComment01(board_id, writer_id, comment);
+    }
+    public void addComment02(int board_id, String writer_id, String comment){
+        boardMapper.addComment02(board_id, writer_id, comment);
+    }
+
+    //댓글작성한거 반환
+    public CommentDto getLastComment(int boardId, int boardType) {
+        if (boardType == 1) {
+            return boardMapper.getLastComment01(boardId);
+        } else if (boardType == 2) {
+            return boardMapper.getLastComment02(boardId);
+        }
+        return null;
+    }
 
 }
