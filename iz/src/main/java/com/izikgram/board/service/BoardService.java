@@ -1,5 +1,7 @@
 package com.izikgram.board.service;
 
+import com.izikgram.alarm.service.AlarmService;
+import com.izikgram.alarm.service.SseEmitterService;
 import com.izikgram.board.entity.Board;
 
 import com.izikgram.board.entity.CommentDto;
@@ -18,6 +20,12 @@ public class BoardService {
 
     @Autowired
     private BoardMapper boardMapper;
+
+    @Autowired
+    private SseEmitterService sseEmitterService;
+
+    @Autowired
+    private AlarmService alarmService;
 
     //게시판 종류 조회
     public String findBoardName(int board_type){
@@ -229,9 +237,19 @@ public class BoardService {
     //댓글 저장
     public void addComment01(int board_id, String writer_id, String comment){
         boardMapper.addComment01(board_id, writer_id, comment);
+        Board board = boardMapper.selectBoard01(board_id);
+        String content = "[" + board.getTitle()  + "] \n게시글에 댓글이 달렸습니다.";
+        sseEmitterService.send(board.getWriter_id(), content);
+
+        log.info(board.toString());
+        alarmService.save(board.getWriter_id(), board.getBoard_type(), board.getBoard_id(), content);
     }
     public void addComment02(int board_id, String writer_id, String comment){
         boardMapper.addComment02(board_id, writer_id, comment);
+        Board board = boardMapper.selectBoard02(board_id);
+        String content = "[" + board.getTitle()  + "] \n게시글에 댓글이 달렸습니다.";
+        sseEmitterService.send(board.getWriter_id(), content);
+        alarmService.save(board.getWriter_id(), board.getBoard_type(), board.getBoard_id(), content);
     }
 
     //댓글작성한거 반환

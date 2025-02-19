@@ -1,15 +1,15 @@
-package com.izikgram.main.controller;
-
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-@Controller
-@RequestMapping("/main")
-public class AlarmController {
-
-    @GetMapping("/alarm")
-    public String alarm() {
-        return "main/alarm";
-    }
-}
+//package com.izikgram.main.controller;
+//
+//import org.springframework.stereotype.Controller;
+//import org.springframework.web.bind.annotation.GetMapping;
+//import org.springframework.web.bind.annotation.RequestMapping;
+//
+//@Controller
+//@RequestMapping("/main")
+//public class AlarmController {
+//
+//    @GetMapping("/alarm")
+//    public String alarm() {
+//        return "main/alarm2";
+//    }
+//}

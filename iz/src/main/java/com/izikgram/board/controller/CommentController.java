@@ -26,6 +26,7 @@ public class CommentController {
     @Autowired
     private BoardService boardService;
 
+
     @PostMapping("/{board_id}/comment")
     public ResponseEntity<Map<String, Object>> writeComment(
             @PathVariable("board_id") int boardId,
