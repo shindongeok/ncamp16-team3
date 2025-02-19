@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -30,7 +29,7 @@ public class UserController {
 
     @GetMapping("/register")
     public String register() {
-        return "/user/register";
+        return "user/register";
     }
 
 //    @PostMapping("/register")
@@ -51,9 +50,9 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("실패");
         }
 
-        String password = user.getPassword();
-        String encodePw = passwordEncoder.encode(password);
-        user.setPassword(encodePw);
+//        String password = user.getPassword();
+//        String encodePw = passwordEncoder.encode(password);
+//        user.setPassword(encodePw);
 
         timeSubstring(user);
 
@@ -75,7 +74,7 @@ public class UserController {
 
     @GetMapping("/findId")
     public String findId() {
-        return "/user/findId";
+        return "user/findId";
     }
 
 //    @PostMapping("/findId")
@@ -95,7 +94,7 @@ public class UserController {
 //        String member_id = user.getMember_id();
 //        session.setAttribute("member_id", member_id);
 ////        log.info("findIdResult: phoneNum={}, member_id={}", phoneNum, member_id);
-        return "/user/findIdResult";
+        return "user/findIdResult";
     }
 
     @GetMapping("/findPw")
@@ -192,19 +191,19 @@ public class UserController {
 
     @GetMapping("/mypage")
     public String mypage() {
-        return "/user/mypage";
+        return "user/mypage";
     }
 
     //계정 관리
     @GetMapping("/accountManagement")
     public String accountManagement() {
-        return "/user/accountManagement";
+        return "user/accountManagement";
     }
 
 
     @GetMapping("/update")
     public String update() {
-        return "/user/update";
+        return "user/update";
     }
 
     @PostMapping("/update")
@@ -228,7 +227,7 @@ public class UserController {
     //비밀번호 확인(비밀번호 변경 클릭시)
     @GetMapping("/checkPwd")
     public String checkPwd() {
-        return "/user/checkPwd";
+        return "user/checkPwd";
     }
 
     @PostMapping("/checkPwd")
@@ -246,7 +245,7 @@ public class UserController {
     // 비밀번호 변경 페이지 보여주기
     @GetMapping("/updatePw")
     public String updatePw() {
-        return "/user/updatePw";
+        return "user/updatePw";
     }
 
     @PostMapping("/updatePw")
