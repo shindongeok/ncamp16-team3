@@ -29,8 +29,9 @@
 </head>
 <body>
 <div sec:authorize="isAuthenticated()" class="main-container relative">
-    <div class="pt-28"><header th:replace="~{/header :: header} " class="pt-4"></header></div>
-    <footer th:replace="~{/footer :: footer}" class="pt-4"></footer>
+    <!-- 승민아 th:replace="~{/header :: header}" 앞에 '/' 붙이지 말아줘~❤️-->
+    <div class="pt-28"><header th:replace="~{header :: header}" class="pt-4"></header></div>
+    <footer th:replace="~{footer :: footer}" class="pt-4"></footer>
     <div class="page-title">Dashboard</div>
 
     <div class="popular-posting-section">
