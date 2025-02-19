@@ -145,41 +145,58 @@ function formatTimeRemaining(start, end) {
     const hours = Math.floor(remainingMinutes / 60);
     const minutes = remainingMinutes % 60;
 
-    return `${hours}h ${minutes}min`;
+    return `${hours}시간 ${minutes}분`;
 }
 
 function updateAllProgress() {
     const circles = document.querySelectorAll('.progress-circle');
     const timeTexts = document.querySelectorAll('.time-text');
-    const stressNoDataElements = document.querySelectorAll('.stress-no-data');
-    const container = document.querySelector('.stress-graph-section .container');
-
-    // stressNum이 null이거나 undefined인 경우 처리
-    if (stressNum === null || stressNum === undefined) {
-        stressNoDataElements.forEach(el => el.style.display = 'block');
-        if (container) container.style.display = 'none';
-        return;
-    } else {
-        stressNoDataElements.forEach(el => el.style.display = 'none');
-        if (container) container.style.display = 'flex';
-    }
+    const stressNoDataElement = document.querySelector('.stress-section .stress-no-data');
+    const stressLabelItem = document.querySelector('.label-item:nth-child(2)');
 
     // 퇴근까지 남은 시간 (큰 원)
     const workProgress = calculateTimeProgress(globalStartTime, globalEndTime);
     updateCircleProgress(circles[0], workProgress);
 
-    // 퇴사지수 (중간 원)
-    const normalizedStress = ((Number(stressNum) + 10) / 20) * 100;
-    updateCircleProgress(circles[1], normalizedStress);
-
     // 점심까지 남은 시간 (작은 원)
     const lunchProgress = calculateTimeProgress(globalStartTime, globalLunchTime);
     updateCircleProgress(circles[2], lunchProgress);
 
-    // 시간 텍스트 업데이트
-    timeTexts[0].textContent = formatTimeRemaining(globalStartTime, globalEndTime);
-    timeTexts[1].textContent = `${stressNum > 0 ? '+' : ''}${stressNum}%`;
-    timeTexts[2].textContent = formatTimeRemaining(globalStartTime, globalLunchTime);
+    // 시간 텍스트 업데이트 (퇴근, 점심)
+    if (timeTexts.length >= 3) {
+        timeTexts[0].textContent = formatTimeRemaining(globalStartTime, globalEndTime);
+        timeTexts[2].textContent = formatTimeRemaining(globalStartTime, globalLunchTime);
+    }
+
+    // 퇴사지수 부분만 조건부 처리
+    if (stressNum === null || stressNum === undefined) {
+        // 퇴사지수 라벨 텍스트 변경
+        if (stressLabelItem) {
+            const timeTextElement = stressLabelItem.querySelector('.time-text');
+            if (timeTextElement) {
+                timeTextElement.textContent = "아직 기록된 퇴사지수가 없어요";
+                timeTextElement.style.fontSize = '12px';
+            }
+        }
+
+        // 퇴사지수 원은 0으로 설정
+        if (circles[1]) {
+            updateCircleProgress(circles[1], 0);
+        }
+    } else {
+        // 퇴사지수가 있는 경우 정상 표시
+        const normalizedStress = ((Number(stressNum) + 10) / 20) * 100;
+        updateCircleProgress(circles[1], normalizedStress);
+
+        // 퇴사지수 텍스트 복원
+        if (stressLabelItem) {
+            const timeTextElement = stressLabelItem.querySelector('.time-text');
+            if (timeTextElement) {
+                timeTextElement.textContent = `${stressNum > 0 ? '+' : ''}${stressNum}%`;
+                timeTextElement.style.fontSize = '';
+            }
+        }
+    }
 }
 
 // 초기화 및 이벤트 리스너
@@ -207,18 +224,25 @@ document.addEventListener('DOMContentLoaded', () => {
     // 주간 평균 스트레스 계산 및 표시
     const weeklyAverageStress = calculateWeeklyAverageStress(monthlyStressList);
     const stressElement = document.getElementById('weeklyStressNum');
-    const stressNoData = stressElement?.parentElement.querySelector('.stress-no-data');
+    const overviewStressNoData = document.querySelector('.overview-card .stress-no-data');
 
-    if (stressElement && stressNoData) {
+    if (stressElement && overviewStressNoData) {
         if (weeklyAverageStress === null) {
-            stressNoData.style.display = 'block';
+            overviewStressNoData.style.display = 'block';
             stressElement.style.display = 'none';
         } else {
-            stressNoData.style.display = 'none';
+            overviewStressNoData.style.display = 'none';
             stressElement.style.display = 'block';
             const sign = weeklyAverageStress > 0 ? '+' : '';
             stressElement.innerHTML = `${sign}${weeklyAverageStress}%`;
         }
+    }
+
+    // 스트레스 섹션의 '아직 기록된 퇴사지수가 없어요' 메시지는 숨김 처리
+    // (퇴사지수가 없어도 그래프는 표시해야 함)
+    const stressNoDataElement = document.querySelector('.stress-section .stress-no-data');
+    if (stressNoDataElement) {
+        stressNoDataElement.style.display = 'none';
     }
 
     // 모달 관련 코드
