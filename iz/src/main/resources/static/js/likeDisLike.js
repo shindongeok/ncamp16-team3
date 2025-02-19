@@ -6,7 +6,7 @@ console.log(boardId);
 console.log(boardType);
 
 
-// 좋아요/싫어요 토글 처리
+// 좋아요/싫어요 토글 처리수정
 function toggleLikeDislike(boardId, type) {
     console.log("좋아요/싫어요 요청");
 
