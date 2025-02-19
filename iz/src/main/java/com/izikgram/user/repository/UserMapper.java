@@ -4,6 +4,8 @@ import com.izikgram.user.entity.Stress;
 import com.izikgram.user.entity.User;
 import org.apache.ibatis.annotations.*;
 
+import java.util.List;
+
 @Mapper
 public interface UserMapper {
 
@@ -35,20 +37,18 @@ public interface UserMapper {
     @Select("SELECT NOW()")
     String getCurrentTime();
 
-    @Select("SELECT m.*, s.stress_num " +
+    @Select("SELECT m.*, " +
+            "(SELECT stress_num FROM iz_member_stress_info " +
+            " WHERE member_id = m.member_id ORDER BY date DESC LIMIT 1) AS stress_num " +
             "FROM iz_member m " +
-            "LEFT JOIN ( " +
-            "    SELECT member_id, stress_num " +
-            "    FROM iz_member_stress_info " +
-            "    WHERE member_id = #{member_id} " +
-            ") s ON m.member_id = s.member_id " +
             "WHERE m.member_id = #{member_id} " +
             "AND m.status = 'ACTIVE'")
     User getUserInfo(@Param("member_id") String member_id);
 
     @Select("SELECT stress_num FROM iz_member_stress_info " +
-            "where member_id = #{member_id}")
-    Stress getUserStress(String member_id);
+            "WHERE member_id = #{member_id} " +
+            "ORDER BY date DESC LIMIT 1")
+    List<Stress> getUserStress(@Param("member_id") String member_id);
 
     @Update("update iz_member set member_id = null," +
             " status = 'DELETED' " +
