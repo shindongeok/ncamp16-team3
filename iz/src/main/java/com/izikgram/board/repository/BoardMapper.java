@@ -38,12 +38,12 @@ public interface BoardMapper {
     @Insert("insert into iz_board01(writer_id,title,content,board_type) " +
             "value(#{writer_id}, #{title}, #{content}, #{board_type})")
     void insertBoard01(@Param("writer_id") String writer_id, @Param("title") String title, @Param("content") String content,
-                 @Param("board_type") int board_type);
+                       @Param("board_type") int board_type);
 
     @Insert("insert into iz_board02(writer_id,title,content,board_type) " +
             "value(#{writer_id}, #{title}, #{content}, #{board_type})")
     void insertBoard02(@Param("writer_id") String writer_id, @Param("title") String title, @Param("content") String content,
-                   @Param("board_type") int board_type);
+                       @Param("board_type") int board_type);
 
     //상세페이지 보기
     @Select("SELECT * " +
@@ -81,8 +81,8 @@ public interface BoardMapper {
             "WHERE " +
             "    board_id = #{board_id} ")
     void updateBoard01(@Param("board_id") int board_id,
-                          @Param("title") String title,
-                          @Param("content")String content);
+                       @Param("title") String title,
+                       @Param("content")String content);
 
     //하소연게시글 업데이트
     @Update("UPDATE iz_board02 " +
@@ -92,9 +92,10 @@ public interface BoardMapper {
             "WHERE " +
             "    board_id = #{board_id} ")
     void updateBoard02(@Param("board_id") int board_id,
-                                @Param("title") String title,
-                                @Param("content")String content);
+                       @Param("title") String title,
+                       @Param("content")String content);
     // ------------------------------
+
 
     // 회원의 게시글 좋아요 개수
     @Select("SELECT COUNT(*) FROM iz_board01_like WHERE board_id=#{board_id} and member_id=#{member_id}")
@@ -193,6 +194,14 @@ public interface BoardMapper {
     @Select("select * from iz_board02 where board_id = #{board_id}")
     Board totalLikeDisLike02(@Param("board_id") int boardId);
 
-    //
+    //댓글 저장
+    @Insert("insert into iz_board01_commment(board_id, writer_id, comment_content) " +
+            "values(#{board_id}, #{writer_id}, #{comment_content})")
+    void addComment01(@Param("board_id") int board_id, @Param("writer_id") String writer_id,
+                      @Param("comment_content") String comment_content);
 
+    @Insert("insert into iz_board02_commment(board_id, writer_id, comment_content) " +
+            "values(#{board_id}, #{writer_id}, #{comment_content})")
+    void addComment02(@Param("board_id") int board_id, @Param("writer_id") String writer_id,
+                      @Param("comment_content") String comment_content);
 }

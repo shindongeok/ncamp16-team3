@@ -33,7 +33,7 @@ public class BoardService {
     }
 
     public List<Board> SelectBoardList02(int board_type) {
-       return boardMapper.getBoard02(board_type);
+        return boardMapper.getBoard02(board_type);
     }
 
 
@@ -51,13 +51,14 @@ public class BoardService {
     public Board selectDetail01(int board_id){
         return boardMapper.selectBoard01(board_id);
     }
+
     public Board selectDetail02(int board_id){
         return boardMapper.selectBoard02(board_id);
     }
 
     // 댓글리스트 조회
     public List<CommentDto> selectComment01(int board_id ){
-            return boardMapper.commentGetList01(board_id);
+        return boardMapper.commentGetList01(board_id);
     }
 
     public List<CommentDto> selectComment02(int board_id){
@@ -225,6 +226,6 @@ public class BoardService {
         return map;
     }
 
-    //댓글 저장
+    //댓글 기능...
 
 }
