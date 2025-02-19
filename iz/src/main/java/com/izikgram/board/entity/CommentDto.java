@@ -1,5 +1,6 @@
 package com.izikgram.board.entity;
 
+import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;

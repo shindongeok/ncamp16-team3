@@ -34,6 +34,33 @@ public interface BoardMapper {
             "order by board_id desc")
     List<Board> getBoard02(@Param("board_type") int board_type);
 
+    // 댓글 리스트 조회
+    @Select("select c.comment_id, c.board_id, c.writer_id, c.comment_content, c.reg_date, " +
+            "m.nickname " +
+            "from iz_board01_comment c " +
+            "join iz_member m " +
+            "on c.writer_id = m.member_id " +
+            "where board_id = #{board_id} order by comment_id desc")
+    List<CommentDto> commentGetList01(@Param("board_id") int board_id);
+
+    @Select("select c.comment_id, c.board_id, c.writer_id, c.comment_content, c.reg_date, " +
+            "m.nickname " +
+            "from iz_board01_comment c " +
+            "join iz_member m " +
+            "on c.writer_id = m.member_id " +
+            "where board_id = #{board_id} order by comment_id desc")
+    List<CommentDto> commentGetList02(@Param("board_id") int board_id);
+
+    @Select("select count(comment_id) " +
+            "from iz_board01_comment " +
+            "where board_id = #{board_id}")
+    Comment commentGetCount01(@Param("board_id") int board_id);
+
+    @Select("select count(comment_id) " +
+            "from iz_board02_comment " +
+            "where board_id = #{board_id}")
+    Comment commentGetCount02(@Param("board_id") int board_id);
+
     // 글작성
     @Insert("insert into iz_board01(writer_id,title,content,board_type) " +
             "value(#{writer_id}, #{title}, #{content}, #{board_type})")
@@ -56,22 +83,6 @@ public interface BoardMapper {
             "WHERE board_id = #{board_id} ")
     Board selectBoard02(@Param("board_id") int board_id);
 
-    // 댓글 리스트 조회
-    @Select("select c.comment_id, c.board_id, c.writer_id, c.comment_content, c.reg_date, " +
-            "m.nickname " +
-            "from iz_board01_comment c " +
-            "join iz_member m " +
-            "on c.writer_id = m.member_id " +
-            "where board_id = #{board_id} order by comment_id desc")
-    List<CommentDto> commentGetList01(@Param("board_id") int board_id);
-
-    @Select("select c.comment_id, c.board_id, c.writer_id, c.comment_content, c.reg_date, " +
-            "m.nickname " +
-            "from iz_board01_comment c " +
-            "join iz_member m " +
-            "on c.writer_id = m.member_id " +
-            "where board_id = #{board_id} order by comment_id desc")
-    List<CommentDto> commentGetList02(@Param("board_id") int board_id);
 
     //자유게시글 업데이트
     @Update("UPDATE iz_board01 " +
@@ -194,14 +205,29 @@ public interface BoardMapper {
     @Select("select * from iz_board02 where board_id = #{board_id}")
     Board totalLikeDisLike02(@Param("board_id") int boardId);
 
+
+
+
     //댓글 저장
-    @Insert("insert into iz_board01_commment(board_id, writer_id, comment_content) " +
+    @Insert("insert into iz_board01_comment(board_id, writer_id, comment_content) " +
             "values(#{board_id}, #{writer_id}, #{comment_content})")
     void addComment01(@Param("board_id") int board_id, @Param("writer_id") String writer_id,
                       @Param("comment_content") String comment_content);
 
-    @Insert("insert into iz_board02_commment(board_id, writer_id, comment_content) " +
+    @Insert("insert into iz_board02_comment(board_id, writer_id, comment_content) " +
             "values(#{board_id}, #{writer_id}, #{comment_content})")
     void addComment02(@Param("board_id") int board_id, @Param("writer_id") String writer_id,
                       @Param("comment_content") String comment_content);
+
+    // 작성한 댓글 조회
+    @Select("SELECT * FROM iz_board01_comment WHERE board_id = #{board_id} ORDER BY comment_id DESC LIMIT 1")
+    CommentDto getLastComment01(@Param("board_id") int boardId);
+
+    @Select("SELECT * FROM iz_board02_comment WHERE board_id = #{board_id} ORDER BY comment_id DESC LIMIT 1")
+    CommentDto getLastComment02(@Param("board_id") int boardId);
+
+
+
+
+
 }
