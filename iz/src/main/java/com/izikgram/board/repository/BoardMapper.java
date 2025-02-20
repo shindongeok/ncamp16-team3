@@ -45,7 +45,7 @@ public interface BoardMapper {
 
     @Select("select c.comment_id, c.board_id, c.writer_id, c.comment_content, c.reg_date, " +
             "m.nickname " +
-            "from iz_board01_comment c " +
+            "from iz_board02_comment c " +
             "join iz_member m " +
             "on c.writer_id = m.member_id " +
             "where board_id = #{board_id} order by comment_id desc")

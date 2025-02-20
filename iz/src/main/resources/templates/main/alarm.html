@@ -56,22 +56,21 @@
 
     <!-- 알림 목록 -->
     <ul class="space-y-4">
-        <li th:each="alarm : ${alarmList}" class="flex items-center bg-white p-4 max-w-[580px] rounded-lg shadow-md hover:shadow-lg transition-transform transform hover:scale-102">
-            <span class="alarm-icon text-xl text-blue-500 mr-4">🔔</span>
-            <span class="text-gray-700" th:text="${alarm.content}"></span>
+        <li th:each="alarm : ${alarmList}"
+            class="flex justify-between items-center bg-white p-4 max-w-[580px] rounded-lg shadow-md hover:shadow-lg transition-transform transform hover:scale-102 group">
+
+            <a th:href="@{/board/{board_type}/{board_id}(board_type=${alarm.getBoard_type()}, board_id=${alarm.getBoard_id()})}">
+                <span class="alarm-icon text-xl text-blue-500 mr-4">🔔</span>
+                <span class="text-gray-700 flex-1" th:text="${alarm.content}"></span>
+            </a>
+
+            <!-- 삭제 버튼 -->
+            <button class="delete-alarm hidden group-hover:block text-red-500 hover:text-red-700 cursor-pointer"
+                    th:data-alarm-id="${alarm.alarm_id}"
+                    onclick="deleteAlarm(this)">
+                ❌
+            </button>
         </li>
-<!--        <li class="flex items-center bg-white p-4 max-w-[580px] rounded-lg shadow-md hover:shadow-lg transition-transform transform hover:scale-102">-->
-<!--            <span class="alarm-icon text-xl text-blue-500 mr-4">🔔</span>-->
-<!--            <span class="text-gray-700">알림 1: 새로운 이벤트가 생겼어요!</span>-->
-<!--        </li>-->
-<!--        <li class="flex items-center bg-white p-4 max-w-[580px] rounded-lg shadow-md hover:shadow-lg transition-transform transform hover:scale-102">-->
-<!--            <span class="alarm-icon text-xl text-blue-500 mr-4">🔔</span>-->
-<!--            <span class="text-gray-700">알림 2: 할 일이 하나 추가되었습니다!</span>-->
-<!--        </li>-->
-<!--        <li class="flex items-center bg-white p-4 max-w-[580px] rounded-lg shadow-md hover:shadow-lg transition-transform transform hover:scale-102">-->
-<!--            <span class="alarm-icon text-xl text-blue-500 mr-4">🔔</span>-->
-<!--            <span class="text-gray-700">알림 3: 시스템 점검이 완료되었습니다.</span>-->
-<!--        </li>-->
     </ul>
 </div>
 
@@ -96,6 +95,31 @@
         console.error("SSE error", error);
         eventSource.close(); // 오류 시 연결을 닫음
     };
+
+    function deleteAlarm(button) {
+        let alarmId = button.getAttribute("data-alarm-id");
+        console.log(alarmId);
+
+        if (!confirm("이 알림을 삭제하시겠습니까?")) {
+            return;
+        }
+
+        fetch('/main/alarm', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ alarm_id: alarmId })
+        })
+            .then(response => {
+                if (response.ok) {
+                    button.closest("li").remove(); // 삭제된 알림 화면에서 제거
+                } else {
+                    alert("알림 삭제 실패!");
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
 </script>
 
 
