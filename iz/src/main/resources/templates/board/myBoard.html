@@ -1,3 +1,4 @@
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <!DOCTYPE html>
 <html>
 <head>
@@ -20,117 +21,67 @@
             --color-main-yellow-highlight: #fbc159ff;
             --color-main-yellow-basic: #fdd391;
         }
+        .no-shadow {
+            box-shadow: none;
+        }
     </style>
+    <script src="https://code.jquery.com/jquery-3.6.4.js"></script>
+    <script th:src="@{/js/postDetail.js}"></script>
 </head>
 <body>
-<div class="flex flex-col w-full mobile-container pt-8 relative bg-white rounded-lg shadow-lg mx-auto">
+<div class="no-shadow flex flex-col w-full mobile-container pt-8 relative bg-white rounded-lg  mx-auto">
     <div class="pt-28"><header th:replace="~{/header :: header} " class="pt-4"></header></div>
     <footer th:replace="~{/footer :: footer}" class="pt-4"></footer>
 
-    <div class=" mobile-container p-6">
+    <div class=" p-6">
         <h2 class="flex items-center gap-2 text-4xl font-black my-5">
-            인기게시판
+            내가 작성한 게시글
             <img class="w-10 h-10" src="https://img.icons8.com/?size=100&id=JC18XYuHYTN0&format=png&color=000000" alt="내가가게시판">
         </h2>
         <div>
             <div class="border-b  pb-2">
                 <div class="flex items-center flex items-center justify-between gap-6">
                     <!-- 게시판 구분-->
-                    <h2 class="text-2xl font-black ml-4">내가 작성한 게시글</h2>
+                    <a><h2 class="text-2xl font-black ml-4">자유게시판</h2></a>
                     <!-- 게시판 구분-->
                 </div>
             </div>
             <table class="w-full text-left">
                 <tbody>
                 <!-- 반복되는 게시글 부분 -->
-                <tr class="border-b-3 border-gray-400 border-gray-200">
+                <tr th:each="myList01 : ${myBoardList01}" class="border-b-3 border-gray-400 border-gray-200">
                     <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                         <div class="mb-2 text-xl font-black flex items-center">
-                            <a href="#">인기글1 제목입니다.</a>
+                            <a href="#" th:href="@{/board/{board_type}/{board_id}(board_type=${myList01.board_type},
+                             board_id=${myList01.board_id})}" th:text="${myList01.title}" >인기글1 제목입니다.</a>
                         </div>
-                        <div class="text-gray-500 text-xl">
+                        <div class="text-gray-500 text-xl reg_date" th:data-reg-date="${myList01.reg_date}" >
                             2025-02-11
                         </div>
                     </th>
                     <td class="">
                         <div class="flex justify-end mb-2">
                             <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                                <img src="https://img.icons8.com/?size=100&id=82788&format=png&color=000000" alt="like_button" class="w-5 h-5">
+                                <img src="https://img.icons8.com/?size=100&id=82788&format=png&color=000000"
+                                     alt="like_button" class="w-5 h-5">
                             </a>
-                            <span class="w-6 h-6 ml-2 text-main-red-highlight text-right">526</span>
+                            <span class="w-6 h-6 ml-2 text-main-red-highlight text-right"
+                                  th:text="${myList01.like_count}">526</span>
                         </div>
                         <div class="flex justify-end mb-2">
                             <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                                <img src="https://img.icons8.com/?size=100&id=82788&format=png&color=000000" alt="like_button" class="w-5 h-5 rotate-180">
+                                <img src="https://img.icons8.com/?size=100&id=82788&format=png&color=000000"
+                                     alt="like_button" class="w-5 h-5 rotate-180">
                             </a>
-                            <span class="w-6 h-6 ml-2 text-main-sky-highlight text-right">100</span>
+                            <span class="w-6 h-6 ml-2 text-main-sky-highlight text-right"
+                                  th:text="${myList01.dislike_count}">100</span>
                         </div>
                         <div class="flex justify-end">
                             <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                                <img src="https://img.icons8.com/?size=100&id=6520&format=png&color=000000" alt="like_button" class="w-5 h-5">
+                                <img src="https://img.icons8.com/?size=100&id=6520&format=png&color=000000"
+                                     alt="like_button" class="w-5 h-5">
                             </a>
-                            <span class="w-6 h-6 ml-2 text-right" >0</span>
-                        </div>
-                    </td>
-                </tr>
-                <!-- 반복되는 게시글 부분 -->
-                <tr class="border-b-3 border-gray-400 border-gray-200">
-                    <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                        <div class="mb-2 text-xl font-black flex items-center">
-                            <a href="#">인기글2 제목입니다.</a>
-                        </div>
-                        <div class="text-gray-500 text-xl">
-                            2025-02-11
-                        </div>
-                    </th>
-                    <td class="">
-                        <div class="flex justify-end mb-2">
-                            <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                                <img src="https://img.icons8.com/?size=100&id=82788&format=png&color=000000" alt="like_button" class="w-5 h-5">
-                            </a>
-                            <span class="w-6 h-6 ml-2 text-main-red-highlight text-right">322</span>
-                        </div>
-                        <div class="flex justify-end mb-2">
-                            <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                                <img src="https://img.icons8.com/?size=100&id=82788&format=png&color=000000" alt="like_button" class="w-5 h-5 rotate-180">
-                            </a>
-                            <span class="w-6 h-6 ml-2 text-main-sky-highlight text-right">100</span>
-                        </div>
-                        <div class="flex justify-end">
-                            <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                                <img src="https://img.icons8.com/?size=100&id=6520&format=png&color=000000" alt="like_button" class="w-5 h-5">
-                            </a>
-                            <span class="w-6 h-6 ml-2 text-right" >0</span>
-                        </div>
-                    </td>
-                </tr>
-                <tr class="border-b-3 border-gray-400 border-gray-200">
-                    <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                        <div class="mb-2 text-xl font-black flex items-center">
-                            <a href="#">인기글3 제목목입니다.</a>
-                        </div>
-                        <div class="text-gray-500 text-xl">
-                            2025-02-11
-                        </div>
-                    </th>
-                    <td class="">
-                        <div class="flex justify-end mb-2">
-                            <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                                <img src="https://img.icons8.com/?size=100&id=82788&format=png&color=000000" alt="like_button" class="w-5 h-5">
-                            </a>
-                            <span class="w-6 h-6 ml-2 text-main-red-highlight text-right">222</span>
-                        </div>
-                        <div class="flex justify-end mb-2">
-                            <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                                <img src="https://img.icons8.com/?size=100&id=82788&format=png&color=000000" alt="like_button" class="w-5 h-5 rotate-180">
-                            </a>
-                            <span class="w-6 h-6 ml-2 text-main-sky-highlight text-right">100</span>
-                        </div>
-                        <div class="flex justify-end">
-                            <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                                <img src="https://img.icons8.com/?size=100&id=6520&format=png&color=000000" alt="like_button" class="w-5 h-5">
-                            </a>
-                            <span class="w-6 h-6 ml-2 text-right" >0</span>
+                            <span class="w-6 h-6 ml-2 text-right " th:text="${myList01.comment_count}">0</span>
                         </div>
                     </td>
                 </tr>
@@ -142,104 +93,49 @@
             <div class="border-b  pb-2">
                 <div class="flex items-center flex items-center justify-between gap-6">
                     <!-- 게시판 구분-->
-                    <h2 class="text-2xl font-black ml-4">인기게시판</h2>
+                    <a><h2 class="text-2xl font-black ml-4">하소연 게시판</h2></a>
                     <!-- 게시판 구분-->
                 </div>
             </div>
             <table class="w-full text-left">
                 <tbody>
                 <!-- 반복되는 게시글 부분 -->
-                <tr class="border-b-3 border-gray-400 border-gray-200">
+                <tr th:each="myList02 : ${myBoardList02}" class="border-b-3 border-gray-400 border-gray-200">
                     <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                         <div class="mb-2 text-xl font-black flex items-center">
-                            <a href="#">인기글1 제목입니다.</a>
+                            <a href="#" th:href="@{/board/{board_type}/{board_id}(board_type=${myList02.board_type},
+                             board_id=${myList02.board_id})}" th:text="${myList02.title}">인기글1 제목입니다.</a>
                         </div>
-                        <div class="text-gray-500 text-xl">
+                        <div class="text-gray-500 text-xl reg_date" th:data-reg-date="${myList02.reg_date}">
                             2025-02-11
                         </div>
                     </th>
                     <td class="">
                         <div class="flex justify-end mb-2">
                             <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                                <img src="https://img.icons8.com/?size=100&id=82788&format=png&color=000000" alt="like_button" class="w-5 h-5">
+                                <img src="https://img.icons8.com/?size=100&id=82788&format=png&color=000000"
+                                     alt="like_button" class="w-5 h-5">
                             </a>
-                            <span class="w-6 h-6 ml-2 text-main-red-highlight text-right">526</span>
+                            <span class="w-6 h-6 ml-2 text-main-red-highlight text-right"
+                                  th:text="${myList02.like_count}">526</span>
                         </div>
                         <div class="flex justify-end mb-2">
                             <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                                <img src="https://img.icons8.com/?size=100&id=82788&format=png&color=000000" alt="like_button" class="w-5 h-5 rotate-180">
+                                <img src="https://img.icons8.com/?size=100&id=82788&format=png&color=000000"
+                                     alt="like_button" class="w-5 h-5 rotate-180">
                             </a>
-                            <span class="w-6 h-6 ml-2 text-main-sky-highlight text-right">100</span>
+                            <span class="w-6 h-6 ml-2 text-main-sky-highlight text-right"
+                                  th:text="${myList02.dislike_count}">100</span>
                         </div>
                         <div class="flex justify-end">
                             <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
                                 <img src="https://img.icons8.com/?size=100&id=6520&format=png&color=000000" alt="like_button" class="w-5 h-5">
                             </a>
-                            <span class="w-6 h-6 ml-2 text-right" >0</span>
+                            <span class="w-6 h-6 ml-2 text-right" th:text="${myList02.comment_count}">0</span>
                         </div>
                     </td>
                 </tr>
                 <!-- 반복되는 게시글 부분 -->
-                <tr class="border-b-3 border-gray-400 border-gray-200">
-                    <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                        <div class="mb-2 text-xl font-black flex items-center">
-                            <a href="#">인기글2 제목입니다.</a>
-                        </div>
-                        <div class="text-gray-500 text-xl">
-                            2025-02-11
-                        </div>
-                    </th>
-                    <td class="">
-                        <div class="flex justify-end mb-2">
-                            <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                                <img src="https://img.icons8.com/?size=100&id=82788&format=png&color=000000" alt="like_button" class="w-5 h-5">
-                            </a>
-                            <span class="w-6 h-6 ml-2 text-main-red-highlight text-right">322</span>
-                        </div>
-                        <div class="flex justify-end mb-2">
-                            <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                                <img src="https://img.icons8.com/?size=100&id=82788&format=png&color=000000" alt="like_button" class="w-5 h-5 rotate-180">
-                            </a>
-                            <span class="w-6 h-6 ml-2 text-main-sky-highlight text-right">100</span>
-                        </div>
-                        <div class="flex justify-end">
-                            <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                                <img src="https://img.icons8.com/?size=100&id=6520&format=png&color=000000" alt="like_button" class="w-5 h-5">
-                            </a>
-                            <span class="w-6 h-6 ml-2 text-right" >0</span>
-                        </div>
-                    </td>
-                </tr>
-                <tr class="border-b-3 border-gray-400 border-gray-200">
-                    <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                        <div class="mb-2 text-xl font-black flex items-center">
-                            <a href="#">인기글3 제목목입니다.</a>
-                        </div>
-                        <div class="text-gray-500 text-xl">
-                            2025-02-11
-                        </div>
-                    </th>
-                    <td class="">
-                        <div class="flex justify-end mb-2">
-                            <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                                <img src="https://img.icons8.com/?size=100&id=82788&format=png&color=000000" alt="like_button" class="w-5 h-5">
-                            </a>
-                            <span class="w-6 h-6 ml-2 text-main-red-highlight text-right">222</span>
-                        </div>
-                        <div class="flex justify-end mb-2">
-                            <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                                <img src="https://img.icons8.com/?size=100&id=82788&format=png&color=000000" alt="like_button" class="w-5 h-5 rotate-180">
-                            </a>
-                            <span class="w-6 h-6 ml-2 text-main-sky-highlight text-right">100</span>
-                        </div>
-                        <div class="flex justify-end">
-                            <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                                <img src="https://img.icons8.com/?size=100&id=6520&format=png&color=000000" alt="like_button" class="w-5 h-5">
-                            </a>
-                            <span class="w-6 h-6 ml-2 text-right" >0</span>
-                        </div>
-                    </td>
-                </tr>
                 </tbody>
             </table>
         </div>
