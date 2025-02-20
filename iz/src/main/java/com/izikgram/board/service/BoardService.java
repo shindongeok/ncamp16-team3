@@ -266,40 +266,32 @@ public class BoardService {
 
     //-------------------------------
     // 댓글 삭제 서비스
-    public boolean deleteComment01(String loggedInUserId, int commentId) {
-        // 댓글 작성자의 ID를 가져옵니다.
-        String commentWriterId = boardMapper.getCommentWriterId01(commentId);
-
-        // 작성자가 로그인한 사용자와 일치하는지 확인
-        if (commentWriterId != null && commentWriterId.equals(loggedInUserId)) {
-            // 삭제 가능하면 댓글을 삭제합니다.
-            int result = boardMapper.deleteComment01(commentId);
-            return result > 0;  // 삭제된 행의 수가 1 이상이면 성공
+    // 게시판 1 댓글 삭제 메서드
+    public boolean deleteComment01(int commentId, int boardId) {
+        try {
+            // MyBatis를 사용하여 댓글을 삭제하는 쿼리 호출
+            log.info("쿼리 실행 전: commentId = {}, boardId = {}", commentId, boardId);
+            boardMapper.deleteComment01(boardId, commentId);
+            return true; // 삭제가 성공적으로 완료되면 true 반환
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false; // 실패 시 false 반환
         }
-        return false;  // 작성자가 아니면 삭제 불가
     }
 
-    public boolean deleteComment02(String loggedInUserId, int commentId) {
-        // 댓글 작성자의 ID를 가져옵니다.
-        String commentWriterId = boardMapper.getCommentWriterId01(commentId);
-
-        // 작성자가 로그인한 사용자와 일치하는지 확인
-        if (commentWriterId != null && commentWriterId.equals(loggedInUserId)) {
-            // 삭제 가능하면 댓글을 삭제합니다.
-            int result = boardMapper.deleteComment02(commentId);
-            return result > 0;  // 삭제된 행의 수가 1 이상이면 성공
+    // 게시판 2 댓글 삭제 메서드
+    public boolean deleteComment02(int commentId, int boardId) {
+        try {
+            // MyBatis를 사용하여 댓글을 삭제하는 쿼리 호출
+            boardMapper.deleteComment02(boardId, commentId);
+            return true; // 삭제가 성공적으로 완료되면 true 반환
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false; // 실패 시 false 반환
         }
-        return false;  // 작성자가 아니면 삭제 불가
     }
 
-    //-----------------------인기게시판
-//    public List<BoardDto> getIssueBoardList01(@Param("board_type") int boardType){
-//        return boardMapper.getIssueBoardList01(boardType);
-//    }
-//    public List<BoardDto> getIssueBoardList02(@Param("board_type") int boardType){
-//        return boardMapper.getIssueBoardList02(boardType);
-//    }
-
+    //인기게시판
     public Map<String, List<BoardDto>> getIssueBoardList01(){
         Map<String, List<BoardDto>> map = new HashMap<>();
         List<BoardDto> issueBoardList01 = boardMapper.getIssueBoardList01();
@@ -311,5 +303,22 @@ public class BoardService {
         map.put("issueBoardList02", issueBoardList02);
 
         return map;
+    }
+
+    public Map<String, List<BoardDto>> getMyBoardList(String writer_id){
+        Map<String, List<BoardDto>> map = new HashMap<>();
+        List<BoardDto> myBoardList01 = boardMapper.getMyBoardList01(writer_id);
+        List<BoardDto> myBoardList02 = boardMapper.getMyBoardList02(writer_id);
+
+        myBoardList01 = (myBoardList01.size() > 5) ? myBoardList01.subList(0, 5) : myBoardList01;
+        myBoardList02 = (myBoardList02.size() > 5) ? myBoardList02.subList(0, 5) : myBoardList02;
+
+
+        log.info("myBoardList01:{}, myBoardList02 {} ", myBoardList01, myBoardList02);
+        map.put("myBoardList01", myBoardList01);
+        map.put("myBoardList02", myBoardList02);
+
+        return map;
+
     }
 }

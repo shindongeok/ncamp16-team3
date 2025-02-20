@@ -3,6 +3,7 @@ package com.izikgram.board.controller;
 import com.izikgram.board.entity.Board;
 import com.izikgram.board.entity.BoardDto;
 import com.izikgram.board.entity.CommentDto;
+import com.izikgram.board.repository.BoardMapper;
 import com.izikgram.board.service.BoardService;
 import com.izikgram.global.security.CustomUserDetails;
 import com.izikgram.user.entity.User;
@@ -23,6 +24,8 @@ public class  BoardController {
 
     @Autowired
     private BoardService boardService;
+    @Autowired
+    private BoardMapper boardMapper;
 
     //자유,하소연 게시판 리스트
     @GetMapping("/{board_type}")
@@ -60,11 +63,6 @@ public class  BoardController {
             model.addAttribute("error", "유효하지 않은 게시판 타입입니다.");
             return "redirect:/";
         }
-
-        // 로그인 확인
-//        User user = userDetails.getUser();
-//        String writer_id = user.getMember_id();
-
 
         String board_name = boardService.findBoardName(board_type);
 
@@ -125,8 +123,6 @@ public class  BoardController {
             model.addAttribute("error", "유효하지 않은 게시판 타입입니다.");
             return "redirect:/board/" + board_type;
         }
-
-
 
         model.addAttribute("board", board);
         model.addAttribute("member_id", writer_id);
@@ -205,18 +201,27 @@ public class  BoardController {
     }
 
     @GetMapping("/myboard")
-    public String myBoard(Model model){
+    public String myBoard(@AuthenticationPrincipal CustomUserDetails userDetails,
+                          Model model){
 
+        User user = userDetails.getUser();
+        String writer_id = user.getMember_id();
 
+        Map<String, List<BoardDto>> MyBoardList = boardService.getMyBoardList(writer_id);
+
+        List<BoardDto> myBoardList01 = MyBoardList.get("myBoardList01");
+        List<BoardDto> myBoardList02 = MyBoardList.get("myBoardList02");
+
+        log.info("myBoardList01: {}", myBoardList01);
+        log.info("myBoardList02: {}", myBoardList02);
+        model.addAttribute("myBoardList01",myBoardList01);
+        model.addAttribute("myBoardList02",myBoardList02);
 
         return "board/myBoard";
     }
 
 }
 
-
-
-//    좋아요 구현?================================================================================
 
 
 

@@ -30,7 +30,7 @@
 <div class="flex flex-col w-full mobile-container pt-8 relative bg-white rounded-lg shadow-lg mx-auto">
     <div class="pt-28"><header th:replace="~{/header :: header} " class="pt-4"></header></div>
     <footer th:replace="~{/footer :: footer}" class="pt-4"></footer>
-    <div class=" mobile-container p-6">
+    <div class=" p-6">
         <h2 class="flex items-center gap-2 text-4xl font-black my-5">
             인기게시판
             <img class="w-10 h-10" src="https://img.icons8.com/?size=100&id=JC18XYuHYTN0&format=png&color=000000" alt="인기게시판">
@@ -51,7 +51,8 @@
                         <div class="mb-2 text-xl font-black flex items-center">
                             <img class="w-10 h-10 mr-2"
                                  src="https://img.icons8.com/?size=100&id=33486&format=png&color=000000" alt="">
-                            <a href="#" th:text="${issueList01.title}">인기글1 제목입니다.</a>
+                            <a href="#" th:href="@{/board/{board_type}/{board_id}(board_type=${issueList01.board_type},
+                                board_id=${issueList01.board_id})}" th:text="${issueList01.title}">인기글1 제목입니다.</a>
                         </div>
                         <div class="text-gray-500 text-xl reg_date" th:text="${issueList01.reg_date}"
                              th:data-reg-date="${issueList01.reg_date}">
@@ -98,7 +99,8 @@
                     <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                         <div class="mb-2 text-xl font-black flex items-center">
                             <img class="w-10 h-10 mr-2" src="https://img.icons8.com/?size=100&id=33486&format=png&color=000000" alt="">
-                            <a href="#" th:text="${issueList02.title}">인기글1 제목입니다.</a>
+                            <a href="#" th:href="@{/board/{board_type}/{board_id}(board_type=${issueList02.board_type},
+                                board_id=${issueList02.board_id})}" th:text="${issueList02.title}">인기글1 제목입니다.</a>
                         </div>
                         <div class="text-gray-500 text-xl reg_date" th:text="${issueList02.reg_date}"
                              th:data-reg-date="${issueList02.reg_date}">

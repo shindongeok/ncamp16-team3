@@ -7,6 +7,7 @@ import com.izikgram.global.security.CustomUserDetails;
 import com.izikgram.user.entity.User;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -59,6 +60,7 @@ public class CommentController {
             response.put("comment_content", newComment.getComment_content());
             response.put("reg_date", newComment.getReg_date().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
             response.put("comment_id", newComment.getComment_id());
+            response.put("writer_id", newComment.getWriter_id());
             response.put("success", true);
 
             return ResponseEntity.ok(response);
@@ -71,35 +73,50 @@ public class CommentController {
     }
     //---------------------------------------
     // 댓글 삭제
-    @DeleteMapping("/{boardType}/comment/{commentId}/delete")
-    public ResponseEntity<?> deleteComment(
-            @PathVariable("boardType")  int boardType,  // 경로 변수 사용
-            @PathVariable("commentId") int commentId,
+    @DeleteMapping("/deleteComment")
+    public ResponseEntity<Map<String, String>> deleteComment(
+            @RequestParam("commentId") int commentId,
+            @RequestParam("boardId") int boardId,
+            @RequestParam("boardType") int boardType,
+            @RequestParam("writerId") String writerId,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
-        try {
-            User user = userDetails.getUser();
-            String loggedInUserId = user.getMember_id();
 
-            if (boardType == 1) {
-                boolean isDeleted = boardService.deleteComment01(loggedInUserId, commentId);
-                if (isDeleted) {
-                    return ResponseEntity.ok().body("{\"success\": true}");
-                } else {
-                    return ResponseEntity.status(403).body("{\"success\": false, \"message\": \"작성자만 댓글을 삭제할 수 있습니다.\"}");
-                }
-            } else if (boardType == 2) {
-                boolean isDeleted = boardService.deleteComment02(loggedInUserId, commentId);
-                if (isDeleted) {
-                    return ResponseEntity.ok().body("{\"success\": true}");
-                } else {
-                    return ResponseEntity.status(403).body("{\"success\": false, \"message\": \"작성자만 댓글을 삭제할 수 있습니다.\"}");
+        Map<String, String> response = new HashMap<>();
+
+        try {
+            String memberId = userDetails.getUser().getMember_id();
+            boolean isDeleted = false;
+
+            log.info("commentId : {}", commentId);
+            log.info("boardId : {}", boardId);
+            log.info("boardType : {}", boardType);
+            log.info("writerId : {}", writerId);
+
+
+            // 현재 로그인한 사용자와 댓글 작성자가 동일한 경우에만 삭제 처리
+            if (memberId != null && memberId.equals(writerId)) {
+                if (boardType == 1) {
+                    isDeleted = boardService.deleteComment01(commentId, boardId);
+                } else if (boardType == 2) {
+                    isDeleted = boardService.deleteComment02(commentId, boardId);
                 }
             }
 
+            // 삭제 여부에 따라 응답 처리
+            if (isDeleted) {
+                log.info("댓글 삭제 성공: commentId = {}, boardId = {}", commentId, boardId);
+                response.put("message", "댓글이 삭제되었습니다.");
+                return ResponseEntity.ok(response);
+            } else {
+                response.put("message", "댓글 삭제에 실패했습니다.");
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+            }
+
         } catch (Exception e) {
-            log.error("댓글 삭제 중 오류 발생: {}", e.getMessage(), e);
-            return ResponseEntity.status(500).body("{\"success\": false, \"message\": \"서버 오류\"}");
+            // 오류 처리
+            response.put("message", "댓글 삭제 중 오류가 발생했습니다.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
-        return null;
     }
+
 }
