@@ -67,7 +67,7 @@
             <!-- 삭제 버튼 -->
             <button class="delete-alarm hidden group-hover:block text-red-500 hover:text-red-700 cursor-pointer"
                     th:data-alarm-id="${alarm.alarm_id}"
-                    onclick="deleteAlarm(this)">
+                    onclick="checkRead(this)">
                 ❌
             </button>
         </li>
@@ -85,6 +85,13 @@
         document.body.appendChild(messageElement);
     });
 
+    // 서버에서 온 "popular-message" 이벤트를 처리
+    eventSource.addEventListener('popular-message', function(event) {
+        const messageElement = document.createElement('p');
+        messageElement.textContent = 'Received: ' + event.data;
+        document.body.appendChild(messageElement);
+    });
+
     // 연결이 열렸을 때 실행되는 이벤트
     eventSource.onopen = function() {
         console.log("SSE connection opened");
@@ -96,16 +103,17 @@
         eventSource.close(); // 오류 시 연결을 닫음
     };
 
-    function deleteAlarm(button) {
+    function checkRead(button) {
         let alarmId = button.getAttribute("data-alarm-id");
         console.log(alarmId);
 
+        //읽겠습니까?
         if (!confirm("이 알림을 삭제하시겠습니까?")) {
             return;
         }
 
         fetch('/main/alarm', {
-            method: 'DELETE',
+            method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
             },
