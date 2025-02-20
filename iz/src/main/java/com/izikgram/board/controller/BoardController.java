@@ -24,8 +24,7 @@ public class  BoardController {
 
     @Autowired
     private BoardService boardService;
-    @Autowired
-    private BoardMapper boardMapper;
+
 
     //자유,하소연 게시판 리스트
     @GetMapping("/{board_type}")
@@ -55,7 +54,6 @@ public class  BoardController {
     //자유,하소연 작성하기 페이지 이동
     @GetMapping("/postForm")
     public String postForm(@RequestParam("board_type")int board_type,
-                           @AuthenticationPrincipal CustomUserDetails userDetails,
                            Model model){
 
         if (board_type != 1 && board_type != 2) {
