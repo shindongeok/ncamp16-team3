@@ -5,13 +5,14 @@ import com.izikgram.alarm.service.AlarmService;
 import com.izikgram.global.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.annotations.Delete;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @Slf4j
@@ -33,5 +34,12 @@ public class AlarmController {
         model.addAttribute("alarmList", alarmList);
 
         return "main/alarm";
+    }
+
+    @DeleteMapping("/alarm")
+    public ResponseEntity<?> delete(@RequestBody AlarmComment alarmComment) {
+        log.info("삭제할 alarm_id : {}" , alarmComment.getAlarm_id());
+        alarmService.delete(alarmComment.getAlarm_id());
+        return ResponseEntity.ok().build();
     }
 }

@@ -1,10 +1,7 @@
 package com.izikgram.alarm.repository;
 
 import com.izikgram.alarm.entity.AlarmComment;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -17,5 +14,8 @@ public interface AlarmMapper {
 
     @Select("select * from iz_alarm_board where member_id=#{member_id} order by alarm_date desc")
     List<AlarmComment> alarmFindByUser(@Param("member_id") String member_id);
+
+    @Delete("delete from iz_alarm_board where alarm_id=#{alarm_id}")
+    void delete(@Param("alarm_id") int alarm_id);
 
 }

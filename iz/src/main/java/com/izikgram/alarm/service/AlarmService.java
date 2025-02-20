@@ -22,4 +22,8 @@ public class AlarmService {
         return alarmMapper.alarmFindByUser(member_id);
     }
 
+    public void delete(int alarm_id) {
+        alarmMapper.delete(alarm_id);
+    }
+
 }

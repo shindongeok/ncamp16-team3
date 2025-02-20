@@ -32,12 +32,12 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable()) // CSRF 비활성화 (테스트용)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/login", "/user/findId", "/user/findIdResult", "/user/findPw", "/user/findPwResult", "/user/register", "/user/checkId/**", "/user/resetPw").permitAll() // 로그인 없이 접근 가능
-                        .requestMatchers("/auth/**").permitAll() // sms 인증주소
+                        .requestMatchers("/auth/**", "/sse/**").permitAll() // sms 인증주소
                         .requestMatchers("/css/**", "/js/**", "/images/**", "/static/**").permitAll() // 정적 리소스 허용
                         .anyRequest().authenticated() // 나머지는 로그인 필요
                 )
                 .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.NEVER) // 필요할 때만 세션 설정(자동 생성X), *JWT 사용하면 STATELESS(세션 아예사용X)로 바꿔야함
+                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) // *JWT 사용하면 STATELESS(세션 아예사용X)로 바꿔야함
                         .maximumSessions(10) // 하나의 아이디에 대한 다중 로그인 허용 개수 1개
                         .maxSessionsPreventsLogin(true) // ture : 새로운 로그인 차단, false : 기존 세션 하나 삭제
                 )
