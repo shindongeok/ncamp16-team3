@@ -187,11 +187,11 @@ public class  BoardController {
     public String hotCommunity(Model model){
 
         Map<String, List<BoardDto>> issueBoardList = boardService.getIssueBoardList01();
-
         List<BoardDto> issueBoardList01 = issueBoardList.get("issueBoardList01");
         List<BoardDto> issueBoardList02 = issueBoardList.get("issueBoardList02");
 
-        log.info("issueBoardList01: {}, issueBoardList02: {}", issueBoardList01, issueBoardList02);
+        log.info("issueBoardList01: {}", issueBoardList01);
+        log.info("issueBoardList02: {}", issueBoardList02);
         model.addAttribute("issueBoardList01",issueBoardList01);
         model.addAttribute("issueBoardList02",issueBoardList02);
 

@@ -1,5 +1,6 @@
 package com.izikgram.board.service;
 
+import com.izikgram.alarm.entity.AlarmType;
 import com.izikgram.alarm.service.AlarmService;
 import com.izikgram.alarm.service.SseEmitterService;
 import com.izikgram.board.entity.Board;
@@ -11,9 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -27,6 +26,7 @@ public class BoardService {
 
     @Autowired
     private AlarmService alarmService;
+
 
     //게시판 종류 조회
     public String findBoardName(int board_type){
@@ -100,8 +100,11 @@ public class BoardService {
                 increaseDisLike(boardId, memberId, like, dislike);
             }
 
+            checkPopularBoardsAndSendAlarm();
+
             // 요청끝나고 게시글의 좋아요/싫어요 총 개수
             return getStatusResult(boardId);
+
         }else if (boardType == 2) {
             int like = boardMapper.countLikeByMember02(boardId, memberId);
             int dislike = boardMapper.countDislikeByMember02(boardId, memberId);
@@ -116,10 +119,41 @@ public class BoardService {
                 increaseDisLike02(boardId, memberId, like, dislike);
             }
 
+            checkPopularBoardsAndSendAlarm();
+
             // 요청끝나고 게시글의 좋아요/싫어요 총 개수
             return getStatusResult02(boardId);
         }
+
         return null;
+    }
+
+    // 좋아요 눌렀을 때, 인기게시글 리스트 확인 후 알람 전송
+    private void checkPopularBoardsAndSendAlarm() {
+
+        // Top3 리스트 반환
+        List<BoardDto> issueBoardList01 = boardMapper.getIssueBoardList01();
+        List<BoardDto> issueBoardList02 = boardMapper.getIssueBoardList02();
+
+        log.info("issueBoardList01 : {}", issueBoardList01);
+        log.info("issueBoardList02 : {}", issueBoardList02);
+
+        for (BoardDto board : issueBoardList01) {
+            // 읽음 여부 상관없이 인기게시글이면 (!true 값 반환) => 알림 안보냄
+            if (!alarmService.hasPopularAlarm(board.getBoard_id())) {
+                String content = "[" + board.getTitle() + "] \n 인기게시글이 되었습니다!!";
+                sseEmitterService.popularSend(board.getWriter_id(), content);
+                alarmService.save(board.getWriter_id(), board.getBoard_type(), board.getBoard_id(), content, AlarmType.POPULAR);
+            }
+        }
+
+        for (BoardDto board : issueBoardList02) {
+            if (!alarmService.hasPopularAlarm(board.getBoard_id())) {
+                String content = "[" + board.getTitle() + "] \n 인기게시글이 되었습니다!!";
+                sseEmitterService.popularSend(board.getWriter_id(), content);
+                alarmService.save(board.getWriter_id(), board.getBoard_type(), board.getBoard_id(), content, AlarmType.POPULAR);
+            }
+        }
     }
 
     // 좋아요 증가
@@ -241,16 +275,15 @@ public class BoardService {
         Board board = boardMapper.selectBoard01(board_id);
         String content = "[" + board.getTitle()  + "] \n게시글에 댓글이 달렸습니다.";
         sseEmitterService.send(board.getWriter_id(), content);
-
+        alarmService.save(board.getWriter_id(), board.getBoard_type(), board.getBoard_id(), content, AlarmType.valueOf("COMMENT"));
         log.info(board.toString());
-        alarmService.save(board.getWriter_id(), board.getBoard_type(), board.getBoard_id(), content);
     }
     public void addComment02(int board_id, String writer_id, String comment){
         boardMapper.addComment02(board_id, writer_id, comment);
         Board board = boardMapper.selectBoard02(board_id);
         String content = "[" + board.getTitle()  + "] \n게시글에 댓글이 달렸습니다.";
         sseEmitterService.send(board.getWriter_id(), content);
-        alarmService.save(board.getWriter_id(), board.getBoard_type(), board.getBoard_id(), content);
+        alarmService.save(board.getWriter_id(), board.getBoard_type(), board.getBoard_id(), content, AlarmType.valueOf("COMMENT"));
     }
 
     //댓글작성한거 반환
@@ -295,7 +328,6 @@ public class BoardService {
         Map<String, List<BoardDto>> map = new HashMap<>();
         List<BoardDto> issueBoardList01 = boardMapper.getIssueBoardList01();
         List<BoardDto> issueBoardList02 = boardMapper.getIssueBoardList02();
-
 
         log.info("issueBoardList01:{}, issueBoardList02 {} ", issueBoardList01, issueBoardList02);
         map.put("issueBoardList01", issueBoardList01);

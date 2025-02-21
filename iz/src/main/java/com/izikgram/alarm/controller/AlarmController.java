@@ -28,7 +28,9 @@ public class AlarmController {
     public String alarm(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
 
         log.info("member_id : {}", userDetails.getUser().getMember_id());
-        List<AlarmComment> alarmList = alarmService.alarmFindByUser(userDetails.getUser().getMember_id());
+
+        //읽지 않은 알람만 가져오기
+        List<AlarmComment> alarmList = alarmService.findAlarmsByUser(userDetails.getUser().getMember_id());
 
         log.info("alarmList : {}", alarmList);
         model.addAttribute("alarmList", alarmList);
@@ -36,10 +38,10 @@ public class AlarmController {
         return "main/alarm";
     }
 
-    @DeleteMapping("/alarm")
-    public ResponseEntity<?> delete(@RequestBody AlarmComment alarmComment) {
+    @PatchMapping("/alarm")
+    public ResponseEntity<?> checkRead(@RequestBody AlarmComment alarmComment) {
         log.info("삭제할 alarm_id : {}" , alarmComment.getAlarm_id());
-        alarmService.delete(alarmComment.getAlarm_id());
+        alarmService.checkRead(alarmComment.getAlarm_id());
         return ResponseEntity.ok().build();
     }
 }
