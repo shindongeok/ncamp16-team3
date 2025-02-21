@@ -213,7 +213,7 @@ public interface BoardMapper {
                       @Param("comment_content") String comment_content);
 
     // 작성한 댓글 조회
-    @Select("select c.comment_id, c.comment_content, c.reg_date, m.nickname " +
+    @Select("select c.writer_id, c.comment_id, c.comment_content, c.reg_date, m.nickname " +
             "from iz_board01_comment c " +
             "join iz_member m on c.writer_id = m.member_id " +
             "where c.board_id = #{board_id} " +
@@ -221,7 +221,7 @@ public interface BoardMapper {
             "limit 1 ")
     CommentDto getLastComment01(@Param("board_id") int boardId);
 
-    @Select("select c.comment_id, c.comment_content, c.reg_date, m.nickname " +
+    @Select("select c.writer_id, c.comment_id, c.comment_content, c.reg_date, m.nickname " +
             "from iz_board02_comment c " +
             "join iz_member m on c.writer_id = m.member_id " +
             "where c.board_id = #{board_id} " +
@@ -232,44 +232,22 @@ public interface BoardMapper {
     //-----------------------------------
     //댓글 삭제 -- 수정중..막힘....
     // 댓글 작성자 ID 가져오기
-    @Select("SELECT writer_id FROM iz_board01_comment WHERE comment_id = #{comment_id}")
-    String getCommentWriterId01(@Param("comment_id")int commentId);
-
-    // 댓글 삭제
-    @Delete("DELETE FROM iz_board01_comment WHERE comment_id = #{comment_id}")
-    int deleteComment01(@Param("comment_id")int commentId);
-
-    // 댓글 작성자 ID 가져오기
-    @Select("SELECT writer_id FROM iz_board02_comment WHERE comment_id = #{comment_id}")
-    String getCommentWriterId02(@Param("comment_id")int commentId);
-
-    // 댓글 삭제
-    @Delete("DELETE FROM iz_board02_comment WHERE comment_id = #{comment_id}")
-    int deleteComment02(@Param("comment_id")int commentId);
+//    @Select("SELECT writer_id FROM iz_board01_comment WHERE comment_id = #{comment_id}")
+//    String getCommentWriterId01(@Param("comment_id")int commentId);
+//
+//    // 댓글 삭제
+//    @Delete("DELETE FROM iz_board01_comment WHERE comment_id = #{comment_id}")
+//    int deleteComment01(@Param("comment_id")int commentId);
+//
+//    // 댓글 작성자 ID 가져오기
+//    @Select("SELECT writer_id FROM iz_board02_comment WHERE comment_id = #{comment_id}")
+//    String getCommentWriterId02(@Param("comment_id")int commentId);
+//
+//    // 댓글 삭제
+//    @Delete("DELETE FROM iz_board02_comment WHERE comment_id = #{comment_id}")
+//    int deleteComment02(@Param("comment_id")int commentId);
 
     //-------------------------------인기게시판
-//    @Select("select b.*, " +
-//            "coalesce(count(c.comment_id), 0) AS comment_count " +
-//            "from iz_board_type t " +
-//            "join iz_board01 b on t.board_type = b.board_type " +
-//            "left join iz_board01_comment c on b.board_id = c.board_id " +
-//            "where b.board_type = #{board_type} " +
-//            "group by b.board_id " +
-//            "order by  like_count desc " +
-//            "limit 3")
-//    List<BoardDto> getIssueBoardList01(@Param("board_type") int boardType);
-//
-//    @Select("select b.*, " +
-//            "coalesce(count(c.comment_id), 0) AS comment_count " +
-//            "from iz_board_type t " +
-//            "join iz_board01 b on t.board_type = b.board_type " +
-//            "left join iz_board02_comment c on b.board_id = c.board_id " +
-//            "where b.board_type = #{board_type} " +
-//            "group by b.board_id " +
-//            "order by  like_count desc " +
-//            "limit 3")
-//    List<BoardDto> getIssueBoardList02(@Param("board_type") int boardType);
-
     @Select("select b.*, " +
             "coalesce(count(c.comment_id), 0) AS comment_count " +
             "from iz_board_type t " +
@@ -292,12 +270,33 @@ public interface BoardMapper {
             "limit 3")
     List<BoardDto> getIssueBoardList02();
 
-//    @Select("SELECT b.*, " +
-//            "COALESCE(COUNT(c.comment_id), 0) AS comment_count " +
-//            "FROM iz_board_type t " +
-//            "JOIN iz_board02 b ON t.board_type = b.board_type " +
-//            "LEFT JOIN iz_board02_comment c ON b.board_id = c.board_id " +
-//            "WHERE b.writer_id = #{writer_id}  " +
-//            "GROUP BY b.board_id " +
-//            "ORDER BY  reg_date desc")
+    // 내 게시물
+    @Select("SELECT b.*, " +
+            "COALESCE(COUNT(c.comment_id), 0) AS comment_count " +
+            "FROM iz_board_type t " +
+            "JOIN iz_board01 b ON t.board_type = b.board_type " +
+            "LEFT JOIN iz_board01_comment c ON b.board_id = c.board_id " +
+            "WHERE b.writer_id = #{writer_id}  " +
+            "GROUP BY b.board_id " +
+            "ORDER BY  reg_date desc")
+    List<BoardDto> getMyBoardList01(@Param("writer_id") String writer_id);
+
+    @Select("SELECT b.*, " +
+            "COALESCE(COUNT(c.comment_id), 0) AS comment_count " +
+            "FROM iz_board_type t " +
+            "JOIN iz_board02 b ON t.board_type = b.board_type " +
+            "LEFT JOIN iz_board02_comment c ON b.board_id = c.board_id " +
+            "WHERE b.writer_id = #{writer_id}  " +
+            "GROUP BY b.board_id " +
+            "ORDER BY  reg_date desc")
+    List<BoardDto> getMyBoardList02(@Param("writer_id") String writer_id);
+
+    //댓글 삭제
+    @Delete("delete from iz_board01_comment " +
+            "where comment_id = #{comment_id} and board_id = #{board_id}")
+    void deleteComment01(@Param("board_id") int boardId,@Param("comment_id") int commentId);
+
+    @Delete("delete from iz_board02_comment " +
+            "where comment_id = #{comment_id} and board_id = #{board_id}")
+    void deleteComment02(@Param("board_id") int boardId,@Param("comment_id") int commentId);
 }
