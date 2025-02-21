@@ -1,13 +1,11 @@
 package com.izikgram.job.controller;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.izikgram.global.security.CustomUserDetails;
+import com.izikgram.job.entity.Job;
 import com.izikgram.job.service.JobService;
 import com.izikgram.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,9 +13,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.ArrayList;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Controller
@@ -25,8 +23,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class JobController {
 
-    @Autowired
-    private JobService jobService;
+    private final JobService jobService;
 
     @GetMapping("/hire")
     public String hire(
@@ -36,55 +33,42 @@ public class JobController {
             @RequestParam(required = false) String edu_lv,
             Model model) {
 
-        log.info("User 객체 : {}", userDetails.getUser());
         User user = userDetails.getUser();
 
         String finalLoc = loc_mcd != null ? loc_mcd : user.getLoc_mod();
         String finalInd = ind_cd != null ? ind_cd : user.getInd_cd();
         String finalEdu = edu_lv != null ? edu_lv : user.getEdu_lv();
 
-        String apiResponse = jobService.searchJobs(finalLoc, finalInd, finalEdu);
+        System.out.println("Final loc: " + finalLoc);
+        System.out.println("Final ind: " + finalInd);
+        System.out.println("Final edu: " + finalEdu);
 
         try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode rootNode = objectMapper.readTree(apiResponse);
-            log.info("API Response Structure: {}", rootNode.toPrettyString());  // 전체 응답 구조 확인
-            JsonNode jobsNode = rootNode.path("jobs").path("job");
-            List<JsonNode> jobsList = new ArrayList<>();
-            jobsNode.forEach(jobsList::add);
+            String encodedLoc = URLEncoder.encode(finalLoc, StandardCharsets.UTF_8);
+            System.out.println("Encoded Location: " + encodedLoc);
 
-            // 마감일 기준으로 정렬
-            List<JsonNode> deadlineJobs = jobsList.stream()
-                    .sorted((a, b) -> {
-                        String dateA = a.path("expiration-date").asText();
-                        String dateB = b.path("expiration-date").asText();
-                        return dateA.compareTo(dateB);
-                    })
-                    .limit(5)
-                    .collect(Collectors.toList());
+            List<Job> allJobs = jobService.searchJobs(finalLoc, finalInd, finalEdu);
 
-            // 등록일 기준으로 정렬
-            List<JsonNode> recentJobs = jobsList.stream()
-                    .sorted((a, b) -> {
-                        String dateA = a.path("posting-timestamp").asText();
-                        String dateB = b.path("posting-timestamp").asText();
-                        return dateB.compareTo(dateA);
-                    })
-                    .limit(5)
-                    .collect(Collectors.toList());
+            List<Job> deadlineJobs = jobService.getDeadlineJobs(allJobs);
+            List<Job> recentJobs = jobService.getRecentJobs(allJobs);
+
+            // 마감 임박 일자리 정보 출력
+            System.out.println("Deadline jobs count: " + deadlineJobs.size());
+            for (Job job : deadlineJobs) {
+                System.out.println("Deadline Job - Company: " + job.getCompanyName() +
+                        ", Title: " + job.getTitle() +
+                        ", Location: " + job.getLocationName() +
+                        ", Expiration: " + job.getExpirationTimestamp());
+            }
 
             model.addAttribute("deadlineJobs", deadlineJobs);
             model.addAttribute("recentJobs", recentJobs);
 
         } catch (Exception e) {
-            log.error("Error parsing API response", e);
+            log.error("Error fetching jobs", e);
+            // 에러 처리 로직 추가
         }
 
         return "job/hire";
-    }
-
-    @GetMapping("/")
-    public String redirectToHire() {
-        return "redirect:/job/hire";
     }
 }

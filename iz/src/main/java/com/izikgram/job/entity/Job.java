@@ -4,13 +4,39 @@ import lombok.Data;
 
 @Data
 public class Job {
+    private String id;                  // 채용공고 번호 (기존 job_rec_id)
+    private String memberId;            // 회원 ID
+    private String url;                 // 채용공고 URL
 
-    private String member_id; // 회원 ID
-    private String job_rec_id; // 채용공고 번호
-    private String title; // 채용공고 제목
-    private String company; // 회사명
-    private String loc_mcd; // 근무지역
-    private String ind_cd; // 업종
-    private String edu_lv; // 학력요건
-    private String deadline; // 마감일
+    // 회사 정보
+    private String companyName;         // 회사명
+    private String companyUrl;          // 회사 상세정보 URL
+
+    // 포지션 정보
+    private String title;               // 채용공고 제목
+    private String industryCode;        // 업종 코드
+    private String industryName;        // 업종명
+    private String locationCode;        // 근무지역 코드
+    private String locationName;        // 근무지역명
+    private String jobType;             // 고용형태
+    private String experienceLevelCode; // 경력 코드
+    private Integer experienceMin;      // 최소 경력
+    private Integer experienceMax;      // 최대 경력
+    private String educationLevel;      // 학력요건
+
+    // 급여 정보
+    private String salaryCode;          // 급여 코드
+    private String salaryName;          // 급여 정보
+
+    // 날짜 정보
+    private String postingTimestamp;    // Unix timestamp 문자열
+    private String expirationTimestamp;
+    private String postingDate;         // 등록일
+    private String expirationDate;      // 마감일
+
+    // 기타 정보
+    private String keyword;             // 키워드
+    private Integer readCount;          // 조회수
+    private Integer applyCount;         // 지원자수
+    private boolean active;             // 활성화 상태
 }
