@@ -11,6 +11,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Slf4j
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
@@ -43,13 +45,14 @@ public class CustomUserDetailsService implements UserDetailsService {
 //        }
 
         // 회원의 스트레스 값 가져오기
-        Stress stress = userMapper.getUserStress(member_id);
+        List<Stress> stressList = userMapper.getUserStress(member_id);
 
-        // stress가 null일 경우 처리 (기본값 설정)
-        if (stress == null) {
-            stress = new Stress();
-            stress.setStress_num(0);  // 기본값을 0으로 설정
+        // 스트레스 값이 없으면 기본값 0 설정
+        Stress stress = new Stress();
+        if (!stressList.isEmpty()) {
+            stress = stressList.get(0);  // 최신 데이터 사용
         }
+        stress.setStress_num(stressList.isEmpty() ? 0 : stress.getStress_num());
 
         log.info("{}의 스트레스 지수 : {}", user.getMember_id(), stress.getStress_num());
 

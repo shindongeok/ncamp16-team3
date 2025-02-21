@@ -28,27 +28,27 @@ body {
     }
 }
 
-header {
-    padding: 15px;
-    text-align: center;
-}
+/*header {*/
+/*    padding: 15px;*/
+/*    text-align: center;*/
+/*}*/
 
-.header-button-section {
-    display: flex;
-    justify-content: space-between;
-}
+/*.header-button-section {*/
+/*    display: flex;*/
+/*    justify-content: space-between;*/
+/*}*/
 
-.sidebar-button {
-    background: transparent;
-    border: none;
-    cursor: pointer;
-}
+/*.sidebar-button {*/
+/*    background: transparent;*/
+/*    border: none;*/
+/*    cursor: pointer;*/
+/*}*/
 
-.alarm-icon {
-    background: transparent;
-    border: none;
-    cursor: pointer;
-}
+/*.alarm-icon {*/
+/*    background: transparent;*/
+/*    border: none;*/
+/*    cursor: pointer;*/
+/*}*/
 
 .page-title {
     padding-left: 15px;

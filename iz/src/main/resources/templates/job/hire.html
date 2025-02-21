@@ -26,7 +26,6 @@
                 min-height: 100vh;
             }
         }
-
         /* 모바일에서는 전체 너비 사용 */
         @media screen and (max-width: 768px) {
             .mobile-container {
@@ -35,9 +34,6 @@
                 min-height: 100vh;
             }
         }
-
-
-
         #box-container, #box-container2 {
             width: 100%;
             display: flex;
@@ -59,9 +55,6 @@
             font-size: 18px;
             border-radius: 10px;
         }
-
-
-
     </style>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 </head>
@@ -69,9 +62,9 @@
 
 <div class="flex flex-col w-full mobile-container pt-8 relative">
 
-    <div class="pt-20"><header th:replace="~{/header :: header} " class="pt-4"></header></div>
+    <div class="pt-20"><header th:replace="~{header :: header} " class="pt-4"></header></div>
 
-    <footer th:replace="~{/footer :: footer}" class="pt-4"></footer>
+    <footer th:replace="~{footer :: footer}" class="pt-4"></footer>
 
 
     <div class="p-4">
@@ -121,22 +114,17 @@
             곧 마감인 공고
         </h1>
         <div id="box-container" class="flex gap-4 mb-6 cursor-grab">
-            <div class="box bg-gray-100 p-4 rounded-lg shadow-md">
-                <h2 class="text-lg font-bold mb-2">박스 1 제목</h2>
-                <p class="text-sm text-gray-700">박스 1의 내용이 들어갑니다.</p>
-            </div>
-            <div class="box bg-gray-100 p-4 rounded-lg shadow-md">
-                <h2 class="text-lg font-bold mb-2">박스 2 제목</h2>
-                <p class="text-sm text-gray-700">박스 2의 내용이 들어갑니다.</p>
-            </div>
-            <div class="box bg-gray-100 p-4 rounded-lg shadow-md">
-                <h2 class="text-lg font-bold mb-2">박스 3 제목</h2>
-                <p class="text-sm text-gray-700">박스 3의 내용이 들어갑니다.</p>
-            </div>
-            <div class="flex justify-center items-center mt-8 ml-5.5">
-                <button class="w-12 h-12 bg-gray-100 text-gray-700 rounded-full flex items-center justify-center shadow-md hover:bg-gray-200 transition duration-200 text-xs">
-                    더보기
-                </button>
+            <div th:each="job : ${deadlineJobs}" class="box bg-gray-100 p-4 rounded-lg shadow-md">
+                <h2 class="text-lg font-bold mb-2" th:text="${job.path('company').path('name').asText()}">기업명</h2>
+                <p class="text-sm text-gray-700" th:text="${job.path('position').path('title').asText()}">공고 제목</p>
+                <div class="text-xs mt-2">
+                    <p th:text="${job.path('position').path('location').path('name').asText()}">지역</p>
+                    <p th:text="${job.path('position').path('industry').path('name').asText()}">업종</p>
+                    <p th:text="${job.path('position').path('job-type').path('name').asText()}">직무</p>
+                    <p th:text="${job.path('position').path('experience-level').path('name').asText()}">경력</p>
+                    <p th:text="${job.path('position').path('required-education-level').path('name').asText()}">학력</p>
+                    <p class="text-red-500" th:text="'마감일: ' + ${job.path('expiration-timestamp').asText()}">마감일</p>
+                </div>
             </div>
         </div>
 
@@ -145,22 +133,17 @@
             최근에 올라온 공고
         </h1>
         <div id="box-container2" class="flex gap-4 mb-6 cursor-grab">
-            <div class="box bg-gray-100 p-4 rounded-lg shadow-md">
-                <h2 class="text-lg font-bold mb-2">박스 1 제목</h2>
-                <p class="text-sm text-gray-700">박스 1의 내용이 들어갑니다.</p>
-            </div>
-            <div class="box bg-gray-100 p-4 rounded-lg shadow-md">
-                <h2 class="text-lg font-bold mb-2">박스 2 제목</h2>
-                <p class="text-sm text-gray-700">박스 2의 내용이 들어갑니다.</p>
-            </div>
-            <div class="box bg-gray-100 p-4 rounded-lg shadow-md">
-                <h2 class="text-lg font-bold mb-2">박스 3 제목</h2>
-                <p class="text-sm text-gray-700">박스 3의 내용이 들어갑니다.</p>
-            </div>
-            <div class="flex justify-center items-center mt-8 ml-5.5">
-                <button class="w-12 h-12 bg-gray-100 text-gray-700 rounded-full flex items-center justify-center shadow-md hover:bg-gray-200 transition duration-200 text-xs">
-                    더보기
-                </button>
+            <div th:each="job : ${recentJobs}" class="box bg-gray-100 p-4 rounded-lg shadow-md">
+                <h2 class="text-lg font-bold mb-2" th:text="${job.path('company').path('name').asText()}">기업명</h2>
+                <p class="text-sm text-gray-700" th:text="${job.path('position').path('title').asText()}">공고 제목</p>
+                <div class="text-xs mt-2">
+                    <p th:text="${job.path('position').path('location').path('name').asText()}">지역</p>
+                    <p th:text="${job.path('position').path('industry').path('name').asText()}">업종</p>
+                    <p th:text="${job.path('position').path('job-type').path('name').asText()}">직무</p>
+                    <p th:text="${job.path('position').path('experience-level').path('name').asText()}">경력</p>
+                    <p th:text="${job.path('position').path('required-education-level').path('name').asText()}">학력</p>
+                    <p class="text-red-500" th:text="'마감일: ' + ${job.path('expiration-timestamp').asText()}">마감일</p>
+                </div>
             </div>
         </div>
     </div>
@@ -204,15 +187,5 @@
             container.style.cursor = 'grab';
         });
     });
-
-
 </script>
-
-
-
-
-
-
-
-
 </body>

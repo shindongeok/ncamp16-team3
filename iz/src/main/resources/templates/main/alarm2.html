@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSE Example</title>
+    <script>
+        // 서버의 SSE 엔드포인트와 연결
+        const eventSource = new EventSource('http://localhost:8080/subscribe');
+
+        // 서버에서 온 "message" 이벤트를 처리
+        eventSource.addEventListener('message', function(event) {
+            const messageElement = document.createElement('p');
+            messageElement.textContent = 'Received: ' + event.data;
+            document.body.appendChild(messageElement);
+        });
+
+        // 연결이 열렸을 때 실행되는 이벤트
+        eventSource.onopen = function() {
+            console.log("SSE connection opened");
+        };
+
+        // 오류가 발생했을 때 실행되는 이벤트
+        eventSource.onerror = function(error) {
+            console.error("SSE error", error);
+            eventSource.close(); // 오류 시 연결을 닫음
+        };
+    </script>
+</head>
+<body>
+<h1>Server-Sent Events (SSE)</h1>
+<div id="messages">
+    <p>Waiting for messages…</p>
+</div>
+</body>
+</html>

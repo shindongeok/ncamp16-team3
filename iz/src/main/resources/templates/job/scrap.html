@@ -36,8 +36,8 @@
 <body>
 
 <div class="flex flex-col w-full mobile-container pt-8 relative">
-    <header th:replace="~{/header :: header} " class="pt-4"></header><br><br><br>
-    <footer th:replace="~{/footer :: footer}" class="pt-4"></footer>
+    <div class="pt-20"><header th:replace="~{header :: header} " class="pt-4"></header></div>
+    <footer th:replace="~{footer :: footer}" class="pt-4"></footer>
 
     <div class="p-4">
         <h1 class="text-2xl font-bold mb-6">찜 해놓은 채용공고</h1>
@@ -77,6 +77,7 @@
             <p class="text-gray-600">그라면 안돼</p>
             <p class="text-gray-500 text-sm">ㅇㅇ</p>
         </div>
+
 
     </div>
 </div>
