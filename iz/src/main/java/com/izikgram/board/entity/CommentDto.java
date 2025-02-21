@@ -14,6 +14,7 @@ public class CommentDto {
     private String comment_content;
     private LocalDateTime reg_date;
     private String nickname;
+    private int board_type;
 
 
 }

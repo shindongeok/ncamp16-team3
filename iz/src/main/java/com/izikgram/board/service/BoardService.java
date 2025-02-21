@@ -6,6 +6,7 @@ import com.izikgram.alarm.service.SseEmitterService;
 import com.izikgram.board.entity.Board;
 
 import com.izikgram.board.entity.BoardDto;
+import com.izikgram.board.entity.Comment;
 import com.izikgram.board.entity.CommentDto;
 import com.izikgram.board.repository.BoardMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -296,7 +297,6 @@ public class BoardService {
         return null;
     }
 
-    //-------------------------------
     // 댓글 삭제 서비스
     // 게시판 1 댓글 삭제 메서드
     public boolean deleteComment01(int commentId, int boardId) {
@@ -350,6 +350,39 @@ public class BoardService {
         map.put("myBoardList02", myBoardList02);
 
         return map;
-
     }
+
+    // 댓글 수정
+    public int updateComment(CommentDto commentDto) {
+        int boardType = commentDto.getBoard_type();
+
+        // boardType에 따라 다른 테이블에서 업데이트 실행
+        if (boardType == 1) {  // 자유게시판
+            return boardMapper.updateComment01(commentDto.getComment_content(),
+                    commentDto.getBoard_id(),
+                    commentDto.getComment_id());
+        } else if (boardType == 2) {  // 하소연 게시판
+            return boardMapper.updateComment02(commentDto.getComment_content(),
+                    commentDto.getBoard_id(),
+                    commentDto.getComment_id());
+        } else {
+            return 0;  // 존재하지 않는 boardType일 경우 실패 처리
+        }
+    }
+
+    // 게시글 삭제
+    public void deleteBoard01(int board_id) {
+        boardMapper.deleteBoardComment01(board_id);
+        boardMapper.deleteBoardLike01(board_id);
+        boardMapper.deleteBoardDislike01(board_id);
+        boardMapper.deleteBoard01(board_id);
+    }
+
+    public void deleteBoard02(int board_id) {
+        boardMapper.deleteBoardComment02(board_id);
+        boardMapper.deleteBoardLike02(board_id);
+        boardMapper.deleteBoardDislike02(board_id);
+        boardMapper.deleteBoard02(board_id);
+    }
+
 }
