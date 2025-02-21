@@ -2,7 +2,6 @@ package com.izikgram.board.repository;
 
 import com.izikgram.board.entity.Board;
 import com.izikgram.board.entity.BoardDto;
-import com.izikgram.board.entity.Comment;
 import com.izikgram.board.entity.CommentDto;
 import org.apache.ibatis.annotations.*;
 
@@ -229,25 +228,7 @@ public interface BoardMapper {
             "limit 1 ")
     CommentDto getLastComment02(@Param("board_id") int boardId);
 
-    //-----------------------------------
-    //댓글 삭제 -- 수정중..막힘....
-    // 댓글 작성자 ID 가져오기
-//    @Select("SELECT writer_id FROM iz_board01_comment WHERE comment_id = #{comment_id}")
-//    String getCommentWriterId01(@Param("comment_id")int commentId);
-//
-//    // 댓글 삭제
-//    @Delete("DELETE FROM iz_board01_comment WHERE comment_id = #{comment_id}")
-//    int deleteComment01(@Param("comment_id")int commentId);
-//
-//    // 댓글 작성자 ID 가져오기
-//    @Select("SELECT writer_id FROM iz_board02_comment WHERE comment_id = #{comment_id}")
-//    String getCommentWriterId02(@Param("comment_id")int commentId);
-//
-//    // 댓글 삭제
-//    @Delete("DELETE FROM iz_board02_comment WHERE comment_id = #{comment_id}")
-//    int deleteComment02(@Param("comment_id")int commentId);
-
-    //-------------------------------인기게시판
+    //인기게시판
     @Select("select b.*, " +
             "coalesce(count(c.comment_id), 0) AS comment_count " +
             "from iz_board_type t " +
@@ -299,4 +280,44 @@ public interface BoardMapper {
     @Delete("delete from iz_board02_comment " +
             "where comment_id = #{comment_id} and board_id = #{board_id}")
     void deleteComment02(@Param("board_id") int boardId,@Param("comment_id") int commentId);
+
+    //댓글 수정
+    @Update("update iz_board01_comment set comment_content = #{comment_content}" +
+            "where comment_id = #{comment_id} and board_id = #{board_id}")
+    int updateComment01(@Param("comment_content") String comment_content,
+                         @Param("board_id") int boardId,
+                         @Param("comment_id") int commentId);
+
+    @Update("update iz_board02_comment set comment_content = #{comment_content}" +
+            "where comment_id = #{comment_id} and board_id = #{board_id}")
+    int updateComment02(@Param("comment_content") String comment_content,
+                         @Param("board_id") int boardId,
+                         @Param("comment_id") int commentId);
+
+    // 게시글 삭제
+    @Delete("delete from iz_board01_comment where board_id = #{board_id}")
+    void deleteBoardComment01(@Param("board_id") int board_id);
+
+    @Delete("delete from iz_board01_dislike where board_id = #{board_id}")
+    void deleteBoardLike01(@Param("board_id") int board_id);
+
+    @Delete("delete from iz_board01_like where board_id = #{board_id}")
+    void deleteBoardDislike01(@Param("board_id") int board_id);
+
+    @Delete("delete from iz_board01 where board_id = #{board_id}")
+    void deleteBoard01(@Param("board_id") int board_id);
+
+    @Delete("delete from iz_board02_comment where board_id = #{board_id}")
+    void deleteBoardComment02(@Param("board_id") int board_id);
+
+    @Delete("delete from iz_board02_dislike where board_id = #{board_id}")
+    void deleteBoardLike02(@Param("board_id") int board_id);
+
+    @Delete("delete from iz_board02_like where board_id = #{board_id}")
+    void deleteBoardDislike02(@Param("board_id") int board_id);
+
+    @Delete("delete from iz_board02 where board_id = #{board_id}")
+    void deleteBoard02(@Param("board_id") int board_id);
+
+
 }

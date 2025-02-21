@@ -33,7 +33,7 @@
 </head>
 <body>
 <div class=" flex flex-col w-full mobile-container pt-8 relative bg-white rounded-lg  mx-auto">
-    <div class="pt-28"><header th:replace="~{/header :: header} " class="pt-4"></header></div>
+    <div class="pt-28"><header th:replace="~{header :: header} " class="pt-4"></header></div>
     <footer th:replace="~{/footer :: footer}" class="pt-4"></footer>
     <div class=" p-6">
         <div class="border-b  pb-2">
@@ -75,43 +75,42 @@
                    class="ml-2 px-4 py-2 bg-main-sky-highlight text-black rounded hover:bg-main-sky-basic rounded-xl cursor-pointer">
                     수정
                 </a>
-                <a onclick="OpenDeleteModal()" class="ml-2 px-4 py-2 bg-main-red-highlight text-black rounded hover:bg-main-red-basic rounded-xl cursor-pointer">
+                <a onclick="OpenDeleteModalBoard()" class="ml-2 px-4 py-2 bg-main-red-highlight text-black rounded hover:bg-main-red-basic rounded-xl cursor-pointer">
                     삭제
                 </a>
             </div>
         </div>
 
         <hr class="border-b border-gray-200">
-        <form onsubmit="saveComment(); return false;">
             <div class="flex justify-items-start  justify-between my-5">
                 <input type="hidden" id="boardIdd" th:value="${board.board_id}">
                 <input type="hidden" id="boardTypee" th:value="${board.board_type}">
-
-                <input id="commentContent" type="text" placeholder="댓글을 입력해주세요." class="border border-gray-300 rounded-md p-2 w-100 ml-2">
-                <button type="submit" class="px-8 py-2 bg-main-sky-highlight text-black rounded hover:bg-main-sky-basic rounded-xl cursor-pointer">
+                <input id="commentContent" type="text" placeholder="댓글을 입력해주세요." class="border border-gray-300 rounded-md p-2 w-100 ml-2"
+                       onkeydown="checkEnter(event)">
+                <button type="button" onclick="saveComment()" class="px-8 py-2 bg-main-sky-highlight text-black rounded hover:bg-main-sky-basic rounded-xl cursor-pointer">
                     등록
                 </button>
             </div>
-        </form>
         <hr class="border-b border-gray-200">
 
         <!-- 작성자일 경우 -->
         <div class="comment-list">
-            <div th:each="commentList : ${comment}" class="border-b border-gray-200">
+            <div th:each="commentList : ${comment}"  class="border-b border-gray-200">
                 <div class="flex justify-between p-2">
                     <div class="text-gray-500" th:text="${commentList.nickname}">익명01(작성자)</div>
                     <div class="text-gray-500 reg_date" th:data-reg-date="${commentList.reg_date}" th:text="${commentList.reg_date}">2025-02-11</div>
                 </div>
                 <div class="flex justify-between">
-                    <div class="p-2 text-xl font-black" th:text="${commentList.comment_content}">댓글들어가는 곳</div>
-                    <div class="p-2" th:if="${member_id == commentList.writer_id}">
-                        <button type="button" onclick="OpenUpdateModal()" class="px-2 py-1 bg-main-sky-highlight text-black rounded hover:bg-main-sky-basic rounded-xl cursor-pointer">
+                    <input  id="inpuu" class="comment-input focus:outline-none p-2 text-xl font-black" th:value="${commentList.comment_content}" readonly></input>
+                    <div  class="p-2" th:if="${member_id == commentList.writer_id}" >
+                        <!--th:onclick="|editComment(${commentList.comment_id})|" -->
+                        <button id="dd" type="button" onclick="editComment(event)"  class="px-2 py-1 bg-main-sky-highlight text-black rounded hover:bg-main-sky-basic rounded-xl cursor-pointer">
                             수정
                         </button>
-                        <input type="hidden" id="commentId" th:value="${commentList.comment_id}"/>
-                        <input type="hidden" id="boardIde" th:value="${commentList.board_id}"/>
-                        <input type="hidden" id="boardTypec" th:value="${board_type}"/>
-                        <input type="hidden" id="writerId" th:value="${commentList.writer_id}"/>
+                        <input type="hidden" id="commentId" class="comment-id" th:value="${commentList.comment_id}"/>
+                        <input type="hidden" id="boardIde" class="board-id" th:value="${commentList.board_id}"/>
+                        <input type="hidden" id="boardTypec" class="board-type" th:value="${board_type}"/>
+                        <input type="hidden" id="writerId"  class="writer-id" th:value="${commentList.writer_id}"/>
                         <button type="button"
                                 onclick="OpenDeleteModal(this)" class="px-2 py-1 bg-main-red-highlight text-black rounded hover:bg-main-red-basic rounded-xl cursor-pointer">
                             삭제
@@ -127,7 +126,40 @@
             </a>
         </div>
 
-        <!-- 삭제 모달 창 -->
+        <!-- 게시글 삭제 모달.       -->
+        <div id="boardDeleteModal" class="relative z-10 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+            <div class="fixed inset-0 bg-gray-500/75 transition-opacity max-w-[600px] mx-auto left-0 right-0"></div>
+            <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+                <div class="flex min-h-full items-center justify-center p-4 text-center sm:items-center sm:p-0">
+                    <div class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+                        <!-- 모달 헤더 -->
+                        <div class="bg-main-sky-highlight sm:p-4 sm:pb-4">
+                            <div class="sm:flex sm:items-start">
+                                <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                                    <h3 class="text-2xl font-semibold text-gray-900 p-2" >삭제하시겠습니까?</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 모달 버튼 영역 -->
+                        <form id="deleteForm" method="POST" action="/board/delete">
+                            <div class="px-4 pt-20 pb-5 sm:flex sm:flex-row-reverse sm:px-6">
+                                <input type="hidden" name="board_id" id="board_id" th:value="${board_id}">
+                                <input type="hidden" name="board_type" id="board_type" th:value="${board_type}">
+                                <button type="submit" id="deletedBoard"  class="inline-flex w-full justify-center rounded-md bg-main-sky-basic px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-main-sky-highlight sm:ml-3 sm:w-auto">
+                                    삭제
+                                </button>
+                                <button type="button" onclick="CloseDeleteModalBoard()" class="mt-3 inline-flex w-full justify-center rounded-md bg-main-sky-basic px-3 py-2 text-sm font-semibold text-gray-900 ring-1 shadow-xs ring-gray-300 ring-inset hover:bg-gray-50 sm:mt-0 sm:w-auto">
+                                    취소
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- 댓글 삭제 모달 창 -->
         <div id="communityDeleteModal" class="relative z-10 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
             <div class="fixed inset-0 bg-gray-500/75 transition-opacity max-w-[600px] mx-auto left-0 right-0"></div>
             <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
@@ -143,7 +175,7 @@
                         </div>
                         <!-- 모달 버튼 영역 -->
                         <div class="px-4 pt-20 pb-5 sm:flex sm:flex-row-reverse sm:px-6">
-                            <button id="confirmDelete" onclick="deleteComment()"  class="inline-flex w-full justify-center rounded-md bg-main-sky-basic px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-main-sky-highlight sm:ml-3 sm:w-auto">
+                            <button id="confirmDelete" onclick="deleteComment(this)"  class="inline-flex w-full justify-center rounded-md bg-main-sky-basic px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-main-sky-highlight sm:ml-3 sm:w-auto">
                                 삭제
                             </button>
                             <button type="button" onclick="CloseDeleteModal()" class="mt-3 inline-flex w-full justify-center rounded-md bg-main-sky-basic px-3 py-2 text-sm font-semibold text-gray-900 ring-1 shadow-xs ring-gray-300 ring-inset hover:bg-gray-50 sm:mt-0 sm:w-auto">

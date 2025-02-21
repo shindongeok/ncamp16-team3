@@ -218,6 +218,18 @@ public class  BoardController {
         return "board/myBoard";
     }
 
+    // 게시글 삭제
+    @PostMapping("/delete")
+    public String boardDelete(@RequestParam("board_id") int board_id,
+                              @RequestParam("board_type")int board_type){
+        if(board_type == 1){
+            boardService.deleteBoard01(board_id);
+        }else if(board_type == 2){
+            boardService.deleteBoard02(board_id);
+        }
+        return "redirect:/board/" + board_type;
+    }
+
 }
 
 
