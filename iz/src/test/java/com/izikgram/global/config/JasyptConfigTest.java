@@ -10,9 +10,9 @@ class JasyptConfigTest extends JasyptConfig {
 
     @Test
     void mysql_end_dnc () {
-        String url = "jdbc:mysql://localhost:3306/project_izikgram?serverTimezone=Asia/Seoul";
-        String username = "root";
-        String password = "root1234";
+        String url = "";
+        String username = "";
+        String password = "";
 
         String encryptUrl = jasyptEncrypt(url);
         String encryptUsername = jasyptEncrypt(username);
@@ -30,9 +30,9 @@ class JasyptConfigTest extends JasyptConfig {
 
     @Test
     void redis_enc_dec() {
-        String redisUrl = "redis-11663.c340.ap-northeast-2-1.ec2.redns.redis-cloud.com";
-        String redisName = "default";
-        String redisPassword = "sF7A92lcx77vcjlmI759EFWnih1wrD0p";
+        String redisUrl = "";
+        String redisName = "";
+        String redisPassword = "";
 
         String encUrl = jasyptEncrypt(redisUrl);
         String encUsername = jasyptEncrypt(redisName);
@@ -50,9 +50,9 @@ class JasyptConfigTest extends JasyptConfig {
 
     @Test
     void coolsms_enc_dec() {
-        String coolApi = "NCSXL7EHXNZUBDSR";
-        String coolApiSecret = "L8HUWOVQHOYRPATAISHNS5SZD54BRRXL";
-        String coolSenderNumber = "01093171040";
+        String coolApi = "";
+        String coolApiSecret = "";
+        String coolSenderNumber = "";
         String coolDomain = "https://api.coolsms.co.kr";
 
         String encUrl = jasyptEncrypt(coolApi);
@@ -71,8 +71,23 @@ class JasyptConfigTest extends JasyptConfig {
         assertThat(coolDomain).isEqualTo(jasyptDecrypt(encDomain));
     }
 
+    @Test
+    void saramin() {
+        String saraminApi = "";
+        String saraminDomain = "https://oapi.saramin.co.kr/job-search";
+
+        String encUrl = jasyptEncrypt(saraminApi);
+        String encPassword = jasyptEncrypt(saraminDomain);
+
+        System.out.println("saraminApi: " + encUrl);
+        System.out.println("saraminDomain: " + encPassword);
+
+        assertThat(saraminApi).isEqualTo(jasyptDecrypt(encUrl));
+        assertThat(saraminDomain).isEqualTo(jasyptDecrypt(encPassword));
+    }
+
     private String jasyptEncrypt(String input) { // 암호화
-        String key = "izik1234";
+        String key = "";
         StandardPBEStringEncryptor encryptor = new StandardPBEStringEncryptor();
         encryptor.setAlgorithm("PBEWithMD5AndDES");
         encryptor.setPassword(key);
@@ -80,7 +95,7 @@ class JasyptConfigTest extends JasyptConfig {
     }
 
     private String jasyptDecrypt(String input){ // 복호화
-        String key = "izik1234";
+        String key = "";
         StandardPBEStringEncryptor encryptor = new StandardPBEStringEncryptor();
         encryptor.setAlgorithm("PBEWithMD5AndDES");
         encryptor.setPassword(key);
