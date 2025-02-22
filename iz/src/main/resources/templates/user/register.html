@@ -19,25 +19,24 @@
     <script th:src="@{/js/timepicki.js}"></script>
     <script>
         $(document).ready(function(){
-            // $(".time_element").timepicki();
             $('#start_time').timepicki({
-                    start_time: ["09", "00", "AM"],
-                    step_size_minutes: 30,
-                    reset: true,
-                }
-            );
+                start_time: ["09", "00", "AM"],
+                step_size_minutes: 30,
+                disable_keyboard_mobile: true,
+                // reset: true,
+            });
             $('#end_time').timepicki({
-                    start_time: ["06", "00", "PM"],
-                    step_size_minutes: 30,
-                    reset: true,
-                }
-            );
+                start_time: ["06", "00", "PM"],
+                step_size_minutes: 30,
+                disable_keyboard_mobile: true,
+                // reset: true,
+            });
             $('#lunch_time').timepicki({
-                    start_time: ["12", "00", "PM"],
-                    step_size_minutes: 30,
-                    reset: true,
-                }
-            );
+                start_time: ["12", "00", "PM"],
+                step_size_minutes: 30,
+                disable_keyboard_mobile: true,
+                // reset: true,
+            });
         });
     </script>
 
@@ -71,7 +70,7 @@
             <div>
                 <label for="name" class="block text-lg/6 text-gray-900">이름</label>
                 <div class="mt-2">
-                    <input placeholder="이름을 입력해주세요" type="text" name="name" id="name" required class="block w-full rounded-md bg-white px-3 py-1.5 text-lg text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+                    <input placeholder="이름을 입력해주세요" type="text" name="name" id="name" required class="block w-full rounded-md bg-white px-3 py-1.5 text-lg text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-sky-500 sm:text-sm/6">
                 </div>
             </div>
 
@@ -81,7 +80,7 @@
                 </div>
                 <div class="mt-2">
                     <div class="relative">
-                        <input placeholder="아이디를 입력해주세요" type="text" name="member_id" id="member_id" required class="block w-full rounded-md bg-white px-3 py-1.5 text-lg text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+                        <input placeholder="아이디를 입력해주세요" type="text" name="member_id" id="member_id" required class="block w-full rounded-md bg-white px-3 py-1.5 text-lg text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-sky-500 sm:text-sm/6">
                         <div class="absolute top-1 right-1">
                             <button id="checkButton" type="button" class="flex w-23 h-7 justify-center rounded-md bg-main-sky-highlight px-3 py-1.5 text-xs text-white shadow-xs hover:bg-sky-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-800">중복 확인</button>
                         </div>
@@ -97,7 +96,7 @@
                     <label for="password" class="block text-lg/6 text-gray-900">비밀번호</label>
                 </div>
                 <div class="mt-2">
-                    <input placeholder="비밀번호를 입력헤주세요" type="password" name="password" id="password" autocomplete="current-password" required class="block w-full rounded-md bg-white px-3 py-1.5 text-lg text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+                    <input placeholder="비밀번호를 입력헤주세요" type="password" name="password" id="password" autocomplete="current-password" required class="block w-full rounded-md bg-white px-3 py-1.5 text-lg text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-sky-500 sm:text-sm/6">
                 </div>
             </div>
 
@@ -106,7 +105,7 @@
                     <label for="password2" class="block text-lg/6 text-gray-900">비밀번호 확인</label>
                 </div>
                 <div class="mt-2">
-                    <input placeholder="비밀번호를 다시 입력헤주세요" type="password" name="password2" id="password2" autocomplete="current-password" required class="block w-full rounded-md bg-white px-3 py-1.5 text-lg text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+                    <input placeholder="비밀번호를 다시 입력헤주세요" type="password" name="password2" id="password2" autocomplete="current-password" required class="block w-full rounded-md bg-white px-3 py-1.5 text-lg text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-sky-500 sm:text-sm/6">
                     <div class="flex items-center justify-between">
                         <p id="redPw" class="hidden text-red-400 text-sm">* 비밀번호가 일치하지 않습니다</p>
                     </div>
@@ -118,7 +117,7 @@
                     <label for="phone_num" class="block text-lg/6 text-gray-900">휴대폰번호</label>
                 </div>
                 <div class="mt-2">
-                    <input oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" maxlength="11" placeholder="01012345678" type="tel" name="phone_num" id="phone_num" required class="block w-full rounded-md bg-white px-3 py-1.5 text-lg text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+                    <input oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" maxlength="11" placeholder="01012345678" type="tel" name="phone_num" id="phone_num" required class="block w-full rounded-md bg-white px-3 py-1.5 text-lg text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-sky-500 sm:text-sm/6">
                 </div>
             </div>
 
@@ -127,38 +126,52 @@
                     <label for="birth_date" class="block text-lg/6 text-gray-900">생년월일</label>
                 </div>
                 <div class="mt-2">
-                    <input type="date" name="birth_date" id="birth_date" class="block w-full rounded-md bg-white px-3 py-1.5 text-lg text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+                    <input type="date" name="birth_date" id="birth_date" class="block w-full rounded-md bg-white px-3 py-1.5 text-lg text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-sky-500 sm:text-sm/6">
                 </div>
             </div>
 
             <div>
                 <label for="email" class="block text-lg/6 text-gray-900">이메일</label>
                 <div class="mt-2">
-                    <input placeholder="이메일을 입력해주세요" type="email" name="email" id="email" autocomplete="email" class="block w-full rounded-md bg-white px-3 py-1.5 text-lg text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+                    <input placeholder="이메일을 입력해주세요" type="email" name="email" id="email" autocomplete="email" class="block w-full rounded-md bg-white px-3 py-1.5 text-lg text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-sky-500 sm:text-sm/6">
                 </div>
             </div>
 
+<!--            <div class="flex justify-around">-->
+<!--                <div>-->
+<!--                    <label for="male" class="text-bold-text">남자</label>-->
+<!--                    <input type="radio" id="male" name="gender" value="male" class="m-1">-->
+<!--                </div>-->
+<!--                <div>-->
+<!--                    <label for="female" class="text-bold-text">여자</label>-->
+<!--                    <input type="radio" id="female" name="gender" value="female" class="m-1">-->
+<!--                </div>-->
+<!--            </div>-->
+
             <div class="flex justify-around">
-                <div>
-                    <label for="male" class="text-bold-text">남자</label>
-                    <input type="radio" id="male" name="gender" value="male" class="m-1">
+                <div class="items-center w-1/5 mt-2">
+                    <label class="align-middle text-lg/6 text-gray-900">성별</label>
                 </div>
-                <div>
-                    <label for="female" class="text-bold-text">여자</label>
-                    <input type="radio" id="female" name="gender" value="female" class="m-1">
+                <div class="w-4/5 flex rounded-md outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-sky-500">
+                    <label for="male" class="p-2 block w-1/2 has-checked:bg-indigo-50 has-checked:text-indigo-900 has-checked:ring-indigo-200 divide-indigo-500 border rounded-l-md border-r-gray-300">남자
+                        <input type="radio" id="male" name="gender" value="male" class="float-right m-1 checked:border-indigo-500">
+                    </label>
+                    <label for="female" class="p-2 block w-1/2 has-checked:bg-indigo-50 has-checked:text-indigo-900 has-checked:ring-indigo-200">여자
+                        <input type="radio" id="female" name="gender" value="female" class="float-right m-1 checked:border-indigo-900">
+                    </label>
                 </div>
             </div>
 
             <div class="flex justify-between">
                 <div class="flex">
                     <label for="payday" class="w-20 max-w-12 text-bold-text mr-4">월급날</label>
-                    <select id="payday" name="payday" class="w-22 max-h-5 outline rounded-md text-bold-text text-right">
+                    <select id="payday" name="payday" class="w-22 max-h-5 rounded-md text-bold-text text-right outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-sky-500">
                         <option th:each="i : ${#numbers.sequence(1, 31)}" th:value="${i}" th:text="${i + '일'}"></option>
                     </select>
                 </div>
                 <div class="flex">
                     <label for="start_time" class="w-15 text-bold-text ml-5">출근시간</label>
-                    <input type="text" name="start_time" id="start_time" th:value="${'09:00 AM'}" class="p-2 time_element w-22 h-5 outline rounded-md text-bold-text text-right">
+                    <input type="text" name="start_time" id="start_time" th:value="${'09:00 AM'}" class="p-2 time_element w-22 h-5 rounded-md text-bold-text text-right outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-sky-500">
                 </div>
             </div>
 
@@ -166,13 +179,13 @@
                 <div class="flex">
                     <div class="flex">
                         <label for="end_time" class="w-15 text-bold-text mr-1">퇴근시간</label>
-                        <input type="text" name="end_time" id="end_time" th:value="${'06:00 PM'}" class="p-2 time_element w-22 h-5 outline rounded-md text-bold-text text-right">
+                        <input type="text" name="end_time" id="end_time" th:value="${'06:00 PM'}" class="p-2 time_element w-22 h-5 rounded-md text-bold-text text-right outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-sky-500">
                     </div>
                 </div>
                 <div class="flex absolute left-43">
                     <div class="flex">
                         <label for="lunch_time" class="w-15 text-bold-text">점심시간</label>
-                        <input type="text" name="lunch_time" id="lunch_time" th:value="${'12:00 PM'}" class="p-2 time_element w-22 h-5 outline rounded-md text-bold-text text-right">
+                        <input type="text" name="lunch_time" id="lunch_time" th:value="${'12:00 PM'}" class="p-2 time_element w-22 h-5 rounded-md text-bold-text text-right outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-sky-500">
                     </div>
                 </div>
             </div>
@@ -180,7 +193,7 @@
             <div>
                 <label for="email" class="block text-lg/6 text-gray-900">희망 근무지</label>
                 <div class="mt-2">
-                    <select id="loc_mod" name="loc_mod" class="block w-full rounded-md bg-white px-3 py-1.5 text-lg text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6 h-9">
+                    <select id="loc_mod" name="loc_mod" class="block w-full rounded-md bg-white px-3 py-1.5 text-lg text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-sky-500 sm:text-sm/6 h-9">
                         <option value="seoul">서울특별시</option>
                         <option value="gyeonggi">경기도</option>
                         <option value="busan">부산광역시</option>
@@ -192,14 +205,14 @@
             <div class="flex justify-between">
                 <div class="flex flex-col w-1/2 mr-5">
                     <label for="ind_cd" class="text-bold-text text-center">산업/업종</label>
-                    <select id="ind_cd" name="ind_cd" class="outline rounded-md text-bold-text text-center">
+                    <select id="ind_cd" name="ind_cd" class="rounded-md text-bold-text text-center outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-sky-500">
                         <option value="IT">IT/소프트웨어</option>
                         <option value="marketing">마케팅</option>
                     </select>
                 </div>
                 <div class="flex flex-col w-1/2">
                     <label for="edu_lv" class="text-bold-text text-center">학력</label>
-                    <select id="edu_lv" name="edu_lv" class="outline rounded-md text-bold-text text-center">
+                    <select id="edu_lv" name="edu_lv" class="rounded-md text-bold-text text-center outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-sky-500">
                         <option value="universe4">대졸4년제</option>
                         <option value="universe2">대졸2년제</option>
                         <option value="highschool">고등학교 졸업</option>
