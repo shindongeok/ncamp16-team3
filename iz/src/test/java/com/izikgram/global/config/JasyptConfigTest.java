@@ -10,9 +10,9 @@ class JasyptConfigTest extends JasyptConfig {
 
     @Test
     void mysql_end_dnc () {
-        String url = "jdbc:mysql://db-32bi08.vpc-cdb.ntruss.com:3306/izikgram?useUnicode=true&serverTimezone=Asia/Seoul";
-        String username = "izikuser";
-        String password = "qwer1234!";
+        String url = "";
+        String username = "";
+        String password = "";
 
         String encryptUrl = jasyptEncrypt(url);
         String encryptUsername = jasyptEncrypt(username);
@@ -101,7 +101,7 @@ class JasyptConfigTest extends JasyptConfig {
     }
 
     private String jasyptEncrypt(String input) { // 암호화
-        String key = "izik1234";
+        String key = "";
         StandardPBEStringEncryptor encryptor = new StandardPBEStringEncryptor();
         encryptor.setAlgorithm("PBEWithMD5AndDES");
         encryptor.setPassword(key);
@@ -109,7 +109,7 @@ class JasyptConfigTest extends JasyptConfig {
     }
 
     private String jasyptDecrypt(String input){ // 복호화
-        String key = "izik1234";
+        String key = "";
         StandardPBEStringEncryptor encryptor = new StandardPBEStringEncryptor();
         encryptor.setAlgorithm("PBEWithMD5AndDES");
         encryptor.setPassword(key);
