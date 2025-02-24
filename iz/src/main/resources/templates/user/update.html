@@ -75,23 +75,54 @@
             <div>
                 <label for="loc_mod" class="block text-lg/6 text-gray-900">희망 근무지</label>
                 <div class="mt-2">
-                    <select id="loc_mod" name="loc_mod" th:value="${#authentication.getPrincipal().getUser().getLoc_mod()}" required class="block w-full rounded-md bg-white px-3 py-1.5 text-lg text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
-                        <option value="seoul">서울특별시</option>
-                        <option value="gyeonggi">경기도</option>
-                        <option value="busan">부산광역시</option>
-                        <option value="daegu">대구광역시</option>
-                        <!-- 다른 지역들 추가 가능 -->
+                    <select id="loc_mod" name="loc_mod" required class="block w-full rounded-md bg-white px-3 py-1.5 text-lg text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+                        <option value="101000" th:selected="${#authentication.getPrincipal().getUser().getLoc_mod() == '101000'}">서울</option>
+                        <option value="102000" th:selected="${#authentication.getPrincipal().getUser().getLoc_mod() == '102000'}">경기</option>
+                        <option value="103000" th:selected="${#authentication.getPrincipal().getUser().getLoc_mod() == '103000'}">광주</option>
+                        <option value="104000" th:selected="${#authentication.getPrincipal().getUser().getLoc_mod() == '104000'}">대구</option>
+                        <option value="105000" th:selected="${#authentication.getPrincipal().getUser().getLoc_mod() == '105000'}">대전</option>
+                        <option value="106000" th:selected="${#authentication.getPrincipal().getUser().getLoc_mod() == '106000'}">부산</option>
+                        <option value="107000" th:selected="${#authentication.getPrincipal().getUser().getLoc_mod() == '107000'}">울산</option>
+                        <option value="108000" th:selected="${#authentication.getPrincipal().getUser().getLoc_mod() == '108000'}">인천</option>
+                        <option value="109000" th:selected="${#authentication.getPrincipal().getUser().getLoc_mod() == '109000'}">강원</option>
+                        <option value="110000" th:selected="${#authentication.getPrincipal().getUser().getLoc_mod() == '110000'}">경남</option>
+                        <option value="111000" th:selected="${#authentication.getPrincipal().getUser().getLoc_mod() == '111000'}">경북</option>
+                        <option value="112000" th:selected="${#authentication.getPrincipal().getUser().getLoc_mod() == '112000'}">전남</option>
+                        <option value="113000" th:selected="${#authentication.getPrincipal().getUser().getLoc_mod() == '113000'}">전북</option>
+                        <option value="114000" th:selected="${#authentication.getPrincipal().getUser().getLoc_mod() == '114000'}">충북</option>
+                        <option value="115000" th:selected="${#authentication.getPrincipal().getUser().getLoc_mod() == '115000'}">충남</option>
+                        <option value="116000" th:selected="${#authentication.getPrincipal().getUser().getLoc_mod() == '116000'}">제주</option>
+                        <option value="117000" th:selected="${#authentication.getPrincipal().getUser().getLoc_mod() == '117000'}">전국</option>
+                        <option value="118000" th:selected="${#authentication.getPrincipal().getUser().getLoc_mod() == '118000'}">세종</option>
+                        <option value="210000" th:selected="${#authentication.getPrincipal().getUser().getLoc_mod() == '210000'}">아시아중동</option>
+                        <option value="220000" th:selected="${#authentication.getPrincipal().getUser().getLoc_mod() == '220000'}">북중미</option>
+                        <option value="230000" th:selected="${#authentication.getPrincipal().getUser().getLoc_mod() == '230000'}">남미</option>
+                        <option value="240000" th:selected="${#authentication.getPrincipal().getUser().getLoc_mod() == '240000'}">유럽</option>
+                        <option value="250000" th:selected="${#authentication.getPrincipal().getUser().getLoc_mod() == '250000'}">오세아니아</option>
+                        <option value="260000" th:selected="${#authentication.getPrincipal().getUser().getLoc_mod() == '260000'}">아프리카</option>
+                        <option value="270000" th:selected="${#authentication.getPrincipal().getUser().getLoc_mod() == '270000'}">남극대륙</option>
+                        <option value="280000" th:selected="${#authentication.getPrincipal().getUser().getLoc_mod() == '280000'}">기타해외</option>
                     </select>
                 </div>
             </div>
+
             <div class="flex space-x-4">
                 <!-- 산업/업종 -->
                 <div class="flex-1">
                     <label for="ind_cd" class="text-center block text-lg/6 text-gray-900">산업/업종</label>
                     <div class="mt-2">
-                        <select id="ind_cd" name="ind_cd" required class="block w-full rounded-md bg-white px-3 py-1.5 text-lg text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
-                            <option value="IT" th:selected="${'IT' == #authentication.getPrincipal().getUser().getInd_cd()}">IT/소프트웨어</option>
-                            <option value="marketing" th:selected="${'marketing' == #authentication.getPrincipal().getUser().getInd_cd()}">마케팅</option>
+                        <select id="ind_cd" name="ind_cd" required
+                                class="block w-full rounded-md bg-white px-3 py-1.5 text-lg text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+                            <option value="1" th:selected="${#authentication.getPrincipal().getUser().getInd_cd() == '1'}">서비스업</option>
+                            <option value="2" th:selected="${#authentication.getPrincipal().getUser().getInd_cd() == '2'}">제조.화학</option>
+                            <option value="3" th:selected="${#authentication.getPrincipal().getUser().getInd_cd() == '3'}">IT.웹.통신</option>
+                            <option value="4" th:selected="${#authentication.getPrincipal().getUser().getInd_cd() == '4'}">은행.금융업</option>
+                            <option value="5" th:selected="${#authentication.getPrincipal().getUser().getInd_cd() == '5'}">미디어.디자인</option>
+                            <option value="6" th:selected="${#authentication.getPrincipal().getUser().getInd_cd() == '6'}">교육업</option>
+                            <option value="7" th:selected="${#authentication.getPrincipal().getUser().getInd_cd() == '7'}">의료.제약.복지</option>
+                            <option value="8" th:selected="${#authentication.getPrincipal().getUser().getInd_cd() == '8'}">판매.유통</option>
+                            <option value="9" th:selected="${#authentication.getPrincipal().getUser().getInd_cd() == '9'}">건설업</option>
+                            <option value="10" th:selected="${#authentication.getPrincipal().getUser().getInd_cd() == '10'}">기관.협회</option>
                         </select>
                     </div>
                 </div>
@@ -100,10 +131,18 @@
                 <div class="flex-1">
                     <label for="edu_lv" class="text-center block text-lg/6 text-gray-900">학력</label>
                     <div class="mt-2">
-                        <select id="edu_lv" name="edu_lv" required class="block w-full rounded-md bg-white px-3 py-1.5 text-lg text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
-                            <option value="universe4" th:selected="${#authentication.getPrincipal().getUser().getEdu_lv() == 'universe4'}">대졸 4년제</option>
-                            <option value="universe2" th:selected="${#authentication.getPrincipal().getUser().getEdu_lv() == 'universe2'}">대졸 2년제</option>
-                            <option value="highschool" th:selected="${#authentication.getPrincipal().getUser().getEdu_lv() == 'highschool'}">고등학교 졸업</option>
+                        <select id="edu_lv" name="edu_lv" required
+                                class="block w-full rounded-md bg-white px-3 py-1.5 text-lg text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+                            <option value="0" th:selected="${#authentication.getPrincipal().getUser().getEdu_lv() == '0'}">학력무관</option>
+                            <option value="1" th:selected="${#authentication.getPrincipal().getUser().getEdu_lv() == '1'}">고등학교졸업</option>
+                            <option value="2" th:selected="${#authentication.getPrincipal().getUser().getEdu_lv() == '2'}">대학졸업(2,3년)</option>
+                            <option value="3" th:selected="${#authentication.getPrincipal().getUser().getEdu_lv() == '3'}">대학졸업(4년)</option>
+                            <option value="4" th:selected="${#authentication.getPrincipal().getUser().getEdu_lv() == '4'}">석사졸업</option>
+                            <option value="5" th:selected="${#authentication.getPrincipal().getUser().getEdu_lv() == '5'}">박사졸업</option>
+                            <option value="6" th:selected="${#authentication.getPrincipal().getUser().getEdu_lv() == '6'}">고등학교졸업이상</option>
+                            <option value="7" th:selected="${#authentication.getPrincipal().getUser().getEdu_lv() == '7'}">대학졸업(2,3년)이상</option>
+                            <option value="8" th:selected="${#authentication.getPrincipal().getUser().getEdu_lv() == '8'}">대학졸업(4년)이상</option>
+                            <option value="9" th:selected="${#authentication.getPrincipal().getUser().getEdu_lv() == '9'}">석사졸업이상</option>
                         </select>
                     </div>
                 </div>
