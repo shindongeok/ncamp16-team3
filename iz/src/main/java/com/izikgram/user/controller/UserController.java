@@ -6,8 +6,8 @@ import com.izikgram.job.service.JobService;
 import com.izikgram.user.entity.User;
 import com.izikgram.user.service.UserService;
 import jakarta.servlet.http.HttpSession;
-import lombok.RequiredArgsConstructor;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.internal.constraintvalidators.bv.number.sign.NegativeOrZeroValidatorForBigDecimal;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -322,5 +321,50 @@ public class UserController {
             log.error("Error fetching recommended jobs", e);
             return new ArrayList<>(); // 오류 발생 시 빈 리스트 반환
         }
+    }
+
+    @PostMapping("/updateTime")
+    @ResponseBody
+    public ResponseEntity<?> updateTime(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestParam("startTime") String startTime,
+            @RequestParam("lunchTime") String lunchTime,
+            @RequestParam("endTime") String endTime) {
+
+        try {
+            log.info("Received times - startTime: {}, lunchTime: {}, endTime: {}",
+                    startTime, lunchTime, endTime);
+
+            String memberId = userDetails.getUser().getMember_id();
+
+            // 시간 변환 메서드 수정
+            startTime = convertTo24HourFormat(startTime);
+            lunchTime = convertTo24HourFormat(lunchTime);
+            endTime = convertTo24HourFormat(endTime);
+
+            log.info("Converted times - startTime: {}, lunchTime: {}, endTime: {}",
+                    startTime, lunchTime, endTime);
+
+            userService.updateUserTime(memberId, startTime, lunchTime, endTime);
+
+            return ResponseEntity.ok(Map.of(
+                    "startTime", startTime,
+                    "lunchTime", lunchTime,
+                    "endTime", endTime
+            ));
+        } catch (Exception e) {
+            log.error("시간 업데이트 중 오류 발생", e);
+            return ResponseEntity.badRequest().body("시간 업데이트 실패: " + e.getMessage());
+        }
+    }
+
+    // 24시간 형식으로 변환하는 새로운 메서드
+    private String convertTo24HourFormat(String time) {
+        // 이미 24시간 형식이면 그대로 반환
+        if (time.matches("\\d{2}:\\d{2}")) {
+            return time;
+        }
+
+        throw new IllegalArgumentException("잘못된 시간 형식: " + time);
     }
 }

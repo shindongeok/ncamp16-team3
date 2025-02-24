@@ -70,4 +70,8 @@ public class UserService {
     public void updateUser(User user) {
         userMapper.updateUser(user);
     }
+
+    public void updateUserTime(String memberId, String startTime, String lunchTime, String endTime) {
+        userMapper.updateUserTime(memberId, startTime, lunchTime, endTime);
+    }
 }

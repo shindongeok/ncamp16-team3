@@ -23,7 +23,7 @@ function updateCalendar(feelingList = []) {
         currentDate.setDate(monday.getDate() + i);
 
         const dateSpan = document.createElement('span');
-        dateSpan.className = 'calendar-date';
+        dateSpan.className = 'calendar-date cursor-pointer';
         dateSpan.textContent = currentDate.getDate();
 
         if (currentDate.toDateString() === today.toDateString()) {
@@ -74,22 +74,6 @@ function updateCircleProgress(circle, progress) {
     const circumference = parseFloat(circle.getAttribute('stroke-dasharray'));
     const offset = circumference - (progress / 100) * circumference;
     circle.setAttribute('stroke-dashoffset', offset);
-
-    // 점 위치 업데이트
-    const dot = circle.nextElementSibling;
-    if (dot && dot.classList.contains('circle-dot')) {
-        const angle = (progress / 100) * 360 - 90; // -90도 오프셋으로 시작 위치 조정
-        const radius = parseFloat(circle.getAttribute('r'));
-        const cx = 100; // SVG 중심 X
-        const cy = 100; // SVG 중심 Y
-
-        // 극좌표를 데카르트 좌표로 변환
-        const x = cx + radius * Math.cos(angle * Math.PI / 180);
-        const y = cy + radius * Math.sin(angle * Math.PI / 180);
-
-        dot.setAttribute('cx', x);
-        dot.setAttribute('cy', y);
-    }
 }
 
 function calculateTimeProgress(startTime, endTime) {
@@ -140,19 +124,19 @@ function formatTimeRemaining(start, end) {
     const currentTimeMinutes = currentHour * 60 + currentMinute;
 
     let remainingMinutes = endTimeMinutes - currentTimeMinutes;
-    if (remainingMinutes < 0) remainingMinutes = 0;
+    if (remainingMinutes <= 0) return ' 완료!';
 
     const hours = Math.floor(remainingMinutes / 60);
     const minutes = remainingMinutes % 60;
 
-    return `${hours}시간 ${minutes}분`;
+    return ` ${hours}시간 ${minutes}분 남았어요`;
 }
 
+// Modify the updateAllProgress function to handle the complete day text
 function updateAllProgress() {
     const circles = document.querySelectorAll('.progress-circle');
-    const timeTexts = document.querySelectorAll('.time-text');
-    const stressNoDataElement = document.querySelector('.stress-section .stress-no-data');
-    const stressLabelItem = document.querySelector('.label-item:nth-child(2)');
+    const timeValues = document.querySelectorAll('.time-value');
+    const encouragementText = document.querySelector('.mt-3.text-center.text-sm');
 
     // 퇴근까지 남은 시간 (큰 원)
     const workProgress = calculateTimeProgress(globalStartTime, globalEndTime);
@@ -160,42 +144,20 @@ function updateAllProgress() {
 
     // 점심까지 남은 시간 (작은 원)
     const lunchProgress = calculateTimeProgress(globalStartTime, globalLunchTime);
-    updateCircleProgress(circles[2], lunchProgress);
+    updateCircleProgress(circles[1], lunchProgress);
 
-    // 시간 텍스트 업데이트 (퇴근, 점심)
-    if (timeTexts.length >= 3) {
-        timeTexts[0].textContent = formatTimeRemaining(globalStartTime, globalEndTime);
-        timeTexts[2].textContent = formatTimeRemaining(globalStartTime, globalLunchTime);
-    }
+    // time-value 업데이트
+    const lunchTimeText = formatTimeRemaining(globalStartTime, globalLunchTime);
+    const workTimeText = formatTimeRemaining(globalStartTime, globalEndTime);
 
-    // 퇴사지수 부분만 조건부 처리
-    if (stressNum === null || stressNum === undefined) {
-        // 퇴사지수 라벨 텍스트 변경
-        if (stressLabelItem) {
-            const timeTextElement = stressLabelItem.querySelector('.time-text');
-            if (timeTextElement) {
-                timeTextElement.textContent = "아직 기록된 퇴사지수가 없어요";
-                timeTextElement.style.fontSize = '12px';
-            }
-        }
+    timeValues[0].textContent = lunchTimeText;  // 점심시간 텍스트
+    timeValues[1].textContent = workTimeText;   // 퇴근시간 텍스트
 
-        // 퇴사지수 원은 0으로 설정
-        if (circles[1]) {
-            updateCircleProgress(circles[1], 0);
-        }
+    // Check if both lunch and work times are completed
+    if (lunchTimeText === ' 완료!' && workTimeText === ' 완료!') {
+        encouragementText.textContent = '오늘 하루도 수고하셨습니다!';
     } else {
-        // 퇴사지수가 있는 경우 정상 표시
-        const normalizedStress = ((Number(stressNum) + 10) / 20) * 100;
-        updateCircleProgress(circles[1], normalizedStress);
-
-        // 퇴사지수 텍스트 복원
-        if (stressLabelItem) {
-            const timeTextElement = stressLabelItem.querySelector('.time-text');
-            if (timeTextElement) {
-                timeTextElement.textContent = `${stressNum > 0 ? '+' : ''}${stressNum}%`;
-                timeTextElement.style.fontSize = '';
-            }
-        }
+        encouragementText.textContent = '남은 시간도 힘내세요! 💪';
     }
 }
 
@@ -224,7 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 주간 평균 스트레스 계산 및 표시
     const weeklyAverageStress = calculateWeeklyAverageStress(monthlyStressList);
     const stressElement = document.getElementById('weeklyStressNum');
-    const overviewStressNoData = document.querySelector('.overview-card .stress-no-data');
+    const overviewStressNoData = document.querySelector('.stress-no-data');  // .overview-card .stress-no-data 대신
 
     if (stressElement && overviewStressNoData) {
         if (weeklyAverageStress === null) {
@@ -236,13 +198,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const sign = weeklyAverageStress > 0 ? '+' : '';
             stressElement.innerHTML = `${sign}${weeklyAverageStress}%`;
         }
-    }
-
-    // 스트레스 섹션의 '아직 기록된 퇴사지수가 없어요' 메시지는 숨김 처리
-    // (퇴사지수가 없어도 그래프는 표시해야 함)
-    const stressNoDataElement = document.querySelector('.stress-section .stress-no-data');
-    if (stressNoDataElement) {
-        stressNoDataElement.style.display = 'none';
     }
 
     // 모달 관련 코드
