@@ -28,28 +28,6 @@ body {
     }
 }
 
-/*header {*/
-/*    padding: 15px;*/
-/*    text-align: center;*/
-/*}*/
-
-/*.header-button-section {*/
-/*    display: flex;*/
-/*    justify-content: space-between;*/
-/*}*/
-
-/*.sidebar-button {*/
-/*    background: transparent;*/
-/*    border: none;*/
-/*    cursor: pointer;*/
-/*}*/
-
-/*.alarm-icon {*/
-/*    background: transparent;*/
-/*    border: none;*/
-/*    cursor: pointer;*/
-/*}*/
-
 .page-title {
     padding-left: 15px;
     font-size: 1.7rem;
@@ -301,6 +279,7 @@ body {
     justify-content: center;
     gap: 2rem;
     padding: 1rem;
+    margin-bottom: 20px;
 }
 
 .progress-container {
@@ -454,9 +433,51 @@ circle {
     background: #7fcdf8;
 }
 
-.stress-no-data {
-    color: #666;
-    font-size: 0.875rem;
+.stress-graph-section {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 16px;
+}
+
+.progress-container {
+    position: relative;
+}
+
+.labels-container::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 8px solid white;
+}
+
+.time-status {
     text-align: center;
-    padding: 1rem 0;
+    color: #2C2C2C;
+    line-height: 1.8;
+}
+
+.time-status .time-text {
+    font-size: 1rem;
+}
+
+.labels-container {
+    position: relative;
+    background-color: white;
+    border-radius: 12px;
+    padding: 16px 20px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    width: 100%;
+    max-width: 280px;
+}
+
+.fighting-message {
+    text-align: center;
 }

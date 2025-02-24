@@ -150,38 +150,12 @@
                             stroke-linecap="round"
                             data-progress="0"
                     />
-                    <circle class="circle-dot" cx="100" cy="100" r="5" color="white"/>
-                    <circle class="circle-dot" cx="100" cy="10" r="5" color="white"/>
-
-                    <!-- 업무 진행률 (중간 원) -->
-                    <circle
-                            cx="100"
-                            cy="100"
-                            r="70"
-                            fill="none"
-                            stroke="#FFE5E5"
-                            stroke-width="15"
-                    />
-                    <circle
-                            class="progress-circle"
-                            cx="100"
-                            cy="100"
-                            r="70"
-                            fill="none"
-                            stroke="#FF9898"
-                            stroke-width="15"
-                            stroke-dasharray="439.82"
-                            stroke-dashoffset="439.82"
-                            stroke-linecap="round"
-                            data-progress="0"
-                    />
-                    <circle class="circle-dot" cx="100" cy="30" r="5" color="white"/>
 
                     <!-- 점심까지 (가장 작은 원) -->
                     <circle
                             cx="100"
                             cy="100"
-                            r="50"
+                            r="70"
                             fill="none"
                             stroke="#FFEFD7"
                             stroke-width="15"
@@ -190,34 +164,25 @@
                             class="progress-circle"
                             cx="100"
                             cy="100"
-                            r="50"
+                            r="70"
                             fill="none"
                             stroke="#FFD188"
                             stroke-width="15"
-                            stroke-dasharray="314.16"
-                            stroke-dashoffset="314.16"
+                            stroke-dasharray="439.82"
+                            stroke-dashoffset="439.82"
                             stroke-linecap="round"
                             data-progress="0"
                     />
-                    <circle class="circle-dot" cx="100" cy="50" r="5" color="white"/>
                 </svg>
             </div>
             <div class="labels-container">
-                <div class="label-item">
-                    <div class="color-indicator" style="background-color: #9BDCFD;"></div>
-                    <span class="label-text">퇴근까지</span>
-                    <span class="time-text"></span>
+                <div class="time-status">
+                    <p class="time-text">
+                        점심시간<span class="lunch-time time-value"></span><br>
+                        퇴근시간<span class="end-time time-value"></span>
+                    </p>
                 </div>
-                <div class="label-item">
-                    <div class="color-indicator" style="background-color: #FF9898;"></div>
-                    <span class="label-text">퇴사지수</span>
-                    <span class="time-text"></span>
-                </div>
-                <div class="label-item">
-                    <div class="color-indicator" style="background-color: #FFD188;"></div>
-                    <span class="label-text">점심까지</span>
-                    <span class="time-text"></span>
-                </div>
+                <div class="fighting-message">남은 시간도 힘내세요! 💪</div>
             </div>
         </div>
     </div>
