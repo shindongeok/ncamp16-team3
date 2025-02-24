@@ -1,4 +1,5 @@
 package com.izikgram.job.repository;
+// 이거 no usages 코드인데 삭제할까요
 
 import com.izikgram.job.entity.Job;
 import com.izikgram.user.entity.User;

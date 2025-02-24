@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
@@ -97,11 +98,6 @@
             width: 100%;
         }
 
-        /*.content-wrapper i {*/
-        /*    flex-shrink: 0;*/
-        /*    width: 1rem;*/
-        /*}*/
-
         .content-wrapper span {
             flex: 1;
             min-width: 0;
@@ -110,13 +106,6 @@
             overflow-wrap: break-word;
             word-break: break-all;
         }
-
-        .text-content {
-            white-space: normal;  /* 자동 줄바꿈 */
-            word-break: break-word;
-            overflow-wrap: break-word;
-        }
-
 
         /* 스크롤 컨테이너 스타일 수정 */
         #box-container, #box-container2 {
@@ -141,49 +130,97 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-
 <div class="flex flex-col w-full mobile-container pt-8 relative">
-
     <div class="pt-20"><header th:replace="~{header :: header} " class="pt-4"></header></div>
-
     <footer th:replace="~{footer :: footer}" class="pt-4"></footer>
 
-
     <div class="p-4">
-
         <h1 class="text-2xl font-bold mb-6">채용공고</h1>
-        <div class="flex justify-between text-xs font-medium text-gray-700 px-2">
-            <label class="w-1/3 text-center">근무지</label>
-            <label class="w-1/3 text-center">산업/업종</label>
-            <label class="w-1/2 text-center">학력</label>
+        <div class="flex items-center gap-2 mb-1">
+            <div class="w-1/3 text-center font-semibold text-gray-700">
+                <label>근무지</label>
+            </div>
+            <div class="w-1/3 text-center font-semibold text-gray-700">
+                <label>산업/업종</label>
+            </div>
+            <div class="w-1/3 text-center font-semibold text-gray-700">
+                <label>학력</label>
+            </div>
+            <div class="w-8"></div>
         </div>
 
-        <div class="flex items-center gap-3 mb-1">
+        <div class="flex items-center gap-4 mb-1">
             <div class="relative flex-1">
-                <select class="w-full px-1 py-0.5 border rounded-lg text-xs appearance-none bg-white">
+                <select class="w-full pl-2 pr-8 py-1.5 border-b-2 border-gray-200 text-sm appearance-none bg-white cursor-pointer focus:outline-none focus:border-b-2 focus:border-gray-400 transition-colors">
                     <option th:text="${#authentication.getPrincipal().getUser().getLoc_mod}" selected></option>
-                    <option>서울</option>
-                    <option>경기</option>
-                    <option>부산</option>
+                    <option value="117000">전국</option>
+                    <option value="101000">서울</option>
+                    <option value="102000">경기</option>
+                    <option value="118000">세종</option>
+                    <option value="103000">광주</option>
+                    <option value="104000">대구</option>
+                    <option value="105000">대전</option>
+                    <option value="106000">부산</option>
+                    <option value="107000">울산</option>
+                    <option value="108000">인천</option>
+                    <option value="109000">강원</option>
+                    <option value="110000">경남</option>
+                    <option value="111000">경북</option>
+                    <option value="112000">전남</option>
+                    <option value="113000">전북</option>
+                    <option value="114000">충북</option>
+                    <option value="115000">충남</option>
+                    <option value="116000">제주</option>
                 </select>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                        <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/>
+                    </svg>
+                </div>
             </div>
             <div class="relative flex-1">
-                <select class="w-full px-1 py-0.5 border rounded-lg text-xs appearance-none bg-white">
+                <select class="w-full pl-2 pr-8 py-1.5 border-b-2 border-gray-200 text-sm appearance-none bg-white cursor-pointer focus:outline-none focus:border-b-2 focus:border-gray-400 transition-colors">
                     <option th:text="${#authentication.getPrincipal().getUser().getInd_cd}" selected></option>
-                    <option>IT/소프트웨어</option>
+                    <option value="1">서비스업</option>
+                    <option value="2">제조·화학</option>
+                    <option value="3">IT·웹·통신</option>
+                    <option value="4">은행·금융업</option>
+                    <option value="5">미디어·디자인</option>
+                    <option value="6">교육업</option>
+                    <option value="7">의료·제약·복지</option>
+                    <option value="8">판매·유통</option>
+                    <option value="9">건설업</option>
+                    <option value="10">기관·협회</option>
                 </select>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                        <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/>
+                    </svg>
+                </div>
             </div>
             <div class="relative flex-1">
-                <select class="w-full px-1 py-0.5 border rounded-lg text-xs appearance-none bg-white">
+                <select class="w-full pl-2 pr-8 py-1.5 border-b-2 border-gray-200 text-sm appearance-none bg-white cursor-pointer focus:outline-none focus:border-b-2 focus:border-gray-400 transition-colors">
                     <option th:text="${#authentication.getPrincipal().getUser().getEdu_lv}" selected></option>
-                    <option>대졸4년제</option>
-                    <option>대졸2년제</option>
-                    <option>고졸</option>
+                    <option value="0">학력무관</option>
+                    <option value="1">고등학교졸업</option>
+                    <option value="2">대학졸업(2,3년)</option>
+                    <option value="3">대학교졸업(4년)</option>
+                    <option value="4">석사졸업</option>
+                    <option value="5">박사졸업</option>
+                    <option value="6">고등학교졸업이상</option>
+                    <option value="7">대학졸업(2,3년)이상</option>
+                    <option value="8">대학교졸업(4년)이상</option>
+                    <option value="9">석사졸업이상</option>
                 </select>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                        <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/>
+                    </svg>
+                </div>
             </div>
-            <button class="p-0.5 bg-white border rounded-lg">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            <button class="p-1 bg-white rounded-lg cursor-pointer hover:bg-gray-50 search-button">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
                           d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                 </svg>
             </button>
@@ -196,39 +233,48 @@
             <i class="fas fa-fire" style="font-size: 30px; color: orange; margin-right: 10px;"></i>
             곧 마감인 공고
         </h1>
-        <div id="box-container" class="flex gap-4 mb-6 cursor-grab">
-            <div th:each="job : ${deadlineJobs}" class="box flex flex-col justify-between">
-                <div>
-                    <h2 class="text-lg font-bold mb-2 text-gray-800 text-wrapper" th:text="${job.companyName}">기업명</h2>
-                    <p class="text-sm text-gray-700 job-title mb-3" th:text="${job.title}">공고 제목</p>
-                    <div class="space-y-1 text-xs text-gray-600">
-                        <div class="content-wrapper">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <span th:text="${job.locationName}">지역</span>
-                        </div>
-                        <div class="content-wrapper">
-                            <i class="fas fa-building"></i>
-                            <span th:text="${job.industryName}">업종</span>
-                        </div>
-                        <div class="content-wrapper">
-                            <i class="fas fa-users"></i>
-                            <span th:text="'경력 ' + ${job.experienceMax} + '~' + ${job.experienceMin} + '년'">경력</span>
-                        </div>
-                        <div class="content-wrapper">
-                            <i class="fas fa-user-graduate"></i>
-                            <span th:text="${job.educationLevel}">학력</span>
+        <div class="flex items-center mb-6">
+            <div id="box-container" class="flex gap-4 cursor-grab">
+                <div th:each="job : ${deadlineJobs}" class="box flex flex-col justify-between">
+                    <div>
+                        <h2 class="text-lg font-bold mb-2 text-gray-800 text-wrapper" th:text="${job.companyName}">기업명</h2>
+                        <p class="text-sm text-gray-700 job-title mb-3" th:text="${job.title}">공고 제목</p>
+                        <div class="space-y-1 text-xs text-gray-600">
+                            <div class="content-wrapper">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span th:text="${job.locationName}">지역</span>
+                            </div>
+                            <div class="content-wrapper">
+                                <i class="fas fa-building"></i>
+                                <span th:text="${job.industryName}">업종</span>
+                            </div>
+                            <div class="content-wrapper">
+                                <i class="fas fa-users"></i>
+                                <span th:text="'경력 ' + ${job.experienceMax} + '~' + ${job.experienceMin} + '년'">경력</span>
+                            </div>
+                            <div class="content-wrapper">
+                                <i class="fas fa-user-graduate"></i>
+                                <span th:text="${job.educationLevel}">학력</span>
+                            </div>
                         </div>
                     </div>
+                    <div class="mt-3 pt-2 border-t border-gray-200">
+                        <p class="text-xs text-wrapper">
+                            마감일: <span th:text="${job.expirationTimestamp}" class="timestamp"></span>
+                        </p>
+                        <a th:href="${job.url}" target="_blank"
+                           class="mt-2 text-xs text-blue-600 hover:text-blue-800 content-wrapper">
+                            <i class="fas fa-external-link-alt"></i>
+                            <span>상세보기</span>
+                        </a>
+                    </div>
                 </div>
-                <div class="mt-3 pt-2 border-t border-gray-200">
-                    <p class="text-xs text-wrapper">
-                        마감일: <span th:text="${job.expirationTimestamp}" class="timestamp"></span>
-                    </p>
-                    <a th:href="${job.url}" target="_blank"
-                       class="mt-2 text-xs text-blue-600 hover:text-blue-800 content-wrapper">
-                        <i class="fas fa-external-link-alt"></i>
-                        <span>상세보기</span>
-                    </a>
+                <div class="flex-shrink-0 w-[280px] h-[200px] flex items-center justify-center">
+                    <button id="loadMoreDeadline" class="w-20 h-20 bg-gray-200 text-gray-600 rounded-full hover:bg-gray-300 flex items-center justify-center cursor-pointer">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </button>
                 </div>
             </div>
         </div>
@@ -238,85 +284,180 @@
             <i class="fas fa-bell" style="font-size: 30px; color: orange; margin-right: 10px;"></i>
             최근에 올라온 공고
         </h1>
-        <div id="box-container2" class="flex gap-4 mb-6 cursor-grab">
-            <div th:each="job : ${recentJobs}" class="box flex flex-col justify-between">
-                <div>
-                    <h2 class="text-lg font-bold mb-2 text-gray-800 text-wrapper" th:text="${job.companyName}">기업명</h2>
-                    <p class="text-sm text-gray-700 job-title mb-3" th:text="${job.title}">공고 제목</p>
-                    <div class="space-y-1 text-xs text-gray-600">
-                        <div class="content-wrapper">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <span th:text="${job.locationName}">지역</span>
-                        </div>
-                        <div class="content-wrapper">
-                            <i class="fas fa-building"></i>
-                            <span th:text="${job.industryName}">업종</span>
-                        </div>
-                        <div class="content-wrapper">
-                            <i class="fas fa-users"></i>
-                            <span th:text="'경력 ' + ${job.experienceMax} + '~' + ${job.experienceMin} + '년'">경력</span>
-                        </div>
-                        <div class="content-wrapper">
-                            <i class="fas fa-user-graduate"></i>
-                            <span th:text="${job.educationLevel}">학력</span>
+        <div class="flex items-center mb-6">
+            <div id="box-container2" class="flex gap-4 cursor-grab">
+                <div th:each="job : ${recentJobs}" class="box flex flex-col justify-between">
+                    <div>
+                        <h2 class="text-lg font-bold mb-2 text-gray-800 text-wrapper" th:text="${job.companyName}">기업명</h2>
+                        <p class="text-sm text-gray-700 job-title mb-3" th:text="${job.title}">공고 제목</p>
+                        <div class="space-y-1 text-xs text-gray-600">
+                            <div class="content-wrapper">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span th:text="${job.locationName}">지역</span>
+                            </div>
+                            <div class="content-wrapper">
+                                <i class="fas fa-building"></i>
+                                <span th:text="${job.industryName}">업종</span>
+                            </div>
+                            <div class="content-wrapper">
+                                <i class="fas fa-users"></i>
+                                <span th:text="'경력 ' + ${job.experienceMax} + '~' + ${job.experienceMin} + '년'">경력</span>
+                            </div>
+                            <div class="content-wrapper">
+                                <i class="fas fa-user-graduate"></i>
+                                <span th:text="${job.educationLevel}">학력</span>
+                            </div>
                         </div>
                     </div>
+                    <div class="mt-3 pt-2 border-t border-gray-200">
+                        <p class="text-xs text-wrapper">
+                            마감일: <span th:text="${job.expirationTimestamp}" class="timestamp"></span>
+                        </p>
+                        <a th:href="${job.url}" target="_blank"
+                           class="mt-2 text-xs text-blue-600 hover:text-blue-800 content-wrapper">
+                            <i class="fas fa-external-link-alt"></i>
+                            <span>상세보기</span>
+                        </a>
+                    </div>
                 </div>
-                <div class="mt-3 pt-2 border-t border-gray-200">
-                    <p class="text-xs text-wrapper">
-                        마감일: <span th:text="${job.expirationTimestamp}" class="timestamp"></span>
-                    </p>
-                    <a th:href="${job.url}" target="_blank"
-                       class="mt-2 text-xs text-blue-600 hover:text-blue-800 content-wrapper">
-                        <i class="fas fa-external-link-alt"></i>
-                        <span>상세보기</span>
-                    </a>
+                <div class="flex-shrink-0 w-[280px] h-[200px] flex items-center justify-center">
+                    <button id="loadMoreRecent" class="w-20 h-20 bg-gray-200 text-gray-600 rounded-full hover:bg-gray-300 flex items-center justify-center cursor-pointer">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
 <script>
-    const containers = [document.getElementById('box-container'), document.getElementById('box-container2')];
+    $(document).ready(function() {
+        const locationMap = {
+            '117000': '전국', '101000': '서울', '102000': '경기', '118000': '세종',
+            '103000': '광주', '104000': '대구', '105000': '대전', '106000': '부산',
+            '107000': '울산', '108000': '인천', '109000': '강원', '110000': '경남',
+            '111000': '경북', '112000': '전남', '113000': '전북', '114000': '충북',
+            '115000': '충남', '116000': '제주'
+        };
 
-    containers.forEach(container => {
-        let isDragging = false;
-        let startX = 0;
-        let scrollLeft = 0;
+        const industryMap = {
+            '1': '서비스업', '2': '제조·화학', '3': 'IT·웹·통신', '4': '은행·금융업',
+            '5': '미디어·디자인', '6': '교육업', '7': '의료·제약·복지', '8': '판매·유통',
+            '9': '건설업', '10': '기관·협회'
+        };
 
-        container.addEventListener('mousedown', (e) => {
-            isDragging = true;
-            startX = e.clientX; // 클릭한 순간의 X 좌표 저장
-            scrollLeft = container.scrollLeft; // 기존 위치 저장
-            container.style.cursor = 'grabbing';
+        const educationMap = {
+            '0': '학력무관', '1': '고등학교졸업', '2': '대학졸업(2,3년)', '3': '대학교졸업(4년)',
+            '4': '석사졸업', '5': '박사졸업', '6': '고등학교졸업이상', '7': '대학졸업(2,3년)이상',
+            '8': '대학교졸업(4년)이상', '9': '석사졸업이상'
+        };
+
+        $('.relative select').each(function(index) {
+            const $firstOption = $(this).find('option:first-child');
+            const value = $firstOption.text();
+
+            switch(index) {
+                case 0:
+                    $firstOption.text(locationMap[value] || '지역 선택');
+                    $firstOption.val(value);
+                    $(this).find(`option[value="${value}"]`).not(':first').remove();
+                    break;
+                case 1:
+                    $firstOption.text(industryMap[value] || '업종 선택');
+                    $firstOption.val(value);
+                    $(this).find(`option[value="${value}"]`).not(':first').remove();
+                    break;
+                case 2:
+                    $firstOption.text(educationMap[value] || '학력 선택');
+                    $firstOption.val(value);
+                    $(this).find(`option[value="${value}"]`).not(':first').remove();
+                    break;
+            }
         });
 
-        container.addEventListener('mousemove', (e) => {
-            if (!isDragging) return;
+        // 검색 버튼 클릭 이벤트
+        $('.search-button').click(function() {
+            const loc_mcd = $('.relative select').eq(0).val();
+            const ind_cd = $('.relative select').eq(1).val();
+            const edu_lv = $('.relative select').eq(2).val();
 
-            let moveX = e.clientX - startX;
-            let maxMove = container.scrollWidth - container.clientWidth;
+            // 현재 URL 가져오기
+            const baseUrl = window.location.pathname;
 
-            let newPosition = scrollLeft - moveX;
-            if (newPosition < 0) newPosition = 0;
-            if (newPosition > maxMove) newPosition = maxMove;
+            // 파라미터 추가하여 URL 생성
+            const searchUrl = `${baseUrl}?loc_mcd=${loc_mcd}&ind_cd=${ind_cd}&edu_lv=${edu_lv}`;
 
-            container.scrollLeft = newPosition;
+            // 페이지 이동
+            window.location.href = searchUrl;
         });
 
-        container.addEventListener('mouseup', () => {
-            isDragging = false;
-            container.style.cursor = 'grab';
+        let deadlineOffset = 5;
+        let recentOffset = 5;
+
+        // 마감 임박 공고 더보기
+        $('#loadMoreDeadline').click(function() {
+            const $button = $(this).parent(); // 버튼의 부모 div를 선택
+            const loc_mcd = $('.relative select').eq(0).val();
+            const ind_cd = $('.relative select').eq(1).val();
+            const edu_lv = $('.relative select').eq(2).val();
+
+            $.get(`/job/hire?loc_mcd=${loc_mcd}&ind_cd=${ind_cd}&edu_lv=${edu_lv}&offset=${deadlineOffset}`)
+                .done(function(response) {
+                    // HTML 파싱을 위한 임시 div 생성
+                    const $temp = $('<div>').html(response);
+                    // 새로운 채용공고만 선택 (box 클래스를 가진 div만)
+                    const $newContent = $temp.find('#box-container .box');
+
+                    if ($newContent.length > 0) {
+                        // 버튼의 부모 div를 제거했다가
+                        $button.detach();
+                        // 새 내용 추가
+                        $('#box-container').append($newContent);
+                        // 버튼의 부모 div를 다시 추가
+                        $('#box-container').append($button);
+
+                        deadlineOffset += 5;
+
+                        // 가져온 데이터가 5개 미만이면 더보기 버튼 숨기기
+                        if ($newContent.length < 5) {
+                            $button.hide();
+                        }
+                    } else {
+                        // 더 이상 데이터가 없으면 버튼 숨기기
+                        $button.hide();
+                    }
+                });
         });
 
-        container.addEventListener('mouseleave', () => {
-            isDragging = false;
-            container.style.cursor = 'grab';
-        });
-    });
+// 최근 공고 더보기도 동일한 방식으로 수정
+        $('#loadMoreRecent').click(function() {
+            const $button = $(this).parent();
+            const loc_mcd = $('.relative select').eq(0).val();
+            const ind_cd = $('.relative select').eq(1).val();
+            const edu_lv = $('.relative select').eq(2).val();
 
-    document.addEventListener('DOMContentLoaded', function() {
+            $.get(`/job/hire?loc_mcd=${loc_mcd}&ind_cd=${ind_cd}&edu_lv=${edu_lv}&offset=${recentOffset}`)
+                .done(function(response) {
+                    const $temp = $('<div>').html(response);
+                    const $newContent = $temp.find('#box-container2 .box');
+
+                    if ($newContent.length > 0) {
+                        $button.detach();
+                        $('#box-container2').append($newContent);
+                        $('#box-container2').append($button);
+
+                        recentOffset += 5;
+
+                        if ($newContent.length < 5) {
+                            $button.hide();
+                        }
+                    } else {
+                        $button.hide();
+                    }
+                });
+        });
+
         const containers = [document.getElementById('box-container'), document.getElementById('box-container2')];
 
         containers.forEach(container => {
@@ -326,8 +467,8 @@
 
             container.addEventListener('mousedown', (e) => {
                 isDragging = true;
-                startX = e.clientX; // 클릭한 순간의 X 좌표 저장
-                scrollLeft = container.scrollLeft; // 기존 위치 저장
+                startX = e.clientX;
+                scrollLeft = container.scrollLeft;
                 container.style.cursor = 'grabbing';
             });
 
