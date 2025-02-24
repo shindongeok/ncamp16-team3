@@ -1,0 +1,46 @@
+#version: "3"
+services:
+  spring-boot:
+    platform: linux/amd64
+    container_name: izikgram-container
+    image: kokiyo1030/izikgram:${TAG:-latest}
+    environment:
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    restart: always
+#    depends_on:
+#      - database
+    build:
+      context: .
+      platforms:
+        - linux/amd64  # 플랫폼 명시
+#      dockerfile: Dockerfile
+#    networks:
+#      - izikgram-network
+
+#  database:
+#    platform: linux/amd64
+#    container_name: mysql-container
+#    image: mysql:latest
+#    ports:
+#      - "3306:3306"
+#    environment:
+#      MYSQL_ROOT_HOST: '%'
+#      MYSQL_ROOT_PASSWORD:
+#      MYSQL_DATABASE: project_izikgram
+#      TZ: Asia/Seoul
+#    networks:
+#      - izikgram-network
+#    volumes:
+#      - izikvolume:/var/lib/mysql
+#
+#volumes:
+#  izikvolume:
+#
+#networks:
+#  izikgram-network:
