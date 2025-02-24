@@ -1,10 +1,8 @@
 package com.izikgram.alarm.repository;
 
-import com.izikgram.alarm.controller.AlarmController;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -22,7 +20,6 @@ public class SseEmitterRepository {
     }
 
     public boolean containsKey(String member_id) {
-
         if(sseEmitters.containsKey(member_id)) {
             return true;
         }

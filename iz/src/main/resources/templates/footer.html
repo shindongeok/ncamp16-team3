@@ -1,17 +1,24 @@
-<!-- footer.html -->
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Footer Fragment</title>
 </head>
 <body>
+
 <div th:fragment="footer">
 
     <!-- 챗봇 아이콘 -->
     <div class="absolute bottom-5 right-5 w-14 h-14 z-50 bg-sky-500 rounded-full flex items-center justify-center shadow-lg cursor-pointer">
-        <img th:src="@{/images/chat.png}" alt="챗봇 아이콘" class="w-11 h-11"/>
+        <a th:href="@{/user/analyze}">
+            <button type="submit">
+                <img th:src="@{/images/chat.png}" alt="챗봇 아이콘" class="w-11 h-11"/>
+            </button>
+        </a>
     </div>
 </div>
+
+
+
 </body>
 </html>

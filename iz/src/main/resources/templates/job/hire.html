@@ -26,7 +26,6 @@
                 min-height: 100vh;
             }
         }
-
         /* 모바일에서는 전체 너비 사용 */
         @media screen and (max-width: 768px) {
             .mobile-container {
@@ -35,8 +34,6 @@
                 min-height: 100vh;
             }
         }
-
-
 
         #box-container, #box-container2 {
             width: 100%;
@@ -51,17 +48,95 @@
             user-select: none;
             transition: transform 0.2s ease;
             flex-shrink: 0;
-            width: 200px;
-            height: 150px;
-            background-color: lightgray;
-            text-align: center;
-            line-height: 150px;
-            font-size: 18px;
+            width: 280px;
+            min-height: 200px;
+            background-color: white;
+            padding: 1rem;
             border-radius: 10px;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            /* 텍스트 줄바꿈 관련 속성 수정 */
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            word-break: break-all;
+        }
+
+        /* 모든 텍스트 요소에 대한 기본 스타일 */
+        [th\:text] {
+            white-space: normal;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            word-break: break-all;
+            max-width: 100%;
+        }
+
+        /* 모든 텍스트 컨테이너에 적용할 스타일 */
+        .text-wrapper {
+            white-space: normal;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            word-break: break-all;
+            width: 100%;
+        }
+
+        /* 제목 스타일 수정 */
+        .job-title {
+            display: block;
+            white-space: normal;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            word-break: break-all;
+            width: 100%;
+        }
+
+        /* 컨텐츠 줄바꿈 스타일 */
+        .content-wrapper {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+            width: 100%;
+        }
+
+        /*.content-wrapper i {*/
+        /*    flex-shrink: 0;*/
+        /*    width: 1rem;*/
+        /*}*/
+
+        .content-wrapper span {
+            flex: 1;
+            min-width: 0;
+            white-space: normal;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            word-break: break-all;
+        }
+
+        .text-content {
+            white-space: normal;  /* 자동 줄바꿈 */
+            word-break: break-word;
+            overflow-wrap: break-word;
         }
 
 
+        /* 스크롤 컨테이너 스타일 수정 */
+        #box-container, #box-container2 {
+            width: 100%;
+            display: flex;
+            gap: 1rem;
+            overflow-x: auto;
+            padding: 0.5rem;
+            scroll-behavior: smooth;
 
+            /* 스크롤바 숨기기 */
+            -ms-overflow-style: none;  /* IE, Edge */
+            scrollbar-width: none;     /* Firefox */
+        }
+
+        /* Chrome, Safari, Opera에서 스크롤바 숨기기 */
+        #box-container::-webkit-scrollbar,
+        #box-container2::-webkit-scrollbar {
+            display: none;
+        }
     </style>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 </head>
@@ -116,51 +191,87 @@
 
         <br><br>
 
+        <!-- 곧 마감인 공고 영역 -->
         <h1 class="text-2xl font-bold mb-6">
             <i class="fas fa-fire" style="font-size: 30px; color: orange; margin-right: 10px;"></i>
             곧 마감인 공고
         </h1>
         <div id="box-container" class="flex gap-4 mb-6 cursor-grab">
-            <div class="box bg-gray-100 p-4 rounded-lg shadow-md">
-                <h2 class="text-lg font-bold mb-2">박스 1 제목</h2>
-                <p class="text-sm text-gray-700">박스 1의 내용이 들어갑니다.</p>
-            </div>
-            <div class="box bg-gray-100 p-4 rounded-lg shadow-md">
-                <h2 class="text-lg font-bold mb-2">박스 2 제목</h2>
-                <p class="text-sm text-gray-700">박스 2의 내용이 들어갑니다.</p>
-            </div>
-            <div class="box bg-gray-100 p-4 rounded-lg shadow-md">
-                <h2 class="text-lg font-bold mb-2">박스 3 제목</h2>
-                <p class="text-sm text-gray-700">박스 3의 내용이 들어갑니다.</p>
-            </div>
-            <div class="flex justify-center items-center mt-8 ml-5.5">
-                <button class="w-12 h-12 bg-gray-100 text-gray-700 rounded-full flex items-center justify-center shadow-md hover:bg-gray-200 transition duration-200 text-xs">
-                    더보기
-                </button>
+            <div th:each="job : ${deadlineJobs}" class="box flex flex-col justify-between">
+                <div>
+                    <h2 class="text-lg font-bold mb-2 text-gray-800 text-wrapper" th:text="${job.companyName}">기업명</h2>
+                    <p class="text-sm text-gray-700 job-title mb-3" th:text="${job.title}">공고 제목</p>
+                    <div class="space-y-1 text-xs text-gray-600">
+                        <div class="content-wrapper">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span th:text="${job.locationName}">지역</span>
+                        </div>
+                        <div class="content-wrapper">
+                            <i class="fas fa-building"></i>
+                            <span th:text="${job.industryName}">업종</span>
+                        </div>
+                        <div class="content-wrapper">
+                            <i class="fas fa-users"></i>
+                            <span th:text="'경력 ' + ${job.experienceMax} + '~' + ${job.experienceMin} + '년'">경력</span>
+                        </div>
+                        <div class="content-wrapper">
+                            <i class="fas fa-user-graduate"></i>
+                            <span th:text="${job.educationLevel}">학력</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-3 pt-2 border-t border-gray-200">
+                    <p class="text-xs text-wrapper">
+                        마감일: <span th:text="${job.expirationTimestamp}" class="timestamp"></span>
+                    </p>
+                    <a th:href="${job.url}" target="_blank"
+                       class="mt-2 text-xs text-blue-600 hover:text-blue-800 content-wrapper">
+                        <i class="fas fa-external-link-alt"></i>
+                        <span>상세보기</span>
+                    </a>
+                </div>
             </div>
         </div>
 
+        <!-- 최근에 올라온 공고 영역 -->
         <h1 class="text-2xl font-bold mb-6">
             <i class="fas fa-bell" style="font-size: 30px; color: orange; margin-right: 10px;"></i>
             최근에 올라온 공고
         </h1>
         <div id="box-container2" class="flex gap-4 mb-6 cursor-grab">
-            <div class="box bg-gray-100 p-4 rounded-lg shadow-md">
-                <h2 class="text-lg font-bold mb-2">박스 1 제목</h2>
-                <p class="text-sm text-gray-700">박스 1의 내용이 들어갑니다.</p>
-            </div>
-            <div class="box bg-gray-100 p-4 rounded-lg shadow-md">
-                <h2 class="text-lg font-bold mb-2">박스 2 제목</h2>
-                <p class="text-sm text-gray-700">박스 2의 내용이 들어갑니다.</p>
-            </div>
-            <div class="box bg-gray-100 p-4 rounded-lg shadow-md">
-                <h2 class="text-lg font-bold mb-2">박스 3 제목</h2>
-                <p class="text-sm text-gray-700">박스 3의 내용이 들어갑니다.</p>
-            </div>
-            <div class="flex justify-center items-center mt-8 ml-5.5">
-                <button class="w-12 h-12 bg-gray-100 text-gray-700 rounded-full flex items-center justify-center shadow-md hover:bg-gray-200 transition duration-200 text-xs">
-                    더보기
-                </button>
+            <div th:each="job : ${recentJobs}" class="box flex flex-col justify-between">
+                <div>
+                    <h2 class="text-lg font-bold mb-2 text-gray-800 text-wrapper" th:text="${job.companyName}">기업명</h2>
+                    <p class="text-sm text-gray-700 job-title mb-3" th:text="${job.title}">공고 제목</p>
+                    <div class="space-y-1 text-xs text-gray-600">
+                        <div class="content-wrapper">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span th:text="${job.locationName}">지역</span>
+                        </div>
+                        <div class="content-wrapper">
+                            <i class="fas fa-building"></i>
+                            <span th:text="${job.industryName}">업종</span>
+                        </div>
+                        <div class="content-wrapper">
+                            <i class="fas fa-users"></i>
+                            <span th:text="'경력 ' + ${job.experienceMax} + '~' + ${job.experienceMin} + '년'">경력</span>
+                        </div>
+                        <div class="content-wrapper">
+                            <i class="fas fa-user-graduate"></i>
+                            <span th:text="${job.educationLevel}">학력</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-3 pt-2 border-t border-gray-200">
+                    <p class="text-xs text-wrapper">
+                        마감일: <span th:text="${job.expirationTimestamp}" class="timestamp"></span>
+                    </p>
+                    <a th:href="${job.url}" target="_blank"
+                       class="mt-2 text-xs text-blue-600 hover:text-blue-800 content-wrapper">
+                        <i class="fas fa-external-link-alt"></i>
+                        <span>상세보기</span>
+                    </a>
+                </div>
             </div>
         </div>
     </div>
@@ -205,14 +316,61 @@
         });
     });
 
+    document.addEventListener('DOMContentLoaded', function() {
+        const containers = [document.getElementById('box-container'), document.getElementById('box-container2')];
 
+        containers.forEach(container => {
+            let isDragging = false;
+            let startX = 0;
+            let scrollLeft = 0;
+
+            container.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                startX = e.clientX; // 클릭한 순간의 X 좌표 저장
+                scrollLeft = container.scrollLeft; // 기존 위치 저장
+                container.style.cursor = 'grabbing';
+            });
+
+            container.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+
+                let moveX = e.clientX - startX;
+                let maxMove = container.scrollWidth - container.clientWidth;
+
+                let newPosition = scrollLeft - moveX;
+                if (newPosition < 0) newPosition = 0;
+                if (newPosition > maxMove) newPosition = maxMove;
+
+                container.scrollLeft = newPosition;
+            });
+
+            container.addEventListener('mouseup', () => {
+                isDragging = false;
+                container.style.cursor = 'grab';
+            });
+
+            container.addEventListener('mouseleave', () => {
+                isDragging = false;
+                container.style.cursor = 'grab';
+            });
+        });
+
+        // Format timestamps
+        const timestampElements = document.querySelectorAll('.timestamp');
+        timestampElements.forEach(element => {
+            const timestamp = parseFloat(element.textContent);
+            if (!isNaN(timestamp)) {
+                element.textContent = formatTimestamp(timestamp);
+            }
+        });
+
+        function formatTimestamp(timestamp) {
+            const date = new Date(timestamp * 1000); // Unix timestamp를 밀리초로 변환
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+    });
 </script>
-
-
-
-
-
-
-
-
 </body>
