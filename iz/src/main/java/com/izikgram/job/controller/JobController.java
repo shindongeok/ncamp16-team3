@@ -31,6 +31,7 @@ public class JobController {
             @RequestParam(required = false) String loc_mcd,
             @RequestParam(required = false) String ind_cd,
             @RequestParam(required = false) String edu_lv,
+            @RequestParam(defaultValue = "0") int offset,
             Model model) {
 
         User user = userDetails.getUser();
@@ -39,34 +40,35 @@ public class JobController {
         String finalInd = ind_cd != null ? ind_cd : user.getInd_cd();
         String finalEdu = edu_lv != null ? edu_lv : user.getEdu_lv();
 
-        System.out.println("Final loc: " + finalLoc);
-        System.out.println("Final ind: " + finalInd);
-        System.out.println("Final edu: " + finalEdu);
-
         try {
             String encodedLoc = URLEncoder.encode(finalLoc, StandardCharsets.UTF_8);
             System.out.println("Encoded Location: " + encodedLoc);
 
             List<Job> allJobs = jobService.searchJobs(finalLoc, finalInd, finalEdu);
 
-            List<Job> deadlineJobs = jobService.getDeadlineJobs(allJobs);
-            List<Job> recentJobs = jobService.getRecentJobs(allJobs);
-
-            // 마감 임박 일자리 정보 출력
-            System.out.println("Deadline jobs count: " + deadlineJobs.size());
-            for (Job job : deadlineJobs) {
-                System.out.println("Deadline Job - Company: " + job.getCompanyName() +
-                        ", Title: " + job.getTitle() +
-                        ", Location: " + job.getLocationName() +
-                        ", Expiration: " + job.getExpirationTimestamp());
-            }
+            List<Job> deadlineJobs = jobService.getDeadlineJobs(allJobs, offset);
+            List<Job> recentJobs = jobService.getRecentJobs(allJobs, offset);
 
             model.addAttribute("deadlineJobs", deadlineJobs);
             model.addAttribute("recentJobs", recentJobs);
 
         } catch (Exception e) {
             log.error("Error fetching jobs", e);
-            // 에러 처리 로직 추가
+        }
+
+        try {
+            List<Job> allJobs = jobService.searchJobs(finalLoc, finalInd, finalEdu);
+
+            // offset을 고려하여 데이터 처리
+            List<Job> deadlineJobs = jobService.getDeadlineJobs(allJobs, offset);
+            List<Job> recentJobs = jobService.getRecentJobs(allJobs, offset);
+
+            model.addAttribute("deadlineJobs", deadlineJobs);
+            model.addAttribute("recentJobs", recentJobs);
+            model.addAttribute("hasMore", deadlineJobs.size() == 5 || recentJobs.size() == 5);  // 더 보여줄 데이터가 있는지 확인
+
+        } catch (Exception e) {
+            log.error("Error fetching jobs", e);
         }
 
         return "job/hire";

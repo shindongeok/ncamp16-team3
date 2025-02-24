@@ -94,33 +94,32 @@ public class JobService {
         }
     }
 
-    // 마감이 임박한 순으로 5개 정렬
-    public List<Job> getDeadlineJobs(List<Job> jobs) {
-        long currentTime = System.currentTimeMillis() / 1000; // 현재 시간을 Unix timestamp로 변환
+    public List<Job> getDeadlineJobs(List<Job> jobs, int offset) {
+        long currentTime = System.currentTimeMillis() / 1000;
 
         return jobs.stream()
                 .filter(job -> {
-                    // 문자열을 long으로 변환
                     long expirationTime = Long.parseLong(job.getExpirationTimestamp());
-                    return expirationTime > currentTime; // 아직 마감되지 않은 공고만 필터링
+                    return expirationTime > currentTime;
                 })
                 .sorted((a, b) -> {
                     long timeA = Long.parseLong(a.getExpirationTimestamp());
                     long timeB = Long.parseLong(b.getExpirationTimestamp());
-                    return Long.compare(timeA, timeB); // 마감이 빠른 순으로 정렬
+                    return Long.compare(timeA, timeB);
                 })
+                .skip(offset)  // offset만큼 건너뛰기
                 .limit(5)
                 .collect(Collectors.toList());
     }
 
-    // 최근 등록 순으로 5개 정렬
-    public List<Job> getRecentJobs(List<Job> jobs) {
+    public List<Job> getRecentJobs(List<Job> jobs, int offset) {
         return jobs.stream()
                 .sorted((a, b) -> {
                     long timeA = Long.parseLong(a.getPostingTimestamp());
                     long timeB = Long.parseLong(b.getPostingTimestamp());
-                    return Long.compare(timeB, timeA); // 최신 등록 순으로 정렬 (내림차순)
+                    return Long.compare(timeB, timeA);
                 })
+                .skip(offset)  // offset만큼 건너뛰기
                 .limit(5)
                 .collect(Collectors.toList());
     }
