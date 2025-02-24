@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>챗봇</title>
+    <title>Chatbot</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 flex items-center justify-center h-screen">
@@ -159,7 +159,6 @@
 
             console.log(stressStr);  // 스트레스 값이 잘 나오는지 확인하기 위해 콘솔에 출력
 
-
             if (!stressStr) {
                 // 데이터가 없으면 해당 메시지 출력
                 removeLoading();
@@ -187,8 +186,6 @@
             appendBotMessage('감정 기록을 가져오는데 실패했습니다.');
         }
     }
-
-    // ... 나머지 버튼 핸들러들도 비슷한 패턴으로 구현 ...
 
     // 일반 채팅 핸들러
     async function handleGeneralChat() {
@@ -218,6 +215,71 @@
         }
 
         userInput.value = '';
+    }
+
+    function formatTimestamp(timestamp) {
+        const date = new Date(timestamp * 1000); // Unix timestamp를 밀리초로 변환
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+
+    // 맞춤형 이직 공고 핸들러
+    async function handleJobPostings() {
+        appendUserMessage("맞춤형 이직 공고");
+        showLoading("맞춤형 채용공고를 찾고 있습니다...");
+
+        try {
+            const response = await fetch('/user/analyze/recommend-jobs', {
+                method: 'POST'
+            });
+
+            const recommendedJobs = await response.json();
+
+            removeLoading();
+
+            if (recommendedJobs.length === 0) {
+                appendBotMessage("현재 맞춤형 채용공고가 없습니다.");
+                return;
+            }
+
+            // 맞춤형 공고 메시지 생성
+            recommendedJobs.forEach(job => {
+                const jobMessage = `🌟 추천 채용공고
+
+📍 기업명: ${job.companyName}
+📋 제목: ${job.title}
+📍 지역: ${job.locationName}
+💼 업종: ${job.industryName}
+👥 경력: ${job.experienceMax === 0 && job.experienceMin === 0 ? '신입'
+                    : (job.experienceMax === job.experienceMin ? `경력 ${job.experienceMax}년`
+                        : `경력 ${Math.min(job.experienceMax, job.experienceMin)}~${Math.max(job.experienceMax, job.experienceMin)}년`)}
+📅 마감일: ${formatTimestamp(parseFloat(job.expirationTimestamp))}`;
+
+                // HTML 링크를 포함한 메시지 생성
+                const linkMessage = `${jobMessage}\n\n👉 <a href="${job.url}" target="_blank" style="color: blue; text-decoration: underline;">상세 페이지 바로가기</a>`;
+
+                appendBotMessage(linkMessage);
+            });
+
+        } catch (error) {
+            removeLoading();
+            appendBotMessage('맞춤형 채용공고를 불러오는 중 오류가 발생했습니다.');
+            console.error('Error fetching recommended jobs:', error);
+        }
+    }
+
+    function appendBotMessage(text) {
+        const messagesDiv = document.getElementById('messages');
+        const botMessageDiv = document.createElement('div');
+        botMessageDiv.classList.add('text-left', 'text-sm', 'bg-gray-100', 'rounded-lg', 'p-2');
+
+        // HTML을 안전하게 파싱하여 추가
+        botMessageDiv.innerHTML = text.replace(/\n/g, '<br>');
+
+        messagesDiv.appendChild(botMessageDiv);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
     }
 
     // Enter 키 이벤트 핸들러

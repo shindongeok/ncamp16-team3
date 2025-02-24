@@ -1,9 +1,12 @@
 package com.izikgram.user.controller;
 
 import com.izikgram.global.security.CustomUserDetails;
+import com.izikgram.job.entity.Job;
+import com.izikgram.job.service.JobService;
 import com.izikgram.user.entity.User;
 import com.izikgram.user.service.UserService;
 import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,12 +16,17 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Slf4j
 @Controller
 @RequestMapping("/user")
+@RequiredArgsConstructor
 public class UserController {
 
     @Autowired
@@ -269,5 +277,38 @@ public class UserController {
     @GetMapping("/analyze")
     public String analyzePage() {
         return "user/chat";
+    }
+
+    private final JobService jobService;
+
+    @PostMapping("/analyze/recommend-jobs")
+    @ResponseBody
+    public List<Job> getRecommendedJobs(
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        User user = userDetails.getUser();
+
+        // 사용자의 기본 검색 조건 사용
+        String location = user.getLoc_mod();
+        String industry = user.getInd_cd();
+        String educationLevel = user.getEdu_lv();
+
+        try {
+            // JobService의 기존 searchJobs 메서드 활용
+            List<Job> allJobs = jobService.searchJobs(location, industry, educationLevel);
+
+            // 최근 공고와 마감 임박 공고를 조합하여 최대 2개 추천
+            List<Job> recentJobs = jobService.getRecentJobs(allJobs, 0);
+            List<Job> deadlineJobs = jobService.getDeadlineJobs(allJobs, 0);
+
+            // 중복 제거 및 최대 2개 선택
+            return Stream.concat(recentJobs.stream(), deadlineJobs.stream())
+                    .distinct()
+                    .limit(2)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            log.error("Error fetching recommended jobs", e);
+            return new ArrayList<>(); // 오류 발생 시 빈 리스트 반환
+        }
     }
 }
