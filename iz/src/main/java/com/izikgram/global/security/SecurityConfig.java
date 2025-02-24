@@ -33,6 +33,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/login", "/user/findId", "/user/findIdResult", "/user/findPw", "/user/findPwResult", "/user/register", "/user/checkId/**", "/user/resetPw").permitAll() // 로그인 없이 접근 가능
                         .requestMatchers("/auth/**", "/sse/**").permitAll() // sms 인증주소
+                        .requestMatchers("/chat/").permitAll()
                         .requestMatchers("/css/**", "/js/**", "/images/**", "/static/**").permitAll() // 정적 리소스 허용
                         .anyRequest().authenticated() // 나머지는 로그인 필요
                 )
