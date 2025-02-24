@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>챗봇</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center h-screen">
+<div class="bg-white p-6 rounded-lg shadow-xl w-full max-w-lg">
+    <!-- 환영 메시지 -->
+    <div class="mb-6">
+        안녕하세요, <span th:text="${#authentication.getPrincipal().getUser().getNickname()}"></span>님!
+        <p class="text-sm text-gray-600">무엇을 도와드릴까요?</p>
+    </div>
+
+    <!-- 버튼 그리드 -->
+    <div class="grid grid-cols-2 gap-3 mb-4">
+        <button onclick="stresschat()" class="p-3 text-sm text-left bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200">
+            오늘의 퇴사 수치
+        </button>
+
+        <button onclick="feelchat()" class="p-3 text-sm text-left bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200">하소연하기</button>
+
+        <button onclick="paydaychat()" class="p-3 text-sm text-left bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200">
+            월급일까지 남은 일수
+        </button>
+
+        <button onclick="endtimechat()" class="p-3 text-sm text-left bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200">
+            남은 퇴근시간
+        </button>
+
+        <button onclick="handleJobPostings()" class="p-3 text-sm text-left bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200">맞춤형 이직 공고 보기</button>
+    </div>
+
+    <!-- 메시지 영역 -->
+    <div id="messages" class="max-h-96 overflow-y-auto mb-4 p-4 border border-gray-300 rounded-lg space-y-3">
+        <!-- 메시지가 여기에 표시됩니다 -->
+    </div>
+
+    <!-- 사용자 입력 영역 -->
+    <div class="flex">
+        <input id="userInput" type="text" class="w-full p-2 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="질문을 입력하세요..." onkeydown="checkEnter(event)">
+        <button onclick="handleGeneralChat()" class=" bg-blue-500 text-white p-2 rounded-r-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400">전송</button>
+    </div>
+</div>
+<!-- Thymeleaf로 사용자 월급날 주입 -->
+<div id="paydayData" th:data-payday="${#authentication.getPrincipal().getUser().getPayday()}"></div>
+<div id="endtimeData" th:data-endtime="${#authentication.getPrincipal().getUser().getEnd_time()}"></div>
+<div id="stressData" th:data-stress="${@mainService.getStressNum(#authentication.principal.user.member_id)}"></div>
+
+<script>
+    // 공통 유틸리티 함수들
+    function appendUserMessage(text) {
+        const messagesDiv = document.getElementById('messages');
+        const userMessageDiv = document.createElement('div');
+        userMessageDiv.classList.add('text-right', 'text-sm', 'bg-blue-100', 'rounded-lg', 'p-2');
+        userMessageDiv.innerText = text;
+        messagesDiv.appendChild(userMessageDiv);
+        return messagesDiv;
+    }
+
+    function appendBotMessage(text) {
+        const messagesDiv = document.getElementById('messages');
+        const botMessageDiv = document.createElement('div');
+        botMessageDiv.classList.add('text-left', 'text-sm', 'bg-gray-100', 'rounded-lg', 'p-2');
+        botMessageDiv.innerText = text;
+        messagesDiv.appendChild(botMessageDiv);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+
+    function showLoading(message = '처리 중입니다...') {
+        const messagesDiv = document.getElementById('messages');
+        const loadingDiv = document.createElement('div');
+        loadingDiv.id = 'loadingMessage';
+        loadingDiv.classList.add('text-center', 'text-sm', 'text-gray-500');
+        loadingDiv.innerText = message;
+        messagesDiv.appendChild(loadingDiv);
+    }
+
+    function removeLoading() {
+        const loadingMessage = document.getElementById('loadingMessage');
+        if (loadingMessage) loadingMessage.remove();
+    }
+
+    // 각 버튼별 핸들러 함수들
+    async function paydaychat() {
+        appendUserMessage("월급까지 남은 일수?");
+        showLoading("급여일 정보를 확인하고 있습니다...");
+
+        // Thymeleaf를 통해 HTML에 주입된 데이터 가져오기
+        const paydayStr = document.getElementById('paydayData').getAttribute('data-payday');
+
+        if (!paydayStr) {
+            removeLoading();
+            appendBotMessage("급여일 정보를 찾을 수 없습니다.");
+            return;
+        }
+
+        // 오늘 날짜
+        const today = new Date();
+        const payday = new Date(today.getFullYear(), today.getMonth(), parseInt(paydayStr));
+
+        // 월급날이 이미 지났으면 다음 달로 변경
+        if (payday < today) {
+            payday.setMonth(payday.getMonth() + 1);
+        }
+
+        // D-DAY 계산
+        setTimeout(() => {
+            const timeDiff = payday - today;
+            const daysLeft = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+
+            // 로딩 메시지 제거 후 챗봇 응답 추가
+            removeLoading();
+            appendBotMessage(`월급일까지 ${daysLeft}일 남았습니다.`);
+        }, 500);
+    }
+
+    async function endtimechat() {
+        appendUserMessage("남은 퇴근시간");
+        showLoading("퇴근시간 정보를 확인하고 있습니다...");
+
+        setTimeout(() => {
+            const endtimeElement = document.getElementById('endtimeData');
+            const endtimeStr = endtimeElement.getAttribute('data-endtime'); // "2025-02-21 18:00" 같은 형태
+
+            if (!endtimeStr) {
+                appendBotMessage("퇴근시간 정보를 불러올 수 없습니다.");
+                return;
+            }
+
+            const today = new Date();
+            const [endHour, endMinute] = endtimeStr.split(":").map(Number);
+            const endtime = new Date(today.getFullYear(), today.getMonth(), today.getDate(), endHour, endMinute);
+
+            const diffTime = endtime - today;
+
+            if (diffTime <= 0) {
+                appendBotMessage("퇴근 시간이 지났습니다!");
+                return;
+            }
+
+            const diffHours = Math.floor(diffTime / (1000 * 60 * 60)); // 남은 시간
+            const diffMinutes = Math.floor((diffTime % (1000 * 60 * 60)) / (1000 * 60)); // 남은 분
+
+            removeLoading();
+            appendBotMessage(`퇴근까지 ${diffHours}시간 ${diffMinutes}분 남았습니다.`);
+        }, 500); // 1초 대기 후 처리
+    }
+
+    async function stresschat() {
+        const messagesDiv = appendUserMessage("오늘의 퇴사 수치");
+        showLoading('퇴사 통계를 분석중입니다...');
+
+        // 500ms 후에 stress 수치 가져오기
+        setTimeout(() => {
+            const stressStr = document.getElementById('stressData').getAttribute('data-stress');
+
+            console.log(stressStr);  // 스트레스 값이 잘 나오는지 확인하기 위해 콘솔에 출력
+
+
+            if (!stressStr) {
+                // 데이터가 없으면 해당 메시지 출력
+                removeLoading();
+                appendBotMessage("퇴사 지수가 없습니다.");
+                return;
+            }
+
+            // 데이터가 있으면 퇴사 지수 출력
+            removeLoading();
+            appendBotMessage(`오늘의 퇴사지수는 ${stressStr}% 입니다.`);
+        }, 500);
+    }
+
+    async function feelchat() {  //하소연하기
+        const messagesDiv = appendUserMessage("하소연하기");
+        showLoading('연결중입니다...');
+
+        try {
+            const response = await fetch('/api/test-records');
+            const data = await response.json();
+            removeLoading();
+            appendBotMessage(data.record);
+        } catch (error) {
+            removeLoading();
+            appendBotMessage('감정 기록을 가져오는데 실패했습니다.');
+        }
+    }
+
+    // ... 나머지 버튼 핸들러들도 비슷한 패턴으로 구현 ...
+
+    // 일반 채팅 핸들러
+    async function handleGeneralChat() {
+        const userInput = document.getElementById('userInput');
+        const message = userInput.value.trim();
+
+        if (!message) return;
+
+        const messagesDiv = appendUserMessage(message);
+        showLoading('답변을 준비중입니다...');
+
+        try {
+            const response = await fetch('/chat/ask', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    messages: [{ role: 'user', content: message }]
+                })
+            });
+
+            const data = await response.json();
+            removeLoading();
+            appendBotMessage(data.response);
+        } catch (error) {
+            removeLoading();
+            appendBotMessage('죄송합니다. 답변 생성 중 오류가 발생했습니다.');
+        }
+
+        userInput.value = '';
+    }
+
+    // Enter 키 이벤트 핸들러
+    function checkEnter(event) {
+        if (event.key === 'Enter') {
+            handleGeneralChat();
+        }
+    }
+
+</script>
+</body>
+</html>
