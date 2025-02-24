@@ -19,7 +19,7 @@ services:
       context: .
       platforms:
         - linux/amd64  # 플랫폼 명시
-#      dockerfile: Dockerfile
+      dockerfile: Dockerfile
 #    networks:
 #      - izikgram-network
 
