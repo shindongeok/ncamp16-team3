@@ -8,6 +8,40 @@
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" th:href="@{/css/default.css}">
+    <!-- timepicki -->
+    <link rel="stylesheet" th:href="@{/css/timepicki.css}">
+    <script th:src="@{/js/timepicki.js}"></script>
+    <script>
+        $(document).ready(function(){
+            $('#workStartTime').timepicki({
+                start_time: ["09", "00", "AM"],
+                step_size_minutes: 30,
+                disable_keyboard_mobile: true,
+                show_meridian: false,
+                min_hour_value: 0,
+                max_hour_value: 23,
+                overflow_minutes: true
+            });
+            $('#workEndTime').timepicki({
+                start_time: ["18", "00"],
+                step_size_minutes: 30,
+                disable_keyboard_mobile: true,
+                show_meridian: false,
+                min_hour_value: 0,
+                max_hour_value: 23,
+                overflow_minutes: true
+            });
+            $('#lunchTime').timepicki({
+                start_time: ["12", "00"],
+                step_size_minutes: 30,
+                disable_keyboard_mobile: true,
+                show_meridian: false,
+                min_hour_value: 0,
+                max_hour_value: 23,
+                overflow_minutes: true
+            });
+        });
+    </script>
     <style type="text/tailwindcss">
         @theme {
             --color-main-sky-highlight: #00a3ed;
@@ -44,7 +78,7 @@
                      class="text-sm text-gray-600 text-center p-4">
                     인기게시글이 없습니다
                 </div>
-                <div class="popular-content-bubble-item absolute w-full h-full flex justify-between items-center opacity-0 translate-y-full animate-slide"
+                <div class="popular-content-bubble-item absolute w-full h-full flex justify-between items-center opacity-0 translate-y-full animate-slide cursor-pointer"
                      th:unless="${#lists.isEmpty(@mainService.getPopularBoardList())}"
                      th:each="board, iterStat : ${@mainService.getPopularBoardList()}"
                      th:if="${iterStat.index < 3}">
@@ -107,47 +141,48 @@
                 </div>
             </div>
         </div>
+        <!-- 모달 -->
+        <div class="time-settings-modal fixed inset-0 hidden bg-black/50 z-50 items-center justify-center" id="timeSettingsModal">
+            <div class="bg-white rounded-2xl w-[90%] max-w-[320px] px-6 py-6 shadow-lg">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-xl font-semibold text-gray-800">시간 설정</h3>
+                    <button class="close-modal-btn text-3xl text-gray-600 hover:text-gray-800 cursor-pointer">&times;</button>
+                </div>
+                <div class="space-y-5 mb-6">
+                    <div>
+                        <label for="workStartTime" class="block mb-2 text-base text-gray-700">출근 시간</label>
+                        <input type="text" id="workStartTime"
+                               th:value="${@mainService.getStartTime(#authentication.principal.user.member_id)}"
+                               class="w-[90%] p-3 border border-gray-300 rounded-lg text-base cursor-pointer">
+                    </div>
+                    <div>
+                        <label for="lunchTime" class="block mb-2 text-base text-gray-700">점심 시간</label>
+                        <input type="text" id="lunchTime"
+                               th:value="${@mainService.getLunchTime(#authentication.principal.user.member_id)}"
+                               class="w-[90%] p-3 border border-gray-300 rounded-lg text-base cursor-pointer">
+                    </div>
+                    <div>
+                        <label for="workEndTime" class="block mb-2 text-base text-gray-700">퇴근 시간</label>
+                        <input type="text" id="workEndTime"
+                               th:value="${@mainService.getEndTime(#authentication.principal.user.member_id)}"
+                               class="w-[90%] p-3 border border-gray-300 rounded-lg text-base cursor-pointer">
+                    </div>
+                </div>
+                <div class="text-right">
+                    <button class="save-time-btn bg-[#9BDCFD] hover:bg-[#7fcdf8] px-6 py-2.5 rounded-lg text-white font-medium text-base cursor-pointer">
+                        저장
+                    </button>
+                </div>
+            </div>
+        </div>
 
         <!-- Stress 섹션 -->
         <div class="py-4">
             <div class="flex justify-between items-center mb-5">
-                <!-- 모달 -->
-                <div class="time-settings-modal fixed inset-0 hidden bg-black/50 z-50 items-center justify-center" id="timeSettingsModal">
-                    <div class="bg-white rounded-2xl w-[90%] max-w-[400px] p-5 shadow-lg">
-                        <div class="flex justify-between items-center mb-5">
-                            <h3 class="text-lg font-semibold text-gray-800">시간 설정</h3>
-                            <button class="close-modal-btn text-2xl text-gray-600 hover:text-gray-800">&times;</button>
-                        </div>
-                        <div class="mb-4">
-                            <div class="mb-4">
-                                <label for="workStartTime" class="block mb-2 text-sm text-gray-600">출근 시간</label>
-                                <input type="time" id="workStartTime"
-                                       th:value="${@mainService.getStartTime(#authentication.principal.user.member_id)}"
-                                       class="w-full p-2 border border-gray-300 rounded-lg text-base">
-                            </div>
-                            <div class="mb-4">
-                                <label for="lunchTime" class="block mb-2 text-sm text-gray-600">점심 시간</label>
-                                <input type="time" id="lunchTime"
-                                       th:value="${@mainService.getLunchTime(#authentication.principal.user.member_id)}"
-                                       class="w-full p-2 border border-gray-300 rounded-lg text-base">
-                            </div>
-                            <div class="mb-4">
-                                <label for="workEndTime" class="block mb-2 text-sm text-gray-600">퇴근 시간</label>
-                                <input type="time" id="workEndTime"
-                                       th:value="${@mainService.getEndTime(#authentication.principal.user.member_id)}"
-                                       class="w-full p-2 border border-gray-300 rounded-lg text-base">
-                            </div>
-                        </div>
-                        <div class="text-right mt-5">
-                            <button class="save-time-btn bg-[#9BDCFD] hover:bg-[#7fcdf8] px-5 py-2 rounded-lg text-white font-medium">
-                                저장
-                            </button>
-                        </div>
-                    </div>
-                </div>
+
 
                 <div class="text-2xl font-semibold mb-1">Stress</div>
-                <button class="time-settings-btn p-1 rounded-full hover:bg-gray-100">⚙️</button>
+                <button class="time-settings-btn p-1 rounded-full hover:bg-gray-100 cursor-pointer">⚙️</button>
             </div>
 
             <div class="stress-no-data hidden text-gray-600 text-sm text-center p-4 overview-card">

@@ -69,4 +69,14 @@ public interface UserMapper {
             "payday = #{payday} " +
             "where member_id = #{member_id}")
     void updateUser(User user);
+
+    @Update("UPDATE iz_member SET " +
+            "start_time = #{start_time}, " +
+            "lunch_time = #{lunch_time}, " +
+            "end_time = #{end_time} " +
+            "WHERE member_id = #{member_id}")
+    void updateUserTime(@Param("member_id") String member_id,
+                        @Param("start_time") String start_time,
+                        @Param("lunch_time") String lunch_time,
+                        @Param("end_time") String end_time);
 }

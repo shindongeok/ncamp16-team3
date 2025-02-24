@@ -23,7 +23,7 @@ function updateCalendar(feelingList = []) {
         currentDate.setDate(monday.getDate() + i);
 
         const dateSpan = document.createElement('span');
-        dateSpan.className = 'calendar-date';
+        dateSpan.className = 'calendar-date cursor-pointer';
         dateSpan.textContent = currentDate.getDate();
 
         if (currentDate.toDateString() === today.toDateString()) {
@@ -132,9 +132,11 @@ function formatTimeRemaining(start, end) {
     return ` ${hours}시간 ${minutes}분 남았어요`;
 }
 
+// Modify the updateAllProgress function to handle the complete day text
 function updateAllProgress() {
     const circles = document.querySelectorAll('.progress-circle');
     const timeValues = document.querySelectorAll('.time-value');
+    const encouragementText = document.querySelector('.mt-3.text-center.text-sm');
 
     // 퇴근까지 남은 시간 (큰 원)
     const workProgress = calculateTimeProgress(globalStartTime, globalEndTime);
@@ -150,6 +152,13 @@ function updateAllProgress() {
 
     timeValues[0].textContent = lunchTimeText;  // 점심시간 텍스트
     timeValues[1].textContent = workTimeText;   // 퇴근시간 텍스트
+
+    // Check if both lunch and work times are completed
+    if (lunchTimeText === ' 완료!' && workTimeText === ' 완료!') {
+        encouragementText.textContent = '오늘 하루도 수고하셨습니다!';
+    } else {
+        encouragementText.textContent = '남은 시간도 힘내세요! 💪';
+    }
 }
 
 // 초기화 및 이벤트 리스너
