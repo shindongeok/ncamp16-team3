@@ -129,7 +129,7 @@ function formatTimeRemaining(start, end) {
     const hours = Math.floor(remainingMinutes / 60);
     const minutes = remainingMinutes % 60;
 
-    return `까지 ${hours}시간 ${minutes}분`;
+    return ` ${hours}시간 ${minutes}분 남았어요`;
 }
 
 function updateAllProgress() {
@@ -177,7 +177,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 주간 평균 스트레스 계산 및 표시
     const weeklyAverageStress = calculateWeeklyAverageStress(monthlyStressList);
     const stressElement = document.getElementById('weeklyStressNum');
-    const overviewStressNoData = document.querySelector('.overview-card .stress-no-data');
+    const overviewStressNoData = document.querySelector('.stress-no-data');  // .overview-card .stress-no-data 대신
 
     if (stressElement && overviewStressNoData) {
         if (weeklyAverageStress === null) {

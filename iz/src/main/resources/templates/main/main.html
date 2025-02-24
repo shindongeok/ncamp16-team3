@@ -1,12 +1,13 @@
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
-      class="h-full bg-white">
+<html>
 <head>
     <meta charset="UTF-8">
     <title>Izikgram</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" th:href="@{/css/default.css}">
     <style type="text/tailwindcss">
         @theme {
             --color-main-sky-highlight: #00a3ed;
@@ -15,7 +16,7 @@
             --color-main-red-basic: #ff9898;
             --color-main-yellow-highlight: #fbc159ff;
             --color-main-yellow-basic: #fdd391;
-            --color-main-black: #2C2C2C;
+
             /* gray-400*/
             --color-light-text: oklch(0.704 0.04 256.788);
             /* gray-600 */
@@ -24,165 +25,197 @@
             --color-bold-text: oklch(0.208 0.042 265.755);
         }
     </style>
-
-    <link rel="stylesheet" th:href="@{/css/mainStyle.css}">
 </head>
-<body>
-<div sec:authorize="isAuthenticated()" class="main-container relative">
+<!-- HTML body 부분 -->
+<body class="font-roboto mobile-container bg-[#f0f0f0]">
+<div sec:authorize="isAuthenticated()" class="relative bg-white min-h-screen md:w-[600px] md:mx-auto md:shadow-md w-full">
     <div class="pt-28"><header th:replace="~{header :: header}" class="pt-4"></header></div>
     <footer th:replace="~{footer :: footer}" class="pt-4"></footer>
-    <div class="page-title">Dashboard</div>
 
-    <div class="popular-posting-section">
-        <span class="popular-board">🔥 인기게시글</span>
-        <div class="popular-content-bubble">
-            <div th:if="${#lists.isEmpty(@mainService.getPopularBoardList())}" class="no-popular-posts">
-                인기게시글이 없습니다
-            </div>
-            <div class="popular-content-bubble-item"
-                 th:unless="${#lists.isEmpty(@mainService.getPopularBoardList())}"
-                 th:each="board, iterStat : ${@mainService.getPopularBoardList()}"
-                 th:if="${iterStat.index < 3}">
-                <a th:href="@{/board/{board_type}/{board_id}(board_type=${board.board_type}, board_id=${board.board_id})}"
-                   class="popular-board-title-link">
-                    <span class="popular-board-title" th:text="${board.title}"></span>
-                    <span class="like-count">👍 <span th:text="${board.like_count}"></span></span>
-                </a>
-            </div>
-        </div>
-    </div>
+    <div class="px-10">
+        <!-- 페이지 제목 -->
+        <div class="text-[1.7rem] font-bold text-[#2C2C2C]">Dashboard</div>
 
-    <div class="calendar-section">
-        <div class="section-title">Calendar</div>
-        <div class="today-date"></div>
-        <div class="calendar-wrapper">
-            <div class="calendar-grid">
-                <span class="day-label">M</span>
-                <span class="day-label">T</span>
-                <span class="day-label">W</span>
-                <span class="day-label">T</span>
-                <span class="day-label">F</span>
-                <span class="day-label">S</span>
-                <span class="day-label">S</span>
-            </div>
-            <div class="calendar-grid">
-                <!-- JavaScript로 동적 생성됨 -->
-            </div>
-        </div>
-    </div>
-
-    <div class="overview-section">
-        <div class="section-title">Overview</div>
-        <div class="overview-card-section">
-            <div class="overview-card">
-                <div class="overview-header">
-                    <span class="overview-icon">💸</span>
-                    <div class="overview-subtitle">월급까지</div>
+        <!-- 인기 게시글 섹션 -->
+        <div class="py-3 flex items-center gap-3">
+            <span class="text-base text-gray-600 flex items-center gap-1">🔥 인기게시글</span>
+            <div class="popular-content-bubble relative h-12 overflow-hidden bg-[#f8f9fa] rounded-3xl flex-1 shadow-sm">
+                <div th:if="${#lists.isEmpty(@mainService.getPopularBoardList())}"
+                     class="text-sm text-gray-600 text-center p-4">
+                    인기게시글이 없습니다
                 </div>
-                <div class="overview-content" id="payday"></div>
-            </div>
-            <div class="overview-card">
-                <div class="overview-header">
-                    <span class="overview-icon">📉</span>
-                    <div class="overview-subtitle">이번주 평균 퇴사지수</div>
+                <div class="popular-content-bubble-item absolute w-full h-full flex justify-between items-center opacity-0 translate-y-full animate-slide"
+                     th:unless="${#lists.isEmpty(@mainService.getPopularBoardList())}"
+                     th:each="board, iterStat : ${@mainService.getPopularBoardList()}"
+                     th:if="${iterStat.index < 3}">
+                    <a th:href="@{/board/{board_type}/{board_id}(board_type=${board.board_type}, board_id=${board.board_id})}"
+                       class="flex justify-between items-center w-full px-4 no-underline text-inherit">
+                            <span class="text-base text-gray-800 flex-1 whitespace-nowrap overflow-hidden text-ellipsis mr-3"
+                                  th:text="${board.title}"></span>
+                        <span class="text-sm text-gray-600 whitespace-nowrap flex items-center gap-1">
+                                👍 <span th:text="${board.like_count}"></span>
+                            </span>
+                    </a>
                 </div>
-                <div class="stress-no-data" style="display: none;">아직 기록된 퇴사지수가 없어요</div>
-                <div class="overview-content" id="weeklyStressNum"></div>
             </div>
         </div>
-    </div>
 
-    <div class="stress-section">
-        <div class="section-title-container">
-            <div class="time-settings-modal" id="timeSettingsModal">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h3>시간 설정</h3>
-                        <button class="close-modal-btn">&times;</button>
+        <!-- Calendar 섹션 -->
+        <div class="py-4">
+            <div class="text-2xl font-semibold mb-3">Calendar</div>
+            <div class="today-date text-lg mb-4 pl-2.5"></div>
+            <div class="bg-[#f8f9fa] rounded-2xl p-4">
+                <div class="calendar-grid grid grid-cols-7 gap-2 text-center">
+                    <span class="day-label text-lg py-2">M</span>
+                    <span class="day-label text-lg py-2">T</span>
+                    <span class="day-label text-lg py-2">W</span>
+                    <span class="day-label text-lg py-2">T</span>
+                    <span class="day-label text-lg py-2">F</span>
+                    <span class="day-label text-lg py-2">S</span>
+                    <span class="day-label text-lg py-2">S</span>
+                </div>
+                <div class="calendar-grid grid grid-cols-7 gap-2 text-center mt-2">
+                    <!-- JavaScript로 동적 생성됨 -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Overview 섹션 -->
+        <div class="py-4">
+            <div class="text-2xl font-semibold mb-3">Overview</div>
+            <div class="pt-2.5 flex flex-row flex-grow gap-4">
+                <div class="flex-1 p-4 bg-[#f8f9fa] rounded-2xl flex flex-col gap-2">
+                    <div class="flex items-center gap-2">
+                            <span class="w-8 h-8 bg-[#f0f0f0] rounded-lg flex items-center justify-center text-lg flex-shrink-0">
+                                💸
+                            </span>
+                        <div class="text-lg">월급까지</div>
                     </div>
-                    <div class="modal-body">
-                        <div class="time-input-group">
-                            <label for="workStartTime">출근 시간</label>
-                            <input type="time" id="workStartTime" th:value="${@mainService.getStartTime(#authentication.principal.user.member_id)}">
-                        </div>
-                        <div class="time-input-group">
-                            <label for="lunchTime">점심 시간</label>
-                            <input type="time" id="lunchTime" th:value="${@mainService.getLunchTime(#authentication.principal.user.member_id)}">
-                        </div>
-                        <div class="time-input-group">
-                            <label for="workEndTime">퇴근 시간</label>
-                            <input type="time" id="workEndTime" th:value="${@mainService.getEndTime(#authentication.principal.user.member_id)}">
-                        </div>
+                    <div class="text-3xl font-semibold text-[#2C2C2C] text-right mr-5" id="payday"></div>
+                </div>
+                <div class="flex-1 p-4 bg-[#f8f9fa] rounded-2xl flex flex-col gap-2">
+                    <div class="flex items-center gap-2">
+                            <span class="w-8 h-8 bg-[#f0f0f0] rounded-lg flex items-center justify-center text-lg flex-shrink-0">
+                                📉
+                            </span>
+                        <div class="text-lg">이번주 평균 퇴사지수</div>
                     </div>
-                    <div class="modal-footer">
-                        <button class="save-time-btn">저장</button>
+                    <div class="stress-no-data hidden text-gray-600 text-sm text-center p-4 overview-card">
+                        아직 기록된 퇴사지수가 없어요
                     </div>
+                    <div class="text-3xl font-semibold text-[#ff5353] text-right mr-5" id="weeklyStressNum"></div>
                 </div>
             </div>
-            <div class="section-title">Stress</div>
-            <button class="time-settings-btn">⚙️</button>
         </div>
 
-        <div class="stress-no-data" style="display: none;">아직 기록된 퇴사지수가 없어요</div>
-
-        <div class="stress-graph-section">
-            <div class="progress-container">
-                <svg width="200" height="200">
-                    <!-- 퇴근까지 (가장 큰 원) -->
-                    <circle
-                            cx="100"
-                            cy="100"
-                            r="90"
-                            fill="none"
-                            stroke="#C9F0FF"
-                            stroke-width="15"
-                    />
-                    <circle
-                            class="progress-circle"
-                            cx="100"
-                            cy="100"
-                            r="90"
-                            fill="none"
-                            stroke="#9BDCFD"
-                            stroke-width="15"
-                            stroke-dasharray="565.49"
-                            stroke-dashoffset="565.49"
-                            stroke-linecap="round"
-                            data-progress="0"
-                    />
-
-                    <!-- 점심까지 (가장 작은 원) -->
-                    <circle
-                            cx="100"
-                            cy="100"
-                            r="70"
-                            fill="none"
-                            stroke="#FFEFD7"
-                            stroke-width="15"
-                    />
-                    <circle
-                            class="progress-circle"
-                            cx="100"
-                            cy="100"
-                            r="70"
-                            fill="none"
-                            stroke="#FFD188"
-                            stroke-width="15"
-                            stroke-dasharray="439.82"
-                            stroke-dashoffset="439.82"
-                            stroke-linecap="round"
-                            data-progress="0"
-                    />
-                </svg>
-            </div>
-            <div class="labels-container">
-                <div class="time-status">
-                    <p class="time-text">
-                        점심시간<span class="lunch-time time-value"></span><br>
-                        퇴근시간<span class="end-time time-value"></span>
-                    </p>
+        <!-- Stress 섹션 -->
+        <div class="py-4">
+            <div class="flex justify-between items-center mb-5">
+                <!-- 모달 -->
+                <div class="time-settings-modal fixed inset-0 hidden bg-black/50 z-50 items-center justify-center" id="timeSettingsModal">
+                    <div class="bg-white rounded-2xl w-[90%] max-w-[400px] p-5 shadow-lg">
+                        <div class="flex justify-between items-center mb-5">
+                            <h3 class="text-lg font-semibold text-gray-800">시간 설정</h3>
+                            <button class="close-modal-btn text-2xl text-gray-600 hover:text-gray-800">&times;</button>
+                        </div>
+                        <div class="mb-4">
+                            <div class="mb-4">
+                                <label for="workStartTime" class="block mb-2 text-sm text-gray-600">출근 시간</label>
+                                <input type="time" id="workStartTime"
+                                       th:value="${@mainService.getStartTime(#authentication.principal.user.member_id)}"
+                                       class="w-full p-2 border border-gray-300 rounded-lg text-base">
+                            </div>
+                            <div class="mb-4">
+                                <label for="lunchTime" class="block mb-2 text-sm text-gray-600">점심 시간</label>
+                                <input type="time" id="lunchTime"
+                                       th:value="${@mainService.getLunchTime(#authentication.principal.user.member_id)}"
+                                       class="w-full p-2 border border-gray-300 rounded-lg text-base">
+                            </div>
+                            <div class="mb-4">
+                                <label for="workEndTime" class="block mb-2 text-sm text-gray-600">퇴근 시간</label>
+                                <input type="time" id="workEndTime"
+                                       th:value="${@mainService.getEndTime(#authentication.principal.user.member_id)}"
+                                       class="w-full p-2 border border-gray-300 rounded-lg text-base">
+                            </div>
+                        </div>
+                        <div class="text-right mt-5">
+                            <button class="save-time-btn bg-[#9BDCFD] hover:bg-[#7fcdf8] px-5 py-2 rounded-lg text-white font-medium">
+                                저장
+                            </button>
+                        </div>
+                    </div>
                 </div>
-                <div class="fighting-message">남은 시간도 힘내세요! 💪</div>
+
+                <div class="text-2xl font-semibold mb-1">Stress</div>
+                <button class="time-settings-btn p-1 rounded-full hover:bg-gray-100">⚙️</button>
+            </div>
+
+            <div class="stress-no-data hidden text-gray-600 text-sm text-center p-4 overview-card">
+                아직 기록된 퇴사지수가 없어요
+            </div>
+
+            <div class="flex flex-row items-center gap-6 p-4 bg-[#f8f9fa] rounded-2xl">
+                <div class="relative">
+                    <svg width="200" height="200" class="transform -rotate-90">
+                        <!-- 퇴근까지 (가장 큰 원) -->
+                        <circle
+                                cx="100"
+                                cy="100"
+                                r="90"
+                                fill="none"
+                                stroke="#C9F0FF"
+                                stroke-width="15"
+                        />
+                        <circle
+                                class="progress-circle transition-all duration-500 ease-in-out"
+                                cx="100"
+                                cy="100"
+                                r="90"
+                                fill="none"
+                                stroke="#9BDCFD"
+                                stroke-width="15"
+                                stroke-dasharray="565.49"
+                                stroke-dashoffset="565.49"
+                                stroke-linecap="round"
+                                data-progress="0"
+                        />
+
+                        <!-- 점심까지 (가장 작은 원) -->
+                        <circle
+                                cx="100"
+                                cy="100"
+                                r="70"
+                                fill="none"
+                                stroke="#FFEFD7"
+                                stroke-width="15"
+                        />
+                        <circle
+                                class="progress-circle transition-all duration-500 ease-in-out"
+                                cx="100"
+                                cy="100"
+                                r="70"
+                                fill="none"
+                                stroke="#FFD188"
+                                stroke-width="15"
+                                stroke-dasharray="439.82"
+                                stroke-dashoffset="439.82"
+                                stroke-linecap="round"
+                                data-progress="0"
+                        />
+                    </svg>
+                </div>
+                <div class="relative bg-white rounded-xl p-5 shadow-sm w-full max-w-[280px]">
+                    <div class="absolute -top-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-8 border-transparent border-b-white"></div>
+                    <div class="text-center text-[#2C2C2C] leading-[1.8]">
+                        <p class="text-base">
+                            점심시간<span class="lunch-time time-value text-[#fbc159]"></span><br>
+                            퇴근시간<span class="end-time time-value text-[#00a3ed]"></span>
+                        </p>
+                    </div>
+                    <div class="mt-3 text-center text-sm">
+                        남은 시간도 힘내세요! 💪
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -191,15 +224,14 @@
 <script th:inline="javascript">
     // Spring Security를 통해 전달받은 데이터를 전역 변수로 설정
     const feelingList = /*[[${@mainService.getMonthlyFeeling(
-        #authentication.principal.user.member_id,
-        T(java.time.LocalDate).now().format(T(java.time.format.DateTimeFormatter).ofPattern('yyyy-MM'))
-    )}]]*/ [];
+            #authentication.principal.user.member_id,
+            T(java.time.LocalDate).now().format(T(java.time.format.DateTimeFormatter).ofPattern('yyyy-MM'))
+        )}]]*/ [];
 
-    // 월별 stressNum 데이터 추가
     const monthlyStressList = /*[[${@mainService.getMonthlyStress(
-        #authentication.principal.user.member_id,
-        T(java.time.LocalDate).now().format(T(java.time.format.DateTimeFormatter).ofPattern('yyyy-MM'))
-    )}]]*/ [];
+            #authentication.principal.user.member_id,
+            T(java.time.LocalDate).now().format(T(java.time.format.DateTimeFormatter).ofPattern('yyyy-MM'))
+        )}]]*/ [];
 
     const payday = /*[[${@mainService.getPayday(#authentication.principal.user.member_id)}]]*/ 15;
     const startTime = /*[[${@mainService.getStartTime(#authentication.principal.user.member_id)}]]*/ '09:00';
@@ -208,5 +240,53 @@
     const stressNum = /*[[${@mainService.getStressNum(#authentication.principal.user.member_id)}]]*/ 0;
 </script>
 <script th:src="@{/js/mainScript.js}"></script>
+
+<style>
+    @keyframes slide {
+        0% { transform: translateY(100%); opacity: 0; }
+        5%, 30% { transform: translateY(0); opacity: 1; }
+        35% { transform: translateY(-100%); opacity: 0; }
+        100% { transform: translateY(-100%); opacity: 0; }
+    }
+    .animate-slide {
+        animation: slide 12s infinite;
+    }
+    .popular-content-bubble-item:nth-child(1) { animation-delay: 0s; }
+    .popular-content-bubble-item:nth-child(2) { animation-delay: 4s; }
+    .popular-content-bubble-item:nth-child(3) { animation-delay: 8s; }
+
+    .calendar-date {
+        font-size: 1.2rem;
+        padding: 0.5rem 0;
+        border-radius: 0.5rem;
+        transition: all 0.2s ease;
+    }
+
+    .calendar-date.active {
+        font-weight: bold;
+    }
+
+    /* 감정 상태 클래스들 */
+    .verybad {
+        background-color: #ff5353;
+        color: white;
+        font-weight: 500;
+    }
+    .bad {
+        background-color: #ff9898;
+        color: white;
+        font-weight: 500;
+    }
+    .good {
+        background-color: #9bdcfd;
+        color: white;
+        font-weight: 500;
+    }
+    .verygood {
+        background-color: #00a3ed;
+        color: white;
+        font-weight: 500;
+    }
+</style>
 </body>
 </html>
