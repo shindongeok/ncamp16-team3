@@ -191,7 +191,7 @@ public class  BoardController {
     }
 
     // 내가 작성한 게시글 리스트
-    @GetMapping("/myBoard")
+    @GetMapping("/myboard")
     public String myBoard( @AuthenticationPrincipal CustomUserDetails userDetails,
                            Model model){
 
