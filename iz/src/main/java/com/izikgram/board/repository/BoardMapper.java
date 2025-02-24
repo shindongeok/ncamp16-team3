@@ -11,7 +11,7 @@ import java.util.List;
 @Mapper
 public interface BoardMapper {
 
-    //게시판 종류
+    //게시판 이름
     @Select("select board_name " +
             "from iz_board_type " +
             "where board_type = #{board_type}")
@@ -285,14 +285,14 @@ public interface BoardMapper {
     @Update("update iz_board01_comment set comment_content = #{comment_content}" +
             "where comment_id = #{comment_id} and board_id = #{board_id}")
     int updateComment01(@Param("comment_content") String comment_content,
-                         @Param("board_id") int boardId,
-                         @Param("comment_id") int commentId);
+                        @Param("board_id") int boardId,
+                        @Param("comment_id") int commentId);
 
     @Update("update iz_board02_comment set comment_content = #{comment_content}" +
             "where comment_id = #{comment_id} and board_id = #{board_id}")
     int updateComment02(@Param("comment_content") String comment_content,
-                         @Param("board_id") int boardId,
-                         @Param("comment_id") int commentId);
+                        @Param("board_id") int boardId,
+                        @Param("comment_id") int commentId);
 
     // 게시글 삭제
     @Delete("delete from iz_board01_comment where board_id = #{board_id}")
