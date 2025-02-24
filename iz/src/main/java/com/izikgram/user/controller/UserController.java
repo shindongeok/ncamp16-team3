@@ -7,13 +7,17 @@ import com.izikgram.user.entity.User;
 import com.izikgram.user.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.validator.internal.constraintvalidators.bv.number.sign.NegativeOrZeroValidatorForBigDecimal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -34,9 +38,11 @@ public class UserController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+    private NegativeOrZeroValidatorForBigDecimal negativeOrZeroValidatorForBigDecimal;
 
     @GetMapping("/register")
-    public String register() {
+    public String register(Model model) {
+        model.addAttribute("user", new User());
         return "user/register";
     }
 
@@ -51,33 +57,39 @@ public class UserController {
 //    }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody User user) {
-        log.info("user: {}", user);
+    public ResponseEntity<?> register(@Valid @RequestBody User user, BindingResult bindingResult) {
+//        log.info("user: {}", user);
 
         if (user == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("실패");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("실패");
         }
 
-//        String password = user.getPassword();
-//        String encodePw = passwordEncoder.encode(password);
-//        user.setPassword(encodePw);
+        if (bindingResult.hasErrors()) {
+            Map<String, String> errors = bindingResult.getFieldErrors().stream()
+                    .collect(Collectors.toMap(
+                            error -> error.getField(),
+                            error -> error.getDefaultMessage()
+                    ));
+
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+        }
 
         timeSubstring(user);
-
         userService.register(user);
 
-        return ResponseEntity.ok("비밀번호 변경 성공");
+        return ResponseEntity.ok("회원가입 성공");
     }
 
     @ResponseBody
     @GetMapping("/checkId/{member_id}")
-    public Map<String, Boolean> checkUsername(@PathVariable String member_id) {
-        Map<String, Boolean> result = new HashMap<>();
+    public ResponseEntity<?> checkUsername(@PathVariable String member_id) {
+//        log.info("check id: {}", member_id);
+        if (!member_id.matches("[a-zA-Z0-9]{6,20}")) {
+//            log.info("매치 오류");
+            return ResponseEntity.badRequest().body(Map.of("error", "아이디는 6~20자 영문과 숫자만 가능합니다."));
+        }
         boolean isExist = userService.userIdCheck(member_id);
-//        log.info("check id {}", member_id);
-//        log.info("isExist {}", isExist);
-        result.put("exist", isExist);
-        return result;
+        return ResponseEntity.ok(Map.of("exist", isExist));
     }
 
     @GetMapping("/findId")
