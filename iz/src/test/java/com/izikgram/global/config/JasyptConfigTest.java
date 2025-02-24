@@ -19,7 +19,6 @@ class JasyptConfigTest extends JasyptConfig {
         String encryptPassword = jasyptEncrypt(password);
 
         System.out.println("encURL: " + encryptUrl);
-        System.out.println("decURL: " + jasyptDecrypt(encryptUrl));
         System.out.println("encUsername: " + encryptUsername);
         System.out.println("encPassword: " + encryptPassword);
 
