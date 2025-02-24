@@ -46,6 +46,7 @@
         }
 
         .box {
+            position: relative;  /* 추가 */
             user-select: none;
             transition: transform 0.2s ease;
             flex-shrink: 0;
@@ -56,7 +57,6 @@
             border-radius: 10px;
             border: 1px solid #e5e7eb;
             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            /* 텍스트 줄바꿈 관련 속성 수정 */
             word-wrap: break-word;
             overflow-wrap: break-word;
             word-break: break-all;
@@ -235,7 +235,11 @@
         </h1>
         <div class="flex items-center mb-6">
             <div id="box-container" class="flex gap-4 cursor-grab">
-                <div th:each="job : ${deadlineJobs}" class="box flex flex-col justify-between">
+                <div th:each="job : ${deadlineJobs}" class="box flex flex-col justify-between relative">
+                    <button th:data-job-id="${job.id}"
+                            th:class="'scrap-btn absolute top-4 right-3 text-xl ' + (${@jobService.checkIfScraped(job.id, #authentication.principal.user.member_id)} ? 'text-yellow-400' : 'text-gray-300')">
+                        <i class="fas fa-star"></i>
+                    </button>
                     <div>
                         <h2 class="text-lg font-bold mb-2 text-gray-800 text-wrapper" th:text="${job.companyName}">기업명</h2>
                         <p class="text-sm text-gray-700 job-title mb-3" th:text="${job.title}">공고 제목</p>
@@ -250,7 +254,10 @@
                             </div>
                             <div class="content-wrapper">
                                 <i class="fas fa-users"></i>
-                                <span th:text="'경력 ' + ${job.experienceMax} + '~' + ${job.experienceMin} + '년'">경력</span>
+                                <span th:text="${job.experienceMax == 0 and job.experienceMin == 0} ? '신입'
+                                    : (${job.experienceMax == job.experienceMin} ? '경력 ' + ${job.experienceMax} + '년'
+                                    : '경력 ' + (${job.experienceMax} >= ${job.experienceMin} ? ${job.experienceMin} + '~' + ${job.experienceMax}
+                                    : ${job.experienceMax} + '~' + ${job.experienceMin}) + '년')">경력</span>
                             </div>
                             <div class="content-wrapper">
                                 <i class="fas fa-user-graduate"></i>
@@ -286,7 +293,11 @@
         </h1>
         <div class="flex items-center mb-6">
             <div id="box-container2" class="flex gap-4 cursor-grab">
-                <div th:each="job : ${recentJobs}" class="box flex flex-col justify-between">
+                <div th:each="job : ${recentJobs}" class="box flex flex-col justify-between relative">
+                    <button th:data-job-id="${job.id}"
+                            th:class="'scrap-btn absolute top-4 right-3 text-xl ' + (${@jobService.checkIfScraped(job.id, #authentication.principal.user.member_id)} ? 'text-yellow-400' : 'text-gray-300')">
+                        <i class="fas fa-star"></i>
+                    </button>
                     <div>
                         <h2 class="text-lg font-bold mb-2 text-gray-800 text-wrapper" th:text="${job.companyName}">기업명</h2>
                         <p class="text-sm text-gray-700 job-title mb-3" th:text="${job.title}">공고 제목</p>
@@ -301,7 +312,10 @@
                             </div>
                             <div class="content-wrapper">
                                 <i class="fas fa-users"></i>
-                                <span th:text="'경력 ' + ${job.experienceMax} + '~' + ${job.experienceMin} + '년'">경력</span>
+                                <span th:text="${job.experienceMax == 0 and job.experienceMin == 0} ? '신입'
+                                    : (${job.experienceMax == job.experienceMin} ? '경력 ' + ${job.experienceMax} + '년'
+                                    : '경력 ' + (${job.experienceMax} >= ${job.experienceMin} ? ${job.experienceMin} + '~' + ${job.experienceMax}
+                                    : ${job.experienceMax} + '~' + ${job.experienceMin}) + '년')">경력</span>
                             </div>
                             <div class="content-wrapper">
                                 <i class="fas fa-user-graduate"></i>
@@ -395,42 +409,77 @@
         let deadlineOffset = 5;
         let recentOffset = 5;
 
+        $(document).on('click', '.scrap-btn', function(e) {
+            e.preventDefault();
+            const $btn = $(this);
+            const jobId = $btn.data('job-id');
+
+            $.ajax({
+                url: '/job/scrap/' + jobId,
+                type: 'POST',
+                success: function(response) {
+                    if (response.success) {
+                        if (response.isScraped) {
+                            $btn.addClass('text-yellow-400').removeClass('text-gray-300');
+                        } else {
+                            $btn.addClass('text-gray-300').removeClass('text-yellow-400');
+                        }
+                    } else {
+                        alert('스크랩 처리 중 오류가 발생했습니다.');
+                    }
+                },
+                error: function() {
+                    alert('서버 통신 중 오류가 발생했습니다.');
+                }
+            });
+        });
+
         // 마감 임박 공고 더보기
         $('#loadMoreDeadline').click(function() {
-            const $button = $(this).parent(); // 버튼의 부모 div를 선택
+            const $button = $(this).parent();
             const loc_mcd = $('.relative select').eq(0).val();
             const ind_cd = $('.relative select').eq(1).val();
             const edu_lv = $('.relative select').eq(2).val();
 
             $.get(`/job/hire?loc_mcd=${loc_mcd}&ind_cd=${ind_cd}&edu_lv=${edu_lv}&offset=${deadlineOffset}`)
                 .done(function(response) {
-                    // HTML 파싱을 위한 임시 div 생성
                     const $temp = $('<div>').html(response);
-                    // 새로운 채용공고만 선택 (box 클래스를 가진 div만)
                     const $newContent = $temp.find('#box-container .box');
 
                     if ($newContent.length > 0) {
-                        // 버튼의 부모 div를 제거했다가
+                        $newContent.each(function() {
+                            const $box = $(this);
+                            const jobId = $box.find('[data-job-id]').data('job-id');
+
+                            // 스크랩 상태 확인
+                            $.get(`/job/scrap/check/${jobId}`, function(response) {
+                                const isScraped = response.isScraped;
+                                const $scrapBtn = $box.find('.scrap-btn');
+
+                                if (isScraped) {
+                                    $scrapBtn.addClass('text-yellow-400').removeClass('text-gray-300');
+                                } else {
+                                    $scrapBtn.addClass('text-gray-300').removeClass('text-yellow-400');
+                                }
+                            });
+                        });
+
                         $button.detach();
-                        // 새 내용 추가
                         $('#box-container').append($newContent);
-                        // 버튼의 부모 div를 다시 추가
                         $('#box-container').append($button);
 
                         deadlineOffset += 5;
 
-                        // 가져온 데이터가 5개 미만이면 더보기 버튼 숨기기
                         if ($newContent.length < 5) {
                             $button.hide();
                         }
                     } else {
-                        // 더 이상 데이터가 없으면 버튼 숨기기
                         $button.hide();
                     }
                 });
         });
 
-// 최근 공고 더보기도 동일한 방식으로 수정
+        // 최근 공고 더보기
         $('#loadMoreRecent').click(function() {
             const $button = $(this).parent();
             const loc_mcd = $('.relative select').eq(0).val();
@@ -443,6 +492,27 @@
                     const $newContent = $temp.find('#box-container2 .box');
 
                     if ($newContent.length > 0) {
+                        $newContent.each(function() {
+                            const $box = $(this);
+                            // relative 클래스가 없다면 추가
+                            if (!$box.hasClass('relative')) {
+                                $box.addClass('relative');
+                            }
+                            const jobId = $box.find('[data-job-id]').data('job-id');
+
+                            // 스크랩 상태 확인
+                            $.get(`/job/scrap/check/${jobId}`, function(response) {
+                                const isScraped = response.isScraped;
+                                const $scrapBtn = $box.find('.scrap-btn');
+
+                                if (isScraped) {
+                                    $scrapBtn.addClass('text-yellow-400').removeClass('text-gray-300');
+                                } else {
+                                    $scrapBtn.addClass('text-gray-300').removeClass('text-yellow-400');
+                                }
+                            });
+                        });
+
                         $button.detach();
                         $('#box-container2').append($newContent);
                         $('#box-container2').append($button);

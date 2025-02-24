@@ -3,10 +3,13 @@ package com.izikgram.job.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.izikgram.job.entity.Job;
+import com.izikgram.job.repository.JobMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -22,6 +25,9 @@ public class JobService {
 
     @Value("${saramin.api.key}")
     private String apiKey;
+
+    @Autowired
+    private JobMapper jobMapper;
 
     public List<Job> searchJobs(String locMcd, String indCd, String eduLv) {
         try {
@@ -72,11 +78,6 @@ public class JobService {
                 job.setExperienceMax(expLevel.path("max").asInt());
                 job.setEducationLevel(position.path("required-education-level").path("name").asText());
 
-                // 급여 정보
-                JsonNode salary = jobNode.path("salary");
-                job.setSalaryCode(salary.path("code").asText());
-                job.setSalaryName(salary.path("name").asText());
-
                 // timestamp 필드 설정
                 job.setPostingTimestamp(jobNode.path("posting-timestamp").asText());
                 job.setExpirationTimestamp(jobNode.path("expiration-timestamp").asText());
@@ -121,6 +122,48 @@ public class JobService {
                 })
                 .skip(offset)  // offset만큼 건너뛰기
                 .limit(5)
+                .collect(Collectors.toList());
+    }
+
+    public boolean checkIfScraped(String job_rec_id, String member_id) {
+        return jobMapper.checkIfScraped(job_rec_id, member_id);
+    }
+
+    @Transactional
+    public boolean toggleScrap(Job job, String memberId) {
+        try {
+            // 스크랩 여부 확인
+            boolean exists = jobMapper.checkIfScraped(job.getId(), memberId);
+
+            if (exists) {
+                // 이미 스크랩되어 있으면 삭제
+                jobMapper.deleteJobScrap(job, memberId);
+                return false;
+            } else {
+                // 스크랩되어 있지 않으면 추가
+                jobMapper.addJobScrap(job, memberId);
+                return true;
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to toggle scrap", e);
+        }
+    }
+
+    public List<Job> getScrapedJobs(String memberId, String locMcd, String indCd, String eduLv) {
+        // 사용자의 스크랩된 job_rec_id 목록 가져오기
+        List<String> scrapedJobIds = jobMapper.getScrapedJobIds(memberId);
+
+        // 스크랩된 job_rec_id가 없으면 빈 리스트 반환
+        if (scrapedJobIds.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        // API에서 모든 채용공고 가져오기
+        List<Job> allJobs = searchJobs(locMcd, indCd, eduLv);
+
+        // 스크랩된 job_rec_id와 일치하는 채용공고만 필터링
+        return allJobs.stream()
+                .filter(job -> scrapedJobIds.contains(job.getId()))
                 .collect(Collectors.toList());
     }
 }
