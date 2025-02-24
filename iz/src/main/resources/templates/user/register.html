@@ -148,17 +148,6 @@
                 </div>
             </div>
 
-<!--            <div class="flex justify-around">-->
-<!--                <div>-->
-<!--                    <label for="male" class="text-bold-text">남자</label>-->
-<!--                    <input type="radio" id="male" name="gender" value="male" class="m-1">-->
-<!--                </div>-->
-<!--                <div>-->
-<!--                    <label for="female" class="text-bold-text">여자</label>-->
-<!--                    <input type="radio" id="female" name="gender" value="female" class="m-1">-->
-<!--                </div>-->
-<!--            </div>-->
-
             <div class="flex justify-around">
                 <div class="items-center w-1/5 mt-2">
                     <label class="align-middle text-lg/6 text-gray-900">성별</label>
@@ -202,7 +191,7 @@
             </div>
 
             <div>
-                <label for="email" class="block text-lg/6 text-gray-900">희망 근무지</label>
+                <label for="loc_mod" class="block text-lg/6 text-gray-900">희망 근무지</label>
                 <div class="mt-2">
                     <select id="loc_mod" name="loc_mod" class="block w-full rounded-md bg-white px-3 py-1.5 text-lg text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-sky-500 sm:text-sm/6 h-9">
                         <option value="101000">서울</option>
@@ -453,13 +442,23 @@
             },
             error: function(xhr) {
                 let errors = xhr.responseJSON;
-                Object.keys(errors).forEach(field => {
-                    let errorMessageElement = document.querySelector(`.errorMessage[data-name="${field}"]`);
-                    if (errorMessageElement) {
-                        errorMessageElement.textContent = errors[field];
-                    }
+
+                // 모든 에러 메시지 요소를 숨김
+                document.querySelectorAll('.errorMessage').forEach(element => {
+                    element.style.display = 'none';
+                    element.textContent = '';  // 기존 메시지도 초기화
                 });
-                showModal("오류 발생", "회원가입 실패", false);
+
+                if (errors && Object.keys(errors).length > 0) {
+                    Object.keys(errors).forEach(field => {
+                        let errorMessageElement = document.querySelector(`.errorMessage[data-name="${field}"]`);
+                        if (errorMessageElement) {
+                            errorMessageElement.style.display = 'block';
+                            errorMessageElement.textContent = errors[field];
+                        }
+                    });
+                    showModal("오류 발생", "회원가입 실패", false);
+                }
             }
         });
     });

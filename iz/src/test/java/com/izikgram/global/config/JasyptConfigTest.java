@@ -19,7 +19,6 @@ class JasyptConfigTest extends JasyptConfig {
         String encryptPassword = jasyptEncrypt(password);
 
         System.out.println("encURL: " + encryptUrl);
-        System.out.println("decURL: " + jasyptDecrypt(encryptUrl));
         System.out.println("encUsername: " + encryptUsername);
         System.out.println("encPassword: " + encryptPassword);
 
@@ -84,6 +83,21 @@ class JasyptConfigTest extends JasyptConfig {
 
         assertThat(saraminApi).isEqualTo(jasyptDecrypt(encUrl));
         assertThat(saraminDomain).isEqualTo(jasyptDecrypt(encPassword));
+    }
+
+    @Test
+    void clova() {
+        String clovaApi = "";
+        String clovaUrl = "https://clovastudio.stream.ntruss.com/testapp/v1/chat-completions/HCX-003";
+
+        String encApi = jasyptEncrypt(clovaApi);
+        String encUrl = jasyptEncrypt(clovaUrl);
+
+        System.out.println("clovaApi: " + encApi);
+        System.out.println("clovaUrl: " + encUrl);
+
+        assertThat(clovaApi).isEqualTo(jasyptDecrypt(encApi));
+        assertThat(clovaUrl).isEqualTo(jasyptDecrypt(encUrl));
     }
 
     private String jasyptEncrypt(String input) { // 암호화
