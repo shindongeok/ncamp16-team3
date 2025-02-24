@@ -442,13 +442,23 @@
             },
             error: function(xhr) {
                 let errors = xhr.responseJSON;
-                Object.keys(errors).forEach(field => {
-                    let errorMessageElement = document.querySelector(`.errorMessage[data-name="${field}"]`);
-                    if (errorMessageElement) {
-                        errorMessageElement.textContent = errors[field];
-                    }
+
+                // 모든 에러 메시지 요소를 숨김
+                document.querySelectorAll('.errorMessage').forEach(element => {
+                    element.style.display = 'none';
+                    element.textContent = '';  // 기존 메시지도 초기화
                 });
-                showModal("오류 발생", "회원가입 실패", false);
+
+                if (errors && Object.keys(errors).length > 0) {
+                    Object.keys(errors).forEach(field => {
+                        let errorMessageElement = document.querySelector(`.errorMessage[data-name="${field}"]`);
+                        if (errorMessageElement) {
+                            errorMessageElement.style.display = 'block';
+                            errorMessageElement.textContent = errors[field];
+                        }
+                    });
+                    showModal("오류 발생", "회원가입 실패", false);
+                }
             }
         });
     });
