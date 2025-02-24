@@ -10,6 +10,7 @@ import com.izikgram.board.entity.Comment;
 import com.izikgram.board.entity.CommentDto;
 import com.izikgram.board.repository.BoardMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,12 +30,10 @@ public class BoardService {
     private AlarmService alarmService;
 
 
-    //게시판 종류 조회
+    //게시판 이름 조회
     public String findBoardName(int board_type){
 
-        String boardName = boardMapper.getBoardName(board_type);
-
-        return boardName;
+        return boardMapper.getBoardName(board_type);
     }
 
     // 게시판 리스트 조회
@@ -336,6 +335,7 @@ public class BoardService {
         return map;
     }
 
+    //내가 작성한 게시글 5개 보여주기
     public Map<String, List<BoardDto>> getMyBoardList(String writer_id){
         Map<String, List<BoardDto>> map = new HashMap<>();
         List<BoardDto> myBoardList01 = boardMapper.getMyBoardList01(writer_id);
@@ -346,6 +346,17 @@ public class BoardService {
 
 
         log.info("myBoardList01:{}, myBoardList02 {} ", myBoardList01, myBoardList02);
+        map.put("myBoardList01", myBoardList01);
+        map.put("myBoardList02", myBoardList02);
+
+        return map;
+    }
+
+    public Map<String, List<BoardDto>> getMyBoardList02(String writer_id){
+        Map<String, List<BoardDto>> map = new HashMap<>();
+        List<BoardDto> myBoardList01 = boardMapper.getMyBoardList01(writer_id);
+        List<BoardDto> myBoardList02 = boardMapper.getMyBoardList02(writer_id);
+
         map.put("myBoardList01", myBoardList01);
         map.put("myBoardList02", myBoardList02);
 

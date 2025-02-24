@@ -34,7 +34,7 @@
         </div>
         <form id="postForm" th:action="@{/board/{board_type}/{board_id}(board_type=${board.board_type}, board_id=${board.board_id})}" method="post" onsubmit="return PostFormInsertBut()">
             <!-- 제목 입력 -->
-            <input type="text" id="title" name="title" th:value="${board.title}"   class="border border-gray-300 rounded-md p-2 w-full my-5" maxlength="50" readonly>
+            <input type="text" id="title" name="title" th:value="${board.title}"   class="border border-gray-300 rounded-md p-2 w-full my-5" maxlength="45" readonly>
 
             <div class="h-100">
                 <!-- 내용 입력 -->
