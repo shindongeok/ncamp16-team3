@@ -7,16 +7,16 @@ import lombok.Data;
 @Data
 public class User {
 
-    @Pattern(regexp = "[a-zA-Z0-9]{6,20}", message = "6~20자 사이의 영문대소문자와 숫자로만 입력해주세요")
+    @Pattern(regexp = "[a-z0-9]{6,20}", message = "6~20자 사이의 영문소문자와 숫자로만 입력해주세요")
     private String member_id;
 
-    @Pattern(regexp = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,15}$", message = "비밀번호는 8~15자 사이이며, 영문대소문자와 숫자가 필수입니다")
+    @Pattern(regexp = "^(?=.*?[a-z])(?=.*?[0-9]).{8,15}$", message = "비밀번호는 8~15자 사이이며, 영문소문자와 숫자가 필수입니다")
     private String password;
 
     @Pattern(regexp = "[가-힣]{2,5}", message = "2~5글자 사이의 한글로 적어주세요")
     private String name;
 
-    @Pattern(regexp = "[0-9]{10,11}", message = "10~11글자 사이의 숫자만 입력해주세요")
+    @Pattern(regexp = "01([0|1|6|7|8|9])([0-9]{3,4})([0-9]{4})", message = "번호형식이 맞지않습니다")
     private String phone_num;
     private String nickname;
     private String birth_date;
