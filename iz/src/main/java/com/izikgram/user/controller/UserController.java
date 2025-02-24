@@ -265,4 +265,9 @@ public class UserController {
         userService.deleteUser(deleteUser.getMember_id()); // DB에서 status 변경
         return "redirect:/";
     }
+
+    @GetMapping("/analyze")
+    public String analyzePage() {
+        return "user/chat";
+    }
 }
