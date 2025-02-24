@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
@@ -42,57 +43,85 @@
     <div class="p-4">
         <h1 class="text-2xl font-bold mb-6">찜 해놓은 채용공고</h1>
 
-        <div class="bg-white shadow-md rounded-lg p-4 mb-4 relative">
-            <button onclick="toggleBookmark(this)" class="absolute top-4 right-4 transition-colors duration-200">
-                <i class="fas fa-star text-yellow-400 text-xl"></i>
-            </button>
-            <h2 class="text-lg font-semibold">🔹 삼성전자</h2>
-            <p class="text-gray-600">소프트웨어 엔지니어</p>
-            <p class="text-gray-500 text-sm">서울특별시 강남구</p>
+        <div th:if="${scrapedJobs.isEmpty()}" class="text-center text-gray-500 py-10">
+            저장된 채용공고가 없습니다.
         </div>
 
-        <div class="bg-white shadow-md rounded-lg p-4 mb-4 relative">
-            <button onclick="toggleBookmark(this)" class="absolute top-4 right-4 transition-colors duration-200">
-                <i class="fas fa-star text-yellow-400 text-xl"></i>
+        <div th:each="job : ${scrapedJobs}" class="bg-white shadow-md rounded-lg p-4 mb-4 relative">
+            <button th:data-job-id="${job.id}"
+                    class="scrap-btn absolute top-4 right-4 transition-colors duration-200 text-yellow-400">
+                <i class="fas fa-star"></i>
             </button>
-            <h2 class="text-lg font-semibold">🔹 네이버</h2>
-            <p class="text-gray-600">백엔드 개발자</p>
-            <p class="text-gray-500 text-sm">경기도 성남시</p>
+            <h2 class="text-lg font-semibold mb-2" th:text="${job.companyName}">🔹 기업명</h2>
+            <p class="text-gray-600" th:text="${job.title}">채용 제목</p>
+            <div class="text-gray-500 text-sm space-y-1">
+                <div th:text="${job.locationName}">지역</div>
+                <div th:text="${job.experienceMax == 0 and job.experienceMin == 0} ? '신입'
+                    : (${job.experienceMax == job.experienceMin} ? '경력 ' + ${job.experienceMax} + '년'
+                    : '경력 ' + (${job.experienceMax} >= ${job.experienceMin} ? ${job.experienceMin} + '~' + ${job.experienceMax}
+                    : ${job.experienceMax} + '~' + ${job.experienceMin}) + '년')">경력</div>
+                <div>마감일 <span th:text="${job.expirationTimestamp}" class="timestamp"></span></div>
+            </div>
+            <a th:href="${job.url}" target="_blank"
+               class="mt-2 inline-block text-blue-600 hover:text-blue-800 text-sm">
+                상세보기
+            </a>
         </div>
-
-        <div class="bg-white shadow-md rounded-lg p-4 mb-4 relative">
-            <button onclick="toggleBookmark(this)" class="absolute top-4 right-4 transition-colors duration-200">
-                <i class="fas fa-star text-yellow-400 text-xl"></i>
-            </button>
-            <h2 class="text-lg font-semibold">🔹 카카오</h2>
-            <p class="text-gray-600">프론트엔드 개발자</p>
-            <p class="text-gray-500 text-sm">제주특별자치도</p>
-        </div>
-
-        <div class="bg-white shadow-md rounded-lg p-4 mb-4 relative">
-            <button onclick="toggleBookmark(this)" class="absolute top-4 right-4 transition-colors duration-200">
-                <i class="fas fa-star text-yellow-400 text-xl"></i>
-            </button>
-            <h2 class="text-lg font-semibold">🔹 짱구야</h2>
-            <p class="text-gray-600">그라면 안돼</p>
-            <p class="text-gray-500 text-sm">ㅇㅇ</p>
-        </div>
-
-
     </div>
 </div>
 
 <script>
-    function toggleBookmark(button) {
-        const icon = button.querySelector('i');
-        if (icon.classList.contains('text-yellow-400')) {
-            icon.classList.remove('text-yellow-400');
-            icon.classList.add('text-gray-300');
-        } else {
-            icon.classList.remove('text-gray-300');
-            icon.classList.add('text-yellow-400');
+    $(document).ready(function() {
+        $('.scrap-btn').click(function(e) {
+            e.preventDefault();
+            const $btn = $(this);
+            const jobId = $btn.data('job-id');
+
+            $.ajax({
+                url: '/job/scrap/' + jobId,
+                type: 'POST',
+                success: function(response) {
+                    if (response.success) {
+                        if (!response.isScraped) {
+                            // 스크랩 해제된 경우 해당 요소 제거
+                            $btn.closest('.bg-white').remove();
+
+                            // 목록이 비어있으면 메시지 표시
+                            if ($('.bg-white').length === 0) {
+                                $('.p-4').append(
+                                    '<div class="text-center text-gray-500 py-10">' +
+                                    '저장된 채용공고가 없습니다.' +
+                                    '</div>'
+                                );
+                            }
+                        }
+                    } else {
+                        alert('스크랩 처리 중 오류가 발생했습니다.');
+                    }
+                },
+                error: function() {
+                    alert('서버 통신 중 오류가 발생했습니다.');
+                }
+            });
+        });
+
+        // Format timestamps
+        const timestampElements = document.querySelectorAll('.timestamp');
+        timestampElements.forEach(element => {
+            const timestamp = parseFloat(element.textContent);
+            if (!isNaN(timestamp)) {
+                element.textContent = formatTimestamp(timestamp);
+            }
+        });
+
+        function formatTimestamp(timestamp) {
+            const date = new Date(timestamp * 1000); // Unix timestamp를 밀리초로 변환
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
         }
-    }
+    });
 </script>
 
 </body>

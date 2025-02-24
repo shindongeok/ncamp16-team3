@@ -24,19 +24,9 @@ public class Job {
     private Integer experienceMax;      // 최대 경력
     private String educationLevel;      // 학력요건
 
-    // 급여 정보
-    private String salaryCode;          // 급여 코드
-    private String salaryName;          // 급여 정보
-
     // 날짜 정보
     private String postingTimestamp;    // Unix timestamp 문자열
     private String expirationTimestamp;
     private String postingDate;         // 등록일
     private String expirationDate;      // 마감일
-
-    // 기타 정보
-    private String keyword;             // 키워드
-    private Integer readCount;          // 조회수
-    private Integer applyCount;         // 지원자수
-    private boolean active;             // 활성화 상태
 }
