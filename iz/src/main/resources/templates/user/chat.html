@@ -7,9 +7,12 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 flex items-center justify-center h-screen">
-<div class="bg-white p-6 rounded-lg shadow-xl w-full max-w-lg">
+<div class="bg-white p-6 rounded-lg shadow-xl w-full max-w-lg relative">
+    <div class="pt-20"><header th:replace="~{header :: header} " class="pt-4"></header></div>
+
     <!-- 환영 메시지 -->
-    <div class="mb-6">
+    <div class="mb-6 ">
+
         안녕하세요, <span th:text="${#authentication.getPrincipal().getUser().getNickname()}"></span>님!
         <p class="text-sm text-gray-600">무엇을 도와드릴까요?</p>
     </div>
@@ -20,7 +23,9 @@
             오늘의 퇴사 수치
         </button>
 
-        <button onclick="feelchat()" class="p-3 text-sm text-left bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200">하소연하기</button>
+        <button onclick="feelchat()" class="p-3 text-sm text-left bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200">
+            하소연하기
+        </button>
 
         <button onclick="paydaychat()" class="p-3 text-sm text-left bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200">
             월급일까지 남은 일수
@@ -30,7 +35,9 @@
             남은 퇴근시간
         </button>
 
-        <button onclick="handleJobPostings()" class="p-3 text-sm text-left bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200">맞춤형 이직 공고 보기</button>
+        <button onclick="handleJobPostings()" class="p-3 text-sm text-left bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200">
+            맞춤형 이직 공고 보기
+        </button>
     </div>
 
     <!-- 메시지 영역 -->
@@ -137,6 +144,7 @@
             const diffTime = endtime - today;
 
             if (diffTime <= 0) {
+                removeLoading();
                 appendBotMessage("퇴근 시간이 지났습니다!");
                 return;
             }
@@ -288,6 +296,7 @@
             handleGeneralChat();
         }
     }
+    const stressNum = /*[[${@mainService.getStressNum(#authentication.principal.user.member_id)}]]*/ 0;
 
 </script>
 </body>
