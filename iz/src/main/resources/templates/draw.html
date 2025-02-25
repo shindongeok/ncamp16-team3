@@ -1,13 +1,15 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Izikgram</title>
     <link th:href="@{/images/Logo.png}" rel="shortcut icon" type="image/x-icon">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" th:href="@{/css/default.css}">
 </head>
 <body class="bg-gray-100 font-roboto">
-<div class="w-[600px] mx-auto p-8">
+<div class="mobile-container relative mx-auto p-8">
+    <div class="pt-28"><header th:replace="~{header :: header} " class="pt-4"></header></div>
 
     <h1 class="text-3xl font-bold text-center" style="color: #00a3ed;">제비뽑기 게임</h1><br>
 

@@ -3,15 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Title</title>
+    <title>Izikgram</title>
+    <link th:href="@{/images/Logo.png}" rel="shortcut icon" type="image/x-icon">
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <style type="text/tailwindcss">
-        html {
-            background-color: #f0f0f0;
-        }
         @theme {
             --color-main-sky-highlight: #00a3ed;
             --color-main-sky-basic: #9bdcfd;
@@ -20,26 +18,6 @@
             --color-main-yellow-highlight: #fbc159ff;
             --color-main-yellow-basic: #fdd391;
             --color-main-black: #2C2C2C;
-        }
-
-        /* PC에서 모바일 크기로 고정 */
-        @media screen and (min-width: 769px) {
-            .mobile-container {
-                width: 600px;
-                margin: 0 auto;
-                background: white;
-                box-shadow: 0 0 10px rgba(0,0,0,0.1);
-                min-height: 100vh;
-            }
-        }
-
-        /* 모바일에서는 전체 너비 사용 */
-        @media screen and (max-width: 768px) {
-            .mobile-container {
-                width: 100%;
-                background: white;
-                min-height: 100vh;
-            }
         }
 
         /* 모바일 스와이프 삭제 기능 관련 스타일 */
@@ -90,6 +68,7 @@
             }
         }
     </style>
+    <link rel="stylesheet" th:href="@{/css/default.css}">
 </head>
 
 <body>

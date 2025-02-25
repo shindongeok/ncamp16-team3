@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Izikgram</title>
+    <link th:href="@{/images/Logo.png}" rel="shortcut icon" type="image/x-icon">
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" th:href="@{/css/default.css}">
     <style type="text/tailwindcss">
@@ -15,25 +16,6 @@
             --color-main-yellow-highlight: #fbc159ff;
             --color-main-yellow-basic: #fdd391;
         }
-
-        @media screen and (min-width: 769px) {
-            .mobile-container {
-                width: 600px;
-                margin: 0 auto;
-                background: white;
-                box-shadow: 0 0 10px rgba(0,0,0,0.1);
-                min-height: 100vh;
-            }
-        }
-
-        @media screen and (max-width: 768px) {
-            .mobile-container {
-                width: 100%;
-                background: white;
-                min-height: 100vh;
-            }
-        }
-
     </style>
 </head>
 <body class="font-roboto mobile-container relative">
