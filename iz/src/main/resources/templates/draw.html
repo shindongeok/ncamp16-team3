@@ -1,0 +1,70 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" th:href="@{/css/default.css}">
+</head>
+<body class="bg-gray-100 font-roboto">
+<div class="w-[600px] mx-auto p-8">
+
+    <h1 class="text-3xl font-bold text-center" style="color: #00a3ed;">제비뽑기 게임</h1><br>
+
+    <!-- 플레이어 및 상품 입력 폼 -->
+    <form action="/draw/draw" method="get" class="bg-white shadow-lg rounded-lg p-6 mb-8">
+        <div class="mb-4">
+            <label for="players" class="block text-lg font-semibold">사람:</label>
+            <input type="text" id="players" name="players" placeholder="예: 홍길동, 김철수, 이영희" class="w-full mt-2 p-2 border border-gray-300 rounded-lg">
+        </div>
+
+        <div class="mb-4">
+            <label for="results" class="block text-lg font-semibold">상품 개수:</label>
+            <input type="text" id="results" name="results" placeholder="예: 2, 3, 1" class="w-full mt-2 p-2 border border-gray-300 rounded-lg">
+        </div>
+
+        <button type="submit" class="w-full bg-blue-500 text-white p-3 rounded-lg hover:bg-blue-600 transition duration-300">게임 시작</button>
+    </form>
+
+    <!-- 입력값이 없을 경우 메시지 표시 -->
+    <div th:if="${message != null}" class="text-red-600 text-center mb-4">
+        <p th:text="${message}"></p>
+    </div>
+
+    <!-- 결과 표시 -->
+    <div th:if="${gameResult != null}">
+        <h2 class="text-2xl font-semibold text-center" style="color: #00a3ed;">제비뽑기 결과</h2><br>
+
+        <!-- 결과 테이블 -->
+        <div class="bg-white shadow-lg rounded-lg p-6">
+            <table class="min-w-full bg-white border border-gray-200">
+                <thead style="background-color: #00a3ed; color: white;">
+                <tr>
+                    <th class="px-4 py-2 text-center">사람</th>
+                    <th class="px-4 py-2 text-center">결과</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="entry : ${gameResult}">
+                    <td class="px-4 py-2 border-b text-center">
+                        <div class="flex items-center justify-center space-x-2">
+                            <span class="text-xl font-semibold" th:text="${entry.key}"></span>
+                        </div>
+                    </td>
+                    <td class="px-4 py-2 border-b text-center">
+                        <div class="flex items-center justify-center space-x-2">
+                             <span class="text-xl font-semibold"
+                                   th:class="${entry.value == '걸렸다ㅋ' ? 'text-red-600' : ''}"
+                                   th:text="${entry.value}"></span>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="mt-6 text-center">
+            <a th:href="@{/draw/draw}" class="text-blue-600 hover:underline text-lg">다시 게임하기</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>
