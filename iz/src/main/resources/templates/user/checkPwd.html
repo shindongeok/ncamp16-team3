@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Izikgram</title>
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" th:href="@{/css/default.css}">
     <style type="text/tailwindcss">
         @theme {
             --color-main-sky-highlight: #00a3ed;
@@ -35,13 +36,15 @@
 
     </style>
 </head>
-<body class="h-full font-roboto mobile-container">
+<body class="font-roboto mobile-container relative">
+<div class="pt-12"><header th:replace="~{header :: header} " class="pt-4"></header></div>
+<footer th:replace="~{footer :: footer}" class="pt-4"></footer>
 <div class="flex items-center justify-center">
     <div class="flex flex-col items-center w-full max-w-sm px-6 py-12">
-        <div class="relative w-full flex flex-col items-center mb-10">
-            <img th:src="@{/images/izikgram.png}" alt="프로필" class="mx-auto relative w-50"/>
-        </div>
-        <div class="border-2 border-gray-300 rounded-lg">
+<!--        <div class="relative w-full flex flex-col items-center mb-10">-->
+<!--            <img th:src="@{/images/izikgram.png}" alt="프로필" class="mx-auto relative w-50"/>-->
+<!--        </div>-->
+        <div class="border-2 border-gray-300 rounded-lg mt-15">
             <div class="mt-6 text-center w-full">
                 <div class="mt-6 text-center">
                     <div class="font-bold text-xl">비밀번호 확인</div>
@@ -56,7 +59,7 @@
                         <div class="mt-2">
                             <input type="password" id="password" name="password"
                             required
-                            class="block w-85 rounded-md bg-white px-3 py-1.5 text-lg text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+                            class="block w-83 rounded-md bg-white px-3 py-1.5 text-lg text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
                         </div>
                         <div th:if="${param.error}" class="mt-2 text-red-600 text-sm">
                             * 비밀번호가 일치하지 않아요.
@@ -64,10 +67,10 @@
                     </div>
                 </div>
                 <div class="flex justify-center items-center space-x-3 m-10">
-                    <button type="submit" class="w-40 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 text-center">
+                    <button type="submit" class="cursor-pointer w-40 bg-main-sky-highlight text-white px-4 py-2 rounded-md hover:bg-sky-800 focus:outline-none focus:ring-2 focus:ring-blue-400 text-center">
                         다음
                     </button>
-                    <a href="/user/accountManagement" th:href="@{/user/accountManagement}" class="w-40 bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 text-center">
+                    <a href="/user/accountManagement" th:href="@{/user/accountManagement}" class="w-40 bg-main-red-highlight text-white px-4 py-2 rounded-md hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-red-400 text-center">
                         취소
                     </a>
                 </div>

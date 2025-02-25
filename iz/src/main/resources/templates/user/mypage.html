@@ -8,9 +8,8 @@
     <title>Title</title>
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" th:href="@{/css/default.css}">
-
     <style type="text/tailwindcss">
-        :root {
+        @theme {
             --color-main-sky-highlight: #00a3ed;
             --color-main-sky-basic: #9bdcfd;
             --color-main-red-highlight: #ff5353;
@@ -43,9 +42,6 @@
             to { stroke-dasharray: 447.75 597; }
         }
 
-        .gauge-progress {
-            animation: fillGauge 1.5s ease-out forwards;
-        }
 
         #stress-percent {
             transition: opacity 0.3s ease; /* 부드럽게 표시/숨기기 */
@@ -108,15 +104,13 @@
         });
     </script>
 </head>
-<body class="h-full font-roboto mobile-container relative">
+<body class="font-roboto mobile-container relative">
 <div class="pt-12"><header th:replace="~{header :: header} " class="pt-4"></header></div>
 <footer th:replace="~{footer :: footer}" class="pt-4"></footer>
 <div class="flex items-center justify-center">
     <div class="flex flex-col items-center w-full max-w-sm px-6 py-12">
         <div class="relative w-full flex flex-col items-center mb-10">
-            <div class="absolute -bottom-40 w-[600px] h-[300px] rounded-b-[300px]"
-                 style="background-color: var(--color-main-sky-basic);">
-            </div>
+            <div class="absolute bg-main-sky-basic -bottom-40 w-[600px] h-[300px] rounded-b-[300px]"></div>
 
             <!-- 게이지와 프로필 이미지를 포함하는 컨테이너 -->
             <div class="absolute top-15 flex items-center justify-center">

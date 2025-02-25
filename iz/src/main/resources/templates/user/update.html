@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Izikgram</title>
+    <link rel="stylesheet" th:href="@{/css/default.css}">
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
 
     <!-- calender -->
@@ -16,7 +17,12 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style type="text/tailwindcss">
         @theme {
-            --color-main-sky: #00a3ed;
+            --color-main-sky-highlight: #00a3ed;
+            --color-main-sky-basic: #9bdcfd;
+            --color-main-red-highlight: #ff5353;
+            --color-main-red-basic: #ff9898;
+            --color-main-yellow-highlight: #fbc159ff;
+            --color-main-yellow-basic: #fdd391;
         }
 
         @media screen and (min-width: 769px) {
@@ -39,7 +45,9 @@
     </style>
 
 </head>
-<body class="h-full font-roboto mobile-container">
+<body class="font-roboto mobile-container relative">
+<div class="pt-12"><header th:replace="~{header :: header} " class="pt-4"></header></div>
+<footer th:replace="~{footer :: footer}" class="pt-4"></footer>
 <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
     <div class="sm:mx-auto sm:w-full sm:max-w-sm">
         <h2 class="mt-10 text-center text-3xl tracking-tight text-gray-900">개인정보 수정</h2>
@@ -164,7 +172,7 @@
             </div>
 
             <div>
-                <button type="submit" class="flex w-full justify-center rounded-md bg-main-sky px-3 py-1.5 text-lg/6 text-white shadow-xs hover:bg-sky-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-800 cursor-pointer">수정 완료</button>
+                <button type="submit" class="flex w-full justify-center rounded-md bg-main-sky-highlight px-3 py-1.5 text-lg/6 text-white shadow-xs hover:bg-sky-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-800 cursor-pointer">수정 완료</button>
             </div>
         </form>
     </div>
