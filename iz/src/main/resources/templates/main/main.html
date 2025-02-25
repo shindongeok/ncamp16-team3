@@ -73,7 +73,7 @@
         <!-- 인기 게시글 섹션 -->
         <div class="py-3 flex items-center gap-3">
             <span class="text-base text-gray-600 flex items-center gap-1">🔥 인기게시글</span>
-            <div class="popular-content-bubble relative h-12 overflow-hidden bg-[#f8f9fa] rounded-3xl flex-1 shadow-sm">
+            <div class="popular-content-bubble relative h-12 overflow-hidden bg-[#f8f9fa] rounded-3xl flex-1">
                 <div th:if="${#lists.isEmpty(@mainService.getPopularBoardList())}"
                      class="text-sm text-gray-600 text-center p-4">
                     인기게시글이 없습니다
