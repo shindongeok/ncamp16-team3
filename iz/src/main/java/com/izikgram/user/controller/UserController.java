@@ -3,6 +3,7 @@ package com.izikgram.user.controller;
 import com.izikgram.global.security.CustomUserDetails;
 import com.izikgram.job.entity.Job;
 import com.izikgram.job.service.JobService;
+import com.izikgram.user.entity.PasswordDTO;
 import com.izikgram.user.entity.User;
 import com.izikgram.user.service.UserService;
 import jakarta.servlet.http.HttpSession;
@@ -37,7 +38,6 @@ public class UserController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-    private NegativeOrZeroValidatorForBigDecimal negativeOrZeroValidatorForBigDecimal;
 
     @GetMapping("/register")
     public String register(Model model) {
@@ -45,24 +45,12 @@ public class UserController {
         return "user/register";
     }
 
-//    @PostMapping("/register")
-//    public String register(User user) {
-////        log.info("payday: {}", user.getPayday());
-////        log.info("user: {}", user);
-//        timeSubstring(user);
-//
-//        userService.register(user);
-//        return "redirect:/";
-//    }
-
     @PostMapping("/register")
     public ResponseEntity<?> register(@Valid @RequestBody User user, BindingResult bindingResult) {
 //        log.info("user: {}", user);
-
         if (user == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("실패");
         }
-
         if (bindingResult.hasErrors()) {
             Map<String, String> errors = bindingResult.getFieldErrors().stream()
                     .collect(Collectors.toMap(
@@ -72,10 +60,8 @@ public class UserController {
 
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
         }
-
         timeSubstring(user);
         userService.register(user);
-
         return ResponseEntity.ok("회원가입 성공");
     }
 
@@ -96,70 +82,69 @@ public class UserController {
         return "user/findId";
     }
 
-//    @PostMapping("/findId")
-//    public String findId(String name, Model model) {
-//        String id = userService.findId(name);
-//        model.addAttribute("member_id", id);
-//        return "/user/findIdResult";
-//    }
-
     @GetMapping("/findIdResult")
     public String findIdResult(HttpSession session) {
-        // 모두 AuthController에서 처리
-//        String phoneNum = (String) session.getAttribute("phone_num");
-//        String name = (String) session.getAttribute("name");
-////        log.info("phone_num: {}, name: {}", phoneNum, name);
-//        User user = userService.findUserByPhoneNumber(name, phoneNum);
-//        String member_id = user.getMember_id();
-//        session.setAttribute("member_id", member_id);
-////        log.info("findIdResult: phoneNum={}, member_id={}", phoneNum, member_id);
         return "user/findIdResult";
     }
 
     @GetMapping("/findPw")
     public String findPw() {
-        return "/user/findPw";
+        return "user/findPw";
     }
 
-//    @PostMapping("/findPw")
-//    public String findPw(String member_id, Model model) {
-//        boolean object = userService.findPassword(member_id);
-////        log.info("member_id: " + member_id + ", object: " + object);
-//        if (object) {
-//            model.addAttribute("member_id", member_id);
-////            log.info("member_id: " + member_id);
-//            return "/user/findPwResult";
-//        } else {
-//            return "redirect:/user/findPw";
-//        }
-//    }
-
     @GetMapping("/findPwResult")
-    public String findPwResult() {
-        return "/user/findPwResult";
+    public String findPwResult(Model model) {
+        model.addAttribute("user", new User());
+        return "user/findPwResult";
     }
 
 //    @PostMapping("/resetPw")
-//    public String resetPw(String password, HttpSession session) {;
+//    public ResponseEntity<?> resetPw(@RequestParam String password, HttpSession session, BindingResult bindingResult) {
 //        String member_id = (String) session.getAttribute("member_id");
-//        log.info("member_id: {}", member_id);
-//        log.info("password: {}", password);
+////        log.info("member_id: {}", member_id);
+////        log.info("password: {}", password);
+//
+//        if (member_id == null) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("세션 만료. 다시 로그인하세요.");
+//        }
+//        log.info("bindingResult: {}", bindingResult);
+//        if (bindingResult.hasErrors()) {
+//            Map<String, String> errors = bindingResult.getFieldErrors().stream()
+//                    .collect(Collectors.toMap(
+//                            error -> error.getField(),
+//                            error -> error.getDefaultMessage()
+//                    ));
+//
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+//        }
+//
 //        String encodePw = passwordEncoder.encode(password);
 //        userService.updatePassword(member_id, encodePw);
-//        return "redirect:/";
+//
+//        return ResponseEntity.ok("비밀번호 변경 성공");
 //    }
 
     @PostMapping("/resetPw")
-    public ResponseEntity<?> resetPw(@RequestParam String password, HttpSession session) {
+    public ResponseEntity<?> resetPw(@Valid @RequestBody PasswordDTO passwordDTO, BindingResult bindingResult, HttpSession session) {
         String member_id = (String) session.getAttribute("member_id");
 //        log.info("member_id: {}", member_id);
 //        log.info("password: {}", password);
+//        log.info("bindingResult: {}", bindingResult);
 
         if (member_id == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("세션 만료. 다시 로그인하세요.");
         }
+        if (bindingResult.hasErrors()) {
+            Map<String, String> errors = bindingResult.getFieldErrors().stream()
+                    .collect(Collectors.toMap(
+                            error -> error.getField(),
+                            error -> error.getDefaultMessage()
+                    ));
 
-        String encodePw = passwordEncoder.encode(password);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
+        }
+
+        String encodePw = passwordEncoder.encode(passwordDTO.getPassword());
         userService.updatePassword(member_id, encodePw);
 
         return ResponseEntity.ok("비밀번호 변경 성공");
