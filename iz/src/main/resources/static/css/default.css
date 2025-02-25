@@ -21,6 +21,10 @@
         height: 2.7em;
         padding-top: 0.8em;
     }
+
+    .findResultBtn {
+        font-size: 1em;
+    }
 }
 
 html {
