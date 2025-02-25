@@ -78,16 +78,9 @@
 
             /* SVG 크기는 약간만 줄이고 viewBox 설정 확인 */
             .stress-section svg {
-                width: 145px !important;
-                height: 145px !important;
+                width: 200px !important;
+                height: 200px !important;
                 overflow: visible !important; /* 잘림 방지 */
-            }
-
-            /* 텍스트 컨테이너 스타일 수정 */
-            .stress-section .bg-white {
-                width: 100% !important;
-                max-width: none !important;
-                margin: 0 !important;
             }
         }
         @media screen and (max-width: 768px) {
@@ -291,14 +284,29 @@
                 </div>
                 <div class="relative bg-white rounded-xl p-5 shadow-sm w-full max-w-[280px]">
                     <div class="absolute -top-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-8 border-transparent border-b-white"></div>
-                    <div class="text-center text-[#2C2C2C] leading-[1.8]">
+
+                    <!-- PC 화면용 레이아웃 (모바일에서 숨김) -->
+                    <div class="pc-layout text-center text-[#2C2C2C] leading-[1.8] md:block hidden">
                         <p class="text-base">
                             점심시간<span class="lunch-time time-value text-[#fbc159]"></span><br>
                             퇴근시간<span class="end-time time-value text-[#00a3ed]"></span>
                         </p>
+                        <div class="mt-3 text-center text-sm">
+                            남은 시간도 힘내세요! 💪
+                        </div>
                     </div>
-                    <div class="mt-3 text-center text-sm">
-                        남은 시간도 힘내세요! 💪
+
+                    <!-- 모바일 화면용 레이아웃 (PC에서 숨김) -->
+                    <div class="mobile-layout text-center text-[#2C2C2C] md:hidden block">
+                        <div class="mb-2">
+                            <span>점심시간 <span class="lunch-time time-value text-[#fbc159]"></span></span>
+                        </div>
+                        <div class="mb-2">
+                            <span>퇴근시간 <span class="end-time time-value text-[#00a3ed]"></span></span>
+                        </div>
+                        <div class="text-sm">
+                            <span>남은 시간도 힘내세요! 💪</span>
+                        </div>
                     </div>
                 </div>
             </div>

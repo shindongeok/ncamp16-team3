@@ -27,28 +27,52 @@
         .hide-scrollbar::-webkit-scrollbar {
             display: none;
         }
-
         @media screen and (max-width: 768px) {
-            /* 입력 필드 컨테이너를 세로로 배치 */
+            /* 전체 컨테이너를 세로로 변경 */
             .job-filter-container {
                 flex-direction: column !important;
-                gap: 0.75rem !important;
+                align-items: stretch !important;
+                gap: 0.5rem !important;
             }
 
-            /* 각 입력 필드가 전체 너비 사용 */
-            .job-filter-container > div {
+            /* 첫 번째 행 레이블 숨기기 */
+            .job-filter-container > div.text-center.font-semibold.text-gray-700 {
+                display: none !important;
+            }
+
+            /* 입력란 컨테이너를 세로로 변경 */
+            .flex.items-center.gap-4.mb-1 {
+                flex-direction: column !important;
+                gap: 0.5rem !important;
+            }
+
+            /* 각 레이블-입력란 그룹을 가로로 배치 */
+            .flex.items-center.gap-4.mb-1 > div.relative.flex-1 {
+                display: flex !important;
+                align-items: center !important;
+                gap: 0.5rem !important;
+                width: 100% !important;
+            }
+
+            /* 레이블 스타일 */
+            .flex.items-center.gap-4.mb-1 > div.relative.flex-1::before {
+                content: attr(data-label);
+                width: 100px;
+                text-align: left;
+                font-size: 0.875rem;
+                color: #4a5568;
+            }
+
+            /* select 요소 스타일 */
+            .flex.items-center.gap-4.mb-1 select {
+                flex: 1 !important;
                 width: 100% !important;
             }
 
             /* 검색 버튼 위치 조정 */
             .search-button {
-                margin-top: 0.75rem !important;
                 align-self: flex-end !important;
-            }
-
-            /* 드롭다운 내부 텍스트 크기 조정 */
-            select {
-                font-size: 0.9rem !important;
+                margin-top: 0.5rem !important;
             }
         }
     </style>
@@ -75,7 +99,7 @@
         </div>
 
         <div class="flex items-center gap-4 mb-1">
-            <div class="relative flex-1">
+            <div class="relative flex-1" data-label="근무지">
                 <select class="w-full pl-2 pr-8 py-1.5 border-b-2 border-gray-200 text-sm appearance-none bg-white cursor-pointer focus:outline-none focus:border-b-2 focus:border-gray-400 transition-colors">
                     <option th:text="${#authentication.getPrincipal().getUser().getLoc_mod}" selected></option>
                     <option value="117000">전국</option>
@@ -103,7 +127,7 @@
                     </svg>
                 </div>
             </div>
-            <div class="relative flex-1">
+            <div class="relative flex-1" data-label="산업/업종">
                 <select class="w-full pl-2 pr-8 py-1.5 border-b-2 border-gray-200 text-sm appearance-none bg-white cursor-pointer focus:outline-none focus:border-b-2 focus:border-gray-400 transition-colors">
                     <option th:text="${#authentication.getPrincipal().getUser().getInd_cd}" selected></option>
                     <option value="1">서비스업</option>
@@ -123,7 +147,7 @@
                     </svg>
                 </div>
             </div>
-            <div class="relative flex-1">
+            <div class="relative flex-1" data-label="학력">
                 <select class="w-full pl-2 pr-8 py-1.5 border-b-2 border-gray-200 text-sm appearance-none bg-white cursor-pointer focus:outline-none focus:border-b-2 focus:border-gray-400 transition-colors">
                     <option th:text="${#authentication.getPrincipal().getUser().getEdu_lv}" selected></option>
                     <option value="0">학력무관</option>
