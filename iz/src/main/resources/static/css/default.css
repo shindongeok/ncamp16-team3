@@ -25,6 +25,75 @@
     .findResultBtn {
         font-size: 1em;
     }
+
+    #timeDiv1 {
+        flex-direction: column;
+        gap: 1.5em;
+    }
+
+    #timeDiv1 div select {
+        height: 50px;
+        width: 100%;
+    }
+
+    #paydayLabel {
+        margin-right: 1.5em;
+    }
+
+    #timeDiv1 div label {
+        width: 6em;
+        margin-left: 0;
+    }
+
+    #timeDiv1 div input {
+        width: 100%;
+    }
+
+    /*time picki*/
+    .time,
+    .mins,
+    .meridian {
+        width: 40px;
+        font-size: 16px;
+    }
+    .time_pick {
+        width: 100%;
+    }
+
+    #timeDiv2 {
+        display: block;
+        gap: 1.5em;
+    }
+
+    #timeDiv2_div {
+        margin-bottom: 1.5em;
+    }
+
+    #lunch_time_div {
+        flex-direction: column;
+        position: relative;
+        left: 0;
+    }
+
+    #timeDiv2 div label {
+        width: 6em;
+        margin-right: 0;
+    }
+
+    #end_time_label + input {
+        width: auto;
+    }
+
+    #timeDiv2 div label {
+        margin-right: 0;
+    }
+
+    #timeDiv2 div input {
+        width: 100%;
+        margin-left: 0;
+        left: 0;
+    }
+
 }
 
 html {
