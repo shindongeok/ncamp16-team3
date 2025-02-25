@@ -376,26 +376,58 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            const newStartTime = workStartInput.value;
-            const newLunchTime = lunchInput.value;
-            const newEndTime = workEndInput.value;
+            let newStartTime = workStartInput.value;
+            let newLunchTime = lunchInput.value;
+            let newEndTime = workEndInput.value;
 
             if (!newStartTime || !newLunchTime || !newEndTime) {
                 alert('모든 시간을 입력해주세요.');
                 return;
             }
 
-            // 전역 변수 업데이트
-            globalStartTime = newStartTime;
-            globalLunchTime = newLunchTime;
-            globalEndTime = newEndTime;
+            // 시간 형식 변환 (HH:MM:SS -> HH:MM)
+            newStartTime = formatTimeForServer(newStartTime);
+            newLunchTime = formatTimeForServer(newLunchTime);
+            newEndTime = formatTimeForServer(newEndTime);
 
-            // 즉시 화면 업데이트
-            updateAllProgress();
+            // 서버에 시간 설정 저장 요청
+            $.ajax({
+                url: '/user/updateTime',
+                type: 'POST',
+                data: {
+                    startTime: newStartTime,
+                    lunchTime: newLunchTime,
+                    endTime: newEndTime
+                },
+                success: function(response) {
+                    // 성공적으로 저장되면 전역 변수 업데이트
+                    globalStartTime = response.startTime;
+                    globalLunchTime = response.lunchTime;
+                    globalEndTime = response.endTime;
 
-            // 모달 닫기
-            modal.style.display = 'none';
+                    // 화면 업데이트
+                    updateAllProgress();
+
+                    // 모달 닫기
+                    modal.style.display = 'none';
+
+                    // 성공 메시지
+                    alert('시간 설정이 저장되었습니다.');
+                },
+                error: function(xhr, status, error) {
+                    alert('시간 설정 저장에 실패했습니다: ' + xhr.responseText);
+                }
+            });
         });
+    }
+
+    // 시간 형식을 서버에 맞게 변환하는 함수
+    function formatTimeForServer(timeString) {
+        // HH:MM:SS 형식이라면 HH:MM으로 변환
+        if (timeString.includes(':') && timeString.split(':').length > 2) {
+            return timeString.split(':').slice(0, 2).join(':');
+        }
+        return timeString;
     }
 
     // 진행 상태 업데이트 시작
