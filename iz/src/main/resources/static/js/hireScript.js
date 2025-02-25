@@ -20,26 +20,58 @@ $(document).ready(function() {
         '8': '대학교졸업(4년)이상', '9': '석사졸업이상'
     };
 
+    // URL에서 파라미터 가져오기
+    function getUrlParameter(name) {
+        name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+        var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+        var results = regex.exec(location.search);
+        return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+    }
+
+    // URL 파라미터 값 가져오기
+    const urlLocMcd = getUrlParameter('loc_mcd');
+    const urlIndCd = getUrlParameter('ind_cd');
+    const urlEduLv = getUrlParameter('edu_lv');
+
     // select 박스 초기화
     $('.relative select').each(function(index) {
         const $firstOption = $(this).find('option:first-child');
-        const value = $firstOption.text();
+        const defaultValue = $firstOption.text();
 
         switch(index) {
-            case 0:
-                $firstOption.text(locationMap[value] || '지역 선택');
-                $firstOption.val(value);
-                $(this).find(`option[value="${value}"]`).not(':first').remove();
+            case 0: // 지역 선택
+                // URL 파라미터가 있으면 해당 값 선택, 없으면 사용자 기본값 유지
+                if (urlLocMcd) {
+                    $firstOption.text(locationMap[urlLocMcd] || '지역 선택');
+                    $firstOption.val(urlLocMcd);
+                    $(this).val(urlLocMcd);
+                } else {
+                    $firstOption.text(locationMap[defaultValue] || '지역 선택');
+                    $firstOption.val(defaultValue);
+                }
+                $(this).find(`option[value="${defaultValue}"]`).not(':first').remove();
                 break;
-            case 1:
-                $firstOption.text(industryMap[value] || '업종 선택');
-                $firstOption.val(value);
-                $(this).find(`option[value="${value}"]`).not(':first').remove();
+            case 1: // 업종 선택
+                if (urlIndCd) {
+                    $firstOption.text(industryMap[urlIndCd] || '업종 선택');
+                    $firstOption.val(urlIndCd);
+                    $(this).val(urlIndCd);
+                } else {
+                    $firstOption.text(industryMap[defaultValue] || '업종 선택');
+                    $firstOption.val(defaultValue);
+                }
+                $(this).find(`option[value="${defaultValue}"]`).not(':first').remove();
                 break;
-            case 2:
-                $firstOption.text(educationMap[value] || '학력 선택');
-                $firstOption.val(value);
-                $(this).find(`option[value="${value}"]`).not(':first').remove();
+            case 2: // 학력 선택
+                if (urlEduLv) {
+                    $firstOption.text(educationMap[urlEduLv] || '학력 선택');
+                    $firstOption.val(urlEduLv);
+                    $(this).val(urlEduLv);
+                } else {
+                    $firstOption.text(educationMap[defaultValue] || '학력 선택');
+                    $firstOption.val(defaultValue);
+                }
+                $(this).find(`option[value="${defaultValue}"]`).not(':first').remove();
                 break;
         }
     });

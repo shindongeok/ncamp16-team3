@@ -37,10 +37,10 @@
 <body>
 
 <div class="flex flex-col w-full mobile-container pt-8 relative">
-    <div class="pt-20"><header th:replace="~{header :: header} " class="pt-4"></header></div>
+    <div class="pt-20"><header th:replace="~{header :: header}" class="pt-4"></header></div>
     <footer th:replace="~{footer :: footer}" class="pt-4"></footer>
 
-    <div class="p-4">
+    <div class="px-10"> <!-- 헤더와 일치하도록 p-4에서 px-10으로 변경 -->
         <h1 class="text-2xl font-bold mb-6">찜 해놓은 채용공고</h1>
 
         <div th:if="${scrapedJobs.isEmpty()}" class="text-center text-gray-500 py-10">
@@ -102,7 +102,7 @@
 
                             // 목록이 비어있으면 메시지 표시
                             if ($('.bg-white').length === 0) {
-                                $('.p-4').append(
+                                $('.px-10').append(
                                     '<div class="text-center text-gray-500 py-10">' +
                                     '저장된 채용공고가 없습니다.' +
                                     '</div>'
