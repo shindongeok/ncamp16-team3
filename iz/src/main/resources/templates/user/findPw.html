@@ -8,7 +8,6 @@
     <link th:href="@{/images/Logo.png}" rel="shortcut icon" type="image/x-icon">
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
-    <link rel="stylesheet" th:href="@{/css/default.css}">
     <style type="text/tailwindcss">
         @theme {
             --color-main-sky-highlight: #00a3ed;
@@ -26,12 +25,13 @@
             --color-bold-text: oklch(0.208 0.042 265.755);
         }
     </style>
+    <link rel="stylesheet" th:href="@{/css/default.css}">
 </head>
 <body class="font-roboto mobile-container">
 <div class="flex flex-col justify-center px-6 lg:px-8">
     <div class="sm:mx-auto sm:w-full sm:max-w-sm mt-10 h-40">
         <a th:href="@{/}">
-            <img th:src="@{/images/izikgram.png}" class="mx-auto relative z-3 top-10 w-50 "/>
+            <img th:src="@{/images/izikgram.png}" class="mx-auto relative z-3 top-10 w-[200px] h-[80px]"/>
         </a>
     </div>
     <div class="sm:mx-auto sm:w-full sm:max-w-sm">
@@ -106,7 +106,7 @@
                 From: "opacity-100 translate-y-0 sm:scale-100"
                 To: "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             -->
-            <div class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+            <div id="modal_css" class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
                 <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                     <div class="sm:flex sm:items-start">
                         <div id="modalIcon" class="mx-auto flex size-12 shrink-0 items-center justify-center rounded-full sm:mx-0 sm:size-10">

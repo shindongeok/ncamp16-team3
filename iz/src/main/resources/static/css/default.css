@@ -17,15 +17,18 @@
         min-height: 100vh;
     }
 
+    /* button */
     #sendSmsBtn, #checkButton {
-        height: 2.7em;
-        padding-top: 0.8em;
+        height: 2.5em;
+        width: 8em;
+        padding-top: 0.6em;
     }
 
     .findResultBtn {
         font-size: 1em;
     }
 
+    /* timeDiv1 */
     #timeDiv1 {
         flex-direction: column;
         gap: 1.5em;
@@ -49,7 +52,7 @@
         width: 100%;
     }
 
-    /*time picki*/
+    /* time picki */
     .time,
     .mins,
     .meridian {
@@ -60,6 +63,7 @@
         width: 100%;
     }
 
+    /* timeDiv2 */
     #timeDiv2 {
         display: block;
         gap: 1.5em;
@@ -94,6 +98,23 @@
         left: 0;
     }
 
+    #name,
+    #auth_num,
+    #member_id,
+    #password,
+    #password2,
+    #phone_num,
+    #birth_date,
+    #email,
+    #loc_mod {
+        font-size: 1em;
+    }
+
+    /* Modal */
+    #modal_css {
+        margin-bottom: 15em;
+        width: 15em;
+    }
 }
 
 html {
