@@ -135,6 +135,8 @@
             <div id="box-container" class="flex gap-4 cursor-grab w-full overflow-x-auto hide-scrollbar scroll-smooth px-0 py-2">
                 <div th:each="job : ${deadlineJobs}" class="box flex-shrink-0 w-[280px] min-h-[200px] bg-white p-4 rounded-lg border border-gray-200 shadow-sm flex flex-col justify-between relative transition-transform duration-200 select-none">
                     <button th:data-job-id="${job.id}"
+                            th:data-job-company-name="${job.companyName}"
+                            th:data-job-expiration-timestamp="${job.expirationTimestamp}"
                             th:class="'scrap-btn absolute top-4 right-3 text-xl ' + (${@jobService.checkIfScraped(job.id, #authentication.principal.user.member_id)} ? 'text-yellow-400' : 'text-gray-300')">
                         <i class="fas fa-star cursor-pointer"></i>
                     </button>
@@ -192,6 +194,8 @@
             <div id="box-container2" class="flex gap-4 cursor-grab w-full overflow-x-auto hide-scrollbar scroll-smooth px-0 py-2">
                 <div th:each="job : ${recentJobs}" class="box flex-shrink-0 w-[280px] min-h-[200px] bg-white p-4 rounded-lg border border-gray-200 shadow-sm flex flex-col justify-between relative transition-transform duration-200 select-none">
                     <button th:data-job-id="${job.id}"
+                            th:data-job-company-name="${job.companyName}"
+                            th:data-job-expiration-timestamp="${job.expirationTimestamp}"
                             th:class="'scrap-btn absolute top-4 right-3 text-xl ' + (${@jobService.checkIfScraped(job.id, #authentication.principal.user.member_id)} ? 'text-yellow-400' : 'text-gray-300')">
                         <i class="fas fa-star cursor-pointer"></i>
                     </button>

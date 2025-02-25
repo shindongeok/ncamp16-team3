@@ -49,6 +49,8 @@
 
         <div th:each="job : ${scrapedJobs}" class="bg-white shadow-md rounded-lg p-4 mb-4 relative">
             <button th:data-job-id="${job.id}"
+                    th:data-job-company-name="${job.companyName}"
+                    th:data-job-expiration-timestamp="${job.expirationTimestamp}"
                     class="scrap-btn absolute top-4 right-4 transition-colors duration-200 text-yellow-400">
                 <i class="fas fa-star"></i>
             </button>
@@ -75,11 +77,23 @@
         $('.scrap-btn').click(function(e) {
             e.preventDefault();
             const $btn = $(this);
-            const jobId = $btn.data('job-id');
+            const jobId = $btn.data('jobId');  // data-job-id
+            const companyName = $btn.data('jobCompanyName');  // data-company-name
+            const expirationTimestamp = $btn.data('jobExpirationTimestamp');
+
+            console.log('찜한채용공고 jobId:', jobId);
+            console.log('찜한채용공고 companyName:', companyName);
+            console.log('찜한채용공고 expirationTimestamp:', expirationTimestamp);
 
             $.ajax({
                 url: '/job/scrap/' + jobId,
                 type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    id: jobId,
+                    companyName: companyName,
+                    expirationTimestamp: expirationTimestamp
+                }),
                 success: function(response) {
                     if (response.success) {
                         if (!response.isScraped) {

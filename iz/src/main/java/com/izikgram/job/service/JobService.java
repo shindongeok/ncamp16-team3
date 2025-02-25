@@ -2,9 +2,14 @@ package com.izikgram.job.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.izikgram.alarm.service.AlarmService;
+import com.izikgram.alarm.service.SseEmitterService;
+import com.izikgram.job.entity.AlarmJob;
 import com.izikgram.job.entity.Job;
+import com.izikgram.job.entity.JobDto;
 import com.izikgram.job.repository.JobMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -13,15 +18,26 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class JobService {
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
+
+    @Autowired
+    private SseEmitterService sseEmitterService;
+
+    @Autowired
+    private AlarmService alarmService;
 
     @Value("${saramin.api.key}")
     private String apiKey;
@@ -130,24 +146,59 @@ public class JobService {
     }
 
     @Transactional
-    public boolean toggleScrap(Job job, String memberId) {
+    public boolean toggleScrap(JobDto jobDto, String memberId) {
         try {
-            // 스크랩 여부 확인
-            boolean exists = jobMapper.checkIfScraped(job.getId(), memberId);
+            log.info("jobDTO: {}, memberId: {}", jobDto, memberId);
+            //스크랩 여부 확인
+            boolean exists = jobMapper.checkIfScraped(jobDto.getId(), memberId);
+            log.info("Job exists in scrap: {}", exists);
+
 
             if (exists) {
                 // 이미 스크랩되어 있으면 삭제
-                jobMapper.deleteJobScrap(job, memberId);
+                jobMapper.deleteJobScrap(jobDto, memberId);
+                log.info("try안에 jobDTO들어옴?: {}, memberId: {}", jobDto, memberId);
+
+//                // iz_alarm_scarp 테이블에서 읽음으로 표시(알림 다시 안오게 하기 위함)
+//                alarmService.checkScrapRead(job.getId(), job.getMemberId());
+
                 return false;
             } else {
-                // 스크랩되어 있지 않으면 추가
-                jobMapper.addJobScrap(job, memberId);
+                // 스크랩되어 있지 않으면 iz_job_scrap 테이블에 데이터 추가
+                jobMapper.addJobScrap(jobDto, memberId);
+//                alarmService.ScrapSave(job.getMemberId(), job.getId(), job.getCompanyName(),
+//                        LocalDateTime.parse(job.getExpirationTimestamp()));
+
+                // 이미 알림이 왔던 공고인지 확인 후 데이터 저장
+                checkScrapAndSendAlarm(jobDto, memberId);
+
                 return true;
             }
         } catch (Exception e) {
+            log.error("Error adding job scrap: {}", e.getMessage());
             throw new RuntimeException("Failed to toggle scrap", e);
         }
     }
+
+    // 채용공고 스크랩 눌렀을 때, 확인 후 알람 전송
+    private void checkScrapAndSendAlarm(JobDto jobDto, String member_id) {
+        // 스크랩한 공고 리스트 반환
+        AlarmJob AlarmScrap = jobMapper.getAlarmScrapList(jobDto.getId(), member_id);
+        log.info("AlarmScrap = {}", AlarmScrap);
+        if(AlarmScrap == null) {
+            String content = "[" + jobDto.getCompanyName() + "] 의 채용공고를 스크랩 했습니다.";
+            sseEmitterService.ScrapSend(member_id, content);
+
+            alarmService.ScrapSave(
+                    member_id,
+                    jobDto.getId(),
+                    jobDto.getCompanyName(),
+                    jobDto.getExpirationTimestamp(),
+                    content
+            );
+        }
+    }
+
 
     public List<Job> getScrapedJobs(String memberId, String locMcd, String indCd, String eduLv) {
         // 사용자의 스크랩된 job_rec_id 목록 가져오기

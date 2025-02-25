@@ -55,7 +55,7 @@ public class SseEmitterService {
         if (sseEmitterRepository.containsKey(member_id)) {
             SseEmitter sseEmitter = sseEmitterRepository.findByMemberId(member_id);
             try {
-                // 3️⃣ SSE를 통해 "새로운 댓글이 달렸습니다!" 이벤트 전송
+                // 3️⃣ SSE를 통해 "인기게시글이 되었습니다!!" 이벤트 전송
                 sseEmitter.send(SseEmitter.event().name("popular-message").data(content));
             } catch (IOException e) {
                 // 4️⃣ SSE 연결이 끊어졌다면 해당 사용자 제거
@@ -64,5 +64,16 @@ public class SseEmitterService {
         }
     }
 
-
+    public void ScrapSend(String member_id, String content) {
+        if (sseEmitterRepository.containsKey(member_id)) {
+            SseEmitter sseEmitter = sseEmitterRepository.findByMemberId(member_id);
+            try {
+                // SSE를 통해 "스크랩 !" 이벤트 전송
+                sseEmitter.send(SseEmitter.event().name("scrap-message").data(content));
+            } catch (IOException e) {
+                // 4️⃣ SSE 연결이 끊어졌다면 해당 사용자 제거
+                sseEmitterRepository.remove(member_id);
+            }
+        }
+    }
 }
