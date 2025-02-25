@@ -7,7 +7,7 @@
     <title>Izikgram</title>
     <link th:href="@{/images/Logo.png}" rel="shortcut icon" type="image/x-icon">
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
-    <link rel="stylesheet" th:href="@{/css/default.css}">
+<!--    <link rel="stylesheet" th:href="@{/css/default.css}">-->
 
     <!-- calender -->
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
@@ -42,6 +42,7 @@
         });
     </script>
 
+    <link rel="stylesheet" th:href="@{/css/default.css}">
     <style type="text/tailwindcss">
         @theme {
             --color-main-sky-highlight: #00a3ed;
@@ -164,9 +165,9 @@
                 </div>
             </div>
 
-            <div class="flex justify-between">
+            <div id="timeDiv1" class="flex justify-between">
                 <div class="flex">
-                    <label for="payday" class="w-20 max-w-12 text-bold-text mr-4">월급날</label>
+                    <label id="paydayLabel" for="payday" class="w-20 max-w-12 text-bold-text mr-4">월급날</label>
                     <select id="payday" name="payday" class="w-22 max-h-5 rounded-md text-bold-text text-right outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-sky-500">
                         <option th:each="i : ${#numbers.sequence(1, 31)}" th:value="${i}" th:text="${i + '일'}"></option>
                     </select>
@@ -177,14 +178,14 @@
                 </div>
             </div>
 
-            <div class="flex relative">
-                <div class="flex">
+            <div id="timeDiv2" class="flex relative">
+                <div id="timeDiv2_div" class="flex">
                     <div class="flex">
-                        <label for="end_time" class="w-15 text-bold-text mr-1">퇴근시간</label>
+                        <label id="end_time_label" for="end_time" class="w-15 text-bold-text mr-1">퇴근시간</label>
                         <input type="text" name="end_time" id="end_time" th:value="${'06:00 PM'}" class="p-2 time_element w-22 h-5 rounded-md text-bold-text text-right outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-sky-500">
                     </div>
                 </div>
-                <div class="flex absolute left-43">
+                <div id="lunch_time_div" class="flex absolute left-43">
                     <div class="flex">
                         <label for="lunch_time" class="w-15 text-bold-text">점심시간</label>
                         <input type="text" name="lunch_time" id="lunch_time" th:value="${'12:00 PM'}" class="p-2 time_element w-22 h-5 rounded-md text-bold-text text-right outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-sky-500">
