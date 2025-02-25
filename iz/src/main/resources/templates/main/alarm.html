@@ -67,6 +67,7 @@
             <!-- 삭제 버튼 -->
             <button class="delete-alarm hidden group-hover:block text-red-500 hover:text-red-700 cursor-pointer"
                     th:data-alarm-id="${alarm.alarm_id}"
+                    th:data-alarm-type="${alarm.alarm_type}"
                     onclick="checkRead(this)">
                 ❌
             </button>
@@ -92,6 +93,13 @@
         document.body.appendChild(messageElement);
     });
 
+    // 서버에서 온 "scarp-message" 이벤트를 처리
+    eventSource.addEventListener('scrap-message', function(event) {
+        const messageElement = document.createElement('p');
+        messageElement.textContent = 'Received: ' + event.data;
+        document.body.appendChild(messageElement);
+    });
+
     // 연결이 열렸을 때 실행되는 이벤트
     eventSource.onopen = function() {
         console.log("SSE connection opened");
@@ -105,6 +113,12 @@
 
     function checkRead(button) {
         let alarmId = button.getAttribute("data-alarm-id");
+        let alarmType = button.getAttribute("data-alarm-type");
+
+        if(button.getAttribute("data-alarm-type") == null) {
+            alarmType = "SCRAP";
+        }
+
         console.log(alarmId);
 
         //읽겠습니까?
@@ -112,12 +126,12 @@
             return;
         }
 
-        fetch('/main/alarm', {
+        fetch('/main/alarm/' + alarmId, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ alarm_id: alarmId })
+            body: JSON.stringify({alarm_type: alarmType})
         })
             .then(response => {
                 if (response.ok) {
