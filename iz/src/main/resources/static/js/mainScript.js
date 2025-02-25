@@ -222,10 +222,10 @@ function formatTimeRemaining(start, end) {
     return ` ${hours}시간 ${minutes}분 남았어요`;
 }
 
-// Modify the updateAllProgress function to handle the complete day text
 function updateAllProgress() {
     const circles = document.querySelectorAll('.progress-circle');
-    const timeValues = document.querySelectorAll('.time-value');
+    const lunchTimeValues = document.querySelectorAll('.lunch-time.time-value');
+    const endTimeValues = document.querySelectorAll('.end-time.time-value');
     const encouragementText = document.querySelector('.mt-3.text-center.text-sm');
 
     // 퇴근까지 남은 시간 (큰 원)
@@ -236,14 +236,21 @@ function updateAllProgress() {
     const lunchProgress = calculateTimeProgress(globalStartTime, globalLunchTime);
     updateCircleProgress(circles[1], lunchProgress);
 
-    // time-value 업데이트
+    // time-value 업데이트 (모바일 및 PC 레이아웃 모두 업데이트)
     const lunchTimeText = formatTimeRemaining(globalStartTime, globalLunchTime);
     const workTimeText = formatTimeRemaining(globalStartTime, globalEndTime);
 
-    timeValues[0].textContent = lunchTimeText;  // 점심시간 텍스트
-    timeValues[1].textContent = workTimeText;   // 퇴근시간 텍스트
+    // 점심시간 값 설정 (모든 .lunch-time.time-value 요소에 설정)
+    lunchTimeValues.forEach(element => {
+        element.textContent = lunchTimeText;
+    });
 
-    // Check if both lunch and work times are completed
+    // 퇴근시간 값 설정 (모든 .end-time.time-value 요소에 설정)
+    endTimeValues.forEach(element => {
+        element.textContent = workTimeText;
+    });
+
+    // 하루 완료 시 격려 메시지 변경
     if (lunchTimeText === ' 완료!' && workTimeText === ' 완료!') {
         encouragementText.textContent = '오늘 하루도 수고하셨습니다!';
     } else {
@@ -255,6 +262,23 @@ function updateAllProgress() {
 document.addEventListener('DOMContentLoaded', () => {
     // 캘린더 초기화
     initializeCalendar(monthlyStressList);
+
+    // 강제로 time values 업데이트
+    function forceTimeValuesUpdate() {
+        const lunchTimeValues = document.querySelectorAll('.lunch-time.time-value');
+        const endTimeValues = document.querySelectorAll('.end-time.time-value');
+
+        const lunchTimeText = formatTimeRemaining(globalStartTime, globalLunchTime);
+        const workTimeText = formatTimeRemaining(globalStartTime, globalEndTime);
+
+        lunchTimeValues.forEach(element => {
+            element.textContent = lunchTimeText;
+        });
+
+        endTimeValues.forEach(element => {
+            element.textContent = workTimeText;
+        });
+    }
 
     // 캘린더 외부 클릭 시 툴팁 닫기
     document.addEventListener('click', (e) => {
@@ -377,4 +401,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // 진행 상태 업데이트 시작
     updateAllProgress();
     setInterval(updateAllProgress, 60000); // 1분마다 업데이트
+
+    // 초기 로드 직후와 1초 후에 강제 업데이트
+    forceTimeValuesUpdate();
+    setTimeout(forceTimeValuesUpdate, 1000);
 });
