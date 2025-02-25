@@ -44,38 +44,67 @@
 </head>
 
 <body>
-
-<body>
-
 <div class="flex flex-col w-full mobile-container pt-8 relative bg-white rounded-lg shadow-lg mx-auto">
     <div class="pt-28"><header th:replace="~{header :: header} " class="pt-4"></header></div>
-    <footer th:replace="~{footer :: footer}" class="pt-4"></footer>
 
     <!-- 페이지 제목 -->
-    <h1 class="text-3xl font-bold text-gray-800 mb-6">📢 지난 알림 목록</h1><br>
+    <div class="px-6">
+        <div class="flex items-center mb-6">
+            <div class="p-2 mr-3">
+                <span class="text-2xl">📢</span>
+            </div>
+            <h1 class="text-3xl font-bold text-gray-800">지난 알림 목록</h1>
+        </div>
+    </div>
 
     <!-- 알림 목록 -->
-    <ul class="space-y-4">
-        <li th:each="alarm : ${alarmList}"
-            class="flex justify-between items-center bg-white p-4 max-w-[580px] rounded-lg shadow-md hover:shadow-lg transition-transform transform hover:scale-102 group">
-                <a th:if="${alarm.getCompany_name() == null}" th:href="@{/board/{board_type}/{board_id}(board_type=${alarm.getBoard_type()}, board_id=${alarm.getBoard_id()})}">
-                    <span class="alarm-icon text-xl text-blue-500 mr-4">🔔</span>
-                    <span class="text-gray-700 flex-1" th:text="${alarm.content}"></span>
+    <div class="px-6 pb-8">
+        <ul class="space-y-3">
+            <li th:each="alarm : ${alarmList}"
+                class="flex justify-between items-center bg-white p-4 rounded-lg border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 group">
+
+                <!-- 일반 게시판 알림 -->
+                <a th:if="${alarm.getCompany_name() == null}"
+                   th:href="@{/board/{board_type}/{board_id}(board_type=${alarm.getBoard_type()}, board_id=${alarm.getBoard_id()})}"
+                   class="flex items-center flex-1">
+                    <span class="flex-shrink-0 bg-blue-50 text-blue-500 rounded-full p-2 mr-3">
+                        <span class="alarm-icon text-xl">🔔</span>
+                    </span>
+                    <span class="text-gray-700" th:text="${alarm.content}"></span>
                 </a>
-                <a th:unless="${alarm.getCompany_name() == null}" th:href="@{/job/scrap}">
-                    <span class="alarm-icon text-xl text-blue-500 mr-4">📌</span>
-                    <span class="text-gray-700 flex-1" th:text="${alarm.content}"></span>
+
+                <!-- 채용 스크랩 알림 -->
+                <a th:unless="${alarm.getCompany_name() == null}"
+                   th:href="@{/job/scrap}"
+                   class="flex items-center flex-1">
+                    <span class="flex-shrink-0 bg-yellow-50 text-yellow-500 rounded-full p-2 mr-3">
+                        <span class="alarm-icon text-xl">📌</span>
+                    </span>
+                    <span class="text-gray-700" th:text="${alarm.content}"></span>
                 </a>
-            <!-- 삭제 버튼 -->
-            <button class="delete-alarm hidden group-hover:block text-red-500 hover:text-red-700 cursor-pointer"
-                    th:data-alarm-id="${alarm.alarm_id}"
-                    th:data-alarm-type="${alarm.alarm_type}"
-                    onclick="checkRead(this)">
-                ❌
-            </button>
-        </li>
-    </ul>
+
+                <!-- 삭제 버튼 - 호버 시 나타나도록 -->
+                <button class="delete-alarm opacity-0 group-hover:opacity-100 transition-opacity text-red-500 hover:text-red-700 cursor-pointer ml-2"
+                        th:data-alarm-id="${alarm.alarm_id}"
+                        th:data-alarm-type="${alarm.alarm_type}"
+                        onclick="checkRead(this)">
+                    ❌
+                </button>
+            </li>
+
+            <!-- 알림이 없을 때 표시할 내용 -->
+            <li th:if="${#lists.isEmpty(alarmList)}" class="text-center py-10">
+                <div class="inline-block bg-gray-100 rounded-full p-3 mb-3">
+                    <span class="text-2xl">🔕</span>
+                </div>
+                <p class="text-gray-600">알림이 없습니다</p>
+            </li>
+        </ul>
+    </div>
+
+    <footer th:replace="~{footer :: footer}" class="pt-4"></footer>
 </div>
+<body>
 
 <script>
     // 서버의 SSE 엔드포인트와 연결
