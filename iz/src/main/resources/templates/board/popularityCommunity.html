@@ -1,6 +1,5 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <!DOCTYPE html>
-<html>
 <head>
     <meta charset="UTF-8">
     <title>인기게시판</title>
@@ -49,13 +48,15 @@
                 </div>
 
                 <!-- 게시글 리스트 -->
-                <div th:each="issueList01 : ${issueBoardList01}" class="bg-gray-100 rounded-lg mb-4 p-4">
+                <div th:each="issueList01, iterStat : ${issueBoardList01}" class="bg-gray-100 rounded-lg mb-4 p-4">
                     <div class="flex flex-col">
                         <!-- 게시글 리스트 (데이터 제외) -->
                         <div class="flex border-b border-gray-200 pb-1">
                             <div class="flex-1 pr-6">
                                 <div class="flex items-center gap-2"> <!-- flex로 수평 배치, gap으로 간격 조정 -->
-                                    <img class="w-10 h-10" src="https://img.icons8.com/?size=100&id=33486&format=png&color=000000" alt="">
+                                    <img th:src="@{${iterStat.index == 0 ? 'https://img.icons8.com/?size=100&id=33486&format=png&color=000000' :
+                                    iterStat.index == 1 ? 'https://img.icons8.com/?size=100&id=23876&format=png&color=000000' :
+                                    'https://img.icons8.com/?size=100&id=23875&format=png&color=000000'}}" class="w-10 h-10" alt="순위">
                                     <a class="hover:text-main-sky-highlight inline-block w-40 truncate no-underline
                                            hover:no-underline text-xl"
                                        th:href="@{/board/{board_type}/{board_id}(board_type=${issueList01.board_type},
@@ -90,7 +91,6 @@
             </div>
 
             <!-- 하소연 게시판 -->
-            <!-- 자유 게시판 -->
             <div class="rounded-lg pb-4 mt-5 w-auto">
                 <div class="flex justify-between items-center border-b border-gray-300">
                     <h2 class="text-2xl font-semibold text-gray-700 pb-4 pl-4">하소연 게시판</h2>
@@ -98,13 +98,15 @@
             </div>
 
             <!-- 게시글 리스트 -->
-            <div th:each="issueList02 : ${issueBoardList02}" class="bg-gray-100 rounded-lg mb-4 p-4">
+            <div th:each="issueList02,iterStat : ${issueBoardList02}" class="bg-gray-100 rounded-lg mb-4 p-4">
                 <div class="flex flex-col">
-                    <!-- 게시글 리스트 (데이터 제외) -->
+                    <!-- 게시글 리스트 -->
                     <div class="flex border-b border-gray-200 pb-1">
                         <div class="flex-1 pr-6">
                             <div class="flex items-center gap-2"> <!-- flex로 수평 배치, gap으로 간격 조정 -->
-                                <img class="w-10 h-10" src="https://img.icons8.com/?size=100&id=33486&format=png&color=000000" alt="">
+                                <img th:src="@{${iterStat.index == 0 ? 'https://img.icons8.com/?size=100&id=33486&format=png&color=000000' :
+                                    iterStat.index == 1 ? 'https://img.icons8.com/?size=100&id=23876&format=png&color=000000' :
+                                    'https://img.icons8.com/?size=100&id=23875&format=png&color=000000'}}" class="w-10 h-10" alt="순위">
                                 <a class="hover:text-main-sky-highlight inline-block w-40 truncate no-underline
                                        hover:no-underline text-xl"
                                    th:href="@{/board/{board_type}/{board_id}(board_type=${issueList02.board_type},
@@ -137,7 +139,7 @@
             </div>
         </div>
     </div>
-    <footer th:replace="~{/footer :: footer}" class="pt-4"></footer>
+    <footer th:replace="~{footer :: footer}" class="pt-4"></footer>
 </div>
 
 </body>

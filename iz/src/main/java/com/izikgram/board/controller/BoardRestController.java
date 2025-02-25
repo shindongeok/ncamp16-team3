@@ -25,10 +25,6 @@ public class BoardRestController {
     @Autowired
     private BoardService boardService;
 
-    // 1. 화면에서 필요한 api가 뭔지
-    // 2. api에서 필요한 기능이 뭔지
-    // 3. 필요한 기능에서 필요한 쿼리가 뭔지
-
     // 좋아요/싫어요 토글
     @PostMapping("/{boardId}/{boardType}/update")
     public Map<String, Integer> updateLikeCount(@PathVariable("boardId") int boardId,
@@ -38,24 +34,17 @@ public class BoardRestController {
         log.info("요청 게시글 번호: {}", boardId);
         log.info("요청 종류: {}", isLiked);
 
-        //유저 객체 처리해야함...
         User user = userDetails.getUser();
         String memberId = user.getMember_id();
 
-
-
-        // isLiked(true: 좋아요 요청, false: 싫어요 요청)
         return boardService.updateLikeCount(boardId, memberId, isLiked,boardType);
     }
 
-
-    // 댓글 수정 (게시판 타입에 따라 다른 테이블에서 수정)
     @PostMapping("/comment/update")
     public ResponseEntity<Map<String, Object>> updateComment(@RequestBody CommentDto commentDto) {
         Map<String, Object> response = new HashMap<>();
 
         try {
-            // 댓글 수정 처리 (서비스 레이어에서 실제 댓글 수정 처리)
             int result = boardService.updateComment(commentDto);
             if (result > 0) {
                 response.put("success", true);

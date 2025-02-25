@@ -11,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
@@ -35,23 +34,17 @@ public class CommentController {
         Map<String, Object> response = new HashMap<>();
 
         try {
-            // 로그인한 사용자 정보 가져오기
             User user = userDetails.getUser();
-
             String memberId = user.getMember_id();
 
-
-            // 댓글 저장 (board_type에 따라 다른 테이블에 저장)
             if (boardType == 1) {
                 boardService.addComment01(boardId, memberId, commentContent);
             } else if (boardType == 2) {
                 boardService.addComment02(boardId, memberId, commentContent);
             }
 
-            // 새로 추가된 댓글을 조회
             CommentDto newComment = boardService.getLastComment(boardId, boardType); // 새 댓글 조회 메소드 추가
 
-            // 응답 데이터 설정
             response.put("nickname", newComment.getNickname());
             response.put("comment_content", newComment.getComment_content());
             response.put("reg_date", newComment.getReg_date().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
@@ -67,7 +60,7 @@ public class CommentController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
-    //---------------------------------------
+
     // 댓글 삭제
     @DeleteMapping("/deleteComment")
     public ResponseEntity<Map<String, String>> deleteComment(
@@ -88,8 +81,6 @@ public class CommentController {
             log.info("boardType : {}", boardType);
             log.info("writerId : {}", writerId);
 
-
-            // 현재 로그인한 사용자와 댓글 작성자가 동일한 경우에만 삭제 처리
             if (memberId != null && memberId.equals(writerId)) {
                 if (boardType == 1) {
                     isDeleted = boardService.deleteComment01(commentId, boardId);
@@ -98,7 +89,6 @@ public class CommentController {
                 }
             }
 
-            // 삭제 여부에 따라 응답 처리
             if (isDeleted) {
                 log.info("댓글 삭제 성공: commentId = {}, boardId = {}", commentId, boardId);
                 response.put("message", "댓글이 삭제되었습니다.");
@@ -107,9 +97,7 @@ public class CommentController {
                 response.put("message", "댓글 삭제에 실패했습니다.");
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
             }
-
         } catch (Exception e) {
-            // 오류 처리
             response.put("message", "댓글 삭제 중 오류가 발생했습니다.");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }

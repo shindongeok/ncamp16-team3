@@ -12,7 +12,9 @@ import com.izikgram.board.repository.BoardMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -300,7 +302,6 @@ public class BoardService {
     // 게시판 1 댓글 삭제 메서드
     public boolean deleteComment01(int commentId, int boardId) {
         try {
-            // MyBatis를 사용하여 댓글을 삭제하는 쿼리 호출
             log.info("쿼리 실행 전: commentId = {}, boardId = {}", commentId, boardId);
             boardMapper.deleteComment01(boardId, commentId);
             return true; // 삭제가 성공적으로 완료되면 true 반환
@@ -313,7 +314,6 @@ public class BoardService {
     // 게시판 2 댓글 삭제 메서드
     public boolean deleteComment02(int commentId, int boardId) {
         try {
-            // MyBatis를 사용하여 댓글을 삭제하는 쿼리 호출
             boardMapper.deleteComment02(boardId, commentId);
             return true; // 삭제가 성공적으로 완료되면 true 반환
         } catch (Exception e) {
@@ -334,6 +334,35 @@ public class BoardService {
 
         return map;
     }
+
+    // 인기테이블 삭제후 좋아요 높은순으로 다시 삽입
+    //주기적으로 인기테이블 업데이트?
+    public BoardService(BoardMapper boardMapper) {
+        this.boardMapper = boardMapper;
+    }
+    @Transactional
+//    @Scheduled(cron = "0 0 12 * * ?")   //매일 12시에 작업을 실행
+    @Scheduled(cron = "0 * * * * ?")
+    public void updatePopularBoards() {
+        System.out.println("Scheduled task started.");
+
+        // 좋아요가 5개 이상인 게시글이 있는지 조회
+        List<Board> boardsWithLikesAbove5 = boardMapper.getBoardsWithLikesAbove5();
+
+        if (!boardsWithLikesAbove5.isEmpty()) {
+            // 좋아요가 5개 이상인 게시글이 있다면 인기 게시판 초기화 후 삽입
+            boardMapper.deletePopularBoards();
+            boardMapper.insertPopularBoards();
+            System.out.println("Popular boards updated.");
+        } else {
+            // 좋아요가 5개 이상인 게시글이 없으면 기존 데이터 유지
+            System.out.println("No boards with more than 5 likes. Data remains unchanged.");
+        }
+
+        System.out.println("Scheduled task finished.");
+
+    }
+
 
     //내가 작성한 게시글 5개 보여주기
     public Map<String, List<BoardDto>> getMyBoardList(String writer_id){
@@ -362,6 +391,7 @@ public class BoardService {
 
         return map;
     }
+
 
     // 댓글 수정
     public int updateComment(CommentDto commentDto) {
