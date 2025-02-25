@@ -1,6 +1,8 @@
 package com.izikgram.alarm.controller;
 
 import com.izikgram.alarm.entity.AlarmComment;
+import com.izikgram.alarm.entity.AlarmDto;
+import com.izikgram.alarm.entity.AlarmType;
 import com.izikgram.alarm.service.AlarmService;
 import com.izikgram.global.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
@@ -30,18 +32,32 @@ public class AlarmController {
         log.info("member_id : {}", userDetails.getUser().getMember_id());
 
         //읽지 않은 알람만 가져오기
-        List<AlarmComment> alarmList = alarmService.findAlarmsByUser(userDetails.getUser().getMember_id());
+        //List<AlarmComment> alarmList = alarmService.findAlarmsByUser(userDetails.getUser().getMember_id());
 
-        log.info("alarmList : {}", alarmList);
-        model.addAttribute("alarmList", alarmList);
+        List<AlarmDto> alarmDtoList = alarmService.findAllAlarmsByUser(userDetails.getUser().getMember_id());
+
+        log.info("alarmList : {}", alarmDtoList);
+        model.addAttribute("alarmList", alarmDtoList);
 
         return "main/alarm";
     }
 
-    @PatchMapping("/alarm")
-    public ResponseEntity<?> checkRead(@RequestBody AlarmComment alarmComment) {
-        log.info("삭제할 alarm_id : {}" , alarmComment.getAlarm_id());
-        alarmService.checkRead(alarmComment.getAlarm_id());
+    @PatchMapping("/alarm/{alarm_id}")
+    public ResponseEntity<?> checkRead(@RequestBody AlarmDto alarmDto,
+                                       @PathVariable int alarm_id) {
+        log.info("Received alarmDto: {}", alarmDto);
+        log.info("Alarm type: {}", alarmDto.getAlarm_type());
+
+        if (alarmDto.getAlarm_type().equals(AlarmType.POPULAR) || alarmDto.getAlarm_type().equals(AlarmType.COMMENT)) {
+            log.info("삭제할 게시물 alarm_id : {}", alarm_id);
+            alarmService.checkRead(alarm_id);
+        } else if(alarmDto.getAlarm_type().equals(AlarmType.SCRAP)) {
+            log.info("삭제할 스크랩 alarm_id : {}", alarm_id);
+            alarmService.checkScrapRead(alarm_id);
+        }
+
         return ResponseEntity.ok().build();
     }
+
+
 }

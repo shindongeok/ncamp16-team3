@@ -237,6 +237,8 @@
             <div id="box-container" class="flex gap-4 cursor-grab">
                 <div th:each="job : ${deadlineJobs}" class="box flex flex-col justify-between relative">
                     <button th:data-job-id="${job.id}"
+                            th:data-job-company-name="${job.companyName}"
+                            th:data-job-expiration-timestamp="${job.expirationTimestamp}"
                             th:class="'scrap-btn absolute top-4 right-3 text-xl ' + (${@jobService.checkIfScraped(job.id, #authentication.principal.user.member_id)} ? 'text-yellow-400' : 'text-gray-300')">
                         <i class="fas fa-star"></i>
                     </button>
@@ -295,6 +297,8 @@
             <div id="box-container2" class="flex gap-4 cursor-grab">
                 <div th:each="job : ${recentJobs}" class="box flex flex-col justify-between relative">
                     <button th:data-job-id="${job.id}"
+                            th:data-job-company-name="${job.companyName}"
+                            th:data-job-expiration-timestamp="${job.expirationTimestamp}"
                             th:class="'scrap-btn absolute top-4 right-3 text-xl ' + (${@jobService.checkIfScraped(job.id, #authentication.principal.user.member_id)} ? 'text-yellow-400' : 'text-gray-300')">
                         <i class="fas fa-star"></i>
                     </button>
@@ -412,11 +416,23 @@
         $(document).on('click', '.scrap-btn', function(e) {
             e.preventDefault();
             const $btn = $(this);
-            const jobId = $btn.data('job-id');
+            const jobId = $btn.data('jobId');  // data-job-id
+            const companyName = $btn.data('jobCompanyName');  // data-company-name
+            const expirationTimestamp = $btn.data('jobExpirationTimestamp');  // data-expiration-timestamp
+
+            console.log('jobId:', jobId);
+            console.log('companyName:', companyName);
+            console.log('expirationTimestamp:', expirationTimestamp);
 
             $.ajax({
                 url: '/job/scrap/' + jobId,
                 type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    id: jobId,
+                    companyName: companyName,
+                    expirationTimestamp: expirationTimestamp
+                }),
                 success: function(response) {
                     if (response.success) {
                         if (response.isScraped) {

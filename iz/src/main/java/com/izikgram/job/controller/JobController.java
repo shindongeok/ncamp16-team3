@@ -1,11 +1,14 @@
 package com.izikgram.job.controller;
 
+import com.izikgram.alarm.service.AlarmService;
 import com.izikgram.global.security.CustomUserDetails;
 import com.izikgram.job.entity.Job;
+import com.izikgram.job.entity.JobDto;
 import com.izikgram.job.service.JobService;
 import com.izikgram.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -13,6 +16,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +29,9 @@ import java.util.Map;
 public class JobController {
 
     private final JobService jobService;
+
+    @Autowired
+    private AlarmService alarmService;
 
     @GetMapping("/hire")
     public String hire(
@@ -59,6 +67,7 @@ public class JobController {
             }
 
             model.addAttribute("deadlineJobs", deadlineJobs);
+            log.info("recentJobs객체 : {}" , recentJobs);
             model.addAttribute("recentJobs", recentJobs);
             model.addAttribute("hasMore", deadlineJobs.size() == 5 || recentJobs.size() == 5);
 
@@ -73,19 +82,39 @@ public class JobController {
     @ResponseBody
     public ResponseEntity<Map<String, Object>> toggleScrap(
             @AuthenticationPrincipal CustomUserDetails userDetails,
-            @PathVariable String jobId) {
+            @PathVariable String jobId,
+            @RequestBody JobDto jobDto) {
+        log.info("Received JobDto: {}", jobDto);  // JobDto 로깅
         try {
-            String memberId = userDetails.getUser().getMember_id();
-            Job job = new Job();
-            job.setId(jobId);
+            String unixTimeStamp = String.valueOf(jobDto.getExpirationTimestamp());  // 'long' 값을 'String'으로 변환
 
-            boolean isScraped = jobService.toggleScrap(job, memberId);
+            if (unixTimeStamp == null || unixTimeStamp.isEmpty()) {
+                throw new IllegalArgumentException("Expiration timestamp is invalid");
+            }
+
+            long timestamp = Long.parseLong(unixTimeStamp);
+
+            // Unix Timestamp를 DATETIME 형식으로 변환
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date date = new Date();
+            date.setTime(timestamp * 1000);  // 밀리초로 변환
+
+            // 변환된 DATETIME 문자열
+            String datetime = sdf.format(date);
+            log.info("변환된 DATETIME = {}", datetime);
+            jobDto.setExpirationTimestamp(datetime);
+
+            String memberId = userDetails.getUser().getMember_id();
+            jobDto.setId(jobId);
+
+            boolean isScraped = jobService.toggleScrap(jobDto, memberId);
 
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
             response.put("isScraped", isScraped);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
+            log.error("Error occurred: {}", e.getMessage());
             Map<String, Object> response = new HashMap<>();
             response.put("success", false);
             response.put("message", "Failed to toggle scrap");
