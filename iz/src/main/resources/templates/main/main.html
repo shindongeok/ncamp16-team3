@@ -258,11 +258,6 @@
 
 <script th:inline="javascript">
     // Spring Security를 통해 전달받은 데이터를 전역 변수로 설정
-    const feelingList = /*[[${@mainService.getMonthlyFeeling(
-            #authentication.principal.user.member_id,
-            T(java.time.LocalDate).now().format(T(java.time.format.DateTimeFormatter).ofPattern('yyyy-MM'))
-        )}]]*/ [];
-
     const monthlyStressList = /*[[${@mainService.getMonthlyStress(
             #authentication.principal.user.member_id,
             T(java.time.LocalDate).now().format(T(java.time.format.DateTimeFormatter).ofPattern('yyyy-MM'))
@@ -272,7 +267,6 @@
     const startTime = /*[[${@mainService.getStartTime(#authentication.principal.user.member_id)}]]*/ '09:00';
     const lunchTime = /*[[${@mainService.getLunchTime(#authentication.principal.user.member_id)}]]*/ '12:00';
     const endTime = /*[[${@mainService.getEndTime(#authentication.principal.user.member_id)}]]*/ '18:00';
-    const stressNum = /*[[${@mainService.getStressNum(#authentication.principal.user.member_id)}]]*/ 0;
 </script>
 <script th:src="@{/js/mainScript.js}"></script>
 
