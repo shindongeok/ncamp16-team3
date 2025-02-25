@@ -4,7 +4,7 @@ let globalLunchTime = lunchTime;
 let globalEndTime = endTime;
 
 // 캘린더 관련 함수들
-function updateCalendar(feelingList = []) {
+function updateCalendar(monthlyStressList = []) {
     const today = new Date();
     const monday = new Date(today);
     const diff = today.getDay() === 0 ? 6 : today.getDay() - 1;
@@ -18,12 +18,18 @@ function updateCalendar(feelingList = []) {
     const dateGrid = document.querySelector('.calendar-grid:last-child');
     dateGrid.innerHTML = '';
 
+    // 툴팁이 이미 존재한다면 제거
+    const existingTooltip = document.getElementById('stress-tooltip');
+    if (existingTooltip) {
+        existingTooltip.remove();
+    }
+
     for (let i = 0; i < 7; i++) {
         const currentDate = new Date(monday);
         currentDate.setDate(monday.getDate() + i);
 
         const dateSpan = document.createElement('span');
-        dateSpan.className = 'calendar-date cursor-pointer';
+        dateSpan.className = 'calendar-date cursor-pointer transition-transform duration-200 hover:scale-110 hover:z-10';
         dateSpan.textContent = currentDate.getDate();
 
         if (currentDate.toDateString() === today.toDateString()) {
@@ -31,26 +37,110 @@ function updateCalendar(feelingList = []) {
         }
 
         const formattedDate = currentDate.toISOString().split('T')[0];
-        const feelingData = feelingList.find(item => {
+        const stressData = monthlyStressList.find(item => {
             const itemDate = new Date(item.date).toISOString().split('T')[0];
             return itemDate === formattedDate;
         });
 
-        if (feelingData) {
-            dateSpan.classList.remove('verybad', 'bad', 'good', 'verygood');
-            const feelingNum = feelingData.feeling_num;
-            if (feelingNum <= -6) dateSpan.classList.add('verybad');
-            else if (feelingNum >= -5 && feelingNum <= -2) dateSpan.classList.add('bad');
-            else if (feelingNum >= 2 && feelingNum <= 5) dateSpan.classList.add('good');
-            else if (feelingNum >= 6) dateSpan.classList.add('verygood');
+        if (stressData) {
+            dateSpan.classList.remove('verybad', 'bad', 'soso', 'good', 'verygood');
+            const stressNum = stressData.stress_num;
+            if (stressNum >= 80) dateSpan.classList.add('verybad');
+            else if (stressNum >= 60 && stressNum < 80) dateSpan.classList.add('bad');
+            else if (stressNum >= 40 && stressNum < 60) dateSpan.classList.add('soso');
+            else if (stressNum >= 20 && stressNum < 40) dateSpan.classList.add('good');
+            else if (stressNum < 20) dateSpan.classList.add('verygood');
+
+            // 날짜에 스트레스 데이터 저장
+            dateSpan.dataset.stressNum = stressNum;
+            dateSpan.dataset.date = formattedDate;
+
+            // 클릭 이벤트 추가
+            dateSpan.addEventListener('click', showStressTooltip);
         }
 
         dateGrid.appendChild(dateSpan);
     }
 }
 
-function initializeCalendar(feelingList = []) {
-    updateCalendar(feelingList);
+// 스트레스 툴팁을 표시하는 함수 (Tailwind CSS 사용)
+function showStressTooltip(event) {
+    // 기존 툴팁 제거
+    const existingTooltip = document.getElementById('stress-tooltip');
+    if (existingTooltip) {
+        existingTooltip.remove();
+    }
+
+    const dateElement = event.currentTarget;
+    const stressNum = dateElement.dataset.stressNum;
+    const dateStr = dateElement.dataset.date;
+
+    if (!stressNum) return;
+
+    // 날짜 포맷팅
+    const dateObj = new Date(dateStr);
+    const formattedDate = `${dateObj.getFullYear()}년 ${dateObj.getMonth() + 1}월 ${dateObj.getDate()}일`;
+
+    // 스트레스 레벨 텍스트와 색상 결정
+    let stressLevel, textColorClass;
+    if (stressNum >= 80) {
+        stressLevel = '매우 높음';
+        textColorClass = 'text-[#ff5353]';
+    } else if (stressNum >= 60) {
+        stressLevel = '높음';
+        textColorClass = 'text-[#ff9898]';
+    } else if (stressNum >= 40) {
+        stressLevel = '보통';
+        textColorClass = 'text-[#ffa500]';
+    } else if (stressNum >= 20) {
+        stressLevel = '낮음';
+        textColorClass = 'text-[#9bdcfd]';
+    } else {
+        stressLevel = '매우 낮음';
+        textColorClass = 'text-[#00a3ed]';
+    }
+
+    // 툴팁 생성
+    const tooltip = document.createElement('div');
+    tooltip.id = 'stress-tooltip';
+    tooltip.className = 'absolute z-50 bg-white rounded-xl shadow-md w-40 p-3 animate-fade-in';
+    tooltip.innerHTML = `
+        <div class="relative">
+            <div class="absolute -top-5 left-1/2 transform -translate-x-1/2 w-0 h-0 border-8 border-transparent border-b-white"></div>
+            <div class="text-center text-gray-800 mb-1">${formattedDate}</div>
+            <div class="text-center font-medium mb-1">퇴사지수: <span class="${textColorClass} font-bold">${stressNum}%</span></div>
+            <div class="text-center text-sm text-gray-600">(${stressLevel})</div>
+        </div>
+    `;
+
+    // 툴팁 위치 계산
+    const rect = dateElement.getBoundingClientRect();
+
+    tooltip.style.left = `${rect.left + rect.width/2 - 80}px`; // 툴팁 중앙 정렬
+    tooltip.style.top = `${rect.bottom + window.scrollY + 10}px`; // 날짜 아래에 표시
+
+    // body에 툴팁 추가
+    document.body.appendChild(tooltip);
+
+    // 툴팁 외부 클릭 시 닫기
+    document.addEventListener('click', closeTooltip);
+
+    // 이벤트 전파 중지
+    event.stopPropagation();
+}
+
+// 툴팁 닫기 함수
+function closeTooltip(event) {
+    const tooltip = document.getElementById('stress-tooltip');
+    if (tooltip && !tooltip.contains(event.target) &&
+        !event.target.classList.contains('calendar-date')) {
+        tooltip.remove();
+        document.removeEventListener('click', closeTooltip);
+    }
+}
+
+function initializeCalendar(monthlyStressList = []) {
+    updateCalendar(monthlyStressList);
 
     function scheduleNextUpdate() {
         const now = new Date();
@@ -58,7 +148,7 @@ function initializeCalendar(feelingList = []) {
         const timeUntilMidnight = tomorrow - now;
 
         setTimeout(() => {
-            updateCalendar(feelingList);
+            updateCalendar(monthlyStressList);
             scheduleNextUpdate();
         }, timeUntilMidnight);
     }
@@ -164,7 +254,28 @@ function updateAllProgress() {
 // 초기화 및 이벤트 리스너
 document.addEventListener('DOMContentLoaded', () => {
     // 캘린더 초기화
-    initializeCalendar(feelingList);
+    initializeCalendar(monthlyStressList);
+
+    // 캘린더 외부 클릭 시 툴팁 닫기
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.calendar-grid')) {
+            const tooltip = document.getElementById('stress-tooltip');
+            if (tooltip) tooltip.remove();
+        }
+    });
+
+    // 애니메이션 스타일 추가
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.3s ease;
+        }
+    `;
+    document.head.appendChild(style);
 
     // 월급일 D-day 계산 및 표시
     const paydayElement = document.getElementById('payday');
