@@ -2,36 +2,14 @@
 <!DOCTYPE html>
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Title</title>
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <link rel="stylesheet" th:href="@{/css/default.css}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    <style type="text/tailwindcss">
-        html {
-            background-color: #f0f0f0;
-        }
-        /* PC에서 모바일 크기로 고정 */
-        @media screen and (min-width: 769px) {
-            .mobile-container {
-                width: 600px;
-                margin: 0 auto;
-                background: white;
-                box-shadow: 0 0 10px rgba(0,0,0,0.1);
-                min-height: 100vh;
-            }
-        }
-
-        /* 모바일에서는 전체 너비 사용 */
-        @media screen and (max-width: 768px) {
-            .mobile-container {
-                width: 100%;
-                background: white;
-                min-height: 100vh;
-            }
-        }
-    </style>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 </head>
 <body>
@@ -41,7 +19,7 @@
     <footer th:replace="~{footer :: footer}" class="pt-4"></footer>
 
     <div class="px-10"> <!-- 헤더와 일치하도록 p-4에서 px-10으로 변경 -->
-        <h1 class="text-2xl font-bold mb-6">찜 해놓은 채용공고</h1>
+        <h1 class="text-2xl font-bold mb-2">찜 해놓은 채용공고</h1>
 
         <div th:if="${scrapedJobs.isEmpty()}" class="text-center text-gray-500 py-10">
             저장된 채용공고가 없습니다.
