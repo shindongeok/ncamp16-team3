@@ -58,12 +58,14 @@
     <ul class="space-y-4">
         <li th:each="alarm : ${alarmList}"
             class="flex justify-between items-center bg-white p-4 max-w-[580px] rounded-lg shadow-md hover:shadow-lg transition-transform transform hover:scale-102 group">
-
-            <a th:href="@{/board/{board_type}/{board_id}(board_type=${alarm.getBoard_type()}, board_id=${alarm.getBoard_id()})}">
-                <span class="alarm-icon text-xl text-blue-500 mr-4">🔔</span>
-                <span class="text-gray-700 flex-1" th:text="${alarm.content}"></span>
-            </a>
-
+                <a th:if="${alarm.getCompany_name() == null}" th:href="@{/board/{board_type}/{board_id}(board_type=${alarm.getBoard_type()}, board_id=${alarm.getBoard_id()})}">
+                    <span class="alarm-icon text-xl text-blue-500 mr-4">🔔</span>
+                    <span class="text-gray-700 flex-1" th:text="${alarm.content}"></span>
+                </a>
+                <a th:unless="${alarm.getCompany_name() == null}" th:href="@{/job/scrap}">
+                    <span class="alarm-icon text-xl text-blue-500 mr-4">🔔</span>
+                    <span class="text-gray-700 flex-1" th:text="${alarm.content}"></span>
+                </a>
             <!-- 삭제 버튼 -->
             <button class="delete-alarm hidden group-hover:block text-red-500 hover:text-red-700 cursor-pointer"
                     th:data-alarm-id="${alarm.alarm_id}"

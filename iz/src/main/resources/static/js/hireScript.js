@@ -90,11 +90,19 @@ $(document).ready(function() {
     $(document).on('click', '.scrap-btn', function(e) {
         e.preventDefault();
         const $btn = $(this);
-        const jobId = $btn.data('job-id');
+        const jobId = $btn.data('jobId');  // data-job-id
+        const companyName = $btn.data('jobCompanyName');  // data-company-name
+        const expirationTimestamp = $btn.data('jobExpirationTimestamp');
 
         $.ajax({
             url: '/job/scrap/' + jobId,
             type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                id: jobId,
+                companyName: companyName,
+                expirationTimestamp: expirationTimestamp
+            }),
             success: function(response) {
                 if (response.success) {
                     if (response.isScraped) {
