@@ -60,36 +60,30 @@
             --color-bold-text: oklch(0.208 0.042 265.755);
         }
         @media screen and (max-width: 768px) {
-            /* 스트레스 섹션 레이아웃 완전 재구성 */
+            /* 스트레스 섹션 내부의 컨테이너 레이아웃 변경 - 모바일에서만 적용 */
             .stress-section .flex-row {
                 flex-direction: column !important;
                 align-items: center !important;
-                gap: 1.5rem !important;
+                gap: 1rem !important;
             }
 
-            /* SVG 컨테이너 스타일 수정 */
-            .stress-section .relative {
-                width: 100%;
-                display: flex;
-                justify-content: center;
-            }
-
-            /* SVG 크기 조정 */
+            /* SVG 크기 줄이기 - 모바일에서만 적용 */
             .stress-section svg {
-                width: 180px !important;
-                height: 180px !important;
+                width: 160px !important;
+                height: 160px !important;
             }
 
-            /* 텍스트 영역 조정 */
+            /* 텍스트 컨테이너 스타일 수정 - 모바일에서만 적용 */
             .stress-section .bg-white {
-                max-width: 100% !important;
                 width: 100% !important;
-                margin-top: 0 !important;
+                max-width: none !important;
+                padding: 1rem !important;
+                text-align: center !important;
             }
 
-            /* 화살표 위치 조정 */
+            /* 말풍선 화살표 제거 - 모바일에서만 적용 */
             .stress-section .bg-white .absolute {
-                display: none; /* 모바일에서는 화살표 숨김 */
+                display: none !important;
             }
         }
         @media screen and (max-width: 768px) {
