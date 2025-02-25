@@ -28,12 +28,12 @@
     <div class="flex flex-col w-full max-w-6xl mx-auto p-10">
 
         <!-- 게시판 메뉴 및 글쓰기 버튼 -->
-        <div class="bg-gray-100 rounded-lg p-4"> <!-- padding과 margin을 줄임 -->
+        <div class="bg-gray-100 rounded-lg p-4">
             <div class="flex justify-between items-center">
                 <h2 th:text="${board_name}" class="text-2xl font-semibold text-gray-700">자유게시판</h2>
 
                 <!-- 정렬 옵션 -->
-                <select id="#" class="border-2 border-main-sky-highlight rounded-xl px-4 py-2 text-gray-500
+                <select id="sortOptions" class="border-2 border-main-sky-highlight rounded-xl px-4 py-2 text-gray-500
                     focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-main-sky-highlight
                     hover:border-main-sky-basic
                     focus-visible:outline-offset-2 focus-visible:outline-sky-800
@@ -57,7 +57,7 @@
         </div>
 
         <!-- 게시글 리스트 -->
-        <div class="bg-gray-100 rounded-lg mt-4 p-4"  th:each="board : ${listBoard}">
+        <div id="boardList" class="bg-gray-100 rounded-lg mt-4 p-4"  th:each="board : ${listBoard}">
             <div class="flex flex-col">
                 <!-- 게시글 리스트 (데이터 제외) -->
                 <div class="flex border-b border-gray-200 pb-4">
@@ -94,8 +94,9 @@
             </div>
         </div>
 
-        <footer th:replace="~{/footer :: footer}" class="pt-4"></footer>
+        <footer th:replace="~{footer :: footer}" class="pt-4"></footer>
     </div>
 </div>
+
 </body>
 </html>

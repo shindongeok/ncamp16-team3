@@ -149,7 +149,6 @@ public interface BoardMapper {
     // 게시글의 좋아요/싫어요 전체 수
     @Select("select * from iz_board01 where board_id = #{board_id}")
     Board totalLikeDisLike(@Param("board_id") int boardId);
-    //======================================================================
 
     // 회원의 게시글 좋아요 개수
     @Select("SELECT COUNT(*) FROM iz_board02_like WHERE board_id=#{board_id} and member_id=#{member_id}")
@@ -158,7 +157,6 @@ public interface BoardMapper {
     // 회원의 게시글 싫어요 개수
     @Select("SELECT COUNT(*) FROM iz_board02_dislike WHERE board_id=#{board_id} and member_id=#{member_id}")
     int countDislikeByMember02(@Param("board_id") int boardId, @Param("member_id") String memberId);
-
 
     // 좋아요 생성
     @Insert("INSERT INTO iz_board02_like VALUES(#{board_id}, #{member_id})")
@@ -175,7 +173,6 @@ public interface BoardMapper {
     // 싫어요 삭제
     @Delete("DELETE FROM iz_board02_dislike WHERE board_id=#{board_id} AND member_id=#{member_id}")
     void deleteDislike02(@Param("board_id") int boardId, @Param("member_id") String memberId);
-
 
     // TODO iz_board02의 like, dislike + 1, -1
     // 게시글 like_count +1
@@ -227,8 +224,8 @@ public interface BoardMapper {
             "order by c.comment_id desc " +
             "limit 1 ")
     CommentDto getLastComment02(@Param("board_id") int boardId);
-
-    //인기게시판
+    // ===============================
+    //인기게시판(자유게시판)
     @Select("select b.*, " +
             "coalesce(count(c.comment_id), 0) AS comment_count " +
             "from iz_board_type t " +
@@ -250,6 +247,75 @@ public interface BoardMapper {
             "order by  like_count desc, reg_date desc  " +
             "limit 3")
     List<BoardDto> getIssueBoardList02();
+// ---------------------------------------------------
+    //인기테이블 삽입
+
+    // 인기 게시판 삭제
+    @Delete("DELETE FROM iz_board_popular")
+    void deletePopularBoards();
+
+    // 인기 게시판 삽입
+    /*
+    DELIMITER $$
+
+    CREATE EVENT update_popular_boards_event
+    ON SCHEDULE EVERY 1 DAY
+    STARTS TIMESTAMP(CURRENT_DATE + INTERVAL 1 DAY)
+    DO
+    BEGIN
+        DELETE FROM iz_board_popular;
+
+        INSERT INTO iz_board_popular (board_id, board_type, like_count)
+        SELECT board_id, board_type, like_count
+        FROM (
+            SELECT board_id, 1 AS board_type, like_count
+            FROM iz_board01
+            ORDER BY like_count DESC
+            LIMIT 3
+        ) AS top_posts1
+
+        UNION ALL
+
+        SELECT board_id, 2 AS board_type, like_count
+        FROM (
+            SELECT board_id, 2 AS board_type, like_count
+            FROM iz_board02
+            ORDER BY like_count DESC
+            LIMIT 3
+        ) AS top_posts2
+        ORDER BY like_count DESC
+        LIMIT 3;
+    END $$
+
+    DELIMITER ;
+
+     */
+
+    // 좋아요가 5개 이상인 게시글을 조회
+    @Select("""
+        SELECT * FROM iz_board01
+        WHERE like_count >= 5
+        UNION ALL
+        SELECT * FROM iz_board02
+        WHERE like_count >= 5;
+    """)
+    List<Board> getBoardsWithLikesAbove5();
+
+    // 인기 게시판에 5개 이상 좋아요를 받은 게시글 삽입
+    @Insert({
+            "INSERT INTO iz_board_popular (board_id, like_count, board_type) ",
+            "SELECT board_id, like_count, 1 AS board_type ",
+            "FROM iz_board01 ",
+            "WHERE like_count >= 5 ",
+            "UNION ALL ",
+            "SELECT board_id, like_count, 2 AS board_type ",
+            "FROM iz_board02 ",
+            "WHERE like_count >= 5 ",
+            "ORDER BY like_count DESC"
+    })
+    void insertPopularBoards();
+
+
 
     // 내 게시물
     @Select("SELECT b.*, " +

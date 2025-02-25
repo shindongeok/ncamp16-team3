@@ -3,12 +3,10 @@ package com.izikgram.board.controller;
 import com.izikgram.board.entity.Board;
 import com.izikgram.board.entity.BoardDto;
 import com.izikgram.board.entity.CommentDto;
-import com.izikgram.board.repository.BoardMapper;
 import com.izikgram.board.service.BoardService;
 import com.izikgram.global.security.CustomUserDetails;
 import com.izikgram.user.entity.User;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -31,10 +29,9 @@ public class  BoardController {
     @GetMapping("/{board_type}")
     public String boardCommunity(@PathVariable("board_type") int board_type, Model model){
 
-        System.out.println("board_type: " + board_type);  // 확인용 로그
         if (board_type != 1 && board_type != 2) {
             model.addAttribute("error", "유효하지 않은 게시판 타입입니다.");
-            return "redirect:/";
+            return "redirect:/main";
         }
 
         String board_name = boardService.findBoardName(board_type);
@@ -57,9 +54,8 @@ public class  BoardController {
                            Model model){
 
         if (board_type != 1 && board_type != 2) {
-            // 사용하게 된다면..
             model.addAttribute("error", "유효하지 않은 게시판 타입입니다.");
-            return "redirect:/";
+            return "redirect:/board/" + board_type;
         }
 
         String board_name = boardService.findBoardName(board_type);
@@ -78,7 +74,7 @@ public class  BoardController {
                              @RequestParam("content") String content) {
 
         if (board_type != 1 && board_type != 2) {
-            return "redirect:/";
+            return "redirect:/board/" + board_type;
         }
 
         User user = userDetails.getUser();
@@ -189,6 +185,7 @@ public class  BoardController {
         model.addAttribute("issueBoardList01",issueBoardList01);
         model.addAttribute("issueBoardList02",issueBoardList02);
 
+
         return "board/popularityCommunity";
     }
 
@@ -244,9 +241,11 @@ public class  BoardController {
     }
 
     // 게시글 삭제
-    @PostMapping("/delete")
-    public String boardDelete(@RequestParam("board_id") int board_id,
-                              @RequestParam("board_type")int board_type){
+    @PostMapping("/delete/{board_type}/{board_id}")
+    public String boardDelete(@PathVariable("board_id") int board_id,
+                              @PathVariable("board_type")int board_type){
+
+
         if(board_type == 1){
             boardService.deleteBoard01(board_id);
         }else if(board_type == 2){

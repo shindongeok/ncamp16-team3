@@ -1,7 +1,7 @@
 
 //게시글 작성 널값 확인
 function PostFormInsertBut(){
-    const title = document.getElementById("writer_id").value.trim();
+    const title = document.getElementById("title").value.trim();
     const content = document.getElementById("content").value.trim();
 
     if(!title){
@@ -75,20 +75,24 @@ function saveComment() {
         success: function(response) {
             if (response.success) {
                 const newComment = `
-                <div class="border-b border-gray-200">
-                    <div class="flex justify-between p-2">
-                        <div class="text-gray-500">${response.nickname}</div>
-                        <div class="text-gray-500 reg_date" data-reg-date="${response.reg_date}">방금 전</div>
+                <div class="idBoard p-4 border rounded-lg bg-gray-50">
+                    <div class="flex justify-between text-gray-600 text-sm font-semibold">
+                        <span >${response.nickname}</span>
+                        <span class="reg_date" data-reg-date="${response.reg_date}">방금 전</span>
                     </div>
-                    <div class="flex justify-between">
-                        <input id="inpuu" class="comment-input focus:outline-none h-10 p-2 text-xl font-black" value="${response.comment_content}" readonly></input>
-                        <div class="p-2" >
-                            <button type="button" id="dd" onclick="editComment(event)" class="px-2 py-1 bg-main-sky-highlight text-black rounded hover:bg-main-sky-basic rounded-xl cursor-pointer">수정</button>
+                    <div class="flex justify-between items-center mt-2">
+                        <input id="inpuu" class="comment-input focus:outline-none p-2 text-xl font-black w-100" 
+                               value="${response.comment_content}" readonly>
+                        <div class="space-x-2" >
+                            <button type="button" id="dd" onclick="editComment(event)" 
+                                    class="text-blue-500 hover:text-blue-600 cursor-pointer">
+                                    수정
+                            </button>
                             <input type="hidden" id="commentId" class="comment-id" value="${response.comment_id}"/>
                             <input type="hidden" id="boardIde" class="board-id"  value="${boardId}"/>
                             <input type="hidden" id="boardTypec"  class="board-type" value="${boardType}"/>
                             <input type="hidden" id="writerId" class="writer-id" value="${response.writer_id}"/>
-                            <button type="button" onclick="OpenDeleteModal(this)" class="px-2 py-1 bg-main-red-highlight text-black rounded hover:bg-main-red-basic rounded-xl cursor-pointer">삭제</button>
+                            <button type="button" onclick="OpenDeleteModal(this)" class="text-red-500 hover:text-red-600 cursor-pointer">삭제</button>
                         </div>
                     </div>
                 </div>`;
@@ -113,7 +117,7 @@ function saveComment() {
 
 // 게시글 삭제 창
 function OpenDeleteModal(button) {
-    selectedComment = button.closest('.border-b');
+    selectedComment = button.closest('.idBoard');
     document.getElementById("communityDeleteModal").classList.remove("hidden");
 }
 
@@ -149,10 +153,10 @@ function deleteComment() {
             console.log(data);
 
             if (data.message === "댓글이 삭제되었습니다.") {
-                // 모달 창 닫기
+
                 CloseDeleteModal();
 
-                const selectedComment = document.querySelector(`#commentId[value='${commentId}']`).closest('.border-b');
+                const selectedComment = document.querySelector(`#commentId[value='${commentId}']`).closest('.idBoard');
                 if (selectedComment) {
                     selectedComment.remove();
                 }
@@ -170,25 +174,54 @@ function deleteComment() {
 //댓글 수정
 function editComment(event) {
     const button = event.target;  // 클릭된 버튼
-    const commentDiv = button.closest('.border-b'); // 해당 댓글 요소 찾기
-    const inputField = commentDiv.querySelector('.comment-input'); // 댓글 내용 입력 필드 찾기
-    const commentId = commentDiv.querySelector('.comment-id').value;
-    const boardIde = commentDiv.querySelector('.board-id').value;
-    const boardTypec = commentDiv.querySelector('.board-type').value;
-    const writerId = commentDiv.querySelector('.writer-id').value;
+    const commentDiv = button.closest('.idBoard'); // 해당 댓글 요소 찾기
 
-    console.log("comment_id: " + commentId + ", board_id: " + boardIde + ", board_type: " + boardTypec + ", writer_id: " + writerId);
+    if (!commentDiv) {
+        console.error('댓글 요소를 찾을 수 없습니다.');
+        return;
+    }
+
+    const inputField = commentDiv.querySelector('.comment-input'); // 댓글 내용 입력 필드 찾기
+    const commentId = commentDiv.querySelector('.comment-id');
+    const boardIde = commentDiv.querySelector('.board-id');
+    const boardTypec = commentDiv.querySelector('.board-type');
+    const writerId = commentDiv.querySelector('.writer-id');
+
+    if (!inputField || !commentId || !boardIde || !boardTypec || !writerId) {
+
+        console.error('필수 요소가 누락되었습니다.');
+        return;
+    }
+
+    console.log("comment_id: " + commentId.value + ", board_id: " + boardIde.value + ", board_type: " + boardTypec.value + ", writer_id: " + writerId.value);
+
+    // 원래 배경색 저장
+    const originalBorder = inputField.style.border;
 
     // 읽기 전용 속성 제거 및 포커스
     inputField.removeAttribute('readonly');
-    inputField.focus();
+    inputField.style.border = "2px solid #9bdcfd";
+    inputField.style.borderTop = "none";  // 상단 테두리 없애기
+    inputField.style.borderLeft = "none"; // 왼쪽 테두리 없애기
+    inputField.style.borderRight = "none"; // 오른쪽 테두리 없애기
 
-    // 버튼 텍스트 변경
+
+    setTimeout(() => {
+        inputField.focus();
+        const length = inputField.value.length;
+        inputField.setSelectionRange(length, length);
+    }, 10);
+
     button.innerText = '저장';
 
-    // 저장 버튼 클릭 시 이벤트 변경
     button.onclick = function() {
         const updatedContent = inputField.value;
+
+        if (!updatedContent) {
+            alert("댓글을 입력하세요!");
+            inputField.focus(); // 다시 입력할 수 있도록 포커스
+            return; // 함수 종료
+        }
 
         fetch('/board/comment/update', {
             method: 'POST',
@@ -196,10 +229,10 @@ function editComment(event) {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                comment_id: commentId,
-                board_id: boardIde,
-                board_type: boardTypec,
-                writerId: writerId,
+                comment_id: commentId.value,
+                board_id: boardIde.value,
+                board_type: boardTypec.value,
+                writerId: writerId.value,
                 comment_content: updatedContent  // 수정된 댓글 내용 전송
             })
         })
@@ -208,6 +241,8 @@ function editComment(event) {
                 if (data.success) {
                     // 다시 읽기 전용 설정
                     inputField.setAttribute('readonly', 'true');
+                    inputField.style.border = originalBorder;
+
                     button.innerText = '수정';
                     button.onclick = editComment; // 다시 수정 가능하도록 원래 이벤트로 복구
                     alert('댓글이 수정되었습니다.');
@@ -221,6 +256,8 @@ function editComment(event) {
             });
     };
 }
+
+
 
 function OpenDeleteModalBoard() {
     document.getElementById("boardDeleteModal").classList.remove("hidden");

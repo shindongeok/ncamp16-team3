@@ -35,7 +35,6 @@
 <div class=" flex flex-col w-full mobile-container pt-8 relative bg-white rounded-lg  mx-auto">
     <div class="pt-28"><header th:replace="~{header :: header} " class="pt-4"></header></div>
     <div class="bg-white rounded-xl pb-8 pl-8 pr-8">
-        <!-- 헤더 -->
         <header class="text-2xl font-semibold border-b pb-4" th:text="${board_name}">게시글 상세보기</header>
 
         <!-- 제목 -->
@@ -53,7 +52,7 @@
 
 
         <div class="flex justify-between items-center mt-6">
-            <!-- 좋아요 / 싫어요 버튼 (왼쪽 정렬) -->
+            <!-- 좋아요 / 싫어요 버튼 -->
             <div class="flex space-x-2">
                 <input id="boardType" type="hidden" th:value="${board_type}" />
                 <input id="boardId" type="hidden" th:value="${board.board_id}" />
@@ -71,7 +70,7 @@
                 </button>
             </div>
 
-            <!-- 수정 / 삭제 버튼 (오른쪽 정렬) -->
+            <!-- 수정 / 삭제 버튼 -->
             <div class="flex space-x-2" th:if="${member_id == board.writer_id}">
                 <a class="px-4 py-2 bg-main-sky-highlight hover:bg-main-sky-basic text-white
                        rounded-lg transition cursor-pointer"
@@ -126,14 +125,14 @@
             </div>
         </div>
 
-        <!-- 목록으로 버튼 -->
+
         <div class="mt-8 mb-15 flex justify-end">
             <a th:href="@{/board/{board_type}(board_type=${board_type})}" class="px-6 py-3 bg-main-sky-highlight hover:bg-main-sky-basic text-white rounded-lg transition cursor-pointer">
                 목록으로
             </a>
         </div>
 
-        <!-- 게시글 삭제 모달.       -->
+        <!-- 게시글 삭제 모달.  -->
         <div id="boardDeleteModal" class="relative z-10 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
             <div class="fixed inset-0 bg-gray-500/75 transition-opacity max-w-[600px] mx-auto left-0 right-0"></div>
             <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
@@ -147,8 +146,8 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- 모달 버튼 영역 -->
-                        <form id="deleteForm" method="POST" action="/board/delete">
+
+                        <form id="deleteForm" method="POST" th:action="@{/board/delete/{board_type}/{board_id}(board_type=${board_type}, board_id=${board_id})}">
                             <div class="px-4 pt-20 pb-5 sm:flex sm:flex-row-reverse sm:px-6">
                                 <input type="hidden" name="board_id" id="board_id" th:value="${board_id}">
                                 <input type="hidden" name="board_type" id="board_type" th:value="${board_type}">
@@ -171,7 +170,6 @@
             <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
                 <div class="flex min-h-full items-center justify-center p-4 text-center sm:items-center sm:p-0">
                     <div class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
-                        <!-- 모달 헤더 -->
                         <div class="bg-main-sky-highlight sm:p-4 sm:pb-4">
                             <div class="sm:flex sm:items-start">
                                 <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
@@ -193,11 +191,8 @@
             </div>
         </div>
     </div>
-    <footer th:replace="~{/footer :: footer}" class="pt-4"></footer>
+    <footer th:replace="~{footer :: footer}" class="pt-4"></footer>
 </div>
-<script th:inline="javascript">
-
-</script>
 <script src="https://code.jquery.com/jquery-3.6.4.js"></script>
 <script th:src="@{/js/postDetail.js}"></script>
 <script th:src="@{/js/likeDisLike.js}"></script>
