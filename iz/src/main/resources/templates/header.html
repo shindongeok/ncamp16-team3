@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-    <link rel="stylesheet" th:href="@{/css/default.css}">
 
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
@@ -19,6 +18,7 @@
             font-family: "Roboto", serif;
         }
     </style>
+    <link rel="stylesheet" th:href="@{/css/default.css}">
 </head>
 <div th:fragment="header" class="absolute top-0 left-0 w-full z-50" xmlns:sec="http://www.w3.org/1999/xhtml">
     <!-- 슬라이드 메뉴 (모바일 컨테이너 내부에서만 슬라이드) -->
@@ -30,7 +30,7 @@
             <!-- 로고 이미지 (가운데 정렬) -->
             <div class="flex-1 flex justify-center">
                 <a th:href="@{/main}">
-                    <img th:src="@{/images/izikgram.png}" alt="로고" class="w-[200px] h-[80px] mt-12px">
+                    <img th:src="@{/images/izikgram.png}" alt="로고" class="w-[200px] h-[80px] mt-12px ml-2">
                 </a>
             </div>
 
