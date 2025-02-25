@@ -60,20 +60,54 @@
             --color-bold-text: oklch(0.208 0.042 265.755);
         }
         @media screen and (max-width: 768px) {
+            /* 스트레스 섹션 레이아웃 완전 재구성 */
             .stress-section .flex-row {
-                flex-direction: column;
-                align-items: center;
+                flex-direction: column !important;
+                align-items: center !important;
+                gap: 1.5rem !important;
             }
 
-            .stress-section svg {
-                max-width: 160px;
-                max-height: 160px;
-                margin: 0 auto;
-            }
-
-            .stress-section .bg-white {
+            /* SVG 컨테이너 스타일 수정 */
+            .stress-section .relative {
                 width: 100%;
-                margin-top: 1rem;
+                display: flex;
+                justify-content: center;
+            }
+
+            /* SVG 크기 조정 */
+            .stress-section svg {
+                width: 180px !important;
+                height: 180px !important;
+            }
+
+            /* 텍스트 영역 조정 */
+            .stress-section .bg-white {
+                max-width: 100% !important;
+                width: 100% !important;
+                margin-top: 0 !important;
+            }
+
+            /* 화살표 위치 조정 */
+            .stress-section .bg-white .absolute {
+                display: none; /* 모바일에서는 화살표 숨김 */
+            }
+        }
+        @media screen and (max-width: 768px) {
+            /* Overview 섹션의 카드 레이아웃도 세로로 변경 */
+            .py-4 .flex-row.flex-grow {
+                flex-direction: column !important;
+                gap: 1rem !important;
+            }
+
+            /* 카드 너비 조정 */
+            .py-4 .flex-row.flex-grow .flex-1 {
+                width: 100% !important;
+            }
+        }
+        @media screen and (max-width: 768px) {
+            .px-10 {
+                padding-left: 1rem !important;
+                padding-right: 1rem !important;
             }
         }
     </style>
