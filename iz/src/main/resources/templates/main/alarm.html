@@ -41,6 +41,54 @@
                 min-height: 100vh;
             }
         }
+
+        /* 모바일 스와이프 삭제 기능 관련 스타일 */
+        .alarm-item {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .alarm-content {
+            transform: translateX(0);
+            transition: transform 0.3s ease;
+            background-color: white;
+            position: relative;
+            z-index: 1;
+        }
+
+        .delete-button {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 80px;
+            background-color: #ef4444;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 0;
+        }
+
+        /* PC용 삭제 버튼 호버 효과 */
+        @media (min-width: 768px) {
+            .alarm-item {
+                position: relative;
+            }
+
+            .alarm-content {
+                position: relative;
+            }
+
+            .pc-delete-btn {
+                opacity: 0;
+                transition: opacity 0.2s ease;
+            }
+
+            .alarm-item:hover .pc-delete-btn {
+                opacity: 1;
+            }
+        }
     </style>
 </head>
 
@@ -62,35 +110,46 @@
     <div class="px-6 pb-8">
         <ul class="space-y-3">
             <li th:each="alarm : ${alarmList}"
-                class="flex justify-between items-center bg-white p-4 rounded-lg border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 group">
+                class="alarm-item relative overflow-hidden rounded-lg border border-gray-100 shadow-sm">
 
-                <!-- 일반 게시판 알림 -->
-                <a th:if="${alarm.getCompany_name() == null}"
-                   th:href="@{/board/{board_type}/{board_id}(board_type=${alarm.getBoard_type()}, board_id=${alarm.getBoard_id()})}"
-                   class="flex items-center flex-1">
-                    <span class="flex-shrink-0 bg-blue-50 text-blue-500 rounded-full p-2 mr-3">
-                        <span class="alarm-icon text-xl">🔔</span>
-                    </span>
-                    <span class="text-gray-700" th:text="${alarm.content}"></span>
-                </a>
+                <!-- 삭제 버튼 (모바일용) - 스와이프 시 노출됨 -->
+                <div class="delete-button md:hidden"
+                     th:data-alarm-id="${alarm.alarm_id}"
+                     th:data-alarm-type="${alarm.alarm_type}"
+                     onclick="checkRead(this)">
+                    삭제
+                </div>
 
-                <!-- 채용 스크랩 알림 -->
-                <a th:unless="${alarm.getCompany_name() == null}"
-                   th:href="@{/job/scrap}"
-                   class="flex items-center flex-1">
-                    <span class="flex-shrink-0 bg-yellow-50 text-yellow-500 rounded-full p-2 mr-3">
-                        <span class="alarm-icon text-xl">📌</span>
-                    </span>
-                    <span class="text-gray-700" th:text="${alarm.content}"></span>
-                </a>
+                <!-- 알림 내용 컨테이너 -->
+                <div class="alarm-content flex justify-between items-center bg-white p-4">
+                    <!-- 일반 게시판 알림 -->
+                    <a th:if="${alarm.getCompany_name() == null}"
+                       th:href="@{/board/{board_type}/{board_id}(board_type=${alarm.getBoard_type()}, board_id=${alarm.getBoard_id()})}"
+                       class="flex items-center flex-1">
+                        <span class="flex-shrink-0 bg-blue-50 text-blue-500 rounded-full p-2 mr-3">
+                            <span class="alarm-icon text-xl">🔔</span>
+                        </span>
+                        <span class="text-gray-700" th:text="${alarm.content}"></span>
+                    </a>
 
-                <!-- 삭제 버튼 - 호버 시 나타나도록 -->
-                <button class="delete-alarm opacity-0 group-hover:opacity-100 transition-opacity text-red-500 hover:text-red-700 cursor-pointer ml-2"
-                        th:data-alarm-id="${alarm.alarm_id}"
-                        th:data-alarm-type="${alarm.alarm_type}"
-                        onclick="checkRead(this)">
-                    ❌
-                </button>
+                    <!-- 채용 스크랩 알림 -->
+                    <a th:unless="${alarm.getCompany_name() == null}"
+                       th:href="@{/job/scrap}"
+                       class="flex items-center flex-1">
+                        <span class="flex-shrink-0 bg-yellow-50 text-yellow-500 rounded-full p-2 mr-3">
+                            <span class="alarm-icon text-xl">📌</span>
+                        </span>
+                        <span class="text-gray-700" th:text="${alarm.content}"></span>
+                    </a>
+
+                    <!-- pc용 삭제 버튼 - 호버 시 나타나도록 -->
+                    <button class="pc-delete-btn hidden md:block text-red-500 hover:text-red-700 cursor-pointer ml-2"
+                            th:data-alarm-id="${alarm.alarm_id}"
+                            th:data-alarm-type="${alarm.alarm_type}"
+                            onclick="checkRead(this)">
+                        ❌
+                    </button>
+                </div>
             </li>
 
             <!-- 알림이 없을 때 표시할 내용 -->
@@ -111,33 +170,29 @@
     // 서버의 SSE 엔드포인트와 연결
     const eventSource = new EventSource('http://localhost:8080/subscribe');
 
-    // 서버에서 온 "message" 이벤트를 처리
+    // 서버에서 온 이벤트 핸들러들...
     eventSource.addEventListener('message', function(event) {
         const messageElement = document.createElement('p');
         messageElement.textContent = 'Received: ' + event.data;
         document.body.appendChild(messageElement);
     });
 
-    // 서버에서 온 "popular-message" 이벤트를 처리
     eventSource.addEventListener('popular-message', function(event) {
         const messageElement = document.createElement('p');
         messageElement.textContent = 'Received: ' + event.data;
         document.body.appendChild(messageElement);
     });
 
-    // 서버에서 온 "scarp-message" 이벤트를 처리
     eventSource.addEventListener('scrap-message', function(event) {
         const messageElement = document.createElement('p');
         messageElement.textContent = 'Received: ' + event.data;
         document.body.appendChild(messageElement);
     });
 
-    // 연결이 열렸을 때 실행되는 이벤트
     eventSource.onopen = function() {
         console.log("SSE connection opened");
     };
 
-    // 오류가 발생했을 때 실행되는 이벤트
     eventSource.onerror = function(error) {
         console.error("SSE error", error);
         eventSource.close(); // 오류 시 연결을 닫음
@@ -147,7 +202,7 @@
         let alarmId = button.getAttribute("data-alarm-id");
         let alarmType = button.getAttribute("data-alarm-type");
 
-        if(button.getAttribute("data-alarm-type") == null) {
+        if(alarmType == null) {
             alarmType = "SCRAP";
         }
 
@@ -167,14 +222,74 @@
         })
             .then(response => {
                 if (response.ok) {
-                    button.closest("li").remove(); // 삭제된 알림 화면에서 제거
+                    let alarmItem = button.closest('.alarm-item') || button.parentNode.closest('.alarm-item');
+                    if (alarmItem) {
+                        alarmItem.remove(); // 삭제된 알림 화면에서 제거
+                    }
                 } else {
                     alert("알림 삭제 실패!");
                 }
             })
             .catch(error => console.error('Error:', error));
     }
+
+    // 모바일 스와이프 기능 구현
+    document.addEventListener('DOMContentLoaded', function() {
+        const alarmItems = document.querySelectorAll('.alarm-item');
+
+        alarmItems.forEach(item => {
+            const content = item.querySelector('.alarm-content');
+            let startX, moveX;
+            let isSwiped = false;
+
+            // 터치 시작 이벤트
+            content.addEventListener('touchstart', function(e) {
+                startX = e.touches[0].clientX;
+                content.style.transition = '';
+            });
+
+            // 터치 이동 이벤트
+            content.addEventListener('touchmove', function(e) {
+                moveX = e.touches[0].clientX;
+                const diff = moveX - startX;
+
+                // 왼쪽으로만 스와이프 가능
+                if (diff < 0) {
+                    // 최대 -80px까지만 이동 가능
+                    const x = Math.max(diff, -80);
+                    content.style.transform = `translateX(${x}px)`;
+                }
+            });
+
+            // 터치 종료 이벤트
+            content.addEventListener('touchend', function() {
+                content.style.transition = 'transform 0.3s ease';
+
+                // 충분히 왼쪽으로 스와이프 했으면 삭제 버튼 노출
+                if (startX - moveX > 40) {
+                    content.style.transform = 'translateX(-80px)';
+                    isSwiped = true;
+                } else {
+                    content.style.transform = 'translateX(0)';
+                    isSwiped = false;
+                }
+            });
+
+            // 화면 전체 터치 이벤트 (스와이프된 항목 닫기)
+            document.addEventListener('touchstart', function(e) {
+                const alarmContents = document.querySelectorAll('.alarm-content');
+                alarmContents.forEach(contentElement => {
+                    // 현재 터치한 요소가 이 콘텐츠나 그 자식이 아니면 원래 위치로 복원
+                    if (isSwiped && !contentElement.contains(e.target) && contentElement !== content) {
+                        contentElement.style.transition = 'transform 0.3s ease';
+                        contentElement.style.transform = 'translateX(0)';
+                        isSwiped = false;
+                    }
+                });
+            });
+        });
+    });
 </script>
 
-
 </body>
+</html>
