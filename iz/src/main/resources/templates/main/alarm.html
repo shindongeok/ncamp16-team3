@@ -63,7 +63,7 @@
                     <span class="text-gray-700 flex-1" th:text="${alarm.content}"></span>
                 </a>
                 <a th:unless="${alarm.getCompany_name() == null}" th:href="@{/job/scrap}">
-                    <span class="alarm-icon text-xl text-blue-500 mr-4">🔔</span>
+                    <span class="alarm-icon text-xl text-blue-500 mr-4">📌</span>
                     <span class="text-gray-700 flex-1" th:text="${alarm.content}"></span>
                 </a>
             <!-- 삭제 버튼 -->
