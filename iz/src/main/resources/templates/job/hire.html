@@ -27,6 +27,29 @@
         .hide-scrollbar::-webkit-scrollbar {
             display: none;
         }
+        @media screen and (max-width: 768px) {
+            /* 입력 필드 컨테이너를 세로로 배치 */
+            .채용공고-필터-컨테이너 {
+                flex-direction: column !important;
+                gap: 0.75rem !important;
+            }
+
+            /* 각 입력 필드가 전체 너비 사용 */
+            .채용공고-필터-컨테이너 > div {
+                width: 100% !important;
+            }
+
+            /* 검색 버튼 위치 조정 */
+            .search-button {
+                margin-top: 0.75rem !important;
+                align-self: flex-end !important;
+            }
+
+            /* 드롭다운 내부 텍스트 크기 조정 */
+            select {
+                font-size: 0.9rem !important;
+            }
+        }
     </style>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 </head>
