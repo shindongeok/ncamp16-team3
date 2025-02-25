@@ -10,11 +10,16 @@
 }
 
 /* 모바일에서는 전체 너비 사용 */
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 599px) {
     .mobile-container {
         width: 100%;
         background: white;
         min-height: 100vh;
+    }
+
+    #sendSmsBtn, #checkButton {
+        height: 2.7em;
+        padding-top: 0.8em;
     }
 }
 

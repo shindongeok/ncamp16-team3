@@ -44,7 +44,7 @@
             <div>
                 <label for="member_id" class="block text-lg/6 text-gray-900">아이디</label>
                 <div class="mt-2">
-                    <input placeholder="아이디를 입력해주세요" type="text" name="member_id" id="member_id" class="block w-full rounded-md bg-white px-3 py-1.5 text-lg text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-sky-500 sm:text-sm/6">
+                    <input placeholder="아이디를 입력해주세요" type="text" name="member_id" id="member_id" maxlength="20" class="block w-full rounded-md bg-white px-3 py-1.5 text-lg text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-sky-500 sm:text-sm/6">
                 </div>
             </div>
 
@@ -67,7 +67,7 @@
                     <label for="auth_num" class="block text-lg/6 text-gray-900">인증번호</label>
                 </div>
                 <div class="mt-2">
-                    <input type="text" name="auth_num" id="auth_num" required class="block w-full rounded-md bg-white px-3 py-1.5 text-lg text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-sky-500 sm:text-sm/6">
+                    <input oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" type="text" name="auth_num" id="auth_num" maxlength="6" required class="block w-full rounded-md bg-white px-3 py-1.5 text-lg text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-sky-500 sm:text-sm/6">
                     <div class="flex items-center justify-between">
                         <p id="leftTime" class="block text-red-400 text-sm"></p>
                     </div>
@@ -130,6 +130,10 @@
 </div>
 
 <script>
+    // 타이머 전역변수
+    let countTime = 0;
+    let intervalCall;
+
     // 인증번호 전송
     $("#sendSmsBtn").click(function () {
         let member_id = $("#member_id").val();
@@ -158,42 +162,40 @@
                 // console.log(this.url);
                 // console.log(this.data);
                 // console.log(response);
-                showModal("인증번호 전송완료!", "인증번호가 전송되었습니다", true)
+                // 타이머
+                $.time = function(time){
+                    if (intervalCall) {
+                        clearInterval(intervalCall);
+                    }
+                    countTime = time;
+                    intervalCall = setInterval(alertFunc, 1000);
+                }
+
+                $.closeTime = function(){
+                    clearInterval(intervalCall);
+                }
+
+                function alertFunc() {
+                    let min = Math.floor(countTime/60);
+                    let sec = countTime - (60 * min);
+                    if(sec > 9){
+                        $("#leftTime").text('* ' + min + ':' + sec + '');
+                    }else {
+                        $("#leftTime").text('* ' + min + ':0' + sec + '');
+                    }
+                    if(countTime <= 0){
+                        clearInterval(intervalCall);
+                    }
+                    countTime--;
+                }
+
+                $.time(179);
+                showModal("인증번호 전송완료!", "인증번호가 전송되었습니다", true);
             },
             error: function (xhr, status, error) {
                 alert("오류 발생: " + xhr.responseText);
             }
         });
-
-        // 타이머
-        let countTime = 0;
-        let intervalCall;
-
-        $.time = function(time){
-            countTime = time;
-            intervalCall = setInterval(alertFunc, 1000);
-        }
-
-        $.closeTime = function(){
-            clearInterval(intervalCall);
-        }
-
-        function alertFunc() {
-            let min = Math.floor(countTime/60);
-            let sec = countTime - (60 * min);
-            if(sec > 9){
-                $("#leftTime").text('* ' + min + ':' + sec + '');
-            }else {
-                $("#leftTime").text('* ' + min + ':0' + sec + '');
-            }
-            if(countTime <= 0){
-                clearInterval(intervalCall);
-            }
-            countTime--;
-        }
-
-        $.time(179);
-
     });
 
     // 인증번호 확인
