@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 public class AlarmDto {
     private int alarm_id;
     private String member_id;
-    private String content;        // 스크랩은 "[회사명] 의 채용공고를 스크랩 했습니다." 형식
+    private String content;
     private LocalDateTime alarm_date;
     private boolean isRead;
 
