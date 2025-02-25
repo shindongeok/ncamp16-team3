@@ -101,12 +101,83 @@
                 padding-right: 1rem !important;
             }
         }
+        @keyframes slide {
+            0% { transform: translateY(0%); opacity: 0; }
+            5%, 28%  { transform: translateY(-100%); opacity: 1; }
+            40%, 100% { transform: translateY(-200%); opacity: 0; }
+        }
+
+        .popular-content-bubble {
+            position: relative;
+            height: 3rem;
+            overflow: hidden;
+            background-color: #f8f9fa;
+            border-radius: 1.5rem;
+            flex: 1;
+        }
+
+        .popular-content-bubble-item {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            opacity: 0;
+            transform: translateY(100%);
+        }
+
+        .animate-slide {
+            animation: slide 9s infinite;
+        }
+
+        .popular-content-bubble-item:nth-child(1) { animation-delay: 0s; }
+        .popular-content-bubble-item:nth-child(2) { animation-delay: 3s; }
+        .popular-content-bubble-item:nth-child(3) { animation-delay: 6s; }
+
+        .calendar-date {
+            font-size: 1.2rem;
+            padding: 0.5rem 0;
+            border-radius: 0.5rem;
+            transition: all 0.2s ease;
+        }
+
+        .calendar-date.active {
+            font-weight: bold;
+        }
+
+        /* 감정 상태 클래스들 */
+        .verybad {
+            background-color: #ff5353;
+            color: white;
+            font-weight: 500;
+        }
+        .bad {
+            background-color: #ff9898;
+            color: white;
+            font-weight: 500;
+        }
+        .soso {
+            background-color: #fdd391;
+            color: white;
+            font-weight: 500;
+        }
+        .good {
+            background-color: #9bdcfd;
+            color: white;
+            font-weight: 500;
+        }
+        .verygood {
+            background-color: #00a3ed;
+            color: white;
+            font-weight: 500;
+        }
     </style>
 </head>
 <!-- HTML body 부분 -->
 <body class="font-roboto mobile-container bg-[#f0f0f0]">
-<div sec:authorize="isAuthenticated()" class="relative bg-white min-h-screen md:w-[600px] md:mx-auto md:shadow-md w-full">
-    <div class="pt-28"><header th:replace="~{header :: header}" class="pt-4"></header></div>
+<div sec:authorize="isAuthenticated()" class="flex flex-col w-full md:w-[600px] md:mx-auto md:shadow-md bg-white min-h-screen pt-8 relative">
+    <div class="pt-20"><header th:replace="~{header :: header}" class="pt-4"></header></div>
     <footer th:replace="~{footer :: footer}" class="pt-4"></footer>
 
     <div class="px-10">
@@ -327,79 +398,5 @@
     const endTime = /*[[${@mainService.getEndTime(#authentication.principal.user.member_id)}]]*/ '18:00';
 </script>
 <script th:src="@{/js/mainScript.js}"></script>
-
-<style>
-    @keyframes slide {
-        0% { transform: translateY(0%); opacity: 0; }
-        5%, 28%  { transform: translateY(-100%); opacity: 1; }
-        40%, 100% { transform: translateY(-200%); opacity: 0; }
-    }
-
-    .popular-content-bubble {
-        position: relative;
-        height: 3rem;
-        overflow: hidden;
-        background-color: #f8f9fa;
-        border-radius: 1.5rem;
-        flex: 1;
-    }
-
-    .popular-content-bubble-item {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        opacity: 0;
-        transform: translateY(100%);
-    }
-
-    .animate-slide {
-        animation: slide 9s infinite;
-    }
-
-    .popular-content-bubble-item:nth-child(1) { animation-delay: 0s; }
-    .popular-content-bubble-item:nth-child(2) { animation-delay: 3s; }
-    .popular-content-bubble-item:nth-child(3) { animation-delay: 6s; }
-
-    .calendar-date {
-        font-size: 1.2rem;
-        padding: 0.5rem 0;
-        border-radius: 0.5rem;
-        transition: all 0.2s ease;
-    }
-
-    .calendar-date.active {
-        font-weight: bold;
-    }
-
-    /* 감정 상태 클래스들 */
-    .verybad {
-        background-color: #ff5353;
-        color: white;
-        font-weight: 500;
-    }
-    .bad {
-        background-color: #ff9898;
-        color: white;
-        font-weight: 500;
-    }
-    .soso {
-        background-color: #fdd391;
-        color: white;
-        font-weight: 500;
-    }
-    .good {
-        background-color: #9bdcfd;
-        color: white;
-        font-weight: 500;
-    }
-    .verygood {
-        background-color: #00a3ed;
-        color: white;
-        font-weight: 500;
-    }
-</style>
 </body>
 </html>
