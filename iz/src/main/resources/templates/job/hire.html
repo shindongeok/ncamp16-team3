@@ -1,7 +1,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <!DOCTYPE html>
-<html class="h-full bg-white">
+<html class="h-full bg-[#f0f0f0]">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -11,130 +11,29 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <style type="text/tailwindcss">
-        html {
-            background-color: #f0f0f0;
-        }
         @theme {
             --color-main-sky: #00a3ed;
         }
-        /* PC에서 모바일 크기로 고정 */
-        @media screen and (min-width: 769px) {
-            .mobile-container {
-                width: 600px;
-                margin: 0 auto;
-                background: white;
-                box-shadow: 0 0 10px rgba(0,0,0,0.1);
-                min-height: 100vh;
-            }
-        }
-        /* 모바일에서는 전체 너비 사용 */
-        @media screen and (max-width: 768px) {
-            .mobile-container {
-                width: 100%;
-                background: white;
-                min-height: 100vh;
-            }
-        }
 
-        #box-container, #box-container2 {
-            width: 100%;
-            display: flex;
-            gap: 1rem;
-            overflow: hidden;
-            white-space: nowrap;
-            position: relative;
-        }
-
-        .box {
-            position: relative;  /* 추가 */
-            user-select: none;
-            transition: transform 0.2s ease;
-            flex-shrink: 0;
-            width: 280px;
-            min-height: 200px;
-            background-color: white;
-            padding: 1rem;
-            border-radius: 10px;
-            border: 1px solid #e5e7eb;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            word-wrap: break-word;
-            overflow-wrap: break-word;
-            word-break: break-all;
-        }
-
-        /* 모든 텍스트 요소에 대한 기본 스타일 */
-        [th\:text] {
-            white-space: normal;
-            word-wrap: break-word;
-            overflow-wrap: break-word;
-            word-break: break-all;
-            max-width: 100%;
-        }
-
-        /* 모든 텍스트 컨테이너에 적용할 스타일 */
-        .text-wrapper {
-            white-space: normal;
-            word-wrap: break-word;
-            overflow-wrap: break-word;
-            word-break: break-all;
-            width: 100%;
-        }
-
-        /* 제목 스타일 수정 */
-        .job-title {
-            display: block;
-            white-space: normal;
-            word-wrap: break-word;
-            overflow-wrap: break-word;
-            word-break: break-all;
-            width: 100%;
-        }
-
-        /* 컨텐츠 줄바꿈 스타일 */
-        .content-wrapper {
-            display: flex;
-            align-items: flex-start;
-            gap: 0.5rem;
-            width: 100%;
-        }
-
-        .content-wrapper span {
-            flex: 1;
-            min-width: 0;
-            white-space: normal;
-            word-wrap: break-word;
-            overflow-wrap: break-word;
-            word-break: break-all;
-        }
-
-        /* 스크롤 컨테이너 스타일 수정 */
-        #box-container, #box-container2 {
-            width: 100%;
-            display: flex;
-            gap: 1rem;
-            overflow-x: auto;
-            padding: 0.5rem;
-            scroll-behavior: smooth;
-
-            /* 스크롤바 숨기기 */
+        /* 스크롤바 숨기기 */
+        .hide-scrollbar {
             -ms-overflow-style: none;  /* IE, Edge */
             scrollbar-width: none;     /* Firefox */
         }
 
         /* Chrome, Safari, Opera에서 스크롤바 숨기기 */
-        #box-container::-webkit-scrollbar,
-        #box-container2::-webkit-scrollbar {
+        .hide-scrollbar::-webkit-scrollbar {
             display: none;
         }
     </style>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-<div class="flex flex-col w-full mobile-container pt-8 relative">
+<div class="flex flex-col w-full md:w-[600px] md:mx-auto md:shadow-md bg-white min-h-screen pt-8 relative">
     <div class="pt-20"><header th:replace="~{header :: header} " class="pt-4"></header></div>
     <footer th:replace="~{footer :: footer}" class="pt-4"></footer>
 
-    <div class="p-4">
+    <div class="px-10"> <!-- 헤더의 px-10과 동일한 패딩 적용 -->
         <h1 class="text-2xl font-bold mb-6">채용공고</h1>
         <div class="flex items-center gap-2 mb-1">
             <div class="w-1/3 text-center font-semibold text-gray-700">
@@ -229,52 +128,51 @@
         <br><br>
 
         <!-- 곧 마감인 공고 영역 -->
-        <h1 class="text-2xl font-bold mb-6">
-            <i class="fas fa-fire" style="font-size: 30px; color: orange; margin-right: 10px;"></i>
+        <h1 class="text-2xl font-bold mb-2">
             곧 마감인 공고
         </h1>
         <div class="flex items-center mb-6">
-            <div id="box-container" class="flex gap-4 cursor-grab">
-                <div th:each="job : ${deadlineJobs}" class="box flex flex-col justify-between relative">
+            <div id="box-container" class="flex gap-4 cursor-grab w-full overflow-x-auto hide-scrollbar scroll-smooth px-0 py-2">
+                <div th:each="job : ${deadlineJobs}" class="box flex-shrink-0 w-[280px] min-h-[200px] bg-white p-4 rounded-lg border border-gray-200 shadow-sm flex flex-col justify-between relative transition-transform duration-200 select-none">
                     <button th:data-job-id="${job.id}"
                             th:data-job-company-name="${job.companyName}"
                             th:data-job-expiration-timestamp="${job.expirationTimestamp}"
                             th:class="'scrap-btn absolute top-4 right-3 text-xl ' + (${@jobService.checkIfScraped(job.id, #authentication.principal.user.member_id)} ? 'text-yellow-400' : 'text-gray-300')">
-                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star cursor-pointer"></i>
                     </button>
                     <div>
-                        <h2 class="text-lg font-bold mb-2 text-gray-800 text-wrapper" th:text="${job.companyName}">기업명</h2>
-                        <p class="text-sm text-gray-700 job-title mb-3" th:text="${job.title}">공고 제목</p>
+                        <h2 class="text-lg font-bold mb-2 text-gray-800 break-words whitespace-normal w-full" th:text="${job.companyName}">기업명</h2>
+                        <p class="text-sm text-gray-700 mb-3 break-words whitespace-normal w-full" th:text="${job.title}">공고 제목</p>
                         <div class="space-y-1 text-xs text-gray-600">
-                            <div class="content-wrapper">
+                            <div class="flex items-start gap-2 w-full">
                                 <i class="fas fa-map-marker-alt"></i>
-                                <span th:text="${job.locationName}">지역</span>
+                                <span class="flex-1 min-w-0 break-words whitespace-normal" th:text="${job.locationName}">지역</span>
                             </div>
-                            <div class="content-wrapper">
+                            <div class="flex items-start gap-2 w-full">
                                 <i class="fas fa-building"></i>
-                                <span th:text="${job.industryName}">업종</span>
+                                <span class="flex-1 min-w-0 break-words whitespace-normal" th:text="${job.industryName}">업종</span>
                             </div>
-                            <div class="content-wrapper">
+                            <div class="flex items-start gap-2 w-full">
                                 <i class="fas fa-users"></i>
-                                <span th:text="${job.experienceMax == 0 and job.experienceMin == 0} ? '신입'
+                                <span class="flex-1 min-w-0 break-words whitespace-normal" th:text="${job.experienceMax == 0 and job.experienceMin == 0} ? '신입'
                                     : (${job.experienceMax == job.experienceMin} ? '경력 ' + ${job.experienceMax} + '년'
                                     : '경력 ' + (${job.experienceMax} >= ${job.experienceMin} ? ${job.experienceMin} + '~' + ${job.experienceMax}
                                     : ${job.experienceMax} + '~' + ${job.experienceMin}) + '년')">경력</span>
                             </div>
-                            <div class="content-wrapper">
+                            <div class="flex items-start gap-2 w-full">
                                 <i class="fas fa-user-graduate"></i>
-                                <span th:text="${job.educationLevel}">학력</span>
+                                <span class="flex-1 min-w-0 break-words whitespace-normal" th:text="${job.educationLevel}">학력</span>
                             </div>
                         </div>
                     </div>
                     <div class="mt-3 pt-2 border-t border-gray-200">
-                        <p class="text-xs text-wrapper">
+                        <p class="text-xs break-words whitespace-normal w-full">
                             마감일: <span th:text="${job.expirationTimestamp}" class="timestamp"></span>
                         </p>
                         <a th:href="${job.url}" target="_blank"
-                           class="mt-2 text-xs text-blue-600 hover:text-blue-800 content-wrapper">
+                           class="mt-2 text-xs text-blue-600 hover:text-blue-800 flex items-start gap-2 w-full">
                             <i class="fas fa-external-link-alt"></i>
-                            <span>상세보기</span>
+                            <span class="flex-1 min-w-0 break-words whitespace-normal">상세보기</span>
                         </a>
                     </div>
                 </div>
@@ -289,52 +187,51 @@
         </div>
 
         <!-- 최근에 올라온 공고 영역 -->
-        <h1 class="text-2xl font-bold mb-6">
-            <i class="fas fa-bell" style="font-size: 30px; color: orange; margin-right: 10px;"></i>
+        <h1 class="text-2xl font-bold mb-2">
             최근에 올라온 공고
         </h1>
         <div class="flex items-center mb-6">
-            <div id="box-container2" class="flex gap-4 cursor-grab">
-                <div th:each="job : ${recentJobs}" class="box flex flex-col justify-between relative">
+            <div id="box-container2" class="flex gap-4 cursor-grab w-full overflow-x-auto hide-scrollbar scroll-smooth px-0 py-2">
+                <div th:each="job : ${recentJobs}" class="box flex-shrink-0 w-[280px] min-h-[200px] bg-white p-4 rounded-lg border border-gray-200 shadow-sm flex flex-col justify-between relative transition-transform duration-200 select-none">
                     <button th:data-job-id="${job.id}"
                             th:data-job-company-name="${job.companyName}"
                             th:data-job-expiration-timestamp="${job.expirationTimestamp}"
                             th:class="'scrap-btn absolute top-4 right-3 text-xl ' + (${@jobService.checkIfScraped(job.id, #authentication.principal.user.member_id)} ? 'text-yellow-400' : 'text-gray-300')">
-                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star cursor-pointer"></i>
                     </button>
                     <div>
-                        <h2 class="text-lg font-bold mb-2 text-gray-800 text-wrapper" th:text="${job.companyName}">기업명</h2>
-                        <p class="text-sm text-gray-700 job-title mb-3" th:text="${job.title}">공고 제목</p>
+                        <h2 class="text-lg font-bold mb-2 text-gray-800 break-words whitespace-normal w-full" th:text="${job.companyName}">기업명</h2>
+                        <p class="text-sm text-gray-700 mb-3 break-words whitespace-normal w-full" th:text="${job.title}">공고 제목</p>
                         <div class="space-y-1 text-xs text-gray-600">
-                            <div class="content-wrapper">
+                            <div class="flex items-start gap-2 w-full">
                                 <i class="fas fa-map-marker-alt"></i>
-                                <span th:text="${job.locationName}">지역</span>
+                                <span class="flex-1 min-w-0 break-words whitespace-normal" th:text="${job.locationName}">지역</span>
                             </div>
-                            <div class="content-wrapper">
+                            <div class="flex items-start gap-2 w-full">
                                 <i class="fas fa-building"></i>
-                                <span th:text="${job.industryName}">업종</span>
+                                <span class="flex-1 min-w-0 break-words whitespace-normal" th:text="${job.industryName}">업종</span>
                             </div>
-                            <div class="content-wrapper">
+                            <div class="flex items-start gap-2 w-full">
                                 <i class="fas fa-users"></i>
-                                <span th:text="${job.experienceMax == 0 and job.experienceMin == 0} ? '신입'
+                                <span class="flex-1 min-w-0 break-words whitespace-normal" th:text="${job.experienceMax == 0 and job.experienceMin == 0} ? '신입'
                                     : (${job.experienceMax == job.experienceMin} ? '경력 ' + ${job.experienceMax} + '년'
                                     : '경력 ' + (${job.experienceMax} >= ${job.experienceMin} ? ${job.experienceMin} + '~' + ${job.experienceMax}
                                     : ${job.experienceMax} + '~' + ${job.experienceMin}) + '년')">경력</span>
                             </div>
-                            <div class="content-wrapper">
+                            <div class="flex items-start gap-2 w-full">
                                 <i class="fas fa-user-graduate"></i>
-                                <span th:text="${job.educationLevel}">학력</span>
+                                <span class="flex-1 min-w-0 break-words whitespace-normal" th:text="${job.educationLevel}">학력</span>
                             </div>
                         </div>
                     </div>
                     <div class="mt-3 pt-2 border-t border-gray-200">
-                        <p class="text-xs text-wrapper">
+                        <p class="text-xs break-words whitespace-normal w-full">
                             마감일: <span th:text="${job.expirationTimestamp}" class="timestamp"></span>
                         </p>
                         <a th:href="${job.url}" target="_blank"
-                           class="mt-2 text-xs text-blue-600 hover:text-blue-800 content-wrapper">
+                           class="mt-2 text-xs text-blue-600 hover:text-blue-800 flex items-start gap-2 w-full">
                             <i class="fas fa-external-link-alt"></i>
-                            <span>상세보기</span>
+                            <span class="flex-1 min-w-0 break-words whitespace-normal">상세보기</span>
                         </a>
                     </div>
                 </div>
@@ -349,255 +246,6 @@
         </div>
     </div>
 </div>
-<script>
-    $(document).ready(function() {
-        const locationMap = {
-            '117000': '전국', '101000': '서울', '102000': '경기', '118000': '세종',
-            '103000': '광주', '104000': '대구', '105000': '대전', '106000': '부산',
-            '107000': '울산', '108000': '인천', '109000': '강원', '110000': '경남',
-            '111000': '경북', '112000': '전남', '113000': '전북', '114000': '충북',
-            '115000': '충남', '116000': '제주'
-        };
-
-        const industryMap = {
-            '1': '서비스업', '2': '제조·화학', '3': 'IT·웹·통신', '4': '은행·금융업',
-            '5': '미디어·디자인', '6': '교육업', '7': '의료·제약·복지', '8': '판매·유통',
-            '9': '건설업', '10': '기관·협회'
-        };
-
-        const educationMap = {
-            '0': '학력무관', '1': '고등학교졸업', '2': '대학졸업(2,3년)', '3': '대학교졸업(4년)',
-            '4': '석사졸업', '5': '박사졸업', '6': '고등학교졸업이상', '7': '대학졸업(2,3년)이상',
-            '8': '대학교졸업(4년)이상', '9': '석사졸업이상'
-        };
-
-        $('.relative select').each(function(index) {
-            const $firstOption = $(this).find('option:first-child');
-            const value = $firstOption.text();
-
-            switch(index) {
-                case 0:
-                    $firstOption.text(locationMap[value] || '지역 선택');
-                    $firstOption.val(value);
-                    $(this).find(`option[value="${value}"]`).not(':first').remove();
-                    break;
-                case 1:
-                    $firstOption.text(industryMap[value] || '업종 선택');
-                    $firstOption.val(value);
-                    $(this).find(`option[value="${value}"]`).not(':first').remove();
-                    break;
-                case 2:
-                    $firstOption.text(educationMap[value] || '학력 선택');
-                    $firstOption.val(value);
-                    $(this).find(`option[value="${value}"]`).not(':first').remove();
-                    break;
-            }
-        });
-
-        // 검색 버튼 클릭 이벤트
-        $('.search-button').click(function() {
-            const loc_mcd = $('.relative select').eq(0).val();
-            const ind_cd = $('.relative select').eq(1).val();
-            const edu_lv = $('.relative select').eq(2).val();
-
-            // 현재 URL 가져오기
-            const baseUrl = window.location.pathname;
-
-            // 파라미터 추가하여 URL 생성
-            const searchUrl = `${baseUrl}?loc_mcd=${loc_mcd}&ind_cd=${ind_cd}&edu_lv=${edu_lv}`;
-
-            // 페이지 이동
-            window.location.href = searchUrl;
-        });
-
-        let deadlineOffset = 5;
-        let recentOffset = 5;
-
-        $(document).on('click', '.scrap-btn', function(e) {
-            e.preventDefault();
-            const $btn = $(this);
-            const jobId = $btn.data('jobId');  // data-job-id
-            const companyName = $btn.data('jobCompanyName');  // data-company-name
-            const expirationTimestamp = $btn.data('jobExpirationTimestamp');  // data-expiration-timestamp
-
-            console.log('jobId:', jobId);
-            console.log('companyName:', companyName);
-            console.log('expirationTimestamp:', expirationTimestamp);
-
-            $.ajax({
-                url: '/job/scrap/' + jobId,
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify({
-                    id: jobId,
-                    companyName: companyName,
-                    expirationTimestamp: expirationTimestamp
-                }),
-                success: function(response) {
-                    if (response.success) {
-                        if (response.isScraped) {
-                            $btn.addClass('text-yellow-400').removeClass('text-gray-300');
-                        } else {
-                            $btn.addClass('text-gray-300').removeClass('text-yellow-400');
-                        }
-                    } else {
-                        alert('스크랩 처리 중 오류가 발생했습니다.');
-                    }
-                },
-                error: function() {
-                    alert('서버 통신 중 오류가 발생했습니다.');
-                }
-            });
-        });
-
-        // 마감 임박 공고 더보기
-        $('#loadMoreDeadline').click(function() {
-            const $button = $(this).parent();
-            const loc_mcd = $('.relative select').eq(0).val();
-            const ind_cd = $('.relative select').eq(1).val();
-            const edu_lv = $('.relative select').eq(2).val();
-
-            $.get(`/job/hire?loc_mcd=${loc_mcd}&ind_cd=${ind_cd}&edu_lv=${edu_lv}&offset=${deadlineOffset}`)
-                .done(function(response) {
-                    const $temp = $('<div>').html(response);
-                    const $newContent = $temp.find('#box-container .box');
-
-                    if ($newContent.length > 0) {
-                        $newContent.each(function() {
-                            const $box = $(this);
-                            const jobId = $box.find('[data-job-id]').data('job-id');
-
-                            // 스크랩 상태 확인
-                            $.get(`/job/scrap/check/${jobId}`, function(response) {
-                                const isScraped = response.isScraped;
-                                const $scrapBtn = $box.find('.scrap-btn');
-
-                                if (isScraped) {
-                                    $scrapBtn.addClass('text-yellow-400').removeClass('text-gray-300');
-                                } else {
-                                    $scrapBtn.addClass('text-gray-300').removeClass('text-yellow-400');
-                                }
-                            });
-                        });
-
-                        $button.detach();
-                        $('#box-container').append($newContent);
-                        $('#box-container').append($button);
-
-                        deadlineOffset += 5;
-
-                        if ($newContent.length < 5) {
-                            $button.hide();
-                        }
-                    } else {
-                        $button.hide();
-                    }
-                });
-        });
-
-        // 최근 공고 더보기
-        $('#loadMoreRecent').click(function() {
-            const $button = $(this).parent();
-            const loc_mcd = $('.relative select').eq(0).val();
-            const ind_cd = $('.relative select').eq(1).val();
-            const edu_lv = $('.relative select').eq(2).val();
-
-            $.get(`/job/hire?loc_mcd=${loc_mcd}&ind_cd=${ind_cd}&edu_lv=${edu_lv}&offset=${recentOffset}`)
-                .done(function(response) {
-                    const $temp = $('<div>').html(response);
-                    const $newContent = $temp.find('#box-container2 .box');
-
-                    if ($newContent.length > 0) {
-                        $newContent.each(function() {
-                            const $box = $(this);
-                            // relative 클래스가 없다면 추가
-                            if (!$box.hasClass('relative')) {
-                                $box.addClass('relative');
-                            }
-                            const jobId = $box.find('[data-job-id]').data('job-id');
-
-                            // 스크랩 상태 확인
-                            $.get(`/job/scrap/check/${jobId}`, function(response) {
-                                const isScraped = response.isScraped;
-                                const $scrapBtn = $box.find('.scrap-btn');
-
-                                if (isScraped) {
-                                    $scrapBtn.addClass('text-yellow-400').removeClass('text-gray-300');
-                                } else {
-                                    $scrapBtn.addClass('text-gray-300').removeClass('text-yellow-400');
-                                }
-                            });
-                        });
-
-                        $button.detach();
-                        $('#box-container2').append($newContent);
-                        $('#box-container2').append($button);
-
-                        recentOffset += 5;
-
-                        if ($newContent.length < 5) {
-                            $button.hide();
-                        }
-                    } else {
-                        $button.hide();
-                    }
-                });
-        });
-
-        const containers = [document.getElementById('box-container'), document.getElementById('box-container2')];
-
-        containers.forEach(container => {
-            let isDragging = false;
-            let startX = 0;
-            let scrollLeft = 0;
-
-            container.addEventListener('mousedown', (e) => {
-                isDragging = true;
-                startX = e.clientX;
-                scrollLeft = container.scrollLeft;
-                container.style.cursor = 'grabbing';
-            });
-
-            container.addEventListener('mousemove', (e) => {
-                if (!isDragging) return;
-
-                let moveX = e.clientX - startX;
-                let maxMove = container.scrollWidth - container.clientWidth;
-
-                let newPosition = scrollLeft - moveX;
-                if (newPosition < 0) newPosition = 0;
-                if (newPosition > maxMove) newPosition = maxMove;
-
-                container.scrollLeft = newPosition;
-            });
-
-            container.addEventListener('mouseup', () => {
-                isDragging = false;
-                container.style.cursor = 'grab';
-            });
-
-            container.addEventListener('mouseleave', () => {
-                isDragging = false;
-                container.style.cursor = 'grab';
-            });
-        });
-
-        // Format timestamps
-        const timestampElements = document.querySelectorAll('.timestamp');
-        timestampElements.forEach(element => {
-            const timestamp = parseFloat(element.textContent);
-            if (!isNaN(timestamp)) {
-                element.textContent = formatTimestamp(timestamp);
-            }
-        });
-
-        function formatTimestamp(timestamp) {
-            const date = new Date(timestamp * 1000); // Unix timestamp를 밀리초로 변환
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const day = String(date.getDate()).padStart(2, '0');
-            return `${year}-${month}-${day}`;
-        }
-    });
-</script>
+<script th:src="@{/js/hireScript.js}"></script>
 </body>
+</html>

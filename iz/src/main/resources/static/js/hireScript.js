@@ -54,6 +54,32 @@ $(document).ready(function() {
         window.location.href = searchUrl;
     });
 
+    // 스크랩 버튼 클릭 이벤트
+    $(document).on('click', '.scrap-btn', function(e) {
+        e.preventDefault();
+        const $btn = $(this);
+        const jobId = $btn.data('job-id');
+
+        $.ajax({
+            url: '/job/scrap/' + jobId,
+            type: 'POST',
+            success: function(response) {
+                if (response.success) {
+                    if (response.isScraped) {
+                        $btn.addClass('text-yellow-400').removeClass('text-gray-300');
+                    } else {
+                        $btn.addClass('text-gray-300').removeClass('text-yellow-400');
+                    }
+                } else {
+                    alert('스크랩 처리 중 오류가 발생했습니다.');
+                }
+            },
+            error: function() {
+                alert('서버 통신 중 오류가 발생했습니다.');
+            }
+        });
+    });
+
     // 더보기 관련 변수
     let deadlineOffset = 5;
     let recentOffset = 5;
@@ -71,6 +97,23 @@ $(document).ready(function() {
                 const $newContent = $temp.find('#box-container .box');
 
                 if ($newContent.length > 0) {
+                    $newContent.each(function() {
+                        const $box = $(this);
+                        const jobId = $box.find('[data-job-id]').data('job-id');
+
+                        // 스크랩 상태 확인
+                        $.get(`/job/scrap/check/${jobId}`, function(response) {
+                            const isScraped = response.isScraped;
+                            const $scrapBtn = $box.find('.scrap-btn');
+
+                            if (isScraped) {
+                                $scrapBtn.addClass('text-yellow-400').removeClass('text-gray-300');
+                            } else {
+                                $scrapBtn.addClass('text-gray-300').removeClass('text-yellow-400');
+                            }
+                        });
+                    });
+
                     $button.detach();
                     $('#box-container').append($newContent);
                     $('#box-container').append($button);
@@ -99,6 +142,27 @@ $(document).ready(function() {
                 const $newContent = $temp.find('#box-container2 .box');
 
                 if ($newContent.length > 0) {
+                    $newContent.each(function() {
+                        const $box = $(this);
+                        // relative 클래스가 없다면 추가
+                        if (!$box.hasClass('relative')) {
+                            $box.addClass('relative');
+                        }
+                        const jobId = $box.find('[data-job-id]').data('job-id');
+
+                        // 스크랩 상태 확인
+                        $.get(`/job/scrap/check/${jobId}`, function(response) {
+                            const isScraped = response.isScraped;
+                            const $scrapBtn = $box.find('.scrap-btn');
+
+                            if (isScraped) {
+                                $scrapBtn.addClass('text-yellow-400').removeClass('text-gray-300');
+                            } else {
+                                $scrapBtn.addClass('text-gray-300').removeClass('text-yellow-400');
+                            }
+                        });
+                    });
+
                     $button.detach();
                     $('#box-container2').append($newContent);
                     $('#box-container2').append($button);
