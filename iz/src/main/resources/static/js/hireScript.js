@@ -124,7 +124,6 @@ $(document).ready(function() {
     let deadlineOffset = 5;
     let recentOffset = 5;
 
-    // 마감 임박 공고 더보기
     $('#loadMoreDeadline').click(function() {
         const $button = $(this).parent();
         const loc_mcd = $('.relative select').eq(0).val();
@@ -152,6 +151,14 @@ $(document).ready(function() {
                                 $scrapBtn.addClass('text-gray-300').removeClass('text-yellow-400');
                             }
                         });
+
+                        // 타임스탬프 변환 적용
+                        $box.find('.timestamp').each(function() {
+                            const timestamp = parseFloat($(this).text());
+                            if (!isNaN(timestamp)) {
+                                $(this).text(formatTimestamp(timestamp));
+                            }
+                        });
                     });
 
                     $button.detach();
@@ -169,7 +176,7 @@ $(document).ready(function() {
             });
     });
 
-    // 최근 공고 더보기
+// 최근 공고 더보기 함수도 동일하게 수정
     $('#loadMoreRecent').click(function() {
         const $button = $(this).parent();
         const loc_mcd = $('.relative select').eq(0).val();
@@ -199,6 +206,14 @@ $(document).ready(function() {
                                 $scrapBtn.addClass('text-yellow-400').removeClass('text-gray-300');
                             } else {
                                 $scrapBtn.addClass('text-gray-300').removeClass('text-yellow-400');
+                            }
+                        });
+
+                        // 타임스탬프 변환 적용
+                        $box.find('.timestamp').each(function() {
+                            const timestamp = parseFloat($(this).text());
+                            if (!isNaN(timestamp)) {
+                                $(this).text(formatTimestamp(timestamp));
                             }
                         });
                     });
