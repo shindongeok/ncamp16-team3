@@ -140,19 +140,12 @@ public class JobController {
     @GetMapping("/scrap")
     public String scrap(
             @AuthenticationPrincipal CustomUserDetails userDetails,
-            @RequestParam(required = false) String loc_mcd,
-            @RequestParam(required = false) String ind_cd,
-            @RequestParam(required = false) String edu_lv,
             Model model) {
         User user = userDetails.getUser();
         String memberId = user.getMember_id();
 
-        String finalLoc = loc_mcd != null ? loc_mcd : user.getLoc_mod();
-        String finalInd = ind_cd != null ? ind_cd : user.getInd_cd();
-        String finalEdu = edu_lv != null ? edu_lv : user.getEdu_lv();
-
         try {
-            List<Job> scrapedJobs = jobService.getScrapedJobs(memberId, finalLoc, finalInd, finalEdu);
+            List<Job> scrapedJobs = jobService.getScrapedJobs(memberId);
             model.addAttribute("scrapedJobs", scrapedJobs);
         } catch (Exception e) {
             log.error("Error fetching scraped jobs", e);

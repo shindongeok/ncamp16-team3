@@ -18,11 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -53,6 +49,70 @@ public class JobService {
                     .queryParam("loc_cd", locMcd)
                     .queryParam("ind_cd", indCd)
                     .queryParam("edu_lv", eduLv)
+                    .queryParam("count", 50)  // 한 번에 가져올 결과 수 조정
+                    .build()
+                    .encode()
+                    .toUriString();
+
+            ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+            JsonNode rootNode = objectMapper.readTree(response.getBody());
+            JsonNode jobsNode = rootNode.path("jobs").path("job");
+
+            List<Job> jobs = new ArrayList<>();
+            jobsNode.forEach(jobNode -> {
+                Job job = new Job();
+                job.setId(jobNode.path("id").asText());
+                job.setUrl(jobNode.path("url").asText());
+
+                // 회사 정보
+                JsonNode company = jobNode.path("company").path("detail");
+                job.setCompanyName(company.path("name").asText());
+                job.setCompanyUrl(company.path("href").asText());
+
+                // 포지션 정보
+                JsonNode position = jobNode.path("position");
+                job.setTitle(position.path("title").asText());
+                job.setIndustryCode(position.path("industry").path("code").asText());
+                job.setIndustryName(position.path("industry").path("name").asText());
+                job.setLocationCode(position.path("location").path("code").asText());
+                job.setLocationName(position.path("location").path("name").asText());
+                job.setLocationName(
+                        position.path("location").path("name").asText()
+                                .replace(" &gt; ", " ")
+                                .replace(",", ", ")
+                                .replace("서울전체", "전체")
+                );
+
+                // 경력/학력 정보
+                JsonNode expLevel = position.path("experience-level");
+                job.setExperienceLevelCode(expLevel.path("code").asText());
+                job.setExperienceMin(expLevel.path("min").asInt());
+                job.setExperienceMax(expLevel.path("max").asInt());
+                job.setEducationLevel(position.path("required-education-level").path("name").asText());
+
+                // timestamp 필드 설정
+                job.setPostingTimestamp(jobNode.path("posting-timestamp").asText());
+                job.setExpirationTimestamp(jobNode.path("expiration-timestamp").asText());
+
+                // 날짜 정보
+                job.setPostingDate(jobNode.path("posting-date").asText());
+                job.setExpirationDate(jobNode.path("expiration-date").asText());
+
+                jobs.add(job);
+            });
+
+            return jobs;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to fetch jobs from Saramin API", e);
+        }
+    }
+
+    public List<Job> searchJobsById(String jobId) {
+        try {
+            String url = UriComponentsBuilder
+                    .fromHttpUrl("https://oapi.saramin.co.kr/job-search")
+                    .queryParam("access-key", apiKey)
+                    .queryParam("id", jobId)
                     .queryParam("count", 50)  // 한 번에 가져올 결과 수 조정
                     .build()
                     .encode()
@@ -200,7 +260,7 @@ public class JobService {
     }
 
 
-    public List<Job> getScrapedJobs(String memberId, String locMcd, String indCd, String eduLv) {
+    public List<Job> getScrapedJobs(String memberId) {
         // 사용자의 스크랩된 job_rec_id 목록 가져오기
         List<String> scrapedJobIds = jobMapper.getScrapedJobIds(memberId);
 
@@ -209,12 +269,25 @@ public class JobService {
             return new ArrayList<>();
         }
 
-        // API에서 모든 채용공고 가져오기
-        List<Job> allJobs = searchJobs(locMcd, indCd, eduLv);
+        // 스크랩한 공고 정보를 저장할 리스트
+        List<Job> scrapedJobs = new ArrayList<>();
 
-        // 스크랩된 job_rec_id와 일치하는 채용공고만 필터링
-        return allJobs.stream()
-                .filter(job -> scrapedJobIds.contains(job.getId()))
-                .collect(Collectors.toList());
+        // 각 job_rec_id에 대해 사람인 API를 통해 정보 가져오기
+        for (String jobId : scrapedJobIds) {
+            try {
+                // searchJobsById 메서드를 활용하여 채용공고 정보 조회
+                List<Job> jobDetails = searchJobsById(jobId);
+
+                if (!jobDetails.isEmpty()) {
+                    // 채용공고가 존재하면 리스트에 추가
+                    scrapedJobs.add(jobDetails.get(0));
+                }
+            } catch (Exception e) {
+                log.error("Error fetching job details for ID {}: {}", jobId, e.getMessage());
+                // 에러가 발생해도 다른 채용공고 정보는 계속 조회
+            }
+        }
+
+        return scrapedJobs;
     }
 }
