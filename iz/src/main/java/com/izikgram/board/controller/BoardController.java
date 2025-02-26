@@ -62,7 +62,6 @@ public class  BoardController {
 
         String board_name = boardService.findBoardName(board_type);
 
-
         model.addAttribute("board_name", board_name);
         model.addAttribute("board_type", board_type);
 
@@ -93,37 +92,73 @@ public class  BoardController {
     }
 
     //자유,하소연 상세보기
+//    @GetMapping("/{board_type}/{board_id}")
+//    public String postDetail(@PathVariable("board_type") int board_type,
+//                             @PathVariable("board_id") int board_id,
+//                             @AuthenticationPrincipal CustomUserDetails userDetails,
+//                             Model model ){
+//
+//        User user = userDetails.getUser();
+//        String writer_id = user.getMember_id();
+//
+//        String board_name = boardService.findBoardName(board_type);
+//
+//        Board board = new Board();
+//        List<CommentDto> ListCommentDto;
+//        if(board_type == 1){
+//            ListCommentDto = boardService.selectComment01(board_id);
+//            board = boardService.selectDetail01(board_id);
+//        }else if(board_type == 2){
+//            ListCommentDto = boardService.selectComment02(board_id);
+//            board = boardService.selectDetail02(board_id);
+//        }else {
+//            model.addAttribute("error", "유효하지 않은 게시판 타입입니다.");
+//            return "redirect:/board/" + board_type;
+//        }
+//
+//        model.addAttribute("board_name", board_name);
+//        model.addAttribute("board", board);
+//        model.addAttribute("member_id", writer_id);
+//        model.addAttribute("comment", ListCommentDto);
+//
+//        return "board/postDetail";
+//    }
+    // 자유, 하소연 상세보기
     @GetMapping("/{board_type}/{board_id}")
     public String postDetail(@PathVariable("board_type") int board_type,
                              @PathVariable("board_id") int board_id,
                              @AuthenticationPrincipal CustomUserDetails userDetails,
-                             Model model ){
+                             Model model) {
+
 
         User user = userDetails.getUser();
         String writer_id = user.getMember_id();
 
         String board_name = boardService.findBoardName(board_type);
 
-        Board board = new Board();
-        List<CommentDto> ListCommentDto;
-        if(board_type == 1){
-            ListCommentDto = boardService.selectComment01(board_id);
+        List<CommentDto> commentList;
+        Board board = null;
+
+        if (board_type == 1) {
+            commentList = boardService.selectComment01(board_id);
             board = boardService.selectDetail01(board_id);
-        }else if(board_type == 2){
-            ListCommentDto = boardService.selectComment02(board_id);
+        } else if (board_type == 2) {
+            commentList = boardService.selectComment02(board_id);
             board = boardService.selectDetail02(board_id);
-        }else {
+        } else {
             model.addAttribute("error", "유효하지 않은 게시판 타입입니다.");
             return "redirect:/board/" + board_type;
         }
 
+        // 모델에 데이터 추가
         model.addAttribute("board_name", board_name);
         model.addAttribute("board", board);
         model.addAttribute("member_id", writer_id);
-        model.addAttribute("comment", ListCommentDto);
+        model.addAttribute("comment", commentList);
 
         return "board/postDetail";
     }
+
 
     //자유,하소연 게시글 수정하기페이지 이동
     @GetMapping("/update/{board_type}/{board_id}")
@@ -155,7 +190,6 @@ public class  BoardController {
         if (board_type == 1) {
             Board board = boardService.selectDetail01(board_id);
             String writer_id = board.getWriter_id();
-            System.out.println("글 수정 writer_id 확인 : " + writer_id);
 
             if (member_id != null && member_id.equals(writer_id)) {
                 boardService.modifyBoard01(board_id, title, content);
@@ -165,7 +199,6 @@ public class  BoardController {
         } else if (board_type == 2) {
             Board board = boardService.selectDetail02(board_id);
             String writer_id = board.getWriter_id();
-            System.out.println("글 수정 writer_id 확인 : " + writer_id);
 
             if (member_id != null && member_id.equals(writer_id)) {
                 boardService.modifyBoard02(board_id, title, content);
@@ -188,7 +221,6 @@ public class  BoardController {
         model.addAttribute("issueBoardList01",issueBoardList01);
         model.addAttribute("issueBoardList02",issueBoardList02);
 
-
         return "board/popularityCommunity";
     }
 
@@ -204,11 +236,8 @@ public class  BoardController {
         List<BoardDto> myBoardList01 = MyBoardList.get("myBoardList01");
         List<BoardDto> myBoardList02 = MyBoardList.get("myBoardList02");
 
-        log.info("myBoardList01: {}", myBoardList01);
-        log.info("myBoardList02: {}", myBoardList02);
         model.addAttribute("myBoardList01",myBoardList01);
         model.addAttribute("myBoardList02",myBoardList02);
-
 
         return "board/myBoard";
     }
@@ -217,6 +246,7 @@ public class  BoardController {
     @GetMapping("/myBoard/feelMyBoard")
     public String feelMyBoard(@AuthenticationPrincipal CustomUserDetails userDetails,
                               Model model){
+
         User user = userDetails.getUser();
         String writer_id = user.getMember_id();
 
@@ -232,6 +262,7 @@ public class  BoardController {
     @GetMapping("/myBoard/whiningMyBoard")
     public String whiningMyBoard(@AuthenticationPrincipal CustomUserDetails userDetails,
                                  Model model){
+
         User user = userDetails.getUser();
         String writer_id = user.getMember_id();
 
@@ -247,7 +278,6 @@ public class  BoardController {
     @PostMapping("/delete/{board_type}/{board_id}")
     public String boardDelete(@PathVariable("board_id") int board_id,
                               @PathVariable("board_type")int board_type){
-
 
         if(board_type == 1){
             boardService.deleteBoard01(board_id);

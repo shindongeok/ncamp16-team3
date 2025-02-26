@@ -47,7 +47,6 @@
                 </select>
 
                 <!-- 글쓰기 버튼 -->
-                <div th:text="${board_type}"></div>
                 <a class="px-6 py-2 rounded-md bg-main-sky-highlight px-3 py-1.5
                     text-lg/6 text-white shadow-xs hover:bg-sky-800 focus-visible:outline-2
                     focus-visible:outline-offset-2 focus-visible:outline-sky-800"
@@ -62,7 +61,7 @@
         <!-- 게시글 리스트 -->
         <div id="boardList" class="bg-gray-100 rounded-lg mt-4 p-4"  th:each="board : ${listBoard}">
             <div class="flex flex-col">
-                <!-- 게시글 리스트 (데이터 제외) -->
+                <!-- 게시글 리스트 -->
                 <div class="flex border-b border-gray-200 pb-4">
                     <div class="flex-1 px-6">
                         <a class=" hover:text-main-sky-highlight inline-block w-40 truncate no-underline

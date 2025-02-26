@@ -76,10 +76,10 @@ public class CommentController {
             String memberId = userDetails.getUser().getMember_id();
             boolean isDeleted = false;
 
-            log.info("commentId : {}", commentId);
-            log.info("boardId : {}", boardId);
-            log.info("boardType : {}", boardType);
-            log.info("writerId : {}", writerId);
+//            log.info("commentId : {}", commentId);
+//            log.info("boardId : {}", boardId);
+//            log.info("boardType : {}", boardType);
+//            log.info("writerId : {}", writerId);
 
             if (memberId != null && memberId.equals(writerId)) {
                 if (boardType == 1) {
