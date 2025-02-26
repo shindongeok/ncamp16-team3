@@ -31,6 +31,7 @@
             width: 140px;
             margin: 10px;
             cursor: pointer;
+            position: relative;
         }
 
         .playing-card-inner {
@@ -73,56 +74,29 @@
             background-color: #ff9898;
         }
 
-        /* 당첨 카드 효과들 */
-
-        /* 효과 1: 빛나는 테두리 */
-        @keyframes glowing {
-            0% { box-shadow: 0 0 5px #ff5353; }
-            50% { box-shadow: 0 0 20px #ff5353; }
-            100% { box-shadow: 0 0 5px #ff5353; }
+        /* 당첨 카드 효과 - CSS 변수를 사용하여 애니메이션 효과 적용 */
+        .winner-effect .playing-card-front {
+            animation: none !important;
+            transition: none !important;
+            background-color: var(--bg-color, #ff9898);
+            box-shadow: var(--glow-shadow, none);
         }
 
-        .glow-effect .playing-card-front {
-            animation: glowing 1.5s infinite;
+        /* 오류 메시지 스타일 */
+        .error-message {
+            color: #ff5353;
+            font-size: 0.9rem;
+            margin-top: 0.3rem;
+            display: none;
         }
 
-        /* 효과 2: 색상 변화 */
-        @keyframes colorChange {
-            0% { background-color: #ff9898; }
-            33% { background-color: #fdd391; }
-            66% { background-color: #9bdcfd; }
-            100% { background-color: #ff9898; }
+        .input-error {
+            border-color: #ff5353 !important;
         }
 
-        .color-change-effect .playing-card-front {
-            animation: colorChange 3s infinite;
-        }
-
-        /* 효과 3: 커지는 효과 */
-        @keyframes pulse {
-            0% { transform: scale(1) rotateY(180deg); }
-            50% { transform: scale(1.08) rotateY(180deg); }
-            100% { transform: scale(1) rotateY(180deg); }
-        }
-
-        .pulse-effect .playing-card-inner {
-            animation: pulse 1.5s infinite;
-        }
-
-        /* 효과 4: 떠다니는 효과 */
-        @keyframes float {
-            0% { transform: translateY(0) rotateY(180deg); }
-            50% { transform: translateY(-10px) rotateY(180deg); }
-            100% { transform: translateY(0) rotateY(180deg); }
-        }
-
-        .float-effect .playing-card-inner {
-            animation: float 2s ease-in-out infinite;
-        }
-
-        /* 효과 5: 폭죽 효과 */
+        /* 폭죽 효과를 위한 스타일 */
         .confetti-container {
-            position: absolute;
+            position: fixed; /* fixed로 변경하여 화면 스크롤에 영향받지 않게 */
             top: 0;
             left: 0;
             width: 100%;
@@ -138,16 +112,13 @@
             opacity: 0;
         }
 
-        /* 오류 메시지 스타일 */
-        .error-message {
-            color: #ff5353;
-            font-size: 0.9rem;
-            margin-top: 0.3rem;
-            display: none;
-        }
-
-        .input-error {
-            border-color: #ff5353 !important;
+        /* 결과 컨테이너 안정화 */
+        .results-container {
+            position: relative;
+            width: 100%;
+            overflow: hidden; /* 넘치는 내용 숨김 */
+            will-change: transform; /* 브라우저에게 변형 최적화 힌트 제공 */
+            contain: layout; /* 레이아웃 변경 격리 */
         }
     </style>
 </head>
@@ -182,7 +153,7 @@
     </div>
 
     <!-- 결과 표시 -->
-    <div th:if="${gameResult != null}">
+    <div th:if="${gameResult != null}" class="results-container">
         <h2 class="text-[1.7rem] font-bold text-[#2C2C2C] text-center">제비뽑기 결과</h2>
         <p class="text-center text-gray-600 mb-4">카드를 클릭하여 결과를 확인하세요!</p>
 
@@ -296,15 +267,36 @@
 
                     // 당첨 카드인 경우 특별 효과 적용
                     if (this.classList.contains('winner-card') && this.classList.contains('show-result')) {
-                        // 여러 효과 중 하나를 무작위로 선택
-                        const effects = 'color-change-effect';
-                        // const randomEffect = effects[Math.floor(Math.random() * effects.length)];
+                        // 애니메이션 대신 CSS 변수를 사용하여 효과 적용
+                        const cardFront = this.querySelector('.playing-card-front');
+                        cardFront.classList.add('winner-effect');
 
-                        // 선택된 효과 적용
-                        this.classList.add(effects);
+                        // 색상 변화 효과 - setTimeout으로 직접 제어
+                        const colors = ['#ff9898', '#fdd391', '#9bdcfd'];
+                        let colorIndex = 0;
 
-                        // 폭죽 효과
+                        // 폭죽 효과 호출
                         createConfetti();
+
+                        // 테두리 빛남 효과
+                        const glowStrengths = ['0 0 5px #ff5353', '0 0 20px #ff5353', '0 0 5px #ff5353'];
+                        let glowIndex = 0;
+
+                        // 색상과 테두리 변경 효과
+                        const effectInterval = setInterval(() => {
+                            // 색상 변경
+                            colorIndex = (colorIndex + 1) % colors.length;
+                            cardFront.style.setProperty('--bg-color', colors[colorIndex]);
+
+                            // 테두리 빛남 변경
+                            glowIndex = (glowIndex + 1) % glowStrengths.length;
+                            cardFront.style.setProperty('--glow-shadow', glowStrengths[glowIndex]);
+                        }, 500);
+
+                        // 메모리 누수 방지를 위해 페이지 이탈 시 인터벌 정리
+                        window.addEventListener('beforeunload', () => {
+                            clearInterval(effectInterval);
+                        });
                     }
                 });
             });
@@ -316,13 +308,21 @@
 
                 const colors = ['#ff5353', '#fbc159', '#00a3ed', '#9bdcfd'];
 
-                for (let i = 0; i < 100; i++) {
+                // 모바일 화면에서는 폭죽 개수 줄이기
+                const confettiCount = window.innerWidth < 768 ? 50 : 100;
+
+                for (let i = 0; i < confettiCount; i++) {
                     const confetti = document.createElement('div');
                     confetti.classList.add('confetti');
                     confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
                     confetti.style.left = Math.random() * 100 + '%';
                     confetti.style.top = Math.random() * 100 + '%';
                     confetti.style.transform = 'rotate(' + Math.random() * 360 + 'deg)';
+
+                    // 크기 랜덤화로 더 다양한 모양 연출
+                    const size = Math.random() * 5 + 5; // 5px ~ 10px
+                    confetti.style.width = size + 'px';
+                    confetti.style.height = size + 'px';
 
                     container.appendChild(confetti);
 
