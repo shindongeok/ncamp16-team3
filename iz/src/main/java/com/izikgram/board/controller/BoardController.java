@@ -52,7 +52,7 @@ public class  BoardController {
     @GetMapping("/postForm")
     public String postForm(@RequestParam("board_type")int board_type,
                            Model model){
-
+        log.info("boardType : {}",board_type);
         if (board_type != 1 && board_type != 2) {
             model.addAttribute("error", "유효하지 않은 게시판 타입입니다.");
             return "redirect:/board/" + board_type;
