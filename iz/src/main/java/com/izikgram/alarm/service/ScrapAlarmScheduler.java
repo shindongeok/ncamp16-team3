@@ -22,7 +22,7 @@ public class ScrapAlarmScheduler {
         this.alarmService = alarmService;
     }
 
-    @Scheduled(cron = "0 34 12 * * ?")
+    @Scheduled(cron = "0 0 0 * * ?")
     public void sendScrapExpiration() {
         List<AlarmDto> expiringScrapList = alarmMapper.findExpiringScrapJobs(); // 스크랩한 공고 3일전 list
 
