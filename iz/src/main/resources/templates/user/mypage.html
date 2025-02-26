@@ -1,7 +1,5 @@
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <!DOCTYPE html>
-<html class="h-full bg-white">
+<html class="h-full bg-white" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -35,11 +33,11 @@
         /* 프로필 이미지에 대한 스타일 */
         .profile-image {
             transition: all 0.3s ease;
+            border: 4px solid white;
         }
 
         /* 호버 시 이미지 뿌옇게 처리 */
         .profile-image-container:hover .profile-image {
-            /*opacity: 0.5;*/
             filter: blur(2px);
         }
 
@@ -58,6 +56,33 @@
         /* 호버 시 퍼센트 텍스트 표시 */
         .profile-image-container:hover #stress-percent {
             opacity: 1;
+        }
+
+        /* 카드 스타일 */
+        .info-card {
+            transition: all 0.2s ease;
+        }
+
+        .info-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transform: translateY(-2px);
+        }
+
+        /* 배경 스타일 */
+        .bg-main-sky-basic {
+            background-color: var(--color-main-sky-basic);
+            opacity: 0.8;
+            box-shadow: 0 10px 25px -5px rgba(155, 220, 253, 0.3);
+        }
+
+        /* 링크 효과 */
+        .hover-link {
+            transition: all 0.2s ease;
+        }
+
+        .hover-link:hover {
+            color: var(--color-main-sky-highlight);
+            padding-left: 4px;
         }
     </style>
     <script>
@@ -110,14 +135,14 @@
         });
     </script>
 </head>
-<body class="font-roboto mobile-container relative">
+<body class="mobile-container relative">
 <div class="pt-12"><header th:replace="~{header :: header} " class="pt-4"></header></div>
 <footer th:replace="~{footer :: footer}" class="pt-4"></footer>
 <div class="flex items-center justify-center">
     <div class="flex flex-col items-center w-full max-w-sm px-6 py-12">
         <div class="relative w-full flex flex-col items-center mb-10">
             <div class="absolute bg-main-sky-basic -bottom-40 w-[600px] h-[300px] rounded-b-[300px]"></div>
-            
+
             <!-- 게이지와 프로필 이미지를 포함하는 컨테이너 -->
             <div class="absolute top-15 flex items-center justify-center">
                 <!-- SVG 게이지 - 크기를 조정하고 중앙 정렬 -->
@@ -153,7 +178,7 @@
                 <div class="profile-image-container">
                     <div id="stress-percent" class="font-bold">0%</div>
                     <img src="/images/chillguy.png" th:src="@{/images/chillguy.png}"
-                         class="profile-image w-[185px] h-[185px] rounded-[200px]"
+                         class="profile-image w-[185px] h-[185px] rounded-[200px] shadow-md"
                          alt="사용자프로필 이미지">
                 </div>
             </div>
@@ -162,44 +187,52 @@
         <div class="mt-6 text-center mt-44 w-100">
             <div class="mt-6 text-center mt-15">
                 <div sec:authorize="isAuthenticated()">
-                    <div th:text="${#authentication.getPrincipal().getUser().getNickname()}">phone123</div>
-                    <div th:text="${#authentication.getPrincipal().getUser().getIntro()}">phone123</div>
+                    <div th:text="${#authentication.getPrincipal().getUser().getNickname()}" class="text-xl font-bold text-gray-800 mb-1">phone123</div>
+                    <div th:text="${#authentication.getPrincipal().getUser().getIntro()}" class="text-gray-600 italic mb-4">phone123</div>
                 </div>
             </div>
-            <div class="mt-6 w-full p-4 border border-gray-300 rounded-lg p-4">
+            <div class="mt-6 w-full p-4 border border-gray-200 rounded-lg p-4 bg-white info-card shadow-sm">
                 <div class="space-y-5">
                     <div class="flex items-center gap-3">
-                        <img th:src="@{/images/people.png}" alt="프로필">
-                        <div th:text="${#authentication.getPrincipal().getUser().getName()}">phone123</div>
-
+                        <div class="bg-blue-50 p-2 rounded-lg">
+                            <img th:src="@{/images/people.png}" class="w-6 h-6" alt="프로필">
+                        </div>
+                        <div th:text="${#authentication.getPrincipal().getUser().getName()}" class="text-gray-700">phone123</div>
                     </div>
                     <div>
                         <div class="flex items-center gap-3">
-                            <img th:src="@{/images/email.png}" class="w-8 h-8" alt="프로필">
-                            <div th:text="${#authentication.getPrincipal().getUser().getEmail()}">phone123</div>
+                            <div class="bg-blue-50 p-2 rounded-lg">
+                                <img th:src="@{/images/email.png}" class="w-6 h-6" alt="이메일">
+                            </div>
+                            <div th:text="${#authentication.getPrincipal().getUser().getEmail()}" class="text-gray-700">phone123</div>
                         </div>
                     </div>
                     <div>
                         <div class="flex items-center gap-3">
-                            <img th:src="@{/images/phone.png}">
-                            <div th:text="${#authentication.getPrincipal().getUser().getPhone_num()}">phone123</div>
-
+                            <div class="bg-blue-50 p-2 rounded-lg">
+                                <img th:src="@{/images/phone.png}" class="w-6 h-6" alt="전화번호">
+                            </div>
+                            <div th:text="${#authentication.getPrincipal().getUser().getPhone_num()}" class="text-gray-700">phone123</div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="mt-6 w-full p-4 border border-gray-300 rounded-lg p-4">
+            <div class="mt-6 w-full p-4 border border-gray-200 rounded-lg p-4 bg-white info-card shadow-sm">
                 <div class="space-y-5">
                     <div>
                         <div class="flex items-center gap-3">
-                            <img th:src="@{/images/edit.png}">
-                            <a href="/user/update" th:href="@{/user/update}" class="cursor-pointer hover:text-blue-500">개인정보수정</a>
+                            <div class="bg-blue-50 p-2 rounded-lg">
+                                <img th:src="@{/images/edit.png}" class="w-6 h-6" alt="수정">
+                            </div>
+                            <a href="/user/update" th:href="@{/user/update}" class="cursor-pointer hover-link text-gray-700">개인정보수정</a>
                         </div>
                     </div>
                     <div>
                         <div class="flex items-center gap-3">
-                            <img th:src="@{/images/security.png}">
-                            <a href="/user/accountManagement" th:href="@{/user/accountManagement}" class="cursor-pointer hover:text-blue-500">계정관리</a>
+                            <div class="bg-blue-50 p-2 rounded-lg">
+                                <img th:src="@{/images/security.png}" class="w-6 h-6" alt="보안">
+                            </div>
+                            <a href="/user/accountManagement" th:href="@{/user/accountManagement}" class="cursor-pointer hover-link text-gray-700">계정관리</a>
                         </div>
                     </div>
                 </div>
