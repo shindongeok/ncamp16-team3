@@ -7,27 +7,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Izikgram</title>
     <link th:href="@{/images/Logo.png}" rel="shortcut icon" type="image/x-icon">
+    <link rel="stylesheet" th:href="@{/css/default.css}">
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <link rel="stylesheet" th:href="@{/css/default.css}">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <style type="text/tailwindcss">
         @theme {
-            --color-main-sky: #00a3ed;
+            --color-main-sky-highlight: #00a3ed;
+            --color-main-sky-basic: #9bdcfd;
+            --color-main-red-highlight: #ff5353;
+            --color-main-red-basic: #ff9898;
+            --color-main-yellow-highlight: #fbc159ff;
+            --color-main-yellow-basic: #fdd391;
+
+            /* gray-400*/
+            --color-light-text: oklch(0.704 0.04 256.788);
+            /* gray-600 */
+            --color-basic-text: oklch(0.446 0.043 257.281);
+            /* gray-900 */
+            --color-bold-text: oklch(0.208 0.042 265.755);
         }
 
-        /* 스크롤바 숨기기 */
-        .hide-scrollbar {
-            -ms-overflow-style: none;  /* IE, Edge */
-            scrollbar-width: none;     /* Firefox */
-        }
-
-        /* Chrome, Safari, Opera에서 스크롤바 숨기기 */
-        .hide-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
         @media screen and (max-width: 768px) {
             /* 전체 컨테이너를 세로로 변경 */
             .job-filter-container {
@@ -76,15 +75,27 @@
                 margin-top: 0.5rem !important;
             }
         }
+
+        /* 스크롤바 숨기기 */
+        .hide-scrollbar {
+            -ms-overflow-style: none;  /* IE, Edge */
+            scrollbar-width: none;     /* Firefox */
+        }
+
+        /* Chrome, Safari, Opera에서 스크롤바 숨기기 */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
     </style>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 </head>
-<body class="font-roboto mobile-container bg-[#f0f0f0]">
+<body class="mobile-container bg-[#f0f0f0]">
 <div class="flex flex-col w-full md:w-[600px] md:mx-auto md:shadow-md bg-white min-h-screen pt-8 relative">
+
     <div class="pt-20"><header th:replace="~{header :: header} " class="pt-4"></header></div>
     <footer th:replace="~{footer :: footer}" class="pt-4"></footer>
 
-    <div class="px-10"> <!-- 헤더의 px-10과 동일한 패딩 적용 -->
+    <div class="px-10">
         <h1 class="text-2xl font-bold mb-6">채용공고</h1>
         <div class="flex items-center gap-2 mb-1 job-filter-container">
             <div class="w-1/3 text-center font-semibold text-gray-700">
@@ -128,6 +139,7 @@
                     </svg>
                 </div>
             </div>
+
             <div class="relative flex-1" data-label="산업/업종">
                 <select class="w-full pl-2 pr-8 py-1.5 border-b-2 border-gray-200 text-sm appearance-none bg-white cursor-pointer focus:outline-none focus:border-b-2 focus:border-gray-400 transition-colors">
                     <option th:text="${#authentication.getPrincipal().getUser().getInd_cd}" selected></option>
@@ -148,6 +160,7 @@
                     </svg>
                 </div>
             </div>
+
             <div class="relative flex-1" data-label="학력">
                 <select class="w-full pl-2 pr-8 py-1.5 border-b-2 border-gray-200 text-sm appearance-none bg-white cursor-pointer focus:outline-none focus:border-b-2 focus:border-gray-400 transition-colors">
                     <option th:text="${#authentication.getPrincipal().getUser().getEdu_lv}" selected></option>
@@ -168,17 +181,18 @@
                     </svg>
                 </div>
             </div>
+
             <button class="p-1 bg-white rounded-lg cursor-pointer hover:bg-gray-50 search-button">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
                           d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                 </svg>
             </button>
+
         </div>
 
         <br><br>
 
-        <!-- 곧 마감인 공고 영역 -->
         <h1 class="text-2xl font-bold mb-2">
             곧 마감인 공고
         </h1>
@@ -237,7 +251,6 @@
             </div>
         </div>
 
-        <!-- 최근에 올라온 공고 영역 -->
         <h1 class="text-2xl font-bold mb-2">
             최근에 올라온 공고
         </h1>

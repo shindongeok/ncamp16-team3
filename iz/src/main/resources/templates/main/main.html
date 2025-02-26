@@ -7,43 +7,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Izikgram</title>
     <link th:href="@{/images/Logo.png}" rel="shortcut icon" type="image/x-icon">
+    <link rel="stylesheet" th:href="@{/css/default.css}">
+    <link rel="stylesheet" th:href="@{/css/timepicki.css}">
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <link rel="stylesheet" th:href="@{/css/default.css}">
-    <!-- timepicki -->
-    <link rel="stylesheet" th:href="@{/css/timepicki.css}">
     <script th:src="@{/js/timepicki.js}"></script>
-    <script>
-        $(document).ready(function(){
-            $('#workStartTime').timepicki({
-                start_time: ["09", "00", "AM"],
-                step_size_minutes: 30,
-                disable_keyboard_mobile: true,
-                show_meridian: false,
-                min_hour_value: 0,
-                max_hour_value: 23,
-                overflow_minutes: true
-            });
-            $('#workEndTime').timepicki({
-                start_time: ["18", "00"],
-                step_size_minutes: 30,
-                disable_keyboard_mobile: true,
-                show_meridian: false,
-                min_hour_value: 0,
-                max_hour_value: 23,
-                overflow_minutes: true
-            });
-            $('#lunchTime').timepicki({
-                start_time: ["12", "00"],
-                step_size_minutes: 30,
-                disable_keyboard_mobile: true,
-                show_meridian: false,
-                min_hour_value: 0,
-                max_hour_value: 23,
-                overflow_minutes: true
-            });
-        });
-    </script>
     <style type="text/tailwindcss">
         @theme {
             --color-main-sky-highlight: #00a3ed;
@@ -60,6 +28,7 @@
             /* gray-900 */
             --color-bold-text: oklch(0.208 0.042 265.755);
         }
+
         @media screen and (max-width: 768px) {
             /* 스트레스 섹션 내부의 컨테이너 레이아웃 변경 */
             .stress-section .flex-row {
@@ -84,6 +53,7 @@
                 overflow: visible !important; /* 잘림 방지 */
             }
         }
+
         @media screen and (max-width: 768px) {
             /* Overview 섹션의 카드 레이아웃도 세로로 변경 */
             .py-4 .flex-row.flex-grow {
@@ -96,12 +66,14 @@
                 width: 100% !important;
             }
         }
+
         @media screen and (max-width: 768px) {
             .px-10 {
                 padding-left: 1rem !important;
                 padding-right: 1rem !important;
             }
         }
+
         @keyframes slide {
             0% { transform: translateY(0%); opacity: 0; }
             5%, 28%  { transform: translateY(-100%); opacity: 1; }
@@ -174,10 +146,43 @@
             font-weight: 500;
         }
     </style>
+    <script>
+        $(document).ready(function(){
+            $('#workStartTime').timepicki({
+                start_time: ["09", "00", "AM"],
+                step_size_minutes: 30,
+                disable_keyboard_mobile: true,
+                show_meridian: false,
+                min_hour_value: 0,
+                max_hour_value: 23,
+                overflow_minutes: true
+            });
+
+            $('#workEndTime').timepicki({
+                start_time: ["18", "00"],
+                step_size_minutes: 30,
+                disable_keyboard_mobile: true,
+                show_meridian: false,
+                min_hour_value: 0,
+                max_hour_value: 23,
+                overflow_minutes: true
+            });
+
+            $('#lunchTime').timepicki({
+                start_time: ["12", "00"],
+                step_size_minutes: 30,
+                disable_keyboard_mobile: true,
+                show_meridian: false,
+                min_hour_value: 0,
+                max_hour_value: 23,
+                overflow_minutes: true
+            });
+        });
+    </script>
 </head>
-<!-- HTML body 부분 -->
-<body class="font-roboto mobile-container bg-[#f0f0f0]">
+<body class="mobile-container bg-[#f0f0f0]">
 <div sec:authorize="isAuthenticated()" class="flex flex-col w-full md:w-[600px] md:mx-auto md:shadow-md bg-white min-h-screen pt-8 relative">
+
     <div class="pt-20"><header th:replace="~{header :: header}" class="pt-4"></header></div>
     <footer th:replace="~{footer :: footer}" class="pt-4"></footer>
 
@@ -189,21 +194,22 @@
         <div class="py-3 flex items-center gap-3">
             <span class="text-base text-gray-600 flex items-center gap-1">🔥 인기게시글</span>
             <div class="popular-content-bubble relative h-12 overflow-hidden bg-[#f8f9fa] rounded-3xl flex-1">
+                <!-- DB에서 불러올 인기게시글 목록이 없는 경우 -->
                 <div th:if="${#lists.isEmpty(@mainService.getPopularBoardList())}"
                      class="text-sm text-gray-600 text-center p-4">
                     인기게시글이 없습니다
                 </div>
+                <!-- 목록(인기게시글 3개) 번갈아 가면서 보이도록 -->
                 <div class="popular-content-bubble-item absolute w-full h-full flex justify-between items-center opacity-0 translate-y-full animate-slide cursor-pointer"
                      th:unless="${#lists.isEmpty(@mainService.getPopularBoardList())}"
                      th:each="board, iterStat : ${@mainService.getPopularBoardList()}"
                      th:if="${iterStat.index < 3}">
                     <a th:href="@{/board/{board_type}/{board_id}(board_type=${board.board_type}, board_id=${board.board_id})}"
                        class="flex justify-between items-center w-full px-4 no-underline text-inherit">
-                            <span class="text-base text-gray-800 flex-1 whitespace-nowrap overflow-hidden text-ellipsis mr-3"
-                                  th:text="${board.title}"></span>
-                        <span class="text-sm text-gray-600 whitespace-nowrap flex items-center gap-1">
-                                👍 <span th:text="${board.like_count}"></span>
-                            </span>
+                        <span class="text-base text-gray-800 flex-1 whitespace-nowrap overflow-hidden text-ellipsis mr-3" th:text="${board.title}"></span>
+                            <span class="text-sm text-gray-600 whitespace-nowrap flex items-center gap-1">
+                            👍 <span th:text="${board.like_count}"></span>
+                        </span>
                     </a>
                 </div>
             </div>
@@ -224,7 +230,7 @@
                     <span class="day-label text-lg py-2">S</span>
                 </div>
                 <div class="calendar-grid grid grid-cols-7 gap-2 text-center mt-2">
-                    <!-- JavaScript로 동적 생성됨 -->
+                    <!-- 날짜는 JavaScript로 동적 생성 -->
                 </div>
             </div>
         </div>
@@ -240,7 +246,7 @@
                             </span>
                         <div class="text-lg">월급까지</div>
                     </div>
-                    <div class="text-3xl font-semibold text-[#2C2C2C] text-right mr-5" id="payday"></div>
+                    <div class="text-3xl font-semibold text-[#2C2C2C] text-right mr-5" id="payday"><!-- 남은 월급 일수 JavaScript로 동적 생성 --></div>
                 </div>
                 <div class="flex-1 p-4 bg-[#f8f9fa] rounded-2xl flex flex-col gap-2">
                     <div class="flex items-center gap-2">
@@ -252,11 +258,12 @@
                     <div class="stress-no-data hidden text-gray-600 text-sm text-center p-4 overview-card">
                         아직 기록된 퇴사지수가 없어요
                     </div>
-                    <div class="text-3xl font-semibold text-[#ff5353] text-right mr-5" id="weeklyStressNum"></div>
+                    <div class="text-3xl font-semibold text-[#ff5353] text-right mr-5" id="weeklyStressNum"><!-- 이번주 평균 퇴사지수 JavaScript로 동적 생성 --></div>
                 </div>
             </div>
         </div>
-        <!-- 모달 -->
+
+        <!-- 시간 설정 모달 -->
         <div class="time-settings-modal fixed inset-0 hidden bg-black/50 z-50 items-center justify-center" id="timeSettingsModal">
             <div class="bg-white rounded-2xl w-[90%] max-w-[320px] px-6 py-6 shadow-lg">
                 <div class="flex justify-between items-center mb-6">
@@ -291,11 +298,11 @@
             </div>
         </div>
 
-        <!-- HTML: 에러 모달 추가 -->
+        <!-- 시간 설정 에러 시 에러 모달 -->
         <div class="error-modal fixed inset-0 hidden bg-black/50 z-50 items-center justify-center" id="errorModal">
             <div class="bg-white rounded-2xl w-[90%] max-w-[320px] px-6 py-6 shadow-lg">
                 <div class="flex justify-between items-center mb-6">
-                    <h3 class="text-xl font-semibold text-gray-800">오류</h3>
+                    <h3 class="text-xl font-semibold text-gray-800">Error</h3>
                     <button class="close-error-modal-btn text-3xl text-gray-600 hover:text-gray-800 cursor-pointer">&times;</button>
                 </div>
                 <div class="mb-6">
@@ -311,9 +318,8 @@
 
         <!-- Stress 섹션 -->
         <div class="py-4 stress-section">
+
             <div class="flex justify-between items-center mb-5">
-
-
                 <div class="text-2xl font-semibold mb-1">Stress</div>
                 <button class="time-settings-btn p-1 rounded-full hover:bg-gray-100 cursor-pointer">⚙️</button>
             </div>
@@ -325,7 +331,8 @@
             <div class="flex flex-row items-center gap-6 p-4 bg-[#f8f9fa] rounded-2xl">
                 <div class="relative">
                     <svg width="200" height="200" class="transform -rotate-90">
-                        <!-- 퇴근까지 (가장 큰 원) -->
+
+                        <!-- 퇴근까지의 시간 그래프 -->
                         <circle
                                 cx="100"
                                 cy="100"
@@ -348,7 +355,7 @@
                                 data-progress="0"
                         />
 
-                        <!-- 점심까지 (가장 작은 원) -->
+                        <!-- 점심시간까지의 시간 그래프 -->
                         <circle
                                 cx="100"
                                 cy="100"
@@ -370,8 +377,10 @@
                                 stroke-linecap="round"
                                 data-progress="0"
                         />
+
                     </svg>
                 </div>
+
                 <div class="relative bg-white rounded-xl p-5 shadow-sm w-full max-w-[280px]">
                     <div class="absolute -top-2 left-1/2 transform -translate-x-1/2 w-0 h-0 border-8 border-transparent border-b-white"></div>
 
@@ -398,19 +407,17 @@
                             <span>남은 시간도 힘내세요! 💪</span>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>
     </div>
 </div>
-
 <script th:inline="javascript">
     // Spring Security를 통해 전달받은 데이터를 전역 변수로 설정
     const monthlyStressList = /*[[${@mainService.getMonthlyStress(
             #authentication.principal.user.member_id,
-            T(java.time.LocalDate).now().format(T(java.time.format.DateTimeFormatter).ofPattern('yyyy-MM'))
-        )}]]*/ [];
-
+            T(java.time.LocalDate).now().format(T(java.time.format.DateTimeFormatter).ofPattern('yyyy-MM')))}]]*/ [];
     const payday = /*[[${@mainService.getPayday(#authentication.principal.user.member_id)}]]*/ 15;
     const startTime = /*[[${@mainService.getStartTime(#authentication.principal.user.member_id)}]]*/ '09:00';
     const lunchTime = /*[[${@mainService.getLunchTime(#authentication.principal.user.member_id)}]]*/ '12:00';
