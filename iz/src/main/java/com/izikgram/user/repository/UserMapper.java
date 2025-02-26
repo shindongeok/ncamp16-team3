@@ -34,9 +34,6 @@ public interface UserMapper {
     @Select("select * from iz_member where member_id=#{member_id} and phone_num=#{phone_num}")
     User findUserFromFindPw(@Param("member_id") String member_id, @Param("phone_num") String phone_num);
 
-    @Select("SELECT NOW()")
-    String getCurrentTime();
-
     @Select("SELECT m.*, " +
             "(SELECT stress_num FROM iz_member_stress_info " +
             " WHERE member_id = m.member_id ORDER BY date DESC LIMIT 1) AS stress_num " +
