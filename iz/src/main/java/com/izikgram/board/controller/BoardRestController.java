@@ -31,6 +31,7 @@ public class BoardRestController {
                                                 @PathVariable("boardType") int boardType,
                                                 @RequestParam boolean isLiked,
                                                 @AuthenticationPrincipal CustomUserDetails userDetails) {
+
         log.info("요청 게시글 번호: {}", boardId);
         log.info("요청 종류: {}", isLiked);
 
