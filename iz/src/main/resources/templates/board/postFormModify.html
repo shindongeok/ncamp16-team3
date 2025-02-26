@@ -6,9 +6,6 @@
     <title>Izikgram</title>
     <link th:href="@{/images/Logo.png}" rel="shortcut icon" type="image/x-icon">
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/default.css}">
     <style type="text/tailwindcss">
 
@@ -29,18 +26,19 @@
         <div class="border-b pb-2">
             <h2 class="text-4xl font-black" th:text="${board.board_type == 1 ? '자유게시판 글수정' : (board.board_type == 2 ? '하소연 게시판 글수정' : '잘못된 요청이다.')}"></h2>
         </div>
-        <form id="postForm" th:action="@{/board/{board_type}/{board_id}(board_type=${board.board_type}, board_id=${board.board_id})}" method="post" onsubmit="return PostFormInsertBut()">
+        <form id="postForm" th:action="@{/board/{board_type}/{board_id}(board_type=${board.board_type}, board_id=${board.board_id})}" method="post" onsubmit="return PostFormInsertBut()" class="">
             <input type="text" id="title" name="title" th:value="${board.title}"   class="border border-gray-300 rounded-md p-2 w-full my-5" maxlength="45" readonly>
 
-            <div class="h-100">
-                <textarea id="content" name="content" th:text="${board.content}" class="w-full h-full p-2 mt-2 border border-gray-300 rounded-xl text-gray-700 focus:outline-none resize-none"></textarea>
+            <div class="md:h-100 h-60">
+                <textarea id="content" name="content" th:text="${board.content}" class="w-full h-full p-2 mt-2 border border-gray-300 rounded-xl text-gray-700 focus:ring-2 focus:ring-main-sky-basic focus:border-transparent outline-none resize-none"></textarea>
             </div>
 
             <div class="flex justify-center text-right mt-10 my-5 gap-6">
-                <button type="submit" class="px-20 py-4 bg-main-sky-highlight text-black rounded hover:bg-main-sky-basic rounded-xl cursor-pointer">
+                <button type="submit" class="md:px-20 md:py-4 px-15 py-4  bg-main-sky-highlight text-white font-semibold
+                                rounded-xl hover:bg-main-sky-basic transition-all cursor-pointer">
                     수정
                 </button>
-                <a href="javascript:history.back()" class="px-20 py-4 bg-gray-300 text-black rounded hover:bg-main-sky-basic rounded-xl cursor-pointer">
+                <a href="javascript:history.back()" class="md:px-20 md:py-4 px-15 py-4 bg-gray-300 rounded hover:bg-main-sky-basic text-white rounded-xl cursor-pointer">
                     취소
                 </a>
             </div>

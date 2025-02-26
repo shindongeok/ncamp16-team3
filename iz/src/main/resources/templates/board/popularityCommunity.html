@@ -6,14 +6,10 @@
     <title>Izikgram</title>
     <link th:href="@{/images/Logo.png}" rel="shortcut icon" type="image/x-icon">
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.4.js"></script>
     <link rel="stylesheet" th:href="@{/css/default.css}">
     <style type="text/tailwindcss">
-        /*.font-roboto {*/
-        /*    font-family: "Roboto", serif;*/
-        /*}*/
+
         @theme {
             --color-main-sky-highlight: #00a3ed;
             --color-main-sky-basic: #9bdcfd;
@@ -23,8 +19,6 @@
             --color-main-yellow-basic: #fdd391;
         }
     </style>
-    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
-    <script src="https://code.jquery.com/jquery-3.6.4.js"></script>
     <script th:src="@{/js/postDetail.js}"></script>
 </head>
 <body>
@@ -41,7 +35,7 @@
                 </div>
             </div>
 
-            <div class="h-130">
+            <div class="h-120">
                 <!-- 자유 게시판 -->
                 <div class="rounded-lg pb-4 w-auto">
                     <div class="flex justify-between items-center border-b border-gray-300">
@@ -52,7 +46,7 @@
                 <!-- 게시글 리스트 -->
                 <div th:each="issueList01, iterStat : ${issueBoardList01}" class="bg-gray-100 rounded-lg mb-4 p-4">
                     <div class="flex flex-col">
-                        <!-- 게시글 리스트 (데이터 제외) -->
+                        <!-- 게시글 리스트 -->
                         <div class="flex border-b border-gray-200 pb-1">
                             <div class="flex-1 pr-6">
                                 <div class="flex items-center gap-2"> <!-- flex로 수평 배치, gap으로 간격 조정 -->
@@ -64,7 +58,7 @@
                                        th:href="@{/board/{board_type}/{board_id}(board_type=${issueList01.board_type},
                                            board_id=${issueList01.board_id})}" th:text="${issueList01.title}" >인기글1 제목입니다.</a>
                                 </div>
-                                <p class="text-sm ml-12 w-40 truncate" th:text="${issueList01.content}">게시글 내용</p>
+                                <p class="mb-1 text-sm ml-12 w-40 truncate" th:text="${issueList01.content}">게시글 내용</p>
                                 <span class="text-xs ml-12 reg_date" th:data-reg-date="${issueList01.reg_date}">2025-02-21</span>
                             </div>
                             <div class="px-6 p-2">
@@ -114,7 +108,7 @@
                                    th:href="@{/board/{board_type}/{board_id}(board_type=${issueList02.board_type},
                                        board_id=${issueList02.board_id})}" th:text="${issueList02.title}" >인기글1 제목입니다.</a>
                             </div>
-                            <p class="text-sm ml-12 w-40 truncate" th:text="${issueList02.content}">게시글 내용</p>
+                            <p class="mb-1 text-sm ml-12 w-40 truncate" th:text="${issueList02.content}">게시글 내용</p>
                             <span class="text-xs ml-12 reg_date" th:data-reg-date="${issueList02.reg_date}">2025-02-21</span>
                         </div>
                         <div class="px-6 p-2">

@@ -6,15 +6,8 @@
     <title>Izikgram</title>
     <link th:href="@{/images/Logo.png}" rel="shortcut icon" type="image/x-icon">
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/default.css}">
     <style type="text/tailwindcss">
-        /*.font-roboto {*/
-        /*    font-family: "Roboto", serif;*/
-        /*}*/
-
         @theme {
             --color-main-sky-highlight: #00a3ed;
             --color-main-sky-basic: #9bdcfd;
@@ -23,15 +16,8 @@
             --color-main-yellow-highlight: #fbc159ff;
             --color-main-yellow-basic: #fdd391;
         }
-        .likeBtn.active, .unlikeBtn.active {
-            background-color: #2C5282;
-            color: white;
-        }
-
 
     </style>
-
-
 </head>
 <body>
 <div class=" flex flex-col w-full mobile-container pt-8 relative bg-white rounded-lg  mx-auto">
@@ -48,8 +34,8 @@
         <div class="text-gray-500 text-sm mt-2 reg_date" th:data-reg-date="${board.reg_date}">2025-02-24</div>
 
         <!-- 상세 내용 -->
-        <div class="mt-6 border border-gray-200 p-6 rounded-lg bg-gray-50 h-50">
-            <p id="contentText" class="text-gray-800 leading-relaxed overflow-auto max-h-40" th:utext="${board.content}"></p>
+        <div class="mt-6 border border-gray-200 p-6 rounded-lg bg-gray-50 md:h-100 h-60">
+            <p id="contentText" class="text-gray-800 leading-relaxed overflow-auto md:h-90 h-50" th:utext="${board.content}"></p>
         </div>
 
 
@@ -107,9 +93,9 @@
                     <span class="reg_date" th:data-reg-date="${commentList.reg_date}">2025-02-24</span> <!-- 날짜 추가 -->
                 </div>
                 <div class="flex justify-between items-center mt-2">
-                    <input  id="inpuu" class="comment-input focus:outline-none p-2 text-xl font-black w-100"
+                    <input  id="inpuu" class="comment-input focus:outline-none p-2 text-sm font-black w-100"
                             th:value="${commentList.comment_content}" readonly>
-                    <div class="space-x-2" th:if="${member_id == commentList.writer_id}">
+                    <div class="space-x-2 w-40 text-right" th:if="${member_id == commentList.writer_id}">
                         <button id="dd" type="button" onclick="editComment(event)" class="text-blue-500
                                     hover:text-blue-600 cursor-pointer">
                             수정
