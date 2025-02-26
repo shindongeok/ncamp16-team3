@@ -17,6 +17,22 @@
             --color-main-yellow-highlight: #fbc159ff;
             --color-main-yellow-basic: #fdd391;
         }
+
+        @media screen and (max-width: 599px) {
+            .infoDiv {
+                width: 20em;
+            }
+
+            #manageDiv {
+                flex-direction: column;
+                justify-items: center;
+            }
+
+            #manageDiv a {
+                width: 100%;
+                margin: 0 0 1.5em 0;
+            }
+        }
     </style>
     <script>
         function openModal() {
@@ -33,16 +49,13 @@
 <footer th:replace="~{footer :: footer}" class="pt-4"></footer>
 <div class="flex items-center justify-center">
     <div class="flex flex-col items-center w-full max-w-sm px-6 py-12">
-<!--        <div class="relative w-full flex flex-col items-center mb-10">-->
-<!--            <img th:src="@{/images/izikgram.png}" class="mx-auto relative w-50"/>-->
-<!--        </div>-->
-        <div class="border-2 border-gray-300 rounded-lg mt-15">
+        <div class="border-2 border-gray-300 rounded-lg mt-15 infoDiv">
             <div class="mt-6 text-center w-full">
                 <div class="mt-6 text-center">
                     <div class="font-bold text-xl">계정관리</div>
                 </div>
             </div>
-            <div class="flex justify-center items-center m-10 space-x-3">
+            <div id="manageDiv" class="flex justify-center items-center m-10 space-x-3">
                 <!-- 비밀번호 변경 -->
                 <a th:href="@{/user/checkPwd}"
                    class="w-40 text-white bg-main-sky-highlight px-4 py-2 rounded-md hover:bg-sky-800 focus:outline-none focus:ring-2 focus:ring-blue-400 text-center">
