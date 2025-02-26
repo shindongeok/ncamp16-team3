@@ -22,7 +22,7 @@
     }
 
     #paydayLabel {
-        margin-right: 1.5em;
+        margin-right: 1.8em;
     }
 
     #timeDiv1 div label {
@@ -42,7 +42,7 @@
         font-size: 1em;
     }
     .time_pick {
-        width: 100%;
+        width: 90%;
     }
 
     /* timeDiv2 */
@@ -78,6 +78,32 @@
         width: 100%;
         margin-left: 0;
         left: 0;
+    }
+
+    /* indEduDiv */
+    #indEduDiv {
+        display: block;
+        width: 100%;
+    }
+    #indDiv {
+        width: 100%;
+        margin: 0 0 1em 0;
+    }
+    #eduDiv {
+        width: 100%;
+        margin: 0;
+    }
+    #indDiv label,
+    #eduDiv label,
+    #indDiv input,
+    #eduDiv input,
+    #indDiv select,
+    #eduDiv select {
+        text-align: left;
+    }
+    #indDiv select,
+    #eduDiv select {
+        padding: 0.5em 1em;
     }
 
     #name,
