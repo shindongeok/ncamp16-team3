@@ -5,21 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Izikgram</title>
     <link th:href="@{/images/Logo.png}" rel="shortcut icon" type="image/x-icon">
+    <link rel="stylesheet" th:href="@{/css/default.css}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <link rel="stylesheet" th:href="@{/css/default.css}">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style type="text/tailwindcss">
+        @theme {
+            --color-main-sky-highlight: #00a3ed;
+            --color-main-sky-basic: #9bdcfd;
+            --color-main-red-highlight: #ff5353;
+            --color-main-red-basic: #ff9898;
+            --color-main-yellow-highlight: #fbc159ff;
+            --color-main-yellow-basic: #fdd391;
+
+            /* gray-400*/
+            --color-light-text: oklch(0.704 0.04 256.788);
+            /* gray-600 */
+            --color-basic-text: oklch(0.446 0.043 257.281);
+            /* gray-900 */
+            --color-bold-text: oklch(0.208 0.042 265.755);
+        }
+    </style>
 </head>
 <body>
-
 <div class="flex flex-col w-full mobile-container pt-8 relative">
+
     <div class="pt-20"><header th:replace="~{header :: header}" class="pt-4"></header></div>
     <footer th:replace="~{footer :: footer}" class="pt-4"></footer>
 
-    <div class="px-10"> <!-- 헤더와 일치하도록 p-4에서 px-10으로 변경 -->
+    <div class="px-10">
         <h1 class="text-2xl font-bold mb-2">찜 해놓은 채용공고</h1>
 
         <div th:if="${scrapedJobs.isEmpty()}" class="text-center text-gray-500 py-10">
@@ -50,7 +64,6 @@
         </div>
     </div>
 </div>
-
 <script>
     $(document).ready(function() {
         $('.scrap-btn').click(function(e) {
@@ -116,6 +129,5 @@
         }
     });
 </script>
-
 </body>
 </html>
