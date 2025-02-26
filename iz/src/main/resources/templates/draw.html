@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
@@ -136,6 +137,18 @@
             height: 10px;
             opacity: 0;
         }
+
+        /* 오류 메시지 스타일 */
+        .error-message {
+            color: #ff5353;
+            font-size: 0.9rem;
+            margin-top: 0.3rem;
+            display: none;
+        }
+
+        .input-error {
+            border-color: #ff5353 !important;
+        }
     </style>
 </head>
 <body class="bg-gray-100 mobile-container">
@@ -143,24 +156,28 @@
     <div class="pt-28"><header th:replace="~{header :: header} " class="pt-4"></header></div>
 
     <!-- 플레이어 및 상품 입력 폼 -->
-    <form th:if="${gameResult == null}" action="/draw/draw" method="get" class="bg-white shadow-lg rounded-lg p-6 mb-8 mr-10 ml-10">
+    <form th:if="${gameResult == null}" id="drawForm" action="/draw/draw" method="get" class="bg-white shadow-lg rounded-lg p-6 mb-8 mr-10 ml-10">
         <h1 class="text-[1.7rem] font-bold text-[#2C2C2C] text-center">제비뽑기 게임</h1><br>
 
         <div class="mb-4">
             <label for="players" class="block text-lg font-semibold">사람:</label>
-            <input type="text" id="players" name="players" placeholder="예: 홍길동, 김철수, 이영희" class="w-full mt-2 p-2 border border-gray-300 rounded-lg">
+            <input type="text" id="players" name="players" placeholder="예: 홍길동, 김철수, 이영희"
+                   class="w-full mt-2 p-2 border border-gray-300 rounded-lg">
+            <div id="players-error" class="error-message">참가자 이름을 입력해주세요.</div>
         </div>
 
         <div class="mb-4">
             <label for="results" class="block text-lg font-semibold">상품 개수:</label>
-            <input type="text" id="results" name="results" placeholder="예: 2, 3, 1" class="w-full mt-2 p-2 border border-gray-300 rounded-lg">
+            <input type="text" id="results" name="results" placeholder="예: 2, 3, 1"
+                   class="w-full mt-2 p-2 border border-gray-300 rounded-lg">
+            <div id="results-error" class="error-message">상품 개수를 숫자로 입력해주세요.</div>
         </div>
 
-        <button type="submit" class="w-[80%] mx-auto block bg-main-sky-highlight text-white p-3 rounded-lg hover:bg-main-sky-basic transition duration-300 mt-10 cursor-pointer">게임 시작</button>
+        <button type="submit" id="submitBtn" class="w-[80%] mx-auto block bg-main-sky-highlight text-white p-3 rounded-lg hover:bg-main-sky-basic transition duration-300 mt-10 cursor-pointer">게임 시작</button>
     </form>
 
     <!-- 입력값이 없을 경우 메시지 표시 -->
-    <div th:if="${message != null}" class="text-main-red-highlight text-center mb-4">
+    <div th:if="${message != null}" class="text-main-red-highlight text-center mb-4 p-3 border border-main-red-basic rounded-lg mx-10 bg-red-50">
         <p th:text="${message}"></p>
     </div>
 
@@ -196,9 +213,82 @@
     <!-- 폭죽 효과를 위한 컨테이너 -->
     <div id="confetti-container" class="confetti-container"></div>
 
-    <!-- 카드 클릭 스크립트 -->
-    <script th:if="${gameResult != null}">
+    <!-- 폼 검증 및 카드 클릭 스크립트 -->
+    <script th:inline="javascript">
         document.addEventListener('DOMContentLoaded', function() {
+            // 폼 검증 스크립트
+            const drawForm = document.getElementById('drawForm');
+            const playersInput = document.getElementById('players');
+            const resultsInput = document.getElementById('results');
+            const playersError = document.getElementById('players-error');
+            const resultsError = document.getElementById('results-error');
+
+            if (drawForm) {
+                drawForm.addEventListener('submit', function(event) {
+                    let isValid = true;
+
+                    // 플레이어 입력 검증
+                    if (!playersInput.value.trim()) {
+                        playersInput.classList.add('input-error');
+                        playersError.style.display = 'block';
+                        isValid = false;
+                    } else {
+                        playersInput.classList.remove('input-error');
+                        playersError.style.display = 'none';
+                    }
+
+                    // 상품 개수 입력 검증
+                    if (!resultsInput.value.trim()) {
+                        resultsInput.classList.add('input-error');
+                        resultsError.style.display = 'block';
+                        isValid = false;
+                    } else {
+                        // 숫자로 구성된 값인지 확인
+                        const resultsValue = resultsInput.value.trim();
+                        const resultsArray = resultsValue.split(',');
+
+                        let hasInvalidNumber = false;
+                        for (let i = 0; i < resultsArray.length; i++) {
+                            const num = resultsArray[i].trim();
+                            if (isNaN(num) || num <= 0) {
+                                hasInvalidNumber = true;
+                                break;
+                            }
+                        }
+
+                        if (hasInvalidNumber) {
+                            resultsInput.classList.add('input-error');
+                            resultsError.style.display = 'block';
+                            resultsError.textContent = '상품 개수는 0보다 큰 숫자여야 합니다.';
+                            isValid = false;
+                        } else {
+                            resultsInput.classList.remove('input-error');
+                            resultsError.style.display = 'none';
+                        }
+                    }
+
+                    if (!isValid) {
+                        event.preventDefault();
+                    }
+                });
+
+                // 입력 필드에 입력할 때 오류 메시지 숨기기
+                playersInput.addEventListener('input', function() {
+                    if (playersInput.value.trim()) {
+                        playersInput.classList.remove('input-error');
+                        playersError.style.display = 'none';
+                    }
+                });
+
+                resultsInput.addEventListener('input', function() {
+                    if (resultsInput.value.trim()) {
+                        resultsInput.classList.remove('input-error');
+                        resultsError.style.display = 'none';
+                    }
+                });
+            }
+
+            // 카드 클릭 스크립트
             const cards = document.querySelectorAll('.playing-card');
             cards.forEach(card => {
                 card.addEventListener('click', function() {
@@ -206,23 +296,15 @@
 
                     // 당첨 카드인 경우 특별 효과 적용
                     if (this.classList.contains('winner-card') && this.classList.contains('show-result')) {
-                        // 예시로 빛나는 효과 적용
-                        // this.classList.add('glow-effect');
+                        // 여러 효과 중 하나를 무작위로 선택
+                        const effects = 'color-change-effect';
+                        // const randomEffect = effects[Math.floor(Math.random() * effects.length)];
 
-                        // 색상 변화 효과
-                        // this.classList.add('color-change-effect');
-
-                        // 커지는 효과
-                        // this.classList.add('pulse-effect');
-
-                        // 떠다니는 효과
-                        // this.classList.add('float-effect');
+                        // 선택된 효과 적용
+                        this.classList.add(effects);
 
                         // 폭죽 효과
                         createConfetti();
-
-                        // 소리 효과
-                        // playWinSound();
                     }
                 });
             });
@@ -230,6 +312,8 @@
             // 폭죽 효과 함수
             function createConfetti() {
                 const container = document.getElementById('confetti-container');
+                if (!container) return;
+
                 const colors = ['#ff5353', '#fbc159', '#00a3ed', '#9bdcfd'];
 
                 for (let i = 0; i < 100; i++) {
@@ -258,14 +342,6 @@
                         }, 1000);
                     }, Math.random() * 500);
                 }
-            }
-
-            // 승리 소리 효과 함수
-            function playWinSound() {
-                // 소리 요소 생성
-                const audio = new Audio();
-                audio.src = '/sounds/win.mp3'; // 실제 경로로 수정 필요
-                audio.play().catch(e => console.log('소리 재생 실패:', e));
             }
         });
     </script>
