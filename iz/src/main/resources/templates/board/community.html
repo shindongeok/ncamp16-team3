@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Izikgram</title>
     <link th:href="@{/images/Logo.png}" rel="shortcut icon" type="image/x-icon">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.js"></script>
+    <script th:src="@{/js/postDetail.js}"></script>
     <link rel="stylesheet" th:href="@{/css/default.css}">
     <style type="text/tailwindcss">
         @theme {
@@ -18,24 +18,22 @@
             --color-main-yellow-highlight: #fbc159ff;
             --color-main-yellow-basic: #fdd391;
         }
+
     </style>
-    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
-    <script src="https://code.jquery.com/jquery-3.6.4.js"></script>
-    <script th:src="@{/js/postDetail.js}"></script>
 </head>
 
-<body class="bg-gray-100 text-gray-900">
+<body>
 <div class="mobile-container flex flex-col w-full  relative rounded-lg shadow-lg mx-auto bg-white">
     <div class="pt-28"><header th:replace="~{header :: header} " class="pt-4"></header></div>
-    <div class="flex flex-col w-full max-w-6xl mx-auto p-10">
+    <div class="flex flex-col w-full max-w-6xl mx-auto px-10">
 
         <!-- 게시판 메뉴 및 글쓰기 버튼 -->
         <div class="bg-gray-100 rounded-lg p-4">
             <div class="flex justify-between items-center">
-                <h2 th:text="${board_name}" class="text-2xl font-semibold text-gray-700">자유게시판</h2>
+                <h2 th:text="${board_name}" class="text-xl md:text-2xl font-semibold text-gray-700">자유게시판</h2>
 
                 <!-- 정렬 옵션 -->
-                <select id="sortOptions" class="border-2 border-main-sky-highlight rounded-xl px-4 py-2 text-gray-500
+                <select id="sortOptions" class="border-2 border-main-sky-highlight rounded-xl px-0 py-0 md:px-4 py-2 text-gray-500
                     focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-main-sky-highlight
                     hover:border-main-sky-basic
                     focus-visible:outline-offset-2 focus-visible:outline-sky-800
@@ -47,8 +45,8 @@
                 </select>
 
                 <!-- 글쓰기 버튼 -->
-                <a class="px-6 py-2 rounded-md bg-main-sky-highlight px-3 py-1.5
-                    text-lg/6 text-white shadow-xs hover:bg-sky-800 focus-visible:outline-2
+                <a class=" py-2 rounded-md bg-main-sky-highlight px-3 py-1.5
+                    text-sm md:text-lg text-white shadow-xs hover:bg-sky-800 focus-visible:outline-2
                     focus-visible:outline-offset-2 focus-visible:outline-sky-800"
                    th:href="@{/board/postForm(board_type=${board_type})}"
                    th:text="${board_name == '자유게시판' ? '글작성하기' :
@@ -63,40 +61,42 @@
             <div class="flex flex-col">
                 <!-- 게시글 리스트 -->
                 <div class="flex border-b border-gray-200 pb-4">
-                    <div class="flex-1 px-6">
-                        <a class=" hover:text-main-sky-highlight inline-block w-40 truncate no-underline
-                               hover:no-underline text-xl"
-                           th:href="@{/board/{board_type}/{board_id}(board_type=${board.board_type},
-                               board_id=${board.board_id})}"
+                    <!-- 게시글 내용 -->
+                    <div class="flex-1 px-4">
+                        <a class="hover:text-main-sky-highlight inline-block max-w-xs md:max-w-sm lg:max-w-md truncate no-underline
+                        hover:no-underline text-lg md:text-xl"
+                           th:href="@{/board/{board_type}/{board_id}(board_type=${board.board_type}, board_id=${board.board_id})}"
                            th:text="${board.title}">게시글 제목</a>
-                        <p class="text-sm w-40 truncate"
-                           th:text="${board.content}">게시글 내용</p>
-                        <span class="text-xs reg_date" th:data-reg-date="${board.reg_date}">2025-02-21</span>
+                        <p class="my-1 text-sm w-32 md:w-48 truncate" th:text="${board.content}">게시글 내용</p>
+                        <span class="text-xs reg_date block md:inline" th:data-reg-date="${board.reg_date}">2025-02-21</span>
                     </div>
-                    <div class="px-6">
-                        <div class="flex flex-col items-end">
-                            <div class="flex justify-between items-center w-full">
-                                <img src="https://img.icons8.com/?size=100&id=82788&format=png&color=000000"
-                                     alt="like" class="w-5 h-5">
-                                <span class="ml-2 text-main-red-highlight" th:text="${board.like_count}">22</span>
-                            </div>
-                            <div class="flex justify-between items-center w-full">
-                                <img src="https://img.icons8.com/?size=100&id=82788&format=png&color=000000"
-                                     alt="dislike" class="w-5 h-5 rotate-180 inline-block transform">
-                                <span class="ml-2 text-main-sky-highlight" th:text="${board.dislike_count}">10</span>
-                            </div>
-                            <div class="flex justify-between items-center w-full">
-                                <img src="https://img.icons8.com/?size=100&id=6520&format=png&color=000000"
-                                     alt="comments" class="w-5 h-5">
-                                <span class="ml-2" th:text="${board.comment_count}">5</span>
-                            </div>
+
+                    <!-- 좋아요, 싫어요, 댓글 -->
+                    <div class="px-4 flex flex-col items-end justify-center">
+                        <!-- 좋아요 -->
+                        <div class="flex items-center">
+                            <img src="https://img.icons8.com/?size=100&id=82788&format=png&color=000000"
+                                 alt="like" class="w-4 md:w-5 h-4 md:h-5">
+                            <span class="ml-2 text-main-red-highlight text-sm md:text-base" th:text="${board.like_count}">22</span>
+                        </div>
+                        <!-- 싫어요 -->
+                        <div class="flex items-center mt-1">
+                            <img src="https://img.icons8.com/?size=100&id=82788&format=png&color=000000"
+                                 alt="dislike" class="w-4 md:w-5 h-4 md:h-5 rotate-180">
+                            <span class="ml-2 text-main-sky-highlight text-sm md:text-base" th:text="${board.dislike_count}">10</span>
+                        </div>
+                        <!-- 댓글 -->
+                        <div class="flex items-center mt-1">
+                            <img src="https://img.icons8.com/?size=100&id=6520&format=png&color=000000"
+                                 alt="comments" class="w-4 md:w-5 h-4 md:h-5">
+                            <span class="ml-2 text-sm md:text-base" th:text="${board.comment_count}">5</span>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <footer th:replace="~{footer :: footer}" class="pt-4"></footer>
+        <footer th:replace="~{footer :: footer}" class="pt-4 w-full"></footer>
     </div>
 </div>
 

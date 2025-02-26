@@ -50,21 +50,20 @@
 
                 <!-- 내용 입력 -->
                 <textarea id="content" name="content"
-                          class="w-full h-100 px-4 py-3 border border-gray-300 rounded-lg
+                          class="w-full md:h-100 h-60 px-4 py-3 border border-gray-300 rounded-lg
                               focus:ring-2 focus:ring-main-sky-basic focus:border-transparent outline-none resize-none"
-                          maxlength="255"
+
                           placeholder="내용을 입력하세요"
                 ></textarea>
 
                 <div class="flex justify-center gap-4 pt-6">
                     <button type="submit"
-                            class="px-20 py-4 bg-main-sky-highlight text-white font-semibold
+                            class="md:px-20 md:py-4 px-15 py-4  bg-main-sky-highlight text-white font-semibold
                                 rounded-xl hover:bg-main-sky-basic transition-all cursor-pointer">
                         등록
                     </button>
                     <a th:href="@{/board/{board_type}(board_type=${board_type})}"
-                       class="px-20 py-4 bg-gray-300 text-black font-semibold rounded-xl
-                           hover:bg-gray-400 transition-all cursor-pointer">
+                       class="md:px-20 md:py-4 px-15 py-4 bg-gray-300 rounded hover:bg-main-sky-basic text-white rounded-xl cursor-pointer">
                         취소
                     </a>
                 </div>

@@ -6,14 +6,9 @@
     <title>Izikgram</title>
     <link th:href="@{/images/Logo.png}" rel="shortcut icon" type="image/x-icon">
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/default.css}">
     <style type="text/tailwindcss">
-        /*.font-roboto {*/
-        /*    font-family: "Roboto", serif;*/
-        /*}*/
+
         @theme {
             --color-main-sky-highlight: #00a3ed;
             --color-main-sky-basic: #9bdcfd;
@@ -21,9 +16,6 @@
             --color-main-red-basic: #ff9898;
             --color-main-yellow-highlight: #fbc159ff;
             --color-main-yellow-basic: #fdd391;
-        }
-        .no-shadow {
-            box-shadow: none;
         }
     </style>
     <script src="https://code.jquery.com/jquery-3.6.4.js"></script>
@@ -33,7 +25,7 @@
 <div class="flex flex-col w-full mobile-container relative bg-white rounded-lg shadow-lg mx-auto">
     <div class="mobile-container flex flex-col w-full  relative rounded-lg shadow-lg mx-auto bg-white">
         <div class="pt-28"><header th:replace="~{header :: header} " class="pt-4"></header></div>
-        <div class="flex flex-col w-full max-w-6xl mx-auto p-10">
+        <div class="flex flex-col w-full max-w-6xl mx-auto px-10">
 
             <!-- 내 게시글  -->
             <div class="bg-gray-100 rounded-lg p-4">
@@ -56,14 +48,14 @@
                     <div class="flex flex-col">
                         <!-- 게시글 리스트 (데이터 제외) -->
                         <div class="flex border-b border-gray-200 pb-1">
-                            <div class="flex-1 pr-6 pl-10">
+                            <div class="flex-1 pr-6">
                                 <div class="flex items-center gap-2">
                                     <a class="hover:text-main-sky-highlight inline-block w-40 truncate no-underline
-                                           hover:no-underline text-xl"
+                                               hover:no-underline text-xl"
                                        th:href="@{/board/{board_type}/{board_id}(board_type=${myList01.board_type},
-                                           board_id=${myList01.board_id})}" th:text="${myList01.title}">인기글1 제목입니다.</a>
+                                               board_id=${myList01.board_id})}" th:text="${myList01.title}">인기글1 제목입니다.</a>
                                 </div>
-                                <p class="text-sm w-40 truncate" th:text="${myList01.content}">게시글 내용</p>
+                                <p class="my-1 text-sm w-40 truncate" th:text="${myList01.content}">게시글 내용</p>
                                 <span class="text-xs reg_date" th:data-reg-date="${myList01.reg_date}">2025-02-21</span>
                             </div>
                             <div class="px-6 ">
@@ -103,14 +95,14 @@
                 <div class="flex flex-col">
                     <!-- 게시글 리스트 -->
                     <div class="flex border-b border-gray-200 pb-1">
-                        <div class="flex-1 pr-6 pl-10">
+                        <div class="flex-1 pr-6">
                             <div class="flex items-center gap-2">
                                 <a class="hover:text-main-sky-highlight inline-block w-40 truncate no-underline
-                                       hover:no-underline text-xl"
+                                           hover:no-underline text-xl"
                                    th:href="@{/board/{board_type}/{board_id}(board_type=${myList02.board_type},
-                                       board_id=${myList02.board_id})}" th:text="${myList02.title}">인기글1 제목입니다.</a>
+                                           board_id=${myList02.board_id})}" th:text="${myList02.title}">인기글1 제목입니다.</a>
                             </div>
-                            <p class="text-sm  w-40 truncate" th:text="${myList02.content}">게시글 내용</p>
+                            <p class="my-1 text-sm  w-40 truncate" th:text="${myList02.content}">게시글 내용</p>
                             <span class="text-xs reg_date" th:data-reg-date="${myList02.reg_date}">2025-02-21</span>
                         </div>
                         <div class="px-6">

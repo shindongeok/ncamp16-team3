@@ -20,10 +20,8 @@ import java.util.Map;
 @RequestMapping("/board")
 public class  BoardController {
 
-
     @Autowired
     private BoardService boardService;
-
 
     //자유,하소연 게시판 리스트
     @GetMapping("/{board_type}")
@@ -91,45 +89,12 @@ public class  BoardController {
         return "redirect:/board/" + board_type;
     }
 
-    //자유,하소연 상세보기
-//    @GetMapping("/{board_type}/{board_id}")
-//    public String postDetail(@PathVariable("board_type") int board_type,
-//                             @PathVariable("board_id") int board_id,
-//                             @AuthenticationPrincipal CustomUserDetails userDetails,
-//                             Model model ){
-//
-//        User user = userDetails.getUser();
-//        String writer_id = user.getMember_id();
-//
-//        String board_name = boardService.findBoardName(board_type);
-//
-//        Board board = new Board();
-//        List<CommentDto> ListCommentDto;
-//        if(board_type == 1){
-//            ListCommentDto = boardService.selectComment01(board_id);
-//            board = boardService.selectDetail01(board_id);
-//        }else if(board_type == 2){
-//            ListCommentDto = boardService.selectComment02(board_id);
-//            board = boardService.selectDetail02(board_id);
-//        }else {
-//            model.addAttribute("error", "유효하지 않은 게시판 타입입니다.");
-//            return "redirect:/board/" + board_type;
-//        }
-//
-//        model.addAttribute("board_name", board_name);
-//        model.addAttribute("board", board);
-//        model.addAttribute("member_id", writer_id);
-//        model.addAttribute("comment", ListCommentDto);
-//
-//        return "board/postDetail";
-//    }
     // 자유, 하소연 상세보기
     @GetMapping("/{board_type}/{board_id}")
     public String postDetail(@PathVariable("board_type") int board_type,
                              @PathVariable("board_id") int board_id,
                              @AuthenticationPrincipal CustomUserDetails userDetails,
                              Model model) {
-
 
         User user = userDetails.getUser();
         String writer_id = user.getMember_id();
@@ -150,7 +115,6 @@ public class  BoardController {
             return "redirect:/board/" + board_type;
         }
 
-        // 모델에 데이터 추가
         model.addAttribute("board_name", board_name);
         model.addAttribute("board", board);
         model.addAttribute("member_id", writer_id);
@@ -193,7 +157,7 @@ public class  BoardController {
 
             if (member_id != null && member_id.equals(writer_id)) {
                 boardService.modifyBoard01(board_id, title, content);
-                return "redirect:/board/" + board_type;
+                return "redirect:/board/" + board_type +"/" + board_id;
             }
 
         } else if (board_type == 2) {
@@ -202,7 +166,7 @@ public class  BoardController {
 
             if (member_id != null && member_id.equals(writer_id)) {
                 boardService.modifyBoard02(board_id, title, content);
-                return "redirect:/board/" + board_type;
+                return "redirect:/board/" + board_type +"/" + board_id;
             }
         }
         return "redirect:/board/" + board_type;

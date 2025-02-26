@@ -81,9 +81,9 @@ function saveComment() {
                         <span class="reg_date" data-reg-date="${response.reg_date}">방금 전</span>
                     </div>
                     <div class="flex justify-between items-center mt-2">
-                        <input id="inpuu" class="comment-input focus:outline-none p-2 text-xl font-black w-100" 
+                        <input id="inpuu" class="comment-input focus:outline-none p-2 text-sm font-black w-100" 
                                value="${response.comment_content}" readonly>
-                        <div class="space-x-2" >
+                        <div class="space-x-2 w-40 text-right" >
                             <button type="button" id="dd" onclick="editComment(event)" 
                                     class="text-blue-500 hover:text-blue-600 cursor-pointer">
                                     수정
