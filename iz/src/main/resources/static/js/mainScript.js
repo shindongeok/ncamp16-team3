@@ -341,6 +341,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeBtn = document.querySelector('.close-modal-btn');
     const saveBtn = document.querySelector('.save-time-btn');
 
+    // 에러 모달 관련 코드
+    const errorModal = document.getElementById('errorModal');
+    const closeErrorBtn = document.querySelector('.close-error-btn');
+    const closeErrorModalBtn = document.querySelector('.close-error-modal-btn');
+    const errorMessageElement = document.getElementById('errorMessage');
+
     if (settingsBtn) {
         settingsBtn.addEventListener('click', () => {
             if (modal) {
@@ -362,6 +368,35 @@ document.addEventListener('DOMContentLoaded', () => {
     if (modal) {
         modal.addEventListener('click', (e) => {
             if (e.target === modal) modal.style.display = 'none';
+        });
+    }
+
+    // 에러 모달 닫기 함수
+    function closeErrorModal() {
+        if (errorModal) errorModal.style.display = 'none';
+    }
+
+    // 에러 모달 표시 함수
+    function showErrorModal(message) {
+        if (errorModal && errorMessageElement) {
+            errorMessageElement.textContent = message;
+            errorModal.style.display = 'flex';
+        }
+    }
+
+    // 에러 모달 닫기 버튼 이벤트 리스너
+    if (closeErrorBtn) {
+        closeErrorBtn.addEventListener('click', closeErrorModal);
+    }
+
+    if (closeErrorModalBtn) {
+        closeErrorModalBtn.addEventListener('click', closeErrorModal);
+    }
+
+    // 모달 외부 클릭 시 닫기
+    if (errorModal) {
+        errorModal.addEventListener('click', (e) => {
+            if (e.target === errorModal) closeErrorModal();
         });
     }
 
@@ -400,22 +435,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     endTime: newEndTime
                 },
                 success: function(response) {
-                    // 성공적으로 저장되면 전역 변수 업데이트
+                    // 기존 성공 처리 코드는 유지...
                     globalStartTime = response.startTime;
                     globalLunchTime = response.lunchTime;
                     globalEndTime = response.endTime;
-
-                    // 화면 업데이트
                     updateAllProgress();
-
-                    // 모달 닫기
                     modal.style.display = 'none';
-
-                    // 성공 메시지
-                    alert('시간 설정이 저장되었습니다.');
                 },
                 error: function(xhr, status, error) {
-                    alert('시간 설정 저장에 실패했습니다: ' + xhr.responseText);
+                    // alert 대신 에러 모달 표시
+                    const errorMsg = xhr.responseText || '시간 설정 저장에 실패했습니다.';
+                    showErrorModal(errorMsg);
                 }
             });
         });
