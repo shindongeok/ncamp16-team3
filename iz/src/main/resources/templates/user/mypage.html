@@ -25,16 +25,39 @@
             to { stroke-dasharray: 447.75 597; }
         }
 
-
-        #stress-percent {
-            transition: opacity 0.3s ease; /* 부드럽게 표시/숨기기 */
-            opacity: 0;
+        /* 프로필 이미지 컨테이너에 대한 스타일 */
+        .profile-image-container {
+            position: relative;
+            z-index: 2;
+            transition: all 0.3s ease;
         }
 
-        /* 부모 요소에 마우스를 올리면 #stress-percent 요소 보이게 하기 */
-        .absolute:hover #stress-percent {
+        /* 프로필 이미지에 대한 스타일 */
+        .profile-image {
+            transition: all 0.3s ease;
+        }
+
+        /* 호버 시 이미지 뿌옇게 처리 */
+        .profile-image-container:hover .profile-image {
+            /*opacity: 0.5;*/
+            filter: blur(2px);
+        }
+
+        /* 퍼센트 텍스트 스타일 */
+        #stress-percent {
+            transition: opacity 0.5s ease;
+            opacity: 0;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+        }
+
+        /* 호버 시 퍼센트 텍스트 표시 */
+        .profile-image-container:hover #stress-percent {
             opacity: 1;
-            pointer-events: auto; /* 마우스 이벤트 활성화 */
         }
     </style>
     <script>
@@ -60,28 +83,28 @@
             percentElement.textContent = `${stressNum}%`;
 
             if(stressNum == 100) {
-                gaugeElement.setAttribute('stroke', '#570000FF');
-                percentElement.style.color='#570000FF';
+                gaugeElement.setAttribute('stroke', '#ff1a1a');
+                percentElement.style.color='#ff1a1a';
                 percentElement.style.fontSize='40px';
-            }else if(stressNum >= 90) {
-                gaugeElement.setAttribute('stroke', '#ff0000');
-                percentElement.style.color='#ff0000';
+            }else if(stressNum >= 80) {
+                gaugeElement.setAttribute('stroke', '#ff5353');
+                percentElement.style.color='#ff5353';
                 percentElement.style.fontSize='35px';
-            } else if(stressNum >= 70) {
-                gaugeElement.setAttribute('stroke', '#ff5c1d');
-                percentElement.style.color='#ff5c1d';
+            } else if(stressNum >= 60) {
+                gaugeElement.setAttribute('stroke', '#ff9898');
+                percentElement.style.color='#ff9898';
                 percentElement.style.fontSize='30px';
-            } else if(stressNum >= 50) {
-                gaugeElement.setAttribute('stroke', '#fcb22e');
-                percentElement.style.color='#fcb22e';
+            } else if(stressNum >= 40) {
+                gaugeElement.setAttribute('stroke', '#fdd391');
+                percentElement.style.color='#fdd391';
                 percentElement.style.fontSize='25px';
-            } else if(stressNum >= 30) {
-                gaugeElement.setAttribute('stroke', '#fbd86b');
-                percentElement.style.color='#fbd86b';
+            } else if(stressNum >= 20) {
+                gaugeElement.setAttribute('stroke', '#9bdcfd');
+                percentElement.style.color='#9bdcfd';
                 percentElement.style.fontSize='20px';
-            } else if(stressNum >= 10) {
-                gaugeElement.setAttribute('stroke', '#fef2b6');
-                percentElement.style.color='#fef2b6';
+            } else if(stressNum >= 0) {
+                gaugeElement.setAttribute('stroke', '#00a3ed');
+                percentElement.style.color='#00a3ed';
                 percentElement.style.fontSize='20px';
             }
         });
@@ -94,7 +117,7 @@
     <div class="flex flex-col items-center w-full max-w-sm px-6 py-12">
         <div class="relative w-full flex flex-col items-center mb-10">
             <div class="absolute bg-main-sky-basic -bottom-40 w-[600px] h-[300px] rounded-b-[300px]"></div>
-
+            
             <!-- 게이지와 프로필 이미지를 포함하는 컨테이너 -->
             <div class="absolute top-15 flex items-center justify-center">
                 <!-- SVG 게이지 - 크기를 조정하고 중앙 정렬 -->
@@ -125,13 +148,14 @@
                             stroke-dashoffset="628.32"
                     />
                 </svg>
-                <div id="stress-percent" class="absolute text-2xl font-bold z-10 opacity-0 pointer-events-none">0%</div>
 
-                <!-- 프로필 이미지 - z-index를 높게 설정 -->
-                <img src="/images/chillguy.png" th:src="@{/images/chillguy.png}"
-                     class="w-[185px] h-[185px] rounded-[200px] relative"
-                     style="z-index: 2;"
-                     alt="사용자프로필 이미지">
+                <!-- 프로필 이미지 컨테이너 - 호버 효과를 위한 컨테이너 추가 -->
+                <div class="profile-image-container">
+                    <div id="stress-percent" class="font-bold">0%</div>
+                    <img src="/images/chillguy.png" th:src="@{/images/chillguy.png}"
+                         class="profile-image w-[185px] h-[185px] rounded-[200px]"
+                         alt="사용자프로필 이미지">
+                </div>
             </div>
         </div>
 
