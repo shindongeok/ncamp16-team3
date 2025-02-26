@@ -38,6 +38,7 @@ public class BoardService {
         return boardMapper.getBoardName(board_type);
     }
 
+
     // 게시판 리스트 조회
     public List<BoardDto> SelectBoardList01(int board_type) {
         return boardMapper.getBoard01(board_type);

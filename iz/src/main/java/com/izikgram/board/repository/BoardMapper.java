@@ -17,6 +17,8 @@ public interface BoardMapper {
             "where board_type = #{board_type}")
     String getBoardName(@Param("board_type") int board_type);
 
+
+
     // 게시판 전체 조회
     @Select("SELECT " +
             "        b.*, " +
