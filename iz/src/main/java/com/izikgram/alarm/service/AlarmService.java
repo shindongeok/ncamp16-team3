@@ -35,6 +35,10 @@ public class AlarmService {
         alarmMapper.ScrapSave(member_id, job_rec_id, company_name, expiration_timestamp, content);
     }
 
+    public void ScrapExpirationSave(String member_id, String job_rec_id, String company_name, String expiration_timestamp, String content) {
+        alarmMapper.ScrapExpirationSave(member_id, job_rec_id, company_name, expiration_timestamp, content);
+    }
+
 
 //    public List<AlarmComment> findAlarmsByUser(String member_id) {
 //        return alarmMapper.findAlarmsByUser(member_id);

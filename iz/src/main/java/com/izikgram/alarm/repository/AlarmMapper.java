@@ -29,6 +29,21 @@ public interface AlarmMapper {
                    @Param("expiration_timestamp") String expiration_timestamp,
                    @Param("content") String content);
 
+    @Insert("insert into iz_alarm_scrap(member_id, job_rec_id, company_name, expiration_timestamp, alarm_date, content) " +
+            "values (#{member_id}, #{job_rec_id}, #{company_name}, #{expiration_timestamp}, now(), #{content})")
+    void ScrapExpirationSave(@Param("member_id") String member_id,
+                             @Param("job_rec_id") String job_rec_id,
+                             @Param("company_name") String company_name,
+                             @Param("expiration_timestamp") String expiration_timestamp,
+                             @Param("content") String content);
+
+    @Select("SELECT * FROM iz_alarm_scrap a " +
+            "join iz_job_scrap b " +
+            "on a.member_id = b.member_id and a.job_rec_id = b.job_rec_id " +
+            "WHERE expiration_timestamp BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL 3 DAY) and a.content like '%.' and isRead = 1")
+    List<AlarmDto> findExpiringScrapJobs();
+
+
 
 //    @Select("select * from iz_alarm_board where member_id=#{member_id} order by alarm_date desc")
 //    List<AlarmComment> alarmFindByUser(@Param("member_id") String member_id);
@@ -53,7 +68,8 @@ public interface AlarmMapper {
             "    FROM iz_alarm_scrap " +
             "    WHERE member_id = #{member_id} AND isRead = 0" +
             ") AS combined " +
-            "ORDER BY alarm_date DESC")
+            "ORDER BY " +
+            "    alarm_date DESC")
     List<AlarmDto> findAllAlarmsByUser(@Param("member_id") String member_id);
 
     //사용자가 알람을 읽었는지 확인 -> X 누르면 읽음으로 간주

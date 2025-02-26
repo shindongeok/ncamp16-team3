@@ -146,36 +146,41 @@
 <body>
 
 <script>
-    // 서버의 SSE 엔드포인트와 연결
-    const eventSource = new EventSource('http://localhost:8080/subscribe');
+    function connectSSE() {
+        // 서버의 SSE 엔드포인트와 연결
+        const eventSource = new EventSource('http://localhost:8080/subscribe');
 
-    // 서버에서 온 이벤트 핸들러들...
-    eventSource.addEventListener('message', function(event) {
-        const messageElement = document.createElement('p');
-        messageElement.textContent = 'Received: ' + event.data;
-        document.body.appendChild(messageElement);
-    });
+        // 서버에서 온 이벤트 핸들러들...
+        eventSource.addEventListener('message', function(event) {
+            const messageElement = document.createElement('p');
+            messageElement.textContent = 'Received: ' + event.data;
+            document.body.appendChild(messageElement);
+        });
 
-    eventSource.addEventListener('popular-message', function(event) {
-        const messageElement = document.createElement('p');
-        messageElement.textContent = 'Received: ' + event.data;
-        document.body.appendChild(messageElement);
-    });
+        eventSource.addEventListener('popular-message', function(event) {
+            const messageElement = document.createElement('p');
+            messageElement.textContent = 'Received: ' + event.data;
+            document.body.appendChild(messageElement);
+        });
 
-    eventSource.addEventListener('scrap-message', function(event) {
-        const messageElement = document.createElement('p');
-        messageElement.textContent = 'Received: ' + event.data;
-        document.body.appendChild(messageElement);
-    });
+        eventSource.addEventListener('scrap-message', function(event) {
+            const messageElement = document.createElement('p');
+            messageElement.textContent = 'Received: ' + event.data;
+            document.body.appendChild(messageElement);
+        });
 
-    eventSource.onopen = function() {
-        console.log("SSE connection opened");
-    };
+        eventSource.onopen = function() {
+            console.log("SSE 연결 성공");
+        };
 
-    eventSource.onerror = function(error) {
-        console.error("SSE error", error);
-        eventSource.close(); // 오류 시 연결을 닫음
-    };
+        eventSource.onerror = function(error) {
+            console.error("SSE 연결 끊김", error);
+            eventSource.close(); // 오류 시 연결을 닫음
+            setTimeout(connectSSE, 3000) // 3초후 재연결
+        };
+    }
+
+    connectSSE();
 
     function checkRead(button) {
         let alarmId = button.getAttribute("data-alarm-id");
