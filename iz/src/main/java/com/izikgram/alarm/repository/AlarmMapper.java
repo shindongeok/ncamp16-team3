@@ -97,5 +97,10 @@ public interface AlarmMapper {
     @Select("SELECT COUNT(*) FROM iz_alarm_scrap WHERE job_rec_id = #{job_rec_id}")
     int countScrapAlarm(@Param("job_rec_id") String job_rec_id);
 
+    @Select("SELECT COUNT(*) FROM ( " +
+            "SELECT alarm_id FROM iz_alarm_board " +
+            "WHERE member_id = #{member_id} AND isRead = 0 UNION ALL SELECT alarm_id FROM iz_alarm_scrap WHERE member_id = #{member_id} AND isRead = 0 )AS combined")
+    int countTotalAlarm(@Param("member_id") String member_id);
+
 
 }

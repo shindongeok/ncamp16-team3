@@ -66,4 +66,8 @@ public class AlarmService {
         return alarmMapper.countScrapAlarm(job_rec_id) > 0;
     }
 
+    public int countTotalAlarm(String member_id) {
+        return alarmMapper.countTotalAlarm(member_id);
+    }
+
 }

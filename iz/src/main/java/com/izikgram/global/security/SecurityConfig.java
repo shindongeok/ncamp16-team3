@@ -34,9 +34,9 @@ public class SecurityConfig {
                         .requestMatchers("/", "/login", "/user/findId", "/user/findIdResult", "/user/findPw", "/user/findPwResult", "/user/register", "/user/checkId/**", "/user/resetPw").permitAll() // 로그인 없이 접근 가능
                         .requestMatchers("/auth/**", "/sse/**").permitAll() // sms 인증주소
                         .requestMatchers("/chat/").permitAll()
-                        .requestMatchers("/subscribe").permitAll()
                         .requestMatchers("/draw/").permitAll()
                         .requestMatchers("/css/**", "/js/**", "/images/**", "/static/**").permitAll() // 정적 리소스 허용
+                        .requestMatchers("/subscribe").authenticated() // 인증 필요
                         .anyRequest().authenticated() // 나머지는 로그인 필요
                 )
                 .sessionManagement(session -> session
