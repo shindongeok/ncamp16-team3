@@ -65,15 +65,44 @@ public class SseEmitterService {
     }
 
     public void ScrapSend(String member_id, String content) {
-        if (sseEmitterRepository.containsKey(member_id)) {
-            SseEmitter sseEmitter = sseEmitterRepository.findByMemberId(member_id);
-            try {
-                // SSE를 통해 "스크랩 !" 이벤트 전송
-                sseEmitter.send(SseEmitter.event().name("scrap-message").data(content));
-            } catch (IOException e) {
-                // 4️⃣ SSE 연결이 끊어졌다면 해당 사용자 제거
-                sseEmitterRepository.remove(member_id);
-            }
+        if (!sseEmitterRepository.containsKey(member_id)) {
+            return;
+        }
+
+        SseEmitter sseEmitter = sseEmitterRepository.findByMemberId(member_id);
+
+        try {
+            // 연결이 살아있는지 확인하기 위해 PING 이벤트 전송
+            sseEmitter.send(SseEmitter.event().comment("ping"));
+
+            // SSE를 통해 스크랩 알림 전송
+            sseEmitter.send(SseEmitter.event().name("scrap-message").data(content));
+        } catch (IOException e) {
+            // SSE 연결이 끊어졌다면 해당 사용자 제거
+            sseEmitterRepository.remove(member_id);
+            System.out.println("SSE 연결 끊김 : " + member_id);
         }
     }
+
+    // 스크랩한 공고 마감 기한 3일전에 알림
+    public void ScrapExpirationTimestampSend(String member_id, String content) {
+        if (!sseEmitterRepository.containsKey(member_id)) {
+            return;
+        }
+
+        SseEmitter sseEmitter = sseEmitterRepository.findByMemberId(member_id);
+
+        try {
+            // 연결이 살아있는지 확인하기 위해 PING 이벤트 전송
+            sseEmitter.send(SseEmitter.event().comment("ping"));
+
+            // SSE를 통해 스크랩 알림 전송
+            sseEmitter.send(SseEmitter.event().name("scrap-expiration-message").data(content));
+        } catch (IOException e) {
+            // SSE 연결이 끊어졌다면 해당 사용자 제거
+            sseEmitterRepository.remove(member_id);
+            System.out.println("SSE 연결 끊김 : " + member_id);
+        }
+    }
+
 }

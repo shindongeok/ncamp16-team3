@@ -31,12 +31,9 @@ public class AlarmController {
 
         log.info("member_id : {}", userDetails.getUser().getMember_id());
 
-        //읽지 않은 알람만 가져오기
-        //List<AlarmComment> alarmList = alarmService.findAlarmsByUser(userDetails.getUser().getMember_id());
-
         List<AlarmDto> alarmDtoList = alarmService.findAllAlarmsByUser(userDetails.getUser().getMember_id());
-
         log.info("alarmList : {}", alarmDtoList);
+
         model.addAttribute("alarmList", alarmDtoList);
 
         return "main/alarm";
