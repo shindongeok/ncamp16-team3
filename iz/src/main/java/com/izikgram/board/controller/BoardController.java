@@ -35,6 +35,7 @@ public class  BoardController {
         }
 
         String board_name = boardService.findBoardName(board_type);
+
         List<BoardDto> listBoard;
         if (board_type == 1) {
             listBoard = boardService.SelectBoardList01(board_type);
@@ -44,6 +45,7 @@ public class  BoardController {
 
         model.addAttribute("board_name", board_name);
         model.addAttribute("listBoard", listBoard);
+
 
         return "board/community";
     }
@@ -59,6 +61,7 @@ public class  BoardController {
         }
 
         String board_name = boardService.findBoardName(board_type);
+
 
         model.addAttribute("board_name", board_name);
         model.addAttribute("board_type", board_type);
