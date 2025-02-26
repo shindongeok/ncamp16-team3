@@ -1,29 +1,8 @@
-<!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml" class="bg-white">
-
-<head>
-    <meta charset="UTF-8">
-    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
-    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-
-    <style type="text/tailwindcss">
-        .font-roboto {
-            font-family: "Roboto", serif;
-        }
-    </style>
-    <link rel="stylesheet" th:href="@{/css/default.css}">
-</head>
-<div th:fragment="header" class="absolute top-0 left-0 w-full z-50" xmlns:sec="http://www.w3.org/1999/xhtml">
-    <!-- 슬라이드 메뉴 (모바일 컨테이너 내부에서만 슬라이드) -->
-    <div class="mt-8 ">
-        <div id="B" class="flex items-center px-10 py-2 text-white w-full h-16">
+<!-- header fragment (paste.txt) 수정 -->
+<div th:fragment="header" class="fixed top-0 z-50 w-full md:w-[600px]" xmlns:sec="http://www.w3.org/1999/xhtml">
+    <!-- 헤더 부분 -->
+    <div class="bg-white">
+        <div id="B" class="flex items-center px-10 py-2 text-white w-full h-26">
             <!-- 첫 번째 버튼 (왼쪽) -->
             <button id="openBtn" onclick="openTop()" class="text-black text-3xl cursor-pointer mt-[-6px]">☰</button>
 
@@ -52,16 +31,16 @@
     </div>
 
 
-    <!-- 상단 네비게이션 바 -->
-    <div id="slidePanel" class="fixed top-0 left-1/2 w-[600px] hidden opacity-0 justify-items-center visibility-hidden transition-all duration-500 z-50 transform -translate-x-1/2 -translate-y-1/2">
-        <div id="sidebar" class="absolute top-0 min-h-screen bg-white shadow-lg p-5 z-50 w-3/5">
-            <!-- 사이드 바 크기 40%로 변경 -->
+    <!-- 상단 네비게이션 바 - 컨테이너 내부에 위치 -->
+    <div id="slidePanel" class="fixed top-0 md:left-1/2 w-full md:w-[600px] h-full hidden opacity-0 visibility-hidden transition-all duration-500 z-50 md:transform md:-translate-x-1/2">
+        <div id="sidebar" class="absolute top-0 left-0 min-h-screen bg-white shadow-lg p-5 z-50 w-4/5">
+            <!-- 사이드 바 스타일 -->
             <div class="absolute top-[-15px] left-0 w-full h-48 rounded-b-[200px]" style="background-color: #9bdcfd;"></div>
             <!-- 닫기 버튼 -->
-            <button id="closeBtn" type="button" onclick="closeTop()" class="absolute top-5 right-5 text-gray-500 hover:text-gray-700 text-sm cursor-pointer">✖</button> <!-- 버튼 크기 줄이기 -->
+            <button id="closeBtn" type="button" onclick="closeTop()" class="absolute top-5 right-5 text-gray-500 hover:text-gray-700 text-sm cursor-pointer">✖</button>
 
             <!-- 프로필 이미지 -->
-            <img th:src="@{/images/chillguy.png}" class="w-[150px] h-[150px] rounded-[100px] relative mt-7 left-[5.5rem] top-14 z-10 " alt="사용자프로필 이미지"> <!-- 이미지 크기 40%로 줄이기 -->
+            <img th:src="@{/images/chillguy.png}" class="w-[150px] h-[150px] rounded-[100px] relative mt-7 mx-auto top-14 z-10" alt="사용자프로필 이미지">
             <div class="text-center mt-20">
                 <div sec:authorize="isAuthenticated()">
                     <div th:text="${#authentication.getPrincipal() != null && #authentication.getPrincipal().getUser().getNickname() != null ? #authentication.getPrincipal().getUser().getNickname() : '닉네임을 정해주세요'}"></div>
@@ -106,8 +85,6 @@
                     내 게시물
                 </a>
 
-
-
                 <a th:href="@{/job/scrap}" class="flex items-center p-2 text-gray-700 hover:bg-gray-200 rounded">
                     <svg class="w-5 h-5 mr-2 text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5v14l7-7l7 7V5z"/>
@@ -137,11 +114,10 @@
                     </svg>
                     로그아웃
                 </a>
-
             </nav>
         </div>
 
-        <div class="absolute top-0 right-0 h-dvh bg-gray-950 shadow-lg p-5 z-50 w-2/5 opacity-50" onclick="closeTop()"></div>
+        <div class="absolute top-0 right-0 h-dvh bg-gray-950 shadow-lg p-5 z-50 w-1/5 opacity-50" onclick="closeTop()"></div>
     </div>
 
     <th:block>
@@ -153,21 +129,19 @@
 
                 setTimeout(function() {
                     target.style.display = 'none';
-                }, 0);
+                }, 300); // 트랜지션 시간 후에 display none 설정
             }
 
             function openTop() {
                 let target = document.getElementById('slidePanel');
                 target.style.display = 'block';
+
+                // display가 적용될 시간을 주고 나서 opacity 변경
                 setTimeout(function() {
                     target.style.opacity = '1';
                     target.style.visibility = 'visible';
-                }, 0);
+                }, 10);
             }
-
-
-
         </script>
     </th:block>
 </div>
-</html>

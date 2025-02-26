@@ -4,17 +4,148 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Izikgram</title>
     <link th:href="@{/images/Logo.png}" rel="shortcut icon" type="image/x-icon">
-    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" th:href="@{/css/default.css}">
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <style type="text/tailwindcss">
+        @theme {
+            --color-main-sky-highlight: #00a3ed;
+            --color-main-sky-basic: #9bdcfd;
+            --color-main-red-highlight: #ff5353;
+            --color-main-red-basic: #ff9898;
+            --color-main-yellow-highlight: #fbc159ff;
+            --color-main-yellow-basic: #fdd391;
+
+            /* gray-400*/
+            --color-light-text: oklch(0.704 0.04 256.788);
+            /* gray-600 */
+            --color-basic-text: oklch(0.446 0.043 257.281);
+            /* gray-900 */
+            --color-bold-text: oklch(0.208 0.042 265.755);
+        }
+
+        /* 플레이 카드 스타일 */
+        .playing-card {
+            perspective: 1000px;
+            height: 200px;
+            width: 140px;
+            margin: 10px;
+            cursor: pointer;
+        }
+
+        .playing-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+
+        .playing-card-front, .playing-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .playing-card-front {
+            background-color: #9bdcfd;
+            color: white;
+            transform: rotateY(180deg);
+        }
+
+        .playing-card-back {
+            background-color: white;
+            background-image: repeating-linear-gradient(45deg, #f0f0f0 0px, #f0f0f0 5px, transparent 5px, transparent 10px);
+            border: 2px solid #e5e5e5;
+        }
+
+        .show-result .playing-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .winner-card .playing-card-front {
+            background-color: #ff9898;
+        }
+
+        /* 당첨 카드 효과들 */
+
+        /* 효과 1: 빛나는 테두리 */
+        @keyframes glowing {
+            0% { box-shadow: 0 0 5px #ff5353; }
+            50% { box-shadow: 0 0 20px #ff5353; }
+            100% { box-shadow: 0 0 5px #ff5353; }
+        }
+
+        .glow-effect .playing-card-front {
+            animation: glowing 1.5s infinite;
+        }
+
+        /* 효과 2: 색상 변화 */
+        @keyframes colorChange {
+            0% { background-color: #ff9898; }
+            33% { background-color: #fdd391; }
+            66% { background-color: #9bdcfd; }
+            100% { background-color: #ff9898; }
+        }
+
+        .color-change-effect .playing-card-front {
+            animation: colorChange 3s infinite;
+        }
+
+        /* 효과 3: 커지는 효과 */
+        @keyframes pulse {
+            0% { transform: scale(1) rotateY(180deg); }
+            50% { transform: scale(1.08) rotateY(180deg); }
+            100% { transform: scale(1) rotateY(180deg); }
+        }
+
+        .pulse-effect .playing-card-inner {
+            animation: pulse 1.5s infinite;
+        }
+
+        /* 효과 4: 떠다니는 효과 */
+        @keyframes float {
+            0% { transform: translateY(0) rotateY(180deg); }
+            50% { transform: translateY(-10px) rotateY(180deg); }
+            100% { transform: translateY(0) rotateY(180deg); }
+        }
+
+        .float-effect .playing-card-inner {
+            animation: float 2s ease-in-out infinite;
+        }
+
+        /* 효과 5: 폭죽 효과 */
+        .confetti-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            opacity: 0;
+        }
+    </style>
 </head>
-<body class="bg-gray-100 font-roboto">
-<div class="mobile-container relative mx-auto p-8">
+<body class="bg-gray-100 mobile-container">
+<div class="flex flex-col w-full md:w-[600px] md:mx-auto md:shadow-md bg-white min-h-screen pt-8 relative">
     <div class="pt-28"><header th:replace="~{header :: header} " class="pt-4"></header></div>
 
-    <h1 class="text-3xl font-bold text-center" style="color: #00a3ed;">제비뽑기 게임</h1><br>
-
     <!-- 플레이어 및 상품 입력 폼 -->
-    <form action="/draw/draw" method="get" class="bg-white shadow-lg rounded-lg p-6 mb-8">
+    <form th:if="${gameResult == null}" action="/draw/draw" method="get" class="bg-white shadow-lg rounded-lg p-6 mb-8 mr-10 ml-10">
+        <h1 class="text-[1.7rem] font-bold text-[#2C2C2C] text-center">제비뽑기 게임</h1><br>
+
         <div class="mb-4">
             <label for="players" class="block text-lg font-semibold">사람:</label>
             <input type="text" id="players" name="players" placeholder="예: 홍길동, 김철수, 이영희" class="w-full mt-2 p-2 border border-gray-300 rounded-lg">
@@ -25,50 +156,119 @@
             <input type="text" id="results" name="results" placeholder="예: 2, 3, 1" class="w-full mt-2 p-2 border border-gray-300 rounded-lg">
         </div>
 
-        <button type="submit" class="w-full bg-blue-500 text-white p-3 rounded-lg hover:bg-blue-600 transition duration-300">게임 시작</button>
+        <button type="submit" class="w-[80%] mx-auto block bg-main-sky-highlight text-white p-3 rounded-lg hover:bg-main-sky-basic transition duration-300 mt-10 cursor-pointer">게임 시작</button>
     </form>
 
     <!-- 입력값이 없을 경우 메시지 표시 -->
-    <div th:if="${message != null}" class="text-red-600 text-center mb-4">
+    <div th:if="${message != null}" class="text-main-red-highlight text-center mb-4">
         <p th:text="${message}"></p>
     </div>
 
     <!-- 결과 표시 -->
     <div th:if="${gameResult != null}">
-        <h2 class="text-2xl font-semibold text-center" style="color: #00a3ed;">제비뽑기 결과</h2><br>
+        <h2 class="text-[1.7rem] font-bold text-[#2C2C2C] text-center">제비뽑기 결과</h2>
+        <p class="text-center text-gray-600 mb-4">카드를 클릭하여 결과를 확인하세요!</p>
 
-        <!-- 결과 테이블 -->
-        <div class="bg-white shadow-lg rounded-lg p-6">
-            <table class="min-w-full bg-white border border-gray-200">
-                <thead style="background-color: #00a3ed; color: white;">
-                <tr>
-                    <th class="px-4 py-2 text-center">사람</th>
-                    <th class="px-4 py-2 text-center">결과</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="entry : ${gameResult}">
-                    <td class="px-4 py-2 border-b text-center">
-                        <div class="flex items-center justify-center space-x-2">
-                            <span class="text-xl font-semibold" th:text="${entry.key}"></span>
+        <!-- 결과 표시 - 플레이 카드 스타일 -->
+        <div class="flex flex-wrap justify-center gap-4 px-4 mb-10">
+            <div th:each="entry : ${gameResult}" class="playing-card" th:classappend="${entry.value == '걸렸다ㅋ' ? 'winner-card' : ''}">
+                <div class="playing-card-inner shadow-lg">
+                    <div class="playing-card-back">
+                        <div class="text-xl font-semibold mb-2" th:text="${entry.key}"></div>
+                        <div class="mt-2 text-center text-sm text-gray-500">
+                            <p>탭하여</p>
+                            <p>결과 확인하기</p>
                         </div>
-                    </td>
-                    <td class="px-4 py-2 border-b text-center">
-                        <div class="flex items-center justify-center space-x-2">
-                             <span class="text-xl font-semibold"
-                                   th:class="${entry.value == '걸렸다ㅋ' ? 'text-red-600' : ''}"
-                                   th:text="${entry.value}"></span>
-                        </div>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+                    </div>
+                    <div class="playing-card-front">
+                        <div th:if="${entry.value == '걸렸다ㅋ'}" class="text-3xl text-basic-text mt-2">당첨</div>
+                        <div th:unless="${entry.value == '걸렸다ㅋ'}" class="text-3xl text-basic-text mt-2">통과</div>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div class="mt-6 text-center">
-            <a th:href="@{/draw/draw}" class="text-blue-600 hover:underline text-lg">다시 게임하기</a>
+        <div class="mt-10 text-center pb-8">
+            <a th:href="@{/draw/draw}" class="bg-white shadow text-main-sky-highlight border border-main-sky-basic px-6 py-2 rounded-full hover:bg-main-sky-basic hover:text-white transition-colors duration-300">다시 게임하기</a>
         </div>
     </div>
+
+    <!-- 폭죽 효과를 위한 컨테이너 -->
+    <div id="confetti-container" class="confetti-container"></div>
+
+    <!-- 카드 클릭 스크립트 -->
+    <script th:if="${gameResult != null}">
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.playing-card');
+            cards.forEach(card => {
+                card.addEventListener('click', function() {
+                    this.classList.toggle('show-result');
+
+                    // 당첨 카드인 경우 특별 효과 적용
+                    if (this.classList.contains('winner-card') && this.classList.contains('show-result')) {
+                        // 예시로 빛나는 효과 적용
+                        // this.classList.add('glow-effect');
+
+                        // 색상 변화 효과
+                        // this.classList.add('color-change-effect');
+
+                        // 커지는 효과
+                        // this.classList.add('pulse-effect');
+
+                        // 떠다니는 효과
+                        // this.classList.add('float-effect');
+
+                        // 폭죽 효과
+                        createConfetti();
+
+                        // 소리 효과
+                        // playWinSound();
+                    }
+                });
+            });
+
+            // 폭죽 효과 함수
+            function createConfetti() {
+                const container = document.getElementById('confetti-container');
+                const colors = ['#ff5353', '#fbc159', '#00a3ed', '#9bdcfd'];
+
+                for (let i = 0; i < 100; i++) {
+                    const confetti = document.createElement('div');
+                    confetti.classList.add('confetti');
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.top = Math.random() * 100 + '%';
+                    confetti.style.transform = 'rotate(' + Math.random() * 360 + 'deg)';
+
+                    container.appendChild(confetti);
+
+                    // 애니메이션
+                    setTimeout(() => {
+                        confetti.style.opacity = '1';
+                        confetti.style.transform += ' translateY(-100px)';
+                        confetti.style.transition = 'all 1s ease';
+
+                        setTimeout(() => {
+                            confetti.style.opacity = '0';
+                            confetti.style.transform += ' translateY(-20px)';
+
+                            setTimeout(() => {
+                                confetti.remove();
+                            }, 1000);
+                        }, 1000);
+                    }, Math.random() * 500);
+                }
+            }
+
+            // 승리 소리 효과 함수
+            function playWinSound() {
+                // 소리 요소 생성
+                const audio = new Audio();
+                audio.src = '/sounds/win.mp3'; // 실제 경로로 수정 필요
+                audio.play().catch(e => console.log('소리 재생 실패:', e));
+            }
+        });
+    </script>
 </div>
 </body>
 </html>
