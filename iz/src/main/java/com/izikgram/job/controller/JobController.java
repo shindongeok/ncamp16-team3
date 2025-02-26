@@ -67,7 +67,6 @@ public class JobController {
             }
 
             model.addAttribute("deadlineJobs", deadlineJobs);
-            log.info("recentJobs객체 : {}" , recentJobs);
             model.addAttribute("recentJobs", recentJobs);
             model.addAttribute("hasMore", deadlineJobs.size() == 5 || recentJobs.size() == 5);
 
@@ -101,7 +100,6 @@ public class JobController {
 
             // 변환된 DATETIME 문자열
             String datetime = sdf.format(date);
-            log.info("변환된 DATETIME = {}", datetime);
             jobDto.setExpirationTimestamp(datetime);
 
             String memberId = userDetails.getUser().getMember_id();

@@ -18,6 +18,8 @@ public class MainService {
         return mainMapper.getPopularBoardList();
     }
 
+    // 참고로 getMonthlyFeeling, getMonthlyStress, getPayday 함수 no usages 아닙니당 쓰이는데 저렇게 나오네요
+    
     public List<Map<String, Object>> getMonthlyFeeling(String member_id, String date) {
         List<Map<String, Object>> feelingList = mainMapper.getMonthlyFeeling(member_id, date);
         return feelingList;
