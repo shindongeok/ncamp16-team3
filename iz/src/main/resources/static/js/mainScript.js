@@ -42,6 +42,7 @@ function updateCalendar(monthlyStressList = []) {
             return itemDate === formattedDate;
         });
 
+        // 퇴사지수에 따라 클래스 추가
         if (stressData) {
             dateSpan.classList.remove('verybad', 'bad', 'soso', 'good', 'verygood');
             const stressNum = stressData.stress_num;
@@ -63,7 +64,7 @@ function updateCalendar(monthlyStressList = []) {
     }
 }
 
-// 스트레스 툴팁을 토글하는 함수 (Tailwind CSS 사용)
+// 스트레스 툴팁을 토글하는 함수
 function showStressTooltip(event) {
     const dateElement = event.currentTarget;
     const stressNum = dateElement.dataset.stressNum;
@@ -113,6 +114,7 @@ function showStressTooltip(event) {
     const tooltip = document.createElement('div');
     tooltip.id = 'stress-tooltip';
     tooltip.className = 'absolute z-50 bg-white rounded-xl shadow-md w-40 p-3 animate-fade-in';
+
     // 날짜 데이터 저장 (토글 기능을 위해)
     tooltip.dataset.date = dateStr;
     tooltip.innerHTML = `
@@ -176,7 +178,7 @@ function showStressTooltip(event) {
     event.stopPropagation();
 }
 
-// 툴팁 닫기 함수 - 현재 날짜 요소 클릭 시 닫히지 않도록 수정
+// 툴팁 닫기 함수
 function closeTooltip(event) {
     const tooltip = document.getElementById('stress-tooltip');
     // 툴팁이 있고, 클릭한 요소가 툴팁 내부가 아니며, 캘린더 날짜가 아닌 경우에만 툴팁 닫기
@@ -204,6 +206,28 @@ function initializeCalendar(monthlyStressList = []) {
     scheduleNextUpdate();
 }
 
+function calculateWeeklyAverageStress(monthlyStressList) {
+    const today = new Date();
+    const monday = new Date(today);
+    const diff = today.getDay() === 0 ? 6 : today.getDay() - 1;
+    monday.setDate(today.getDate() - diff);
+
+    const mondayStr = monday.toISOString().split('T')[0];
+    const todayStr = today.toISOString().split('T')[0];
+
+    const weeklyStress = monthlyStressList.filter(item => {
+        const itemDate = item.date;
+        return itemDate >= mondayStr && itemDate <= todayStr;
+    });
+
+    if (weeklyStress.length === 0) return null;
+
+    const sum = weeklyStress.reduce((acc, item) => acc + Number(item.stress_num), 0);
+    const average = sum / weeklyStress.length;
+
+    return Math.round(average);
+}
+
 // 스트레스 그래프 관련 함수들
 function updateCircleProgress(circle, progress) {
     // 진행률을 0-100 사이로 제한
@@ -227,28 +251,6 @@ function calculateTimeProgress(startTime, endTime) {
     if (current > end) return 100;
 
     return ((current - start) / (end - start)) * 100;
-}
-
-function calculateWeeklyAverageStress(monthlyStressList) {
-    const today = new Date();
-    const monday = new Date(today);
-    const diff = today.getDay() === 0 ? 6 : today.getDay() - 1;
-    monday.setDate(today.getDate() - diff);
-
-    const mondayStr = monday.toISOString().split('T')[0];
-    const todayStr = today.toISOString().split('T')[0];
-
-    const weeklyStress = monthlyStressList.filter(item => {
-        const itemDate = item.date;
-        return itemDate >= mondayStr && itemDate <= todayStr;
-    });
-
-    if (weeklyStress.length === 0) return null;
-
-    const sum = weeklyStress.reduce((acc, item) => acc + Number(item.stress_num), 0);
-    const average = sum / weeklyStress.length;
-
-    return Math.round(average);
 }
 
 function formatTimeRemaining(start, end) {
@@ -308,34 +310,6 @@ function updateAllProgress() {
 
 // 초기화 및 이벤트 리스너
 document.addEventListener('DOMContentLoaded', () => {
-    // 캘린더 초기화
-    initializeCalendar(monthlyStressList);
-
-    // 강제로 time values 업데이트
-    function forceTimeValuesUpdate() {
-        const lunchTimeValues = document.querySelectorAll('.lunch-time.time-value');
-        const endTimeValues = document.querySelectorAll('.end-time.time-value');
-
-        const lunchTimeText = formatTimeRemaining(globalStartTime, globalLunchTime);
-        const workTimeText = formatTimeRemaining(globalStartTime, globalEndTime);
-
-        lunchTimeValues.forEach(element => {
-            element.textContent = lunchTimeText;
-        });
-
-        endTimeValues.forEach(element => {
-            element.textContent = workTimeText;
-        });
-    }
-
-    // 캘린더 외부 클릭 시 툴팁 닫기
-    document.addEventListener('click', (e) => {
-        if (!e.target.closest('.calendar-grid')) {
-            const tooltip = document.getElementById('stress-tooltip');
-            if (tooltip) tooltip.remove();
-        }
-    });
-
     // 애니메이션 스타일 추가
     const style = document.createElement('style');
     style.textContent = `
@@ -348,6 +322,17 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     `;
     document.head.appendChild(style);
+
+    // 캘린더 초기화
+    initializeCalendar(monthlyStressList);
+
+    // 캘린더 외부 클릭 시 툴팁 닫기
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.calendar-grid')) {
+            const tooltip = document.getElementById('stress-tooltip');
+            if (tooltip) tooltip.remove();
+        }
+    });
 
     // 월급일 D-day 계산 및 표시
     const paydayElement = document.getElementById('payday');
@@ -381,6 +366,23 @@ document.addEventListener('DOMContentLoaded', () => {
             const sign = weeklyAverageStress > 0 ? '+' : '';
             stressElement.innerHTML = `${sign}${weeklyAverageStress}%`;
         }
+    }
+
+    // 강제로 time values 업데이트
+    function forceTimeValuesUpdate() {
+        const lunchTimeValues = document.querySelectorAll('.lunch-time.time-value');
+        const endTimeValues = document.querySelectorAll('.end-time.time-value');
+
+        const lunchTimeText = formatTimeRemaining(globalStartTime, globalLunchTime);
+        const workTimeText = formatTimeRemaining(globalStartTime, globalEndTime);
+
+        lunchTimeValues.forEach(element => {
+            element.textContent = lunchTimeText;
+        });
+
+        endTimeValues.forEach(element => {
+            element.textContent = workTimeText;
+        });
     }
 
     // 모달 관련 코드
