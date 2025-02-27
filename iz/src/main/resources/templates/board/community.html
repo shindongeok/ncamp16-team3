@@ -18,30 +18,29 @@
             --color-main-yellow-highlight: #fbc159ff;
             --color-main-yellow-basic: #fdd391;
         }
-
     </style>
 </head>
 
 <body>
 <div class="mobile-container flex flex-col w-full  relative rounded-lg shadow-lg mx-auto bg-white">
-    <div class="pt-28"><header th:replace="~{header :: header} " class="pt-4"></header></div>
+    <div class="pt-28"><header th:replace="~{header :: header}" class="pt-4"></header></div>
     <div class="flex flex-col w-full max-w-6xl mx-auto px-10">
 
         <!-- 게시판 메뉴 및 글쓰기 버튼 -->
         <div class="bg-gray-100 rounded-lg p-4">
             <div class="flex justify-between items-center">
                 <h2 th:text="${board_name}" class="text-xl md:text-2xl font-semibold text-gray-700">자유게시판</h2>
-
+                <input type="hidden" id="type" th:value="${board_type}">
                 <!-- 정렬 옵션 -->
-                <select id="sortOptions" class="border-2 border-main-sky-highlight rounded-xl px-0 py-0 md:px-4 py-2 text-gray-500
+                <select id="sortOptions" onchange="loadBoardList(this.value)" class="border-2 border-main-sky-highlight rounded-xl px-0 py-0 md:px-4 py-2 text-gray-500
                     focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-main-sky-highlight
                     hover:border-main-sky-basic
                     focus-visible:outline-offset-2 focus-visible:outline-sky-800
                     transition duration-300">
-                    <option selected>최신순</option>
-                    <option value="newFirst01">이직해</option>
-                    <option value="commentFirst">댓글순</option>
-                    <option value="oldFirst">존버해</option>
+                    <option value="newest">최신순</option>
+                    <option value="oldest">오래된 순</option>
+                    <option value="likes">좋아요 순</option>
+                    <option value="comments">댓글 많은 순</option>
                 </select>
 
                 <!-- 글쓰기 버튼 -->
@@ -57,48 +56,95 @@
         </div>
 
         <!-- 게시글 리스트 -->
-        <div id="boardList" class="bg-gray-100 rounded-lg mt-4 p-4"  th:each="board : ${listBoard}">
+        <div id="boardList01" class="bg-gray-100 rounded-lg mt-4 p-4"></div>
+
+
+        <footer th:replace="~{footer :: footer}" class="pt-4 w-full"></footer>
+    </div>
+</div>
+
+<script>
+    // 페이지 로드 시 기본적으로 최신순으로 게시글을 불러옵니다.
+    $(document).ready(function () {
+        loadBoardList('newest');  // 초기 로드: 최신순
+    });
+
+    // 게시글 목록을 가져오는 함수
+    function loadBoardList(sort) {
+        const boardType = $('#type').val();  // board_type 값을 읽어옵니다.
+        console.log("게시글 목록 불러오기 요청:", sort, boardType); // 요청 로그
+
+        $.ajax({
+            url: '/board/' + boardType,  // RESTful API URL
+            type: 'post',
+            data: {
+                sort: sort  // 정렬 기준
+            },
+            success: function (data) {
+                console.log("서버 응답 데이터:", data);  // 서버 응답 데이터 확인
+                if (data && data.boardList) {
+                    renderBoardList(data.boardList, boardType);
+                } else {
+                    console.error("응답에 boardList가 없습니다.");
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("AJAX 요청 실패:", status, error);
+            }
+        });
+    }
+
+    // 게시글 목록을 HTML로 렌더링하는 함수
+    function renderBoardList(boardList, boardType) {
+        const boardListContainer = $('#boardList01');
+        boardListContainer.empty();  // 기존 내용 비우기
+
+        boardList.forEach(function (board) {
+            const timeAgoText = timeAgo(board.reg_date); // 날짜를 timeAgo 함수로 변환
+
+            const boardHtml = `
+        <div class="bg-gray-100 rounded-lg mt-4 p-4">
             <div class="flex flex-col">
                 <!-- 게시글 리스트 -->
                 <div class="flex border-b border-gray-200 pb-4">
                     <!-- 게시글 내용 -->
                     <div class="flex-1 px-4">
                         <a class="hover:text-main-sky-highlight inline-block max-w-xs md:max-w-sm lg:max-w-md truncate no-underline
-                        hover:no-underline text-lg md:text-xl"
-                           th:href="@{/board/{board_type}/{board_id}(board_type=${board.board_type}, board_id=${board.board_id})}"
-                           th:text="${board.title}">게시글 제목</a>
-                        <p class="my-1 text-sm w-32 md:w-48 truncate" th:text="${board.content}">게시글 내용</p>
-                        <span class="text-xs reg_date block md:inline" th:data-reg-date="${board.reg_date}">2025-02-21</span>
+                            hover:no-underline text-lg md:text-xl"
+                           href="/board/${boardType}/${board.board_id}">
+                            ${board.title}
+                        </a>
+                        <p class="my-1 text-sm w-32 md:w-48 truncate">${board.content}</p>
+                        <span class="text-xs reg_date block md:inline">${timeAgoText}</span> <!-- 변환된 날짜 출력 -->
                     </div>
 
                     <!-- 좋아요, 싫어요, 댓글 -->
                     <div class="px-4 flex flex-col items-end justify-center">
-                        <!-- 좋아요 -->
                         <div class="flex items-center">
                             <img src="https://img.icons8.com/?size=100&id=82788&format=png&color=000000"
                                  alt="like" class="w-4 md:w-5 h-4 md:h-5">
-                            <span class="ml-2 text-main-red-highlight text-sm md:text-base" th:text="${board.like_count}">22</span>
+                            <span class="ml-2 text-main-red-highlight text-sm md:text-base">${board.like_count}</span>
                         </div>
-                        <!-- 싫어요 -->
                         <div class="flex items-center mt-1">
                             <img src="https://img.icons8.com/?size=100&id=82788&format=png&color=000000"
                                  alt="dislike" class="w-4 md:w-5 h-4 md:h-5 rotate-180">
-                            <span class="ml-2 text-main-sky-highlight text-sm md:text-base" th:text="${board.dislike_count}">10</span>
+                            <span class="ml-2 text-main-sky-highlight text-sm md:text-base">${board.dislike_count}</span>
                         </div>
-                        <!-- 댓글 -->
                         <div class="flex items-center mt-1">
                             <img src="https://img.icons8.com/?size=100&id=6520&format=png&color=000000"
                                  alt="comments" class="w-4 md:w-5 h-4 md:h-5">
-                            <span class="ml-2 text-sm md:text-base" th:text="${board.comment_count}">5</span>
+                            <span class="ml-2 text-sm md:text-base">${board.comment_count}</span>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    `;
+            boardListContainer.append(boardHtml);
+        });
+    }
 
-        <footer th:replace="~{footer :: footer}" class="pt-4 w-full"></footer>
-    </div>
-</div>
 
+</script>
 </body>
 </html>

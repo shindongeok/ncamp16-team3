@@ -25,25 +25,18 @@ public class  BoardController {
 
     //자유,하소연 게시판 리스트
     @GetMapping("/{board_type}")
-    public String boardCommunity(@PathVariable("board_type") int board_type, Model model){
+    public String getBoardList(
+            @PathVariable("board_type") int boardType,
+            @RequestParam(defaultValue = "newest") String sort,
+            Model model) {
 
-        if (board_type != 1 && board_type != 2) {
-            model.addAttribute("error", "유효하지 않은 게시판 타입입니다.");
-            return "redirect:/main";
-        }
+        List<BoardDto> boardList = boardService.getBoardList(boardType,sort);
+        String board_name = boardService.findBoardName(boardType);
 
-        String board_name = boardService.findBoardName(board_type);
-
-        List<BoardDto> listBoard;
-        if (board_type == 1) {
-            listBoard = boardService.SelectBoardList01(board_type);
-        } else {
-            listBoard = boardService.SelectBoardList02(board_type);
-        }
-
+        model.addAttribute("listBoard", boardList);
+        model.addAttribute("board_type", boardType);
         model.addAttribute("board_name", board_name);
-        model.addAttribute("listBoard", listBoard);
-
+        model.addAttribute("sort"); // 정렬 정보도 전달
 
         return "board/community";
     }

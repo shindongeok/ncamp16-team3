@@ -23,7 +23,7 @@ public class CommentController {
     @Autowired
     private BoardService boardService;
 
-
+    //댓글 작성
     @PostMapping("/{board_id}/comment")
     public ResponseEntity<Map<String, Object>> writeComment(
             @PathVariable("board_id") int boardId,
@@ -76,11 +76,6 @@ public class CommentController {
             String memberId = userDetails.getUser().getMember_id();
             boolean isDeleted = false;
 
-//            log.info("commentId : {}", commentId);
-//            log.info("boardId : {}", boardId);
-//            log.info("boardType : {}", boardType);
-//            log.info("writerId : {}", writerId);
-
             if (memberId != null && memberId.equals(writerId)) {
                 if (boardType == 1) {
                     isDeleted = boardService.deleteComment01(commentId, boardId);
@@ -99,6 +94,29 @@ public class CommentController {
             }
         } catch (Exception e) {
             response.put("message", "댓글 삭제 중 오류가 발생했습니다.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    //  댓글 수정
+    @PostMapping("/comment/update")
+    public ResponseEntity<Map<String, Object>> updateComment(@RequestBody CommentDto commentDto) {
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            int result = boardService.updateComment(commentDto);
+            if (result > 0) {
+                response.put("success", true);
+                response.put("message", "댓글이 수정되었습니다.");
+                return ResponseEntity.ok(response);
+            } else {
+                response.put("success", false);
+                response.put("message", "댓글 수정에 실패했습니다.");
+                return ResponseEntity.badRequest().body(response);
+            }
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "서버 오류 발생");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }

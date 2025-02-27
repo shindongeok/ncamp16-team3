@@ -38,14 +38,10 @@ public class BoardService {
         return boardMapper.getBoardName(board_type);
     }
 
-
-    // 게시판 리스트 조회
-    public List<BoardDto> SelectBoardList01(int board_type) {
-        return boardMapper.getBoard01(board_type);
-    }
-
-    public List<BoardDto> SelectBoardList02(int board_type) {
-        return boardMapper.getBoard02(board_type);
+    // 게시판 리스트조회
+    public List<BoardDto> getBoardList(int boardType, String sort) {
+        // MyBatis 매퍼 메서드 호출
+        return boardMapper.getBoardList(boardType, sort);
     }
 
     // 댓글리스트 조회
