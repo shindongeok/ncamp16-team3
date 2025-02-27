@@ -20,60 +20,91 @@
         }
     </style>
 </head>
-<body>
-<div class="flex flex-col w-full mobile-container relative bg-white rounded-lg shadow-lg mx-auto">
-    <div class="mobile-container flex flex-col w-full  relative rounded-lg shadow-lg mx-auto bg-white">
-        <div class="pt-28"><header th:replace="~{header :: header} " class="pt-4"></header></div>
-        <div class="flex flex-col w-full max-w-6xl mx-auto px-10">
+<body class="mobile-container bg-[#f0f0f0]">
+<div class="flex flex-col w-full md:w-[600px] md:mx-auto md:shadow-md bg-white min-h-screen pt-8 relative">
+    <div class="pt-20"><header th:replace="~{header :: header}" class="pt-4"></header></div>
+    <div class="px-10">
+        <!-- 페이지 제목 -->
+        <div class="flex items-center gap-3 pb-5 border-b border-gray-300">
+            <div class="text-[1.7rem] font-bold text-[#2C2C2C]">내가 작성한 하소연 게시글</div>
+        </div>
 
-            <div class="bg-gray-100 rounded-lg p-4 mb-5">
-                <div class="flex items-center">
-                    <h2  class="text-3xl font-semibold text-gray-700">내가 작성한 하소연 게시글</h2>
-                    <img class="w-10 h-10" src="https://img.icons8.com/?size=100&id=JC18XYuHYTN0&format=png&color=000000" alt="내가작성한게시글">
-                </div>
-            </div>
-
-            <!-- 게시글 리스트 -->
-            <div th:each="myList02 : ${myBoardList02}" class="bg-gray-100 rounded-lg mb-4 p-4">
-                <div class="flex flex-col">
-                    <!-- 게시글 리스트 -->
-                    <div class="flex border-b border-gray-200 pb-1">
-                        <div class="flex-1 pr-6">
-                            <div class="flex items-center gap-2">
-                                <a class="hover:text-main-sky-highlight inline-block w-40 truncate no-underline
-                                           hover:no-underline text-xl"
-                                   th:href="@{/board/{board_type}/{board_id}(board_type=${myList02.board_type},
-                                           board_id=${myList02.board_id})}" th:text="${myList02.title}">인기글1 제목입니다.</a>
-                            </div>
-                            <p class="my-1 text-sm w-40 truncate" th:text="${myList02.content}">게시글 내용</p>
-                            <span class="text-xs reg_date" th:data-reg-date="${myList02.reg_date}">2025-02-21</span>
+        <!-- 게시글 리스트 -->
+        <div th:each="myList02 : ${myBoardList02}" class="rounded-lg">
+            <div class="flex flex-col w-full">
+                <!-- 게시글 리스트 -->
+                <div class="flex border-b border-gray-300 p-4 cursor-pointer hover:bg-gray-50"
+                     th:onclick="'location.href=\'' + @{/board/{board_type}/{board_id}(board_type=${myList02.board_type}, board_id=${myList02.board_id})} + '\''">
+                    <div class="flex-1 pr-6">
+                        <div class="flex items-center gap-2">
+                            <span class="inline-block w-40 truncate text-xl">
+                                [[${myList02.title}]]
+                            </span>
                         </div>
-                        <div class="px-6 ">
-                            <div class="flex flex-col items-end">
-                                <div class="flex justify-between items-center w-full">
-                                    <img src="https://img.icons8.com/?size=100&id=82788&format=png&color=000000"
-                                         alt="like" class="w-5 h-5">
-                                    <span class="ml-2 text-main-red-highlight" th:text="${myList02.like_count}">22</span>
-                                </div>
-                                <div class="flex justify-between items-center w-full">
-                                    <img src="https://img.icons8.com/?size=100&id=82788&format=png&color=000000"
-                                         alt="dislike" class="w-5 h-5 rotate-180 inline-block transform">
-                                    <span class="ml-2 text-main-sky-highlight" th:text="${myList02.dislike_count}">10</span>
-                                </div>
-                                <div class="flex justify-between items-center w-full">
-                                    <img src="https://img.icons8.com/?size=100&id=6520&format=png&color=000000"
-                                         alt="comments" class="w-5 h-5">
-                                    <span class="ml-2" th:text="${myList02.comment_count}">5</span>
-                                </div>
+                        <p class="my-1 text-sm w-40 truncate" th:text="${myList02.content}">게시글 내용</p>
+                        <span class="text-xs reg_date" th:data-reg-date="${myList02.reg_date}">2025-02-21</span>
+                    </div>
+                    <div class="px-6">
+                        <div class="flex flex-col items-end">
+                            <div class="flex justify-between items-center w-full">
+                                <img src="https://img.icons8.com/?size=100&id=82788&format=png&color=000000"
+                                     alt="like" class="w-5 h-5">
+                                <span class="ml-2 text-main-red-highlight" th:text="${myList02.like_count}">22</span>
+                            </div>
+                            <div class="flex justify-between items-center w-full">
+                                <img src="https://img.icons8.com/?size=100&id=82788&format=png&color=000000"
+                                     alt="dislike" class="w-5 h-5 rotate-180 inline-block transform">
+                                <span class="ml-2 text-main-sky-highlight" th:text="${myList02.dislike_count}">10</span>
+                            </div>
+                            <div class="flex justify-between items-center w-full">
+                                <img src="https://img.icons8.com/?size=100&id=6520&format=png&color=000000"
+                                     alt="comments" class="w-5 h-5">
+                                <span class="ml-2" th:text="${myList02.comment_count}">5</span>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
 
+        <!-- 게시글이 없을 때 메시지 -->
+        <div th:if="${#lists.isEmpty(myBoardList02)}" class="p-10 text-center text-gray-500">
+            <p>작성한 게시글이 없습니다.</p>
         </div>
     </div>
     <footer th:replace="~{footer :: footer}" class="pt-4"></footer>
 </div>
+
+<script>
+    $(document).ready(function() {
+        const regDateList = $(".reg_date");
+
+        $(regDateList).each((a, b) => {
+            const regDate = $(b).data('reg-date');
+            const timeAgoText = timeAgo(regDate);
+            $(b).text(timeAgoText);
+        });
+    });
+
+    function timeAgo(dateString) {
+        const now = new Date();
+        const date = new Date(dateString);
+
+        const diffInSeconds = Math.floor((now - date) / 1000);
+        const diffInMinutes = Math.floor(diffInSeconds / 60);
+        const diffInHours = Math.floor(diffInMinutes / 60);
+        const diffInDays = Math.floor(diffInHours / 24);
+
+        if (diffInDays > 0) {
+            return `${diffInDays}일 전`;
+        } else if (diffInHours > 0) {
+            return `${diffInHours}시간 전`;
+        } else if (diffInMinutes > 0) {
+            return `${diffInMinutes}분 전`;
+        } else {
+            return `방금 전`;
+        }
+    }
+</script>
 </body>
 </html>
