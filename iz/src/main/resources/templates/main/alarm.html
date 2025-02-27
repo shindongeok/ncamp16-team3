@@ -141,6 +141,43 @@
         </ul>
     </div>
 
+    <!-- 알림 삭제 모달 -->
+    <div id="alarmDeleteModal" class="relative z-10 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="fixed inset-0 bg-gray-500/75 transition-opacity" aria-hidden="true"></div>
+
+        <div class="fixed inset-0 z-10 w-screen overflow-y-auto flex items-center justify-center p-4 sm:items-center sm:p-0">
+            <div class="flex min-h-full items-center justify-center p-4 w-full max-w-md text-center sm:items-center sm:p-0">
+                <div class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all w-11/12 max-w-xs sm:my-8 sm:w-full sm:max-w-lg">
+                    <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                        <div class="sm:flex sm:items-start">
+                            <div class="mx-auto flex size-12 shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:size-10">
+                                <svg class="size-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+                                </svg>
+                            </div>
+                            <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                                <h3 class="text-base font-semibold text-gray-900" id="alarm-modal-title">알림 삭제</h3>
+                                <div class="mt-2">
+                                    <p class="text-sm text-gray-500">이 알림을 삭제하시겠습니까?</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                        <button id="confirmDeleteAlarm" type="button"
+                                class="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-red-500 sm:ml-3 sm:w-auto">
+                            삭제하기
+                        </button>
+                        <button onclick="closeAlarmModal()" type="button"
+                                class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 shadow-xs ring-gray-300 ring-inset hover:bg-gray-50 sm:mt-0 sm:w-auto">
+                            취소
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <footer th:replace="~{footer :: footer}" class="pt-4"></footer>
 </div>
 <body>
@@ -149,6 +186,11 @@
     function connectSSE() {
         // 서버의 SSE 엔드포인트와 연결
         const eventSource = new EventSource('http://localhost:8080/subscribe');
+
+        // 서버에서 "subscribe" 이벤트 처리 (SSE 연결 확인 용도)
+        eventSource.addEventListener('subscribe', function(event) {
+            console.log("SSE 구독 성공:", event.data);
+        });
 
         // 서버에서 온 이벤트 핸들러들...
         eventSource.addEventListener('message', function(event) {
@@ -175,47 +217,79 @@
 
         eventSource.onerror = function(error) {
             console.error("SSE 연결 끊김", error);
-            eventSource.close(); // 오류 시 연결을 닫음
-            setTimeout(connectSSE, 3000) // 3초후 재연결
+
+            // 연결이 닫혔는지 확인 후 재연결
+            if (eventSource.readyState === EventSource.CLOSED) {
+                console.log("3초 후 SSE 재연결 시도...");
+                eventSource.close(); // 오류 시 연결을 닫음
+                setTimeout(connectSSE, 3000); // 3초 후 재연결
+            }
         };
     }
 
     connectSSE();
 
+    // 전역 변수로 현재 처리 중인 알림 정보 저장
+    let currentAlarmId = null;
+    let currentAlarmType = null;
+    let currentAlarmElement = null;
+
+    // 알림 삭제 버튼 클릭 시 호출되는 함수
     function checkRead(button) {
-        let alarmId = button.getAttribute("data-alarm-id");
-        let alarmType = button.getAttribute("data-alarm-type");
+        // 알림 정보 저장
+        currentAlarmId = button.getAttribute("data-alarm-id");
+        currentAlarmType = button.getAttribute("data-alarm-type") || "SCRAP";
+        currentAlarmElement = button.closest('.alarm-item') || button.parentNode.closest('.alarm-item');
 
-        if(alarmType == null) {
-            alarmType = "SCRAP";
-        }
+        console.log("선택된 알림 ID:", currentAlarmId);
 
-        console.log(alarmId);
-
-        //읽겠습니까?
-        if (!confirm("이 알림을 삭제하시겠습니까?")) {
-            return;
-        }
-
-        fetch('/main/alarm/' + alarmId, {
-            method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({alarm_type: alarmType})
-        })
-            .then(response => {
-                if (response.ok) {
-                    let alarmItem = button.closest('.alarm-item') || button.parentNode.closest('.alarm-item');
-                    if (alarmItem) {
-                        alarmItem.remove(); // 삭제된 알림 화면에서 제거
-                    }
-                } else {
-                    alert("알림 삭제 실패!");
-                }
-            })
-            .catch(error => console.error('Error:', error));
+        // 모달 표시
+        document.getElementById('alarmDeleteModal').classList.remove('hidden');
     }
+
+    // 모달 닫기 함수
+    function closeAlarmModal() {
+        document.getElementById('alarmDeleteModal').classList.add('hidden');
+        // 변수 초기화
+        currentAlarmId = null;
+        currentAlarmType = null;
+        currentAlarmElement = null;
+    }
+
+    // 페이지 로드 시 삭제 확인 버튼에 이벤트 리스너 추가
+    document.addEventListener('DOMContentLoaded', function() {
+        // 회원 탈퇴 모달 닫기 함수
+        window.closeModal = function() {
+            document.getElementById('deleteModal').classList.add('hidden');
+        };
+
+        // 알림 삭제 확인 버튼 이벤트
+        document.getElementById('confirmDeleteAlarm').addEventListener('click', function() {
+            if (currentAlarmId) {
+                fetch('/main/alarm/' + currentAlarmId, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({alarm_type: currentAlarmType})
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            if (currentAlarmElement) {
+                                currentAlarmElement.remove(); // 삭제된 알림 화면에서 제거
+                            }
+                            closeAlarmModal(); // 모달 닫기
+                        } else {
+                            alert("알림 삭제 실패!");
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert("오류가 발생했습니다.");
+                    });
+            }
+        });
+    });
 
     // 모바일 스와이프 기능 구현
     document.addEventListener('DOMContentLoaded', function() {

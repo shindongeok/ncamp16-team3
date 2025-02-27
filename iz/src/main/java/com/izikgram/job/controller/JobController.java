@@ -28,6 +28,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class JobController {
 
+    @Autowired
     private final JobService jobService;
 
     @Autowired
