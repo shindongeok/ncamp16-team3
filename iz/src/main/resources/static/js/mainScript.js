@@ -63,17 +63,26 @@ function updateCalendar(monthlyStressList = []) {
     }
 }
 
-// 스트레스 툴팁을 표시하는 함수 (Tailwind CSS 사용)
+// 스트레스 툴팁을 토글하는 함수 (Tailwind CSS 사용)
 function showStressTooltip(event) {
-    // 기존 툴팁 제거
-    const existingTooltip = document.getElementById('stress-tooltip');
-    if (existingTooltip) {
-        existingTooltip.remove();
-    }
-
     const dateElement = event.currentTarget;
     const stressNum = dateElement.dataset.stressNum;
     const dateStr = dateElement.dataset.date;
+
+    // 기존 툴팁 확인
+    const existingTooltip = document.getElementById('stress-tooltip');
+
+    // 같은 날짜의 툴팁이 이미 열려있는 경우 닫기 (토글 기능)
+    if (existingTooltip && existingTooltip.dataset.date === dateStr) {
+        existingTooltip.remove();
+        document.removeEventListener('click', closeTooltip);
+        return;
+    }
+
+    // 다른 날짜의 툴팁이 열려있는 경우 닫기
+    if (existingTooltip) {
+        existingTooltip.remove();
+    }
 
     if (!stressNum) return;
 
@@ -104,6 +113,8 @@ function showStressTooltip(event) {
     const tooltip = document.createElement('div');
     tooltip.id = 'stress-tooltip';
     tooltip.className = 'absolute z-50 bg-white rounded-xl shadow-md w-40 p-3 animate-fade-in';
+    // 날짜 데이터 저장 (토글 기능을 위해)
+    tooltip.dataset.date = dateStr;
     tooltip.innerHTML = `
         <div class="relative">
             <div class="absolute -top-5 left-1/2 transform -translate-x-1/2 w-0 h-0 border-8 border-transparent border-b-white"></div>
@@ -129,9 +140,10 @@ function showStressTooltip(event) {
     event.stopPropagation();
 }
 
-// 툴팁 닫기 함수
+// 툴팁 닫기 함수 - 현재 날짜 요소 클릭 시 닫히지 않도록 수정
 function closeTooltip(event) {
     const tooltip = document.getElementById('stress-tooltip');
+    // 툴팁이 있고, 클릭한 요소가 툴팁 내부가 아니며, 캘린더 날짜가 아닌 경우에만 툴팁 닫기
     if (tooltip && !tooltip.contains(event.target) &&
         !event.target.classList.contains('calendar-date')) {
         tooltip.remove();
