@@ -7,4 +7,5 @@ public class JobDto {
     private String id;
     private String companyName;
     private String expirationTimestamp;
+    private String url;                 // 채용공고 URL
 }

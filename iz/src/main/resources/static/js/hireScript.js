@@ -93,6 +93,7 @@ $(document).ready(function() {
         const jobId = $btn.data('jobId');  // data-job-id
         const companyName = $btn.data('jobCompanyName');  // data-company-name
         const expirationTimestamp = $btn.data('jobExpirationTimestamp');
+        const url = $btn.data('jobUrl');
 
         $.ajax({
             url: '/job/scrap/' + jobId,
@@ -101,7 +102,8 @@ $(document).ready(function() {
             data: JSON.stringify({
                 id: jobId,
                 companyName: companyName,
-                expirationTimestamp: expirationTimestamp
+                expirationTimestamp: expirationTimestamp,
+                url: url
             }),
             success: function(response) {
                 if (response.success) {

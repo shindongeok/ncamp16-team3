@@ -255,7 +255,8 @@ public class JobService {
                     jobDto.getId(),
                     jobDto.getCompanyName(),
                     jobDto.getExpirationTimestamp(),
-                    content
+                    content,
+                    jobDto.getUrl()
             );
 
             // 실시간 알림 전송 시도 (실패해도 데이터는 저장됨)

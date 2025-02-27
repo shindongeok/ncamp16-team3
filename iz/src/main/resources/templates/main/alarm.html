@@ -113,7 +113,7 @@
 
                     <!-- 채용 스크랩 알림 -->
                     <a th:unless="${alarm.getCompany_name() == null}"
-                       th:href="@{/job/scrap}"
+                       th:href="@{${alarm.getUrl()}}"
                        class="flex items-center flex-1">
                         <span class="flex-shrink-0 bg-yellow-50 text-yellow-500 rounded-full p-2 mr-3">
                             <span class="alarm-icon text-xl">📌</span>

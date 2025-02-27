@@ -24,4 +24,6 @@ public class AlarmDto {
 
     @JsonProperty("alarm_type")
     private AlarmType alarm_type;
+
+    private String url;
 }
