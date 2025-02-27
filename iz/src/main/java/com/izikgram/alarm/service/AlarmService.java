@@ -31,8 +31,8 @@ public class AlarmService {
 //        alarmMapper.ScrapSave(member_id, job_rec_id, company_name, expirationDate);
 //    }
 
-    public void ScrapSave(String member_id, String job_rec_id, String company_name, String expiration_timestamp, String content) {
-        alarmMapper.ScrapSave(member_id, job_rec_id, company_name, expiration_timestamp, content);
+    public void ScrapSave(String member_id, String job_rec_id, String company_name, String expiration_timestamp, String content, String url) {
+        alarmMapper.ScrapSave(member_id, job_rec_id, company_name, expiration_timestamp, content, url);
     }
 
     public void ScrapExpirationSave(String member_id, String job_rec_id, String company_name, String expiration_timestamp, String content) {

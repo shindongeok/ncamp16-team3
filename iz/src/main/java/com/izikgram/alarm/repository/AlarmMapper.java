@@ -21,13 +21,14 @@ public interface AlarmMapper {
               @Param("alarm_type") AlarmType alarm_type);
 
     // 공고스크랩하면 iz_alarm_scrap 테이블에 저장
-    @Insert("insert into iz_alarm_scrap(member_id, job_rec_id, company_name, expiration_timestamp, alarm_date, content) " +
-            "values (#{member_id}, #{job_rec_id}, #{company_name}, #{expiration_timestamp}, now(), #{content})")
+    @Insert("insert into iz_alarm_scrap(member_id, job_rec_id, company_name, expiration_timestamp, alarm_date, content, url) " +
+            "values (#{member_id}, #{job_rec_id}, #{company_name}, #{expiration_timestamp}, now(), #{content}, #{url})")
     void ScrapSave(@Param("member_id") String member_id,
                    @Param("job_rec_id") String job_rec_id,
                    @Param("company_name") String company_name,
                    @Param("expiration_timestamp") String expiration_timestamp,
-                   @Param("content") String content);
+                   @Param("content") String content,
+                   @Param("url") String url);
 
     @Insert("insert into iz_alarm_scrap(member_id, job_rec_id, company_name, expiration_timestamp, alarm_date, content) " +
             "values (#{member_id}, #{job_rec_id}, #{company_name}, #{expiration_timestamp}, now(), #{content})")
@@ -57,14 +58,14 @@ public interface AlarmMapper {
     @Select("SELECT * FROM (" +
             "    SELECT alarm_id, member_id, alarm_date, isRead, " +
             "           NULL as job_rec_id, NULL as company_name, NULL as expiration_timestamp, " +
-            "           board_type, board_id, alarm_type, content " +
+            "           board_type, board_id, alarm_type, content, NULL as url " +
             "    FROM iz_alarm_board " +
             "    WHERE member_id = #{member_id} AND isRead = 0 " +
             "    UNION ALL " +
             "    SELECT alarm_id, member_id, " +
             "           alarm_date, isRead, " +
             "           job_rec_id, company_name, expiration_timestamp, " +
-            "           NULL as board_type, NULL as board_id, NULL as alarm_type, content " +
+            "           NULL as board_type, NULL as board_id, NULL as alarm_type, content, url " +
             "    FROM iz_alarm_scrap " +
             "    WHERE member_id = #{member_id} AND isRead = 0" +
             ") AS combined " +
