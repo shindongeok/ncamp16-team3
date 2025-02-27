@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.izikgram.chat.config.ChatConfig;
 import com.izikgram.chat.dto.Message;
+import com.izikgram.user.repository.UserMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,10 +17,13 @@ import org.springframework.web.client.RestTemplate;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Slf4j
 @Service
@@ -29,22 +33,20 @@ public class ChatService {
     private final ChatConfig chatConfig;
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
-
+    private final UserMapper usermapper;
 
     @Autowired
-    public ChatService(ChatConfig chatConfig, RestTemplate restTemplate, ObjectMapper objectMapper) {
+    public ChatService(ChatConfig chatConfig, RestTemplate restTemplate, ObjectMapper objectMapper, UserMapper userMapper) {
         this.chatConfig = chatConfig;
         this.restTemplate = restTemplate;
         this.objectMapper = objectMapper;
+        this.usermapper = userMapper;
     }
 
-    public String sendMessageToClova(List<Message> messages) {
+    public String sendMessageToClova(List<Message> messages, String memberId) {
         String apiUrl = chatConfig.getApiUrl();
         String apiKey = chatConfig.getApiKey();
 
-//        logger.debug("📌 Clova API URL: {}", apiUrl);
-//        logger.debug("📌 Clova API Key: {}", apiKey);
-//        logger.debug("📌 Clova API 요청 본문: {}", messages.toString());
 
         // Clova API 요청 본문 구성
         Map<String, Object> requestBody = new HashMap<>();
@@ -83,12 +85,57 @@ public class ChatService {
             String content = extractContentFromStreamResponse(responseBody);
             logger.info("추출된 content: {}", content);
 
+            processFeelChatResponse(content, memberId);
+
             return content;
         } catch (HttpClientErrorException e) {
             logger.error("Clova API 오류 응답: {}", e.getResponseBodyAsString());
             throw new RuntimeException("Clova API 호출 중 오류 발생: " + e.getResponseBodyAsString(), e);
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+//    public Map<String, Object> processFeelChatResponse(List<Message> messages, String memberId) {
+    public void processFeelChatResponse(String content, String memberId) {
+//        String responseContent = sendMessageToClova(messages);
+
+//        Map<String, Object> result = new HashMap<>();
+//        result.put("responseMessage", responseContent);
+
+        // 퇴사점수(stress_num) 추출
+        Pattern pattern = Pattern.compile("오늘의 퇴사지수는 (\\d+)입니다");
+        Matcher matcher = pattern.matcher(content);
+
+        if (matcher.find()) {
+            int stressNum = Integer.parseInt(matcher.group(1));
+//            result.put("stressNum", stressNum);
+            logger.info("추출된 퇴사지수(stress_num): {}", stressNum);
+
+            // DB에 저장/업데이트
+            saveOrUpdateStressNum(memberId, stressNum, LocalDate.now().toString());
+        }
+    }
+
+    private void saveOrUpdateStressNum(String memberId, int stressNum, String date) {
+        try {
+
+            // 오늘 날짜의 데이터가 있는지 확인
+            Integer existingStressNum = usermapper.getStressNum(memberId, date);
+
+            if (existingStressNum != null) {
+                // 이미 존재하면 업데이트
+                usermapper.updateStressInfo(memberId, stressNum, date);
+                logger.info("기존 stress_num 업데이트 - 회원: {}, 날짜: {}, 점수: {}",
+                        memberId, date, stressNum);
+            } else {
+                // 없으면 새로 생성
+                usermapper.insertStressInfo(memberId, stressNum, date);
+                logger.info("새 stress_num 저장 - 회원: {}, 날짜: {}, 점수: {}",
+                        memberId, date, stressNum);
+            }
+        } catch (Exception e) {
+            logger.error("stress_num 저장/업데이트 실패: {}", e.getMessage(), e);
         }
     }
 

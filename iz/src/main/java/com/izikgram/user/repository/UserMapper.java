@@ -76,4 +76,18 @@ public interface UserMapper {
                         @Param("start_time") String start_time,
                         @Param("lunch_time") String lunch_time,
                         @Param("end_time") String end_time);
+
+    @Select("SELECT stress_num FROM iz_member_stress_info WHERE member_id = #{memberId} AND date = #{date}")
+    Integer getStressNum(@Param("memberId") String memberId, @Param("date") String date);
+
+    @Insert("INSERT INTO iz_member_stress_info (member_id, stress_num, date) VALUES (#{memberId}, #{stressNum}, #{date})")
+    void insertStressInfo(@Param("memberId") String memberId,
+                          @Param("stressNum") int stressNum,
+                          @Param("date") String date);
+
+    @Update("UPDATE iz_member_stress_info SET stress_num = #{stressNum} WHERE member_id = #{memberId} AND date = #{date}")
+    void updateStressInfo(@Param("memberId") String memberId,
+                          @Param("stressNum") int stressNum,
+                          @Param("date") String date);
+
 }
