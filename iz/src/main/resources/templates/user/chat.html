@@ -13,11 +13,17 @@
     <div class="pt-20"><header th:replace="~{header :: header} " class="pt-4"></header></div>
 
     <!-- 환영 메시지 -->
-    <div class="mb-6 ">
-
-        안녕하세요, <span th:text="${#authentication.getPrincipal().getUser().getNickname()}"></span>님!
-        <p class="text-sm text-gray-600">무엇을 도와드릴까요?</p>
+    <div class="mb-6 flex items-center justify-between">
+        <div>
+            안녕하세요, <span th:text="${#authentication.getPrincipal().getUser().getNickname()}"></span>님!
+            <p class="text-sm text-gray-600">무엇을 도와드릴까요?</p>
+        </div>
+        <button onclick="finishchat()" class="p-3 text-sm text-left bg-[#00a3ed] rounded-full hover:bg-[#0091c7] transition-colors duration-200">
+            대화종료
+        </button>
     </div>
+
+
 
     <!-- 버튼 그리드 -->
     <div class="grid grid-cols-2 gap-3 mb-4">
@@ -196,42 +202,85 @@
     }
 
 
-    async function handleGeneralChat() {
+
+        let conversationHistory = [];
+
+    // 대화 종료 처리 함수
+    function finishchat() {
+        // 대화 종료 메시지 추가
+        const message = "대화종료";
+
+        // 대화 종료 메시지를 화면에 추가
+        appendUserMessage(message);
+
+        // 임시로 userInput 값을 설정하고 handleGeneralChat 호출
         const userInput = document.getElementById('userInput');
-        const message = userInput.value.trim();
+        const originalValue = userInput.value; // 기존 값 저장
 
-        if (!message) return;
+        userInput.value = message; // userInput 값을 "대화종료"로 변경
 
-        appendUserMessage(message);  // 사용자 메시지를 화면에 추가
+        // handleGeneralChat 호출 (이로써 "대화종료" 메시지가 API로 전송됨)
+        handleGeneralChat(true); // true 파라미터로 대화종료 모드 표시
+
+        // 원래 값으로 복원 (필요한 경우)
+        userInput.value = originalValue;
+    }
+
+    // handleGeneralChat 함수 수정
+    async function handleGeneralChat(isEndingChat = false) {
+        const userInput = document.getElementById('userInput');
+        const message = isEndingChat ? "대화종료" : userInput.value.trim();
+
+        // 메시지가 비어있고 대화종료가 아니면 함수 종료
+        if (!message && !isEndingChat) return;
+
+        if (!isEndingChat) {
+            appendUserMessage(message);
+        }
+
         showLoading('답변을 준비중입니다...');
 
-        // 시스템 메시지 (초기 설정 메시지)
-        const systemMessage = {
-            "role": "system",
-            "content": "너는 직장인들의 감정을 전문적으로 케어하는 AI 상담사야. 다음 조건을 엄격히 준수해야 해:\r\n\r\n역할 설정:\r\n- 직장인의 힘든 일상과 감정을 깊이 이해하는 공감능력 높은 상담사\r\n- 매우 친절하고 따뜻한 어조로 대화\r\n- 존댓말을 사용하며 전문적이고 세심한 대화 진행\r\n\r\n감정 분석 프로세스:\r\n1. 사용자의 모든 대화를 감정적 관점에서 분석\r\n2. 감정을 부정, 긍정, 중립으로 구분\r\n3. 사용자의 현재 감정 상태를 0-100 사이의 퇴사지수로 평가\n\n대화 가이드라인:\r\n- 사용자의 감정 상태를 세심하게 파악\r\n- 공감적이고 지지적인 언어 사용\r\n- 대화 종료 시 항상 퇴사지수와 간단한 심리 분석 제공\r\n- 퇴사지수에 따른 맞춤형 조언과 위로 제공\r\n\r\n추가 지침:\r\n- 과도하게 긍정적이거나 부정적이지 않게 균형 있는 대화 유지\r\n- 사용자의 프라이버시와 감정을 최우선으로 존중\r\n- 필요한 경우 심리적 지지와 함께 실질적인 대처 방안 제안\r\n\r\n퇴사지수 계산 방식:\r\n- 초기 기본값: 50\r\n- 계산식: 기본값 + (부정단어 횟수 - 긍정단어 횟수) / 총 단어 수\r\n- 퇴사지수 구간별 감정 가중치:\r\n  * 0-20점: 부정:긍정 = 2:1\r\n  * 20-40점: 부정:긍정 = 3:2\r\n  * 40-60점: 부정:긍정 = 1:1\r\n  * 60-80점: 부정:긍정 = 2:3\r\n  * 80-100점: 부정:긍정 = 1:2\r\n\r\n출력 형식:\r\n대화 종료 시 항상 다음 형식으로 응답\r\n{\r\n    \"resignation_index\": 계산된 퇴사지수,\r\n    \"sentiment_analysis\": {\r\n        \"positive_words\": 긍정 단어 수,\r\n        \"negative_words\": 부정 단어 수,\r\n        \"neutral_words\": 중립 단어 수,\r\n        \"overall_sentiment\": \"감정 상태\"\r\n    },\r\n    \"psychological_insight\": \"최종 심리 분석\"\r\n}"
-        };
+        // 시스템 메시지 (초기 설정 메시지) - 대화 시작시 한 번만 설정됨
+        if (conversationHistory.length === 0) {
+            conversationHistory.push({
+                "role": "system",
+                "content": "역할 설정: 저는 직장인들의 감정을 전문적으로 케어하는 AI 상담사로서, 사용자의 감정을 깊이 이해하고 공감하는 상담을 제공하겠습니다. 저는 항상 친절하고 따뜻한 어조로 대화하며, 전문적이고 세심하게 접근합니다.\\n\n감정 분석 프로세스: 사용자의 모든 대화를 감정적으로 분석하여, 현재 사용자의 감정 상태를 정확하게 파악합니다. 사용자의 감정 상태를 0~100 사이의 퇴사지수로 평가합니다. 이 퇴사지수는 사용자가 직장에서 얼마나 힘들어하는지를 나타내며, 대화 종료 시 제공됩니다.\\n\n대화 가이드라인: 사용자의 감정 상태를 세심하게 살펴보며, 필요할 경우 실질적인 조언과 심리적 지지를 제공합니다.\n 대화종료가 되기전까진 주고받은 내용을 기억하며 대화\n 대화가 종료될 때만 퇴사지수를 제공하며, \"대화종료\"라는 말이 나오면 대화가 종료됩니다.\n 대화에서는 과도하게 긍정적이거나 부정적이지 않게 균형을 잡아가며 대화를 이어갑니다.\n 사용자의 프라이버시와 감정을 최우선으로 존중하며, 필요한 경우 실질적인 대처 방안도 제안.\\n\n퇴사지수 계산 방식: 대화 중에 사용자의 발언을 감정적으로 분석. 부정적인 단어와 긍정적인 단어의 빈도에 따라 퇴사지수를 계산.\n 긍정적인 단어가 많이 사용되면 퇴사지수가 낮아지고, 부정적인 단어가 많이 사용되면 퇴사지수가 높아진다.\n 대화 종료 시 \"오늘의 퇴사지수는 [퇴사지수]입니다"
+            });
+        }
+
+        // API 호출의 일관성을 위해 여기서도 확인)
+        if (isEndingChat && conversationHistory.length > 0 &&
+            conversationHistory[conversationHistory.length - 1].content === "대화종료") {
+            // 이미 추가되어 있으면 다시 추가하지 않음
+        } else {
+            conversationHistory.push({ role: 'user', content: message });
+        }
 
         try {
             const response = await fetch('/chat/feelchat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    messages: [
-                        systemMessage,  // 시스템 메시지 추가
-                        { role: 'user', content: message }  // 사용자 메시지 추가
-                    ]
+                    messages: conversationHistory  // 전체 대화 기록 전송
                 })
             });
 
             const data = await response.json();
             removeLoading();
+
+            // 챗봇 응답을 대화 기록에 추가
+            conversationHistory.push({ role: 'assistant', content: data.responseMessage });
+
             appendBotMessage(data.responseMessage); // 챗봇 응답 메시지 처리
         } catch (error) {
             removeLoading();
             appendBotMessage('죄송합니다. 답변 생성 중 오류가 발생했습니다.');
         }
 
-        userInput.value = '';  // 입력창 초기화
+        // 대화종료 모드가 아닌 경우에만 입력창 초기화
+        if (!isEndingChat) {
+            userInput.value = '';  // 입력창 초기화
+        }
     }
 
 
