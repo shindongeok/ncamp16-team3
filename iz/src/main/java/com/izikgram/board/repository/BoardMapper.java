@@ -222,61 +222,70 @@ public interface BoardMapper {
             "order by c.comment_id desc " +
             "limit 1 ")
     CommentDto getLastComment02(@Param("board_id") int boardId);
-    // ===============================
+
     //인기게시판(자유게시판)
-    @Select("select b.*, " +
-            "coalesce(count(c.comment_id), 0) AS comment_count " +
-            "from iz_board_type t " +
-            "join iz_board01 b on t.board_type = b.board_type " +
-            "left join iz_board01_comment c on b.board_id = c.board_id " +
-            "where b.board_type = 1 " +
-            "group by b.board_id " +
-            "order by  like_count desc, reg_date desc " +
-            "limit 3")
-    List<BoardDto> getIssueBoardList01();
+//    @Select("select b.*, " +
+//            "coalesce(count(c.comment_id), 0) AS comment_count " +
+//            "from iz_board_type t " +
+//            "join iz_board01 b on t.board_type = b.board_type " +
+//            "left join iz_board01_comment c on b.board_id = c.board_id " +
+//            "where b.board_type = 1 " +
+//            "group by b.board_id " +
+//            "order by  like_count desc, reg_date desc " +
+//            "limit 3")
+//    List<BoardDto> getIssueBoardList01();
+//
+//    @Select("select b.*, " +
+//            "coalesce(count(c.comment_id), 0) AS comment_count " +
+//            "from iz_board_type t " +
+//            "join iz_board02 b on t.board_type = b.board_type " +
+//            "left join iz_board02_comment c on b.board_id = c.board_id " +
+//            "where b.board_type = 2 " +
+//            "group by b.board_id " +
+//            "order by  like_count desc, reg_date desc  " +
+//            "limit 3")
+//    List<BoardDto> getIssueBoardList02();
 
-    @Select("select b.*, " +
-            "coalesce(count(c.comment_id), 0) AS comment_count " +
-            "from iz_board_type t " +
-            "join iz_board02 b on t.board_type = b.board_type " +
-            "left join iz_board02_comment c on b.board_id = c.board_id " +
-            "where b.board_type = 2 " +
-            "group by b.board_id " +
-            "order by  like_count desc, reg_date desc  " +
-            "limit 3")
-    List<BoardDto> getIssueBoardList02();
-// ---------------------------------------------------
-    //인기테이블 삽입
-
-    // 인기 게시판 삭제
-    @Delete("DELETE FROM iz_board_popular")
-    void deletePopularBoards();
-
-    // 좋아요가 5개 이상인 게시글을 조회
-    @Select("""
-        SELECT * FROM iz_board01
-        WHERE like_count >= 5
-        UNION ALL
-        SELECT * FROM iz_board02
-        WHERE like_count >= 5;
-    """)
-    List<Board> getBoardsWithLikesAbove5();
-
-    // 인기 게시판에 5개 이상 좋아요를 받은 게시글 삽입
-    @Insert({
-            "INSERT INTO iz_board_popular (board_id, like_count, board_type) ",
-            "SELECT board_id, like_count, 1 AS board_type ",
-            "FROM iz_board01 ",
-            "WHERE like_count >= 5 ",
-            "UNION ALL ",
-            "SELECT board_id, like_count, 2 AS board_type ",
-            "FROM iz_board02 ",
-            "WHERE like_count >= 5 ",
-            "ORDER BY like_count DESC"
-    })
-    void insertPopularBoards();
+    @Select("(" +
+            "    SELECT 1 AS board_type, b1.title, b1.board_id, b1.like_count, b1.disLike_count, b1.reg_date , " +
+            "           (SELECT COUNT(*) FROM iz_board01_comment c WHERE c.board_id = b1.board_id) AS comment_count " +
+            "    FROM iz_board01 b1 " +
+            "    ORDER BY b1.like_count DESC, b1.board_id " +
+            "    LIMIT 3 " +
+            ") " +
+            "UNION ALL " +
+            "( " +
+            "    SELECT 2 AS board_type, b2.title, b2.board_id, b2.like_count, b2.disLike_count, b2.reg_date,  " +
+            "           (SELECT COUNT(*) FROM iz_board02_comment c WHERE c.board_id = b2.board_id) AS comment_count " +
+            "    FROM iz_board02 b2 " +
+            "    ORDER BY b2.like_count DESC, b2.board_id " +
+            "    LIMIT 3 " +
+            ") " +
+            "ORDER BY like_count DESC, board_type, board_id")
+    List<BoardDto> getPopularBoardList();
 
 
+
+    // 현재 게시글의 board01 좋아요 개수 조회
+    @Select("SELECT like_count FROM iz_board01 WHERE board_id = #{board_id}")
+    int getLikeCount(@Param("board_id")int boardId);
+    // 현재 게시글의 board02 좋아요 개수 조회
+    @Select("SELECT like_count FROM iz_board02 WHERE board_id = #{board_id}")
+    int getLikeCount02(@Param("board_id") int boardId);
+
+    // 해당 게시글이 이미 인기 게시판에 등록되었는지 확인
+    @Select("SELECT EXISTS(SELECT 1 FROM iz_board_popular WHERE board_id = #{board_id} and board_type = #{board_type})")
+    boolean isPopularBoard(@Param("board_id")int boardI, @Param("board_type") int boardType);
+
+    // 인기 테이블에 등록
+    @Insert("INSERT INTO iz_board_popular (board_id, board_type, like_count, reg_date) " +
+            "SELECT #{board_id}, #{board_type}, " +
+            "  CASE " +
+            "    WHEN #{board_type} = 1 THEN (SELECT IFNULL(like_count, 0) FROM iz_board01 WHERE board_id = #{board_id}) " +
+            "    WHEN #{board_type} = 2 THEN (SELECT IFNULL(like_count, 0) FROM iz_board02 WHERE board_id = #{board_id}) " +
+            "    ELSE 0 " +
+            "  END, NOW()")
+    void insertPopularBoard(@Param("board_id") int boardId, @Param("board_type") int boardType);
 
     // 내 게시물
     @Select("SELECT b.*, " +

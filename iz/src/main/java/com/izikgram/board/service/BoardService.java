@@ -131,11 +131,11 @@ public class BoardService {
     private void checkPopularBoardsAndSendAlarm() {
 
         // Top3 리스트 반환
-        List<BoardDto> issueBoardList01 = boardMapper.getIssueBoardList01();
-        List<BoardDto> issueBoardList02 = boardMapper.getIssueBoardList02();
+        List<BoardDto> issueBoardList01 = boardMapper.getPopularBoardList();
+//        List<BoardDto> issueBoardList02 = boardMapper.getIssueBoardList02();
 
         log.info("issueBoardList01 : {}", issueBoardList01);
-        log.info("issueBoardList02 : {}", issueBoardList02);
+//        log.info("issueBoardList02 : {}", issueBoardList02);
 
         for (BoardDto board : issueBoardList01) {
             // 읽음 여부 상관없이 인기게시글이면 (!true 값 반환) => 알림 안보냄
@@ -146,13 +146,13 @@ public class BoardService {
             }
         }
 
-        for (BoardDto board : issueBoardList02) {
-            if (!alarmService.hasPopularAlarm(board.getBoard_id())) {
-                String content = "[" + board.getTitle() + "] \n 인기게시글이 되었습니다!!";
-                sseEmitterService.popularSend(board.getWriter_id(), content);
-                alarmService.save(board.getWriter_id(), board.getBoard_type(), board.getBoard_id(), content, AlarmType.POPULAR);
-            }
-        }
+//        for (BoardDto board : issueBoardList02) {
+//            if (!alarmService.hasPopularAlarm(board.getBoard_id())) {
+//                String content = "[" + board.getTitle() + "] \n 인기게시글이 되었습니다!!";
+//                sseEmitterService.popularSend(board.getWriter_id(), content);
+//                alarmService.save(board.getWriter_id(), board.getBoard_type(), board.getBoard_id(), content, AlarmType.POPULAR);
+//            }
+//        }
     }
 
     // 좋아요 증가
@@ -174,7 +174,20 @@ public class BoardService {
             boardMapper.deleteLike(boardId, memberId);
             boardMapper.downLikeCount(boardId);
         }
+
+        checkAndInsertPopularBoard(boardId);
     }
+
+    private void checkAndInsertPopularBoard(int boardId) {
+        int likeCount = boardMapper.getLikeCount(boardId); // 현재 좋아요 개수 조회
+        boolean isPopular = boardMapper.isPopularBoard(boardId,1); // 이미 등록된 게시글인지 확인
+
+        if (likeCount >= 5 && !isPopular) { // 5개 이상이고, 아직 등록되지 않았다면 추가
+            boardMapper.insertPopularBoard(boardId,1);
+            log.info("01게시글 {}이(가) 인기 게시판에 등록되었습니다!", boardId);
+        }
+    }
+
 
     // 모든 업데이트 이후 게시글의 좋아요/싫어요 개수 반환
     private Map<String, Integer> getStatusResult(int boardId) {
@@ -231,7 +244,20 @@ public class BoardService {
             boardMapper.deleteLike02(boardId, memberId);
             boardMapper.downLikeCount02(boardId);
         }
+
+        checkAndInsertPopularBoard02(boardId);
     }
+
+    private void checkAndInsertPopularBoard02(int boardId) {
+        int likeCount = boardMapper.getLikeCount02(boardId); // 현재 좋아요 개수 조회
+        boolean isPopular = boardMapper.isPopularBoard(boardId, 2); // 이미 등록된 게시글인지 확인
+
+        if (likeCount >= 5 && !isPopular) { // 5개 이상이고, 아직 등록되지 않았다면 추가
+            boardMapper.insertPopularBoard(boardId,2);
+            log.info("02게시글 {}이(가) 인기 게시판에 등록되었습니다!", boardId);
+        }
+    }
+
 
     // 싫어요 증가
     private void increaseDisLike02(int boardId, String memberId, int like, int dislike) {
@@ -320,44 +346,20 @@ public class BoardService {
     }
 
     //인기게시판
-    public Map<String, List<BoardDto>> getIssueBoardList01(){
-        Map<String, List<BoardDto>> map = new HashMap<>();
-        List<BoardDto> issueBoardList01 = boardMapper.getIssueBoardList01();
-        List<BoardDto> issueBoardList02 = boardMapper.getIssueBoardList02();
+//    public Map<String, List<BoardDto>> getIssueBoardList01(){
+//        Map<String, List<BoardDto>> map = new HashMap<>();
+//        List<BoardDto> issueBoardList01 = boardMapper.getIssueBoardList01();
+//        List<BoardDto> issueBoardList02 = boardMapper.getIssueBoardList02();
+//
+//        log.info("issueBoardList01:{}, issueBoardList02 {} ", issueBoardList01, issueBoardList02);
+//        map.put("issueBoardList01", issueBoardList01);
+//        map.put("issueBoardList02", issueBoardList02);
+//
+//        return map;
+//    }
 
-        log.info("issueBoardList01:{}, issueBoardList02 {} ", issueBoardList01, issueBoardList02);
-        map.put("issueBoardList01", issueBoardList01);
-        map.put("issueBoardList02", issueBoardList02);
-
-        return map;
-    }
-
-    // 인기테이블 삭제후 좋아요 높은순으로 다시 삽입
-    //주기적으로 인기테이블 업데이트?
-    public BoardService(BoardMapper boardMapper) {
-        this.boardMapper = boardMapper;
-    }
-    @Transactional
-//    @Scheduled(cron = "0 0 12 * * ?")   //매일 12시에 작업을 실행
-    @Scheduled(cron = "0 * * * * ?")
-    public void updatePopularBoards() {
-        System.out.println("Scheduled task started.");
-
-        // 좋아요가 5개 이상인 게시글이 있는지 조회
-        List<Board> boardsWithLikesAbove5 = boardMapper.getBoardsWithLikesAbove5();
-
-        if (!boardsWithLikesAbove5.isEmpty()) {
-            // 좋아요가 5개 이상인 게시글이 있다면 인기 게시판 초기화 후 삽입
-            boardMapper.deletePopularBoards();
-            boardMapper.insertPopularBoards();
-            System.out.println("Popular boards updated.");
-        } else {
-            // 좋아요가 5개 이상인 게시글이 없으면 기존 데이터 유지
-            System.out.println("No boards with more than 5 likes. Data remains unchanged.");
-        }
-
-        System.out.println("Scheduled task finished.");
-
+    public List<BoardDto> getPopularBoards() {
+        return boardMapper.getPopularBoardList();
     }
 
 

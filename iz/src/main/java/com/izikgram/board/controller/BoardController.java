@@ -169,14 +169,14 @@ public class  BoardController {
     @GetMapping("/hot")
     public String hotCommunity(Model model){
 
-        Map<String, List<BoardDto>> issueBoardList = boardService.getIssueBoardList01();
-        List<BoardDto> issueBoardList01 = issueBoardList.get("issueBoardList01");
-        List<BoardDto> issueBoardList02 = issueBoardList.get("issueBoardList02");
+        List<BoardDto> popularBoards = boardService.getPopularBoards();
 
-        log.info("issueBoardList01: {}", issueBoardList01);
-        log.info("issueBoardList02: {}", issueBoardList02);
-        model.addAttribute("issueBoardList01",issueBoardList01);
-        model.addAttribute("issueBoardList02",issueBoardList02);
+
+        List<BoardDto> top3Boards = popularBoards.subList(0, Math.min(3, popularBoards.size()));
+        List<BoardDto> bottom3Boards = popularBoards.subList(3, Math.min(6, popularBoards.size()));
+
+        model.addAttribute("issueBoardList01", top3Boards);
+        model.addAttribute("issueBoardList02", bottom3Boards);
 
         return "board/popularityCommunity";
     }
