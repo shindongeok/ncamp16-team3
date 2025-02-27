@@ -99,7 +99,7 @@ public class JobController {
             Date date = new Date();
             date.setTime(timestamp * 1000);  // 밀리초로 변환
 
-            // 변환된 DATETIME 문자열
+            // 변환된 DATETIME 문자열ㅁ
             String datetime = sdf.format(date);
             jobDto.setExpirationTimestamp(datetime);
 
