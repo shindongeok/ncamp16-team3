@@ -42,13 +42,13 @@
         <div class="space-y-6">
             <label for="phoneNum" class="block text-lg/6 text-gray-900">고객님의 정보와 일치하는 아이디입니다.</label>
             <div class="mt-2">
-                <div name="phoneNum" id="phoneNum" th:text="${session.member_id}" class="block w-full rounded-md bg-white px-3 py-1.5 text-lg text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+                <div name="phoneNum" id="phoneNum" th:text="${session.member_id}" class="block w-full rounded-md bg-white px-3 py-1.5 text-lg text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"></div>
             </div>
-        </div>
 
-        <div class="flex mt-5">
-            <button type="submit" th:onclick="|location.href='@{/}'|" class="findResultBtn mr-5 w-1/2 rounded-md bg-main-sky-highlight px-3 py-1.5 text-lg/6 text-white shadow-xs hover:bg-sky-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-800">로그인하러가기</button>
-            <button type="submit" th:onclick="|location.href='@{/user/findPw}'|" class="findResultBtn w-1/2 rounded-md bg-main-sky-highlight px-3 py-1.5 text-lg/6 text-white shadow-xs hover:bg-sky-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-800">비밀번호 찾기</button>
+            <div class="flex mt-5">
+                <button type="submit" th:onclick="|location.href='@{/}'|" class="findResultBtn mr-5 w-1/2 rounded-md bg-main-sky-highlight px-3 py-1.5 text-lg/6 text-white shadow-xs hover:bg-sky-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-800">로그인하러가기</button>
+                <button type="submit" th:onclick="|location.href='@{/user/findPw}'|" class="findResultBtn w-1/2 rounded-md bg-main-sky-highlight px-3 py-1.5 text-lg/6 text-white shadow-xs hover:bg-sky-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-800">비밀번호 찾기</button>
+            </div>
         </div>
     </div>
 </div>
