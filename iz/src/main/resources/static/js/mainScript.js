@@ -302,7 +302,7 @@ function updateAllProgress() {
     if (lunchTimeText === ' 완료!' && workTimeText === ' 완료!') {
         encouragementText.textContent = '오늘 하루도 수고하셨습니다!';
     } else {
-        encouragementText.textContent = '남은 시간도 힘내세요! 💪';
+        encouragementText.textContent = '남은 시간도 힘내세요!';
     }
 }
 
