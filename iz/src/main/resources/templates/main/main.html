@@ -9,6 +9,7 @@
     <link th:href="@{/images/Logo.png}" rel="shortcut icon" type="image/x-icon">
     <link rel="stylesheet" th:href="@{/css/default.css}">
     <link rel="stylesheet" th:href="@{/css/timepicki.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script th:src="@{/js/timepicki.js}"></script>
@@ -192,7 +193,7 @@
 
         <!-- 인기 게시글 섹션 -->
         <div class="py-3 flex items-center gap-3">
-            <span class="text-base text-gray-600 flex items-center gap-1">🔥 인기게시글</span>
+            <span class="text-base text-gray-600 flex items-center gap-1"><img src="https://img.icons8.com/?size=100&id=18515&format=png&color=000000" class="w-7"> 인기게시글</span>
             <div class="popular-content-bubble relative h-12 overflow-hidden bg-[#f8f9fa] rounded-3xl flex-1">
                 <!-- DB에서 불러올 인기게시글 목록이 없는 경우 -->
                 <div th:if="${#lists.isEmpty(@mainService.getPopularBoardList())}"
@@ -205,10 +206,10 @@
                      th:each="board, iterStat : ${@mainService.getPopularBoardList()}"
                      th:if="${iterStat.index < 3}">
                     <a th:href="@{/board/{board_type}/{board_id}(board_type=${board.board_type}, board_id=${board.board_id})}"
-                       class="flex justify-between items-center w-full px-4 no-underline text-inherit">
+                       class="flex items-center w-[93%] px-4 no-underline text-inherit">
                         <span class="text-base text-gray-800 flex-1 whitespace-nowrap overflow-hidden text-ellipsis mr-3" th:text="${board.title}"></span>
-                            <span class="text-sm text-gray-600 whitespace-nowrap flex items-center gap-1">
-                            👍 <span th:text="${board.like_count}"></span>
+                        <span class="text-sm text-gray-600 whitespace-nowrap flex items-center gap-1 w-6">
+                            <img src="https://img.icons8.com/?size=100&id=Q3aHfaU0fLSX&format=png&color=000000"> <span th:text="${board.like_count}" class="text-lg"></span>
                         </span>
                     </a>
                 </div>
@@ -242,7 +243,7 @@
                 <div class="flex-1 p-4 bg-[#f8f9fa] rounded-2xl flex flex-col gap-2">
                     <div class="flex items-center gap-2">
                             <span class="w-8 h-8 bg-[#f0f0f0] rounded-lg flex items-center justify-center text-lg flex-shrink-0">
-                                💸
+                                <img src="https://img.icons8.com/?size=100&id=54390&format=png&color=000000">
                             </span>
                         <div class="text-lg">월급까지</div>
                     </div>
@@ -251,7 +252,7 @@
                 <div class="flex-1 p-4 bg-[#f8f9fa] rounded-2xl flex flex-col gap-2">
                     <div class="flex items-center gap-2">
                             <span class="w-8 h-8 bg-[#f0f0f0] rounded-lg flex items-center justify-center text-lg flex-shrink-0">
-                                📉
+                                <img src="https://img.icons8.com/?size=100&id=102554&format=png&color=000000">
                             </span>
                         <div class="text-lg">이번주 평균 퇴사지수</div>
                     </div>
@@ -318,16 +319,10 @@
 
         <!-- Stress 섹션 -->
         <div class="py-4 stress-section">
-
             <div class="flex justify-between items-center mb-5">
                 <div class="text-2xl font-semibold mb-1">Stress</div>
-                <button class="time-settings-btn p-1 rounded-full hover:bg-gray-100 cursor-pointer">⚙️</button>
+                <button class="time-settings-btn p-1 rounded-full hover:bg-gray-100 cursor-pointer"><img src="https://img.icons8.com/?size=100&id=k0U3NLV5Dx73&format=png&color=000000" class="w-8"></button>
             </div>
-
-            <div class="stress-no-data hidden text-gray-600 text-sm text-center p-4 overview-card">
-                아직 기록된 퇴사지수가 없어요
-            </div>
-
             <div class="flex flex-row items-center gap-6 p-4 bg-[#f8f9fa] rounded-2xl">
                 <div class="relative">
                     <svg width="200" height="200" class="transform -rotate-90">
@@ -390,9 +385,7 @@
                             점심시간<span class="lunch-time time-value text-[#fbc159]"></span><br>
                             퇴근시간<span class="end-time time-value text-[#00a3ed]"></span>
                         </p>
-                        <div class="mt-3 text-center text-sm">
-                            남은 시간도 힘내세요! 💪
-                        </div>
+                        <div class="mt-3 text-center text-sm"></div>
                     </div>
 
                     <!-- 모바일 화면용 레이아웃 (PC에서 숨김) -->
@@ -403,9 +396,7 @@
                         <div class="mb-2">
                             <span>퇴근시간 <span class="end-time time-value text-[#00a3ed]"></span></span>
                         </div>
-                        <div class="text-sm">
-                            <span>남은 시간도 힘내세요! 💪</span>
-                        </div>
+                        <div class="text-sm"></div>
                     </div>
 
                 </div>
