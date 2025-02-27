@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Izikgram</title>
     <link th:href="@{/images/Logo.png}" rel="shortcut icon" type="image/x-icon">
+    <link rel="stylesheet" th:href="@{/css/default.css}">
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
     <script src="https://code.jquery.com/jquery-3.6.4.js"></script>
     <script th:src="@{/js/postDetail.js}"></script>
-    <link rel="stylesheet" th:href="@{/css/default.css}">
     <style type="text/tailwindcss">
         @theme {
             --color-main-sky-highlight: #00a3ed;
@@ -17,48 +17,45 @@
             --color-main-red-basic: #ff9898;
             --color-main-yellow-highlight: #fbc159ff;
             --color-main-yellow-basic: #fdd391;
+
+            /* gray-400*/
+            --color-light-text: oklch(0.704 0.04 256.788);
+            /* gray-600 */
+            --color-basic-text: oklch(0.446 0.043 257.281);
+            /* gray-900 */
+            --color-bold-text: oklch(0.208 0.042 265.755);
         }
     </style>
 </head>
+<body class="mobile-container bg-[#f0f0f0]">
+<div class="flex flex-col w-full md:w-[600px] md:mx-auto md:shadow-md bg-white min-h-screen pt-8 relative">
+    <div class="pt-20"><header th:replace="~{header :: header}" class="pt-4"></header></div>
+    <div class="px-10">
+        <!-- 페이지 제목, 정렬 옵션, 글쓰기 버튼을 일렬로 배치 -->
+        <div class="flex items-center justify-between pb-5 border-b border-gray-300">
+            <h2 th:text="${board_name}" class="text-[1.7rem] font-bold text-[#2C2C2C]">자유게시판</h2>
+            <input type="hidden" id="type" th:value="${board_type}">
 
-<body>
-<div class="mobile-container flex flex-col w-full  relative rounded-lg shadow-lg mx-auto bg-white">
-    <div class="pt-28"><header th:replace="~{header :: header}" class="pt-4"></header></div>
-    <div class="flex flex-col w-full max-w-6xl mx-auto px-10">
-
-        <!-- 게시판 메뉴 및 글쓰기 버튼 -->
-        <div class="bg-gray-100 rounded-lg p-4">
-            <div class="flex justify-between items-center">
-                <h2 th:text="${board_name}" class="text-xl md:text-2xl font-semibold text-gray-700">자유게시판</h2>
-                <input type="hidden" id="type" th:value="${board_type}">
+            <div class="flex items-center gap-3">
                 <!-- 정렬 옵션 -->
-                <select id="sortOptions" onchange="loadBoardList(this.value)" class="border-2 border-main-sky-highlight rounded-xl px-0 py-0 md:px-4 py-2 text-gray-500
-                    focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-main-sky-highlight
-                    hover:border-main-sky-basic
-                    focus-visible:outline-offset-2 focus-visible:outline-sky-800
-                    transition duration-300">
+                <select id="sortOptions" onchange="loadBoardList(this.value)" class="rounded-xl px-3 py-1.5 text-gray-500 transition duration-300">
                     <option value="newest">최신순</option>
                     <option value="oldest">오래된 순</option>
                     <option value="likes">좋아요 순</option>
                     <option value="comments">댓글 많은 순</option>
                 </select>
-
                 <!-- 글쓰기 버튼 -->
-                <a class=" py-2 rounded-md bg-main-sky-highlight px-3 py-1.5
-                    text-sm md:text-lg text-white shadow-xs hover:bg-sky-800 focus-visible:outline-2
-                    focus-visible:outline-offset-2 focus-visible:outline-sky-800"
+                <a class="rounded-md bg-main-sky-highlight px-3 py-1.5
+                            text-sm md:text-base text-white shadow-xs hover:bg-sky-800 focus-visible:outline-2
+                            focus-visible:outline-offset-2 focus-visible:outline-sky-800"
                    th:href="@{/board/postForm(board_type=${board_type})}"
-                   th:text="${board_name == '자유게시판' ? '글작성하기' :
-                        (board_name == '하소연 게시판' ? '하소연 작성하기' : '잘못된 요청이다.')}">
-                    글작성하기
+                   th:text="${board_name == '자유게시판' ? '이야기하기' :
+                                (board_name == '하소연 게시판' ? '하소연하기' : '잘못된 요청입니다.')}">
                 </a>
             </div>
         </div>
-
         <!-- 게시글 리스트 -->
-        <div id="boardList01" class="bg-gray-100 rounded-lg mt-4 p-4"></div>
-
-
+        <div id="boardList01"></div>
         <footer th:replace="~{footer :: footer}" class="pt-4 w-full"></footer>
     </div>
 </div>
@@ -103,37 +100,37 @@
             const timeAgoText = timeAgo(board.reg_date); // 날짜를 timeAgo 함수로 변환
 
             const boardHtml = `
-        <div class="bg-gray-100 rounded-lg mt-4 p-4">
-            <div class="flex flex-col">
+        <div class="rounded-lg">
+            <div class="flex flex-col w-full">
                 <!-- 게시글 리스트 -->
-                <div class="flex border-b border-gray-200 pb-4">
-                    <!-- 게시글 내용 -->
-                    <div class="flex-1 px-4">
-                        <a class="hover:text-main-sky-highlight inline-block max-w-xs md:max-w-sm lg:max-w-md truncate no-underline
-                            hover:no-underline text-lg md:text-xl"
-                           href="/board/${boardType}/${board.board_id}">
-                            ${board.title}
-                        </a>
-                        <p class="my-1 text-sm w-32 md:w-48 truncate">${board.content}</p>
-                        <span class="text-xs reg_date block md:inline">${timeAgoText}</span> <!-- 변환된 날짜 출력 -->
+                <div class="flex border-b border-gray-300 p-4 cursor-pointer hover:bg-gray-50"
+                     onclick="location.href='/board/${boardType}/${board.board_id}'">
+                    <div class="flex-1 pr-6">
+                        <div class="flex items-center gap-2">
+                            <span class="inline-block w-40 truncate text-xl">
+                                ${board.title}
+                            </span>
+                        </div>
+                        <p class="my-1 text-sm w-40 truncate">${board.content}</p>
+                        <span class="text-xs reg_date">${timeAgoText}</span>
                     </div>
-
-                    <!-- 좋아요, 싫어요, 댓글 -->
-                    <div class="px-4 flex flex-col items-end justify-center">
-                        <div class="flex items-center">
-                            <img src="https://img.icons8.com/?size=100&id=82788&format=png&color=000000"
-                                 alt="like" class="w-4 md:w-5 h-4 md:h-5">
-                            <span class="ml-2 text-main-red-highlight text-sm md:text-base">${board.like_count}</span>
-                        </div>
-                        <div class="flex items-center mt-1">
-                            <img src="https://img.icons8.com/?size=100&id=82788&format=png&color=000000"
-                                 alt="dislike" class="w-4 md:w-5 h-4 md:h-5 rotate-180">
-                            <span class="ml-2 text-main-sky-highlight text-sm md:text-base">${board.dislike_count}</span>
-                        </div>
-                        <div class="flex items-center mt-1">
-                            <img src="https://img.icons8.com/?size=100&id=6520&format=png&color=000000"
-                                 alt="comments" class="w-4 md:w-5 h-4 md:h-5">
-                            <span class="ml-2 text-sm md:text-base">${board.comment_count}</span>
+                    <div class="px-6">
+                        <div class="flex flex-col items-end">
+                            <div class="flex justify-between items-center w-full">
+                                <img src="https://img.icons8.com/?size=100&id=82788&format=png&color=000000"
+                                     alt="like" class="w-5 h-5">
+                                <span class="ml-2 text-main-red-highlight">${board.like_count}</span>
+                            </div>
+                            <div class="flex justify-between items-center w-full">
+                                <img src="https://img.icons8.com/?size=100&id=82788&format=png&color=000000"
+                                     alt="dislike" class="w-5 h-5 rotate-180 inline-block transform">
+                                <span class="ml-2 text-main-sky-highlight">${board.dislike_count}</span>
+                            </div>
+                            <div class="flex justify-between items-center w-full">
+                                <img src="https://img.icons8.com/?size=100&id=6520&format=png&color=000000"
+                                     alt="comments" class="w-5 h-5">
+                                <span class="ml-2">${board.comment_count}</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -143,8 +140,6 @@
             boardListContainer.append(boardHtml);
         });
     }
-
-
 </script>
 </body>
 </html>
