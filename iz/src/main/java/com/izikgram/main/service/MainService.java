@@ -18,12 +18,12 @@ public class MainService {
         return mainMapper.getPopularBoardList();
     }
 
-    // 참고로 getMonthlyFeeling, getMonthlyStress, getPayday 함수 no usages 아닙니당 쓰이는데 저렇게 나오네요
-    
-    public List<Map<String, Object>> getMonthlyFeeling(String member_id, String date) {
-        List<Map<String, Object>> feelingList = mainMapper.getMonthlyFeeling(member_id, date);
-        return feelingList;
+    public Integer getStressNum(String member_id) {  // int -> Integer로 변경
+        Integer stressNum = mainMapper.getStressNum(member_id);
+        return stressNum;  // null이 반환될 수 있음
     }
+
+    // 참고로 getMonthlyStress, getPayday 함수 no usages 아닙니당 쓰이는데 저렇게 나오네요
 
     public List<Map<String, Object>> getMonthlyStress(String member_id, String date) {
         List<Map<String, Object>> stressList = mainMapper.getMonthlyStress(member_id, date);
@@ -48,10 +48,5 @@ public class MainService {
 
     public String getEndTime(String member_id) {
         return mainMapper.getEndTime(member_id);
-    }
-
-    public Integer getStressNum(String member_id) {  // int -> Integer로 변경
-        Integer stressNum = mainMapper.getStressNum(member_id);
-        return stressNum;  // null이 반환될 수 있음
     }
 }

@@ -32,13 +32,10 @@ public interface MainMapper {
             "ORDER BY like_count DESC")
     List<Board> getPopularBoardList();
 
-    @Select("SELECT feeling_num, date FROM iz_member_stress_info " +
+    @Select("SELECT NULLIF(stress_num, 0) as stress_num FROM iz_member_stress_info " +  // NULLIF 추가
             "WHERE member_id = #{member_id} " +
-            "AND DATE_FORMAT(date, '%Y-%m') = #{date}")
-    List<Map<String, Object>> getMonthlyFeeling(
-            @Param("member_id") String member_id,
-            @Param("date") String date
-    );
+            "AND DATE_FORMAT(date, '%Y-%m-%d') = DATE_FORMAT(NOW(), '%Y-%m-%d')")
+    Integer getStressNum(@Param("member_id") String member_id);  // int -> Integer로 변경
 
     @Select("SELECT stress_num, date FROM iz_member_stress_info " +
             "WHERE member_id = #{member_id} " +
@@ -59,9 +56,4 @@ public interface MainMapper {
 
     @Select("SELECT end_time FROM iz_member WHERE member_id = #{member_id}")
     String getEndTime(@Param("member_id") String member_id);
-
-    @Select("SELECT NULLIF(stress_num, 0) as stress_num FROM iz_member_stress_info " +  // NULLIF 추가
-            "WHERE member_id = #{member_id} " +
-            "AND DATE_FORMAT(date, '%Y-%m-%d') = DATE_FORMAT(NOW(), '%Y-%m-%d')")
-    Integer getStressNum(@Param("member_id") String member_id);  // int -> Integer로 변경
 }
