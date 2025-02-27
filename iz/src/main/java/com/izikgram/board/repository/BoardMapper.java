@@ -17,30 +17,26 @@ public interface BoardMapper {
             "where board_type = #{board_type}")
     String getBoardName(@Param("board_type") int board_type);
 
-
-
     // 게시판 전체 조회
-    @Select("SELECT " +
-            "        b.*, " +
-            "        COALESCE(COUNT(c.comment_id), 0) AS comment_count " +
-            "    FROM iz_board_type t " +
-            "    JOIN iz_board01 b ON t.board_type = b.board_type " +
-            "    LEFT JOIN iz_board01_comment c ON b.board_id = c.board_id " +
-            "    WHERE t.board_type = #{board_type} " +
-            "    GROUP BY b.board_id " +
-            "    ORDER BY b.board_id DESC")
-    List<BoardDto> getBoard01(@Param("board_type") int board_type);
-
-    @Select("SELECT " +
-            "        b.*, " +
-            "        COALESCE(COUNT(c.comment_id), 0) AS comment_count " +
-            "    FROM iz_board_type t " +
-            "    JOIN iz_board02 b ON t.board_type = b.board_type " +
-            "    LEFT JOIN iz_board02_comment c ON b.board_id = c.board_id " +
-            "    WHERE t.board_type = #{board_type} " +
-            "    GROUP BY b.board_id " +
-            "    ORDER BY b.board_id DESC")
-    List<BoardDto> getBoard02(@Param("board_type") int board_type);
+    @Select("<script>" +
+            "SELECT b.*, COALESCE(COUNT(c.comment_id), 0) AS comment_count " +
+            "FROM iz_board0${board_type} b " +
+            "LEFT JOIN iz_board0${board_type}_comment c ON b.board_id = c.board_id " +
+            "WHERE b.board_type = #{board_type} " +
+            "GROUP BY b.board_id " +
+            "<if test='sort != null'>" +
+            "    <choose>" +
+            "        <when test='sort == \"newest\"'> ORDER BY b.reg_date DESC </when>" +
+            "        <when test='sort == \"oldest\"'> ORDER BY b.reg_date ASC </when>" +
+            "        <when test='sort == \"likes\"'> ORDER BY b.like_count DESC </when>" +
+            "        <when test='sort == \"comments\"'> ORDER BY comment_count DESC </when>" +
+            "    </choose>" +
+            "</if>" +
+            "</script>")
+    List<BoardDto> getBoardList(
+            @Param("board_type") int board_type,
+            @Param("sort") String sort
+    );
 
     // 글작성
     @Insert("insert into iz_board01(writer_id,title,content,board_type) " +
@@ -255,43 +251,6 @@ public interface BoardMapper {
     // 인기 게시판 삭제
     @Delete("DELETE FROM iz_board_popular")
     void deletePopularBoards();
-
-    // 인기 게시판 삽입
-    /*
-    DELIMITER $$
-
-    CREATE EVENT update_popular_boards_event
-    ON SCHEDULE EVERY 1 DAY
-    STARTS TIMESTAMP(CURRENT_DATE + INTERVAL 1 DAY)
-    DO
-    BEGIN
-        DELETE FROM iz_board_popular;
-
-        INSERT INTO iz_board_popular (board_id, board_type, like_count)
-        SELECT board_id, board_type, like_count
-        FROM (
-            SELECT board_id, 1 AS board_type, like_count
-            FROM iz_board01
-            ORDER BY like_count DESC
-            LIMIT 3
-        ) AS top_posts1
-
-        UNION ALL
-
-        SELECT board_id, 2 AS board_type, like_count
-        FROM (
-            SELECT board_id, 2 AS board_type, like_count
-            FROM iz_board02
-            ORDER BY like_count DESC
-            LIMIT 3
-        ) AS top_posts2
-        ORDER BY like_count DESC
-        LIMIT 3;
-    END $$
-
-    DELIMITER ;
-
-     */
 
     // 좋아요가 5개 이상인 게시글을 조회
     @Select("""
