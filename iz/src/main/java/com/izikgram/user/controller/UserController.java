@@ -3,14 +3,13 @@ package com.izikgram.user.controller;
 import com.izikgram.global.security.CustomUserDetails;
 import com.izikgram.job.entity.Job;
 import com.izikgram.job.service.JobService;
-import com.izikgram.user.entity.PasswordDTO;
+import com.izikgram.user.dto.PasswordDTO;
 import com.izikgram.user.entity.User;
 import com.izikgram.user.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.validator.internal.constraintvalidators.bv.number.sign.NegativeOrZeroValidatorForBigDecimal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -98,38 +97,9 @@ public class UserController {
         return "user/findPwResult";
     }
 
-//    @PostMapping("/resetPw")
-//    public ResponseEntity<?> resetPw(@RequestParam String password, HttpSession session, BindingResult bindingResult) {
-//        String member_id = (String) session.getAttribute("member_id");
-////        log.info("member_id: {}", member_id);
-////        log.info("password: {}", password);
-//
-//        if (member_id == null) {
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("세션 만료. 다시 로그인하세요.");
-//        }
-//        log.info("bindingResult: {}", bindingResult);
-//        if (bindingResult.hasErrors()) {
-//            Map<String, String> errors = bindingResult.getFieldErrors().stream()
-//                    .collect(Collectors.toMap(
-//                            error -> error.getField(),
-//                            error -> error.getDefaultMessage()
-//                    ));
-//
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
-//        }
-//
-//        String encodePw = passwordEncoder.encode(password);
-//        userService.updatePassword(member_id, encodePw);
-//
-//        return ResponseEntity.ok("비밀번호 변경 성공");
-//    }
-
     @PostMapping("/resetPw")
     public ResponseEntity<?> resetPw(@Valid @RequestBody PasswordDTO passwordDTO, BindingResult bindingResult, HttpSession session) {
         String member_id = (String) session.getAttribute("member_id");
-//        log.info("member_id: {}", member_id);
-//        log.info("password: {}", password);
-//        log.info("bindingResult: {}", bindingResult);
 
         if (member_id == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("세션 만료. 다시 로그인하세요.");

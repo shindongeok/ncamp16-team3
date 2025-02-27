@@ -1,4 +1,4 @@
-package com.izikgram.user.entity;
+package com.izikgram.user.dto;
 
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
