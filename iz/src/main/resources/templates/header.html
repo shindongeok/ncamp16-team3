@@ -1,4 +1,3 @@
-<!-- header fragment (paste.txt) 수정 -->
 <div th:fragment="header" class="fixed top-0 z-10 w-full md:w-[600px]" xmlns:sec="http://www.w3.org/1999/xhtml">
     <!-- 헤더 부분 -->
     <div class="bg-white">
@@ -122,6 +121,12 @@
                 target.style.opacity = '0';
                 target.style.visibility = 'hidden';
 
+                // 푸터(챗봇 아이콘) z-index 복원
+                let chatbotIcon = document.querySelector('.fixed.bottom-5.right-5, #chatbotIcon');
+                if (chatbotIcon) {
+                    chatbotIcon.style.zIndex = '50';
+                }
+
                 setTimeout(function() {
                     target.style.display = 'none';
                 }, 300); // 트랜지션 시간 후에 display none 설정
@@ -130,6 +135,12 @@
             function openTop() {
                 let target = document.getElementById('slidePanel');
                 let sidebar = document.getElementById('sidebar');
+
+                // 푸터(챗봇 아이콘) z-index 낮추기
+                let chatbotIcon = document.querySelector('.fixed.bottom-5.right-5, #chatbotIcon');
+                if (chatbotIcon) {
+                    chatbotIcon.style.zIndex = '1'; // 사이드바의 z-index(50)보다 확실히 낮게 설정
+                }
 
                 // 사이드바 높이를 화면 높이에 맞게 조정
                 sidebar.style.height = window.innerHeight + 'px';
@@ -148,6 +159,24 @@
                 let sidebar = document.getElementById('sidebar');
                 if (sidebar && document.getElementById('slidePanel').style.display !== 'none') {
                     sidebar.style.height = window.innerHeight + 'px';
+                }
+            });
+
+            // 페이지 로드 시 실행
+            document.addEventListener('DOMContentLoaded', function() {
+                // 푸터 챗봇 아이콘의 z-index 초기화
+                let chatbotIcon = document.querySelector('.fixed.bottom-5.right-5, #chatbotIcon');
+                if (chatbotIcon) {
+                    chatbotIcon.style.zIndex = '50';
+                }
+
+                // 슬라이드 패널 상태 확인 및 챗봇 아이콘 z-index 조정
+                let slidePanel = document.getElementById('slidePanel');
+                if (slidePanel && slidePanel.style.display !== 'none' && slidePanel.style.opacity !== '0') {
+                    // 사이드바가 열려있는 상태면 챗봇 아이콘 z-index 낮추기
+                    if (chatbotIcon) {
+                        chatbotIcon.style.zIndex = '30';
+                    }
                 }
             });
         </script>
