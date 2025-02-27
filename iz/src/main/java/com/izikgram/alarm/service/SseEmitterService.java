@@ -13,14 +13,14 @@ public class SseEmitterService {
     @Autowired
     private SseEmitterRepository sseEmitterRepository;
 
-    public SseEmitter subscribe(String member_id, String lastEventId) {
+    public SseEmitter subscribe(String member_id) {
 
         // 1. 현재 클라이언트를 위한 sseEmitter 객체 생성
         SseEmitter sseEmitter = new SseEmitter(Long.MAX_VALUE);
 
         // 2. 연결
         try {
-            sseEmitter.send(SseEmitter.event().name("connect"));
+            sseEmitter.send(SseEmitter.event().name("subscribe"));
         } catch (IOException e) {
             e.printStackTrace();
         }
