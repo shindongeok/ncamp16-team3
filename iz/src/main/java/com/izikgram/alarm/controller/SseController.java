@@ -24,7 +24,7 @@ public class SseController {
 
         String member_id = userDetails.getUser().getMember_id();
 
-        SseEmitter sseEmitter = sseEmitterService.subscribe(member_id, null);
+        SseEmitter sseEmitter = sseEmitterService.subscribe(member_id);
 
         return ResponseEntity.ok(sseEmitter);
     }

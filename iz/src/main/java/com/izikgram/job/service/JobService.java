@@ -240,15 +240,16 @@ public class JobService {
         }
     }
 
-    // 채용공고 스크랩 눌렀을 때, 확인 후 알람 전송
     private void checkScrapAndSendAlarm(JobDto jobDto, String member_id) {
-        // 스크랩한 공고 리스트 반환
-        AlarmJob AlarmScrap = jobMapper.getAlarmScrapList(jobDto.getId(), member_id);
-        log.info("AlarmScrap = {}", AlarmScrap);
-        if(AlarmScrap == null) {
-            String content = "[" + jobDto.getCompanyName() + "] 의 채용공고를 스크랩 했습니다.";
-            sseEmitterService.ScrapSend(member_id, content);
+        // 스크랩한 공고 리스트 반환 - null이면 처음 스크랩하는 것
+        AlarmJob alarmScrap = jobMapper.getAlarmScrapList(jobDto.getId(), member_id);
+        log.info("AlarmScrap = {}", alarmScrap);
 
+        // 처음 스크랩하는 경우에만 알림 전송
+        if(alarmScrap == null) {
+            String content = "[" + jobDto.getCompanyName() + "] 의 채용공고를 스크랩 했습니다.";
+
+            // 알림 데이터 저장
             alarmService.ScrapSave(
                     member_id,
                     jobDto.getId(),
@@ -256,6 +257,18 @@ public class JobService {
                     jobDto.getExpirationTimestamp(),
                     content
             );
+
+            // 실시간 알림 전송 시도 (실패해도 데이터는 저장됨)
+            try {
+                sseEmitterService.ScrapSend(member_id, content);
+            } catch (Exception e) {
+                // 실패하더라도 기능에는 영향 없음 - 경고 수준 로그
+                log.warn("실시간 알림 전송 실패 (첫 스크랩 알림): {}", e.getMessage());
+            }
+        } else {
+            // 이미 스크랩한 적이 있는 경우 - 알림 없음
+            log.debug("이미 스크랩한 공고입니다. 알림을 보내지 않습니다. jobId: {}, memberId: {}",
+                    jobDto.getId(), member_id);
         }
     }
 
