@@ -126,9 +126,45 @@ function showStressTooltip(event) {
 
     // 툴팁 위치 계산
     const rect = dateElement.getBoundingClientRect();
+    const tooltipWidth = 160; // 40px * 4 = 160px (w-40)
 
-    tooltip.style.left = `${rect.left + rect.width/2 - 80}px`; // 툴팁 중앙 정렬
-    tooltip.style.top = `${rect.bottom + window.scrollY + 10}px`; // 날짜 아래에 표시
+    // 메인 컨테이너 너비 가져오기
+    const mainContainer = document.querySelector('.flex.flex-col.w-full.md\\:w-\\[600px\\].md\\:mx-auto');
+    const containerRect = mainContainer.getBoundingClientRect();
+    const containerLeft = containerRect.left;
+    const containerRight = containerRect.right;
+
+    // 기본 위치 계산 (날짜 요소 중앙 아래)
+    let leftPosition = rect.left + rect.width/2 - tooltipWidth/2;
+
+    // 왼쪽 경계 체크 및 조정
+    if (leftPosition < containerLeft + 10) {
+        leftPosition = containerLeft + 10; // 컨테이너 왼쪽 경계에서 10px 띄움
+    }
+
+    // 오른쪽 경계 체크 및 조정
+    if (leftPosition + tooltipWidth > containerRight - 10) {
+        leftPosition = containerRight - tooltipWidth - 10; // 컨테이너 오른쪽 경계에서 10px 띄움
+    }
+
+    // 툴팁 배치
+    tooltip.style.left = `${leftPosition}px`;
+    tooltip.style.top = `${rect.bottom + window.scrollY + 10}px`;
+
+    // 화살표 위치 조정 (툴팁이 경계에 맞춰 이동했을 때 화살표 위치 보정)
+    const arrow = tooltip.querySelector('.absolute.-top-5');
+    if (arrow) {
+        const arrowCenter = rect.left + rect.width/2;
+        const tooltipCenter = leftPosition + tooltipWidth/2;
+        const arrowOffset = arrowCenter - tooltipCenter;
+
+        // 화살표 위치 조정 (최대 조정 범위 제한)
+        const maxOffset = tooltipWidth/2 - 20; // 20px은 화살표 너비의 절반 정도
+        const clampedOffset = Math.max(Math.min(arrowOffset, maxOffset), -maxOffset);
+
+        // 화살표 위치 재설정
+        arrow.style.left = `calc(50% + ${clampedOffset}px)`;
+    }
 
     // body에 툴팁 추가
     document.body.appendChild(tooltip);
