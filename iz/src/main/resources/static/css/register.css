@@ -1,9 +1,9 @@
 @media screen and (max-width: 599px) {
     /* button */
     #sendSmsBtn, #checkButton {
-        height: 2.5em;
+        height: 2em;
         width: 8em;
-        padding-top: 0.6em;
+        padding-top: 0.3em;
     }
 
     .findResultBtn {
@@ -42,7 +42,7 @@
         font-size: 1em;
     }
     .time_pick {
-        width: 90%;
+        width: 100%;
     }
 
     /* timeDiv2 */
@@ -113,7 +113,10 @@
     #password2,
     #phone_num,
     #birth_date,
-    #email,
+    #email {
+        font-size: 0.8em;
+    }
+
     #loc_mod {
         font-size: 1em;
     }

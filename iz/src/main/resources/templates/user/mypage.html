@@ -99,8 +99,7 @@
     </style>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // DB에서 가져올 stress_num 값 (예시: 75)
-            const stressNum = [[${#authentication.getPrincipal().getStress().getStress_num()}]];  // Thymeleaf 값 삽입
+            const stressNum = [[${stressNum}]];
 
             // 게이지 요소와 텍스트 요소 가져오기
             const gaugeElement = document.getElementById('gauge-progress');
@@ -195,11 +194,11 @@
             <div class="text-center mb-6">
                 <div sec:authorize="isAuthenticated()">
                     <div th:text="${#authentication.getPrincipal().getUser().getNickname()}" class="text-2xl font-bold text-gray-800 mb-1">nickname</div>
-                    <div th:text="${#authentication.getPrincipal().getUser().getIntro()}" class="text-gray-600 italic mb-6">자기소개</div>
+                    <div th:text="${#authentication.getPrincipal() != null && #authentication.getPrincipal().getUser().getIntro() != null ? #authentication.getPrincipal().getUser().getIntro() : '자기소개를 써주세요'}" class="text-gray-600 italic mb-6">자기소개</div>
                 </div>
             </div>
 
-            <div class="bg-[#f8f9fa] rounded-2xl p-8 mb-10">
+            <div class="bg-[#f8f9fa] rounded-2xl pt-8 pb-8 p-4 mb-10">
                 <div class="w-full p-4 border border-gray-200 rounded-xl bg-white shadow-md transition-shadow hover:shadow-lg mb-6">
                     <div class="space-y-6">
                         <div class="flex items-center gap-4">
@@ -213,7 +212,7 @@
                                 <div class="bg-blue-100 p-3 rounded-lg">
                                     <img th:src="@{/images/email.png}" class="w-6 h-6" alt="이메일">
                                 </div>
-                                <div th:text="${#authentication.getPrincipal().getUser().getEmail()}" class="text-gray-700 font-medium">이메일</div>
+                                <div th:text="${#authentication.getPrincipal().getUser().getEmail()}" class="truncate text-gray-700 font-medium">이메일</div>
                             </div>
                         </div>
                         <div>
