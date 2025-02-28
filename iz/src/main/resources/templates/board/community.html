@@ -95,9 +95,17 @@
     function renderBoardList(boardList, boardType) {
         const boardListContainer = $('#boardList01');
         boardListContainer.empty();  // 기존 내용 비우기
+        console.log(boardList.length);
+        const boardHtml = `
+            <div th:if="${boardList.length == 0}" class="p-10 text-center text-gray-500">
+                게시판에 글이 없습니다.
+            </div>
+        `;
+        boardListContainer.append(boardHtml);
 
         boardList.forEach(function (board) {
             const timeAgoText = timeAgo(board.reg_date); // 날짜를 timeAgo 함수로 변환
+            boardListContainer.empty();  // 기존 내용 비우기
 
             const boardHtml = `
         <div class="rounded-lg">

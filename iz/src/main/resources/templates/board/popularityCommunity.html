@@ -35,12 +35,16 @@
                 </div>
             </div>
 
-            <div class="h-120">
+            <div class="h-full">
                 <!-- 자유 게시판 -->
                 <div class="rounded-lg pb-4 w-auto">
                     <div class="flex justify-between items-center border-b border-gray-300">
                         <h2 class="text-2xl font-semibold text-gray-700 pb-4 pl-4">자유 게시판</h2>
                     </div>
+                </div>
+
+                <div th:if="${issueBoardList01.isEmpty()}" class="p-10 text-center text-gray-500">
+                    현재 인기글이 없습니다.
                 </div>
 
                 <!-- 게시글 리스트 -->
@@ -91,6 +95,10 @@
                 <div class="flex justify-between items-center border-b border-gray-300">
                     <h2 class="text-2xl font-semibold text-gray-700 pb-4 pl-4">하소연 게시판</h2>
                 </div>
+            </div>
+
+            <div th:if="${issueBoardList02.isEmpty()}" class="p-10 text-center text-gray-500">
+                현재 인기글이 없습니다.
             </div>
 
             <!-- 게시글 리스트 -->
