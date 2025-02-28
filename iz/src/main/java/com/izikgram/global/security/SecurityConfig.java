@@ -17,10 +17,11 @@ public class SecurityConfig {
 
     private final CustomLoginSuccessHandler loginSuccessHandler;
 
-//    private CorsConfig corsConfig;
+    private CorsConfig corsConfig;
 
-    public SecurityConfig(CustomLoginSuccessHandler loginSuccessHandler) {
+    public SecurityConfig(CustomLoginSuccessHandler loginSuccessHandler, CorsConfig corsConfig) {
         this.loginSuccessHandler = loginSuccessHandler;
+        this.corsConfig = corsConfig;
     }
 
     @Bean
@@ -32,7 +33,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-//                .cors(cors -> cors.configurationSource(corsConfig.corsConfigurationSource())) // CORS 설정
+                .cors(cors -> cors.configurationSource(corsConfig.corsConfigurationSource())) // CORS 설정
                 .csrf(csrf -> csrf.disable()) // CSRF 비활성화 (SSE 때문에 비활성화 해야함)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/login", "/user/findId", "/user/findIdResult", "/user/findPw", "/user/findPwResult", "/user/register", "/user/checkId/**", "/user/resetPw").permitAll() // 로그인 없이 접근 가능
