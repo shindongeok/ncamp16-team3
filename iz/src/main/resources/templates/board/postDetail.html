@@ -35,7 +35,7 @@
                 padding: 0.5em 1em;
             }
         }
-        
+
         .comment-content-text {
             white-space: pre-line; /* 줄바꿈을 유지하도록 */
         }
@@ -162,7 +162,7 @@
                 목록으로
             </a>
         </div>
-
+<!--    ===========================================-->
         <!-- 게시글 삭제 모달 -->
         <div id="boardDeleteModal" class="relative z-10 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
             <!-- 배경 오버레이 -->
@@ -201,34 +201,40 @@
             </div>
         </div>
 
-        <!-- 댓글 삭제 모달 창 -->
         <div id="communityDeleteModal" class="relative z-10 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-            <div class="fixed inset-0 bg-gray-500/75 transition-opacity max-w-[600px] mx-auto left-0 right-0"></div>
+            <!-- 배경 오버레이 -->
+            <div class="fixed inset-0 bg-gray-500/75 transition-opacity"></div>
+
+            <!-- 모달 컨테이너 -->
             <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
-                <div class="flex min-h-full items-center justify-center p-4 text-center sm:items-center sm:p-0">
-                    <div class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
-                        <div class="bg-main-sky-highlight sm:p-4 sm:pb-4">
-                            <div class="sm:flex sm:items-start">
-                                <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                                    <h3 class="text-2xl font-semibold text-gray-900 p-2" >삭제하시겠습니까?</h3>
-                                </div>
-                            </div>
+                <div class="flex min-h-full items-center justify-center p-4">
+                    <!-- 모달 콘텐츠 -->
+                    <div class="relative transform overflow-hidden rounded-lg bg-white shadow-xl transition-all sm:max-w-md w-full">
+                        <!-- 모달 헤더 -->
+                        <div class="bg-main-sky-highlight p-5 border-b">
+                            <h3 class="text-xl font-semibold text-gray-900 text-center">삭제하시겠습니까?</h3>
                         </div>
-                        <!-- 모달 버튼 영역 -->
-                        <div class="px-4 pt-20 pb-5 sm:flex sm:flex-row-reverse sm:px-6">
-                            <button id="confirmDelete" onclick="deleteComment(this)"  class="inline-flex w-full justify-center rounded-md bg-main-sky-basic px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-main-sky-highlight sm:ml-3 sm:w-auto">
-                                삭제
-                            </button>
-                            <button type="button" onclick="CloseDeleteModal()" class="mt-3 inline-flex w-full justify-center rounded-md bg-main-sky-basic px-3 py-2 text-sm font-semibold text-gray-900 ring-1 shadow-xs ring-gray-300 ring-inset hover:bg-gray-50 sm:mt-0 sm:w-auto">
-                                취소
-                            </button>
+
+                        <!-- 모달 본문 및 버튼 -->
+                        <div class="p-6">
+                            <p class="text-center text-gray-600 mb-6">이 게시글을 삭제하면 복구할 수 없습니다.</p>
+
+                            <div class="flex justify-center space-x-4 mt-4">
+                                <button type="button" onclick="CloseDeleteModal()" class="inline-flex justify-center rounded-md bg-white px-5 py-2 text-sm font-semibold text-gray-900 ring-1 ring-gray-300 ring-inset hover:bg-gray-50">
+                                    취소
+                                </button>
+                                <button id="confirmDelete" onclick="deleteComment(this)"  class="inline-flex justify-center rounded-md bg-main-sky-basic px-5 py-2 text-sm font-semibold text-white hover:bg-main-sky-highlight">
+                                    삭제
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
+    </div>
+<!-- =================================================-->
     <!-- 댓글 입력 모달창 -->
     <div id="updateModal" class="relative z-10 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
         <div class="fixed inset-0 bg-gray-500/75 transition-opacity max-w-[600px] mx-auto left-0 right-0"></div>
