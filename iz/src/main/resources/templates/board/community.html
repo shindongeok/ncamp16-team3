@@ -33,19 +33,19 @@
     <div class="px-10">
         <!-- 페이지 제목, 정렬 옵션, 글쓰기 버튼을 일렬로 배치 -->
         <div class="flex items-center justify-between pb-5 border-b border-gray-300">
-            <h2 th:text="${board_name}" class="text-[1.7rem] font-bold text-[#2C2C2C]">자유게시판</h2>
+            <h2 th:text="${board_name}" class="md:text-[1.7rem] text-[1rem] font-bold text-[#2C2C2C]">자유게시판</h2>
             <input type="hidden" id="type" th:value="${board_type}">
 
             <div class="flex items-center gap-3">
                 <!-- 정렬 옵션 -->
-                <select id="sortOptions" onchange="loadBoardList(this.value)" class="rounded-xl px-3 py-1.5 text-gray-500 transition duration-300">
+                <select id="sortOptions" onchange="loadBoardList(this.value)" class="rounded-xl px-3 py-1.5 text-gray-500 transition duration-300 md:w-[100px]">
                     <option value="newest">최신순</option>
                     <option value="oldest">오래된 순</option>
                     <option value="likes">좋아요 순</option>
                     <option value="comments">댓글 많은 순</option>
                 </select>
                 <!-- 글쓰기 버튼 -->
-                <a class="rounded-md bg-main-sky-highlight px-3 py-1.5
+                <a class="text-[0.75rem] rounded-md bg-main-sky-highlight px-3 py-1.5
                             text-sm md:text-base text-white shadow-xs hover:bg-sky-800 focus-visible:outline-2
                             focus-visible:outline-offset-2 focus-visible:outline-sky-800"
                    th:href="@{/board/postForm(board_type=${board_type})}"

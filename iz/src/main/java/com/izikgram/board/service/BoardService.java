@@ -40,7 +40,7 @@ public class BoardService {
 
     // 게시판 리스트조회
     public List<BoardDto> getBoardList(int boardType, String sort) {
-        // MyBatis 매퍼 메서드 호출
+
         return boardMapper.getBoardList(boardType, sort);
     }
 

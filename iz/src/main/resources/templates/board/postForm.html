@@ -6,14 +6,8 @@
     <title>Izikgram</title>
     <link th:href="@{/images/Logo.png}" rel="shortcut icon" type="image/x-icon">
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/default.css}">
     <style type="text/tailwindcss">
-        /*.font-roboto {*/
-        /*    font-family: "Roboto", serif;*/
-        /*}*/
 
         @theme {
             --color-main-sky-highlight: #00a3ed;
@@ -29,7 +23,7 @@
 <div class="flex flex-col w-full mobile-container pt-8 relative bg-white rounded-lg shadow-lg mx-auto">
     <div class="pt-28"><header th:replace="~{header :: header} " class="pt-4"></header></div>
     <div class="flex  justify-center min-h-screen ">
-        <div class="w-1000 max-w-lg p-8 bg-white shadow-2xl rounded-lg">
+        <div class="w-1000 max-w-lg px-8 pb-8 bg-white">
 
             <h1 class="text-2xl font-bold text-gray-900 mb-4 text-center"
                 th:text="${board_name == '자유게시판' ? '자유글 작성하기' :
@@ -45,14 +39,12 @@
                         placeholder="제목을 입력하세요"
                         class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2
                             focus:ring-main-sky-basic focus:border-transparent outline-none"
-                        maxlength="45"
+                        maxlength="31"
                 >
-
                 <!-- 내용 입력 -->
                 <textarea id="content" name="content"
                           class="w-full md:h-100 h-60 px-4 py-3 border border-gray-300 rounded-lg
                               focus:ring-2 focus:ring-main-sky-basic focus:border-transparent outline-none resize-none"
-
                           placeholder="내용을 입력하세요"
                 ></textarea>
 
