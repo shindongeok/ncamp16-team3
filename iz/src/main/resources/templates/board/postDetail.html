@@ -17,6 +17,17 @@
             --color-main-yellow-basic: #fdd391;
         }
 
+        .comment-content-text {
+            white-space: pre-line; /* 줄바꿈을 유지하도록 */
+        }
+
+        .overflow-hidden {
+            overflow: hidden;
+        }
+
+        .max-h-24 {
+            max-height: 6rem; /* 댓글 내용의 최대 높이 설정 */
+        }
     </style>
 </head>
 <body>
@@ -76,14 +87,20 @@
         <div class="mt-8 flex space-x-2">
             <input type="hidden" id="boardIdd" th:value="${board.board_id}">
             <input type="hidden" id="boardTypee" th:value="${board.board_type}">
-            <input id="commentContent" type="text" placeholder="댓글을 입력해주세요."
-                   class="flex-grow border border-gray-300 rounded-md p-3 focus:ring-2 focus:ring-blue-400 outline-none"
-                   onkeydown="checkEnter(event)">
+
+            <!-- 텍스트 에어리어로 변경 -->
+            <textarea id="commentContent" placeholder="댓글을 입력해주세요."
+                      class="h-20 flex-grow border border-gray-300 rounded-md p-3 focus:ring-2 focus:ring-blue-400 outline-none resize-none overflow-hidden"
+                      onkeydown="checkEnter(event)" oninput="autoResize(this)"></textarea>
+
             <button type="button" onclick="saveComment()" class="px-4 py-3 bg-main-sky-highlight hover:bg-main-sky-basic
-                        text-white rounded-lg transition whitespace-nowrap cursor-pointer">
+            text-white rounded-lg transition whitespace-nowrap cursor-pointer">
                 댓글 등록
             </button>
         </div>
+
+
+
 
         <!-- 댓글 목록 -->
         <div class="comment-list mt-6 space-y-4">
@@ -93,25 +110,33 @@
                     <span class="reg_date" th:data-reg-date="${commentList.reg_date}">2025-02-24</span> <!-- 날짜 추가 -->
                 </div>
                 <div class="flex justify-between items-center mt-2">
-                    <input  id="inpuu" class="comment-input focus:outline-none p-2 text-sm font-black w-100"
-                            th:value="${commentList.comment_content}" readonly>
+                    <div class="comment-content w-full">
+                        <!-- 텍스트 영역에 댓글 내용 표시 -->
+                        <textarea id="inpuu" class="comment-input focus:outline-none p-2 text-sm font-black w-100 resize-none overflow-hidden"
+                                  th:text="${commentList.comment_content}" readonly></textarea>
+
+                        <!-- 더보기 버튼 -->
+                        <button type="button" class="text-blue-500 hover:text-blue-600 cursor-pointer" id="moreBtn" onclick="toggleComment(this)">
+                            더보기
+                        </button>
+                    </div>
                     <div class="space-x-2 w-40 text-right" th:if="${member_id == commentList.writer_id}">
-                        <button id="dd" type="button" onclick="editComment(event)" class="text-blue-500
-                                    hover:text-blue-600 cursor-pointer">
+                        <button id="dd" type="button" onclick="editComment(event)" class="text-blue-500 hover:text-blue-600 cursor-pointer">
                             수정
                         </button>
                         <input type="hidden" id="commentId" class="comment-id" th:value="${commentList.comment_id}"/>
                         <input type="hidden" id="boardIde" class="board-id" th:value="${commentList.board_id}"/>
-                        <input type="hidden" id="boardTypec" class="board-type" th:value="${board_type}"/>
-                        <input type="hidden" id="writerId"  class="writer-id" th:value="${commentList.writer_id}"/>
-                        <button type="button" class="text-red-500 hover:text-red-600 cursor-pointer"
-                                onclick="OpenDeleteModal(this)">
+                        <input type="hidden" id="boardTypeD" class="board-type" th:value="${board_type}"/>
+                        <input type="hidden" id="writerId" class="writer-id" th:value="${commentList.writer_id}"/>
+                        <button type="button" class="text-red-500 hover:text-red-600 cursor-pointer" onclick="OpenDeleteModal(this)">
                             삭제
                         </button>
                     </div>
                 </div>
             </div>
         </div>
+
+
 
 
         <div class="mt-8 mb-15 flex justify-end">
