@@ -1,16 +1,31 @@
 
 //게시글 작성 널값 확인
+function OpenUpdateModal(message) {
+    const modal = document.getElementById("postFormModal");
+    const modalMessage = document.getElementById("postFormModalMessage");
+
+    modalMessage.textContent = message;
+    modal.classList.remove("hidden");
+
+    setTimeout(CloseModal, 1000);
+}
+function CloseModal() {
+    document.getElementById("postFormModal").classList.add("hidden");
+}
+
 function PostFormInsertBut(){
     const title = document.getElementById("title").value.trim();
     const content = document.getElementById("content").value.trim();
 
     if(!title){
-        alert("제목을 입력해주세요!");
+        // alert("제목을 입력해주세요!");
+        OpenUpdateModal("제목 입력해야쥐~")
         return false;
     }
 
     if(!content){
-        alert("내용을 입력해주세요!!");
+        // alert("내용을 입력해주세요!!");
+        OpenUpdateModal("게시글 내용입력해야쥐~")
         return false;
     }
 }
@@ -61,7 +76,8 @@ function saveComment() {
     const boardType = document.getElementById('boardTypee').value;
 
     if (!content.trim()) {
-        alert('댓글 내용을 입력해주세요.');
+        // alert('댓글 내용을 입력해주세요.');
+        OpenDupdateModal("댓글을 입력하세요.");
         return;
     }
 
@@ -126,6 +142,17 @@ function CloseDeleteModal() {
     selectedComment = null;
 }
 
+// 게시글 삭제모달창
+function OpenDeleteModalBoard() {
+    document.getElementById("boardDeleteModal").classList.remove("hidden");
+}
+
+function CloseDeleteModalBoard() {
+    document.getElementById("boardDeleteModal").classList.add("hidden");
+}
+
+
+
 //댓글 삭제
 function deleteComment() {
     const commentId = selectedComment.querySelector("input[id='commentId']").value;
@@ -172,6 +199,21 @@ function deleteComment() {
 }
 
 //댓글 수정
+function OpenDupdateModal(message) {
+    const modal = document.getElementById("updateModal");
+    const modalMessage = document.getElementById("alarmModalM");
+
+    modalMessage.textContent = message;
+    modal.classList.remove("hidden");
+
+    setTimeout(CloseUpdateModal, 1000);
+}
+
+function CloseUpdateModal() {
+    document.getElementById("updateModal").classList.add("hidden");
+}
+
+
 function editComment(event) {
     const button = event.target;  // 클릭된 버튼
     const commentDiv = button.closest('.idBoard'); // 해당 댓글 요소 찾기
@@ -217,8 +259,10 @@ function editComment(event) {
     button.onclick = function() {
         const updatedContent = inputField.value;
 
+
         if (!updatedContent) {
-            alert("댓글을 입력하세요!");
+            // alert("댓글을 입력하세요!");
+            OpenDupdateModal("댓글을 입력하세요.");
             inputField.focus(); // 다시 입력할 수 있도록 포커스
             return; // 함수 종료
         }
@@ -244,8 +288,11 @@ function editComment(event) {
                     inputField.style.border = originalBorder;
 
                     button.innerText = '수정';
-                    button.onclick = editComment; // 다시 수정 가능하도록 원래 이벤트로 복구
-                    alert('댓글이 수정되었습니다.');
+                    button.onclick = editComment;
+
+
+                    OpenDupdateModal("수정했습니다.");
+                    // alert('댓글이 수정되었습니다.');
                 } else {
                     alert('댓글 수정 실패!');
                 }
@@ -259,11 +306,7 @@ function editComment(event) {
 
 
 
-function OpenDeleteModalBoard() {
-    document.getElementById("boardDeleteModal").classList.remove("hidden");
-}
+// 게시글 수정
 
-function CloseDeleteModalBoard() {
-    document.getElementById("boardDeleteModal").classList.add("hidden");
-}
+
 
