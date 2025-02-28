@@ -200,8 +200,8 @@ public class  BoardController {
     }
 
     // 내가 작성한 자유게시글 리스트
-    @GetMapping("/myBoard/feelMyBoard")
-    public String feelMyBoard(@AuthenticationPrincipal CustomUserDetails userDetails,
+    @GetMapping("/myBoard/freeMyBoard")
+    public String freeMyBoard(@AuthenticationPrincipal CustomUserDetails userDetails,
                               Model model){
 
         User user = userDetails.getUser();
@@ -212,7 +212,7 @@ public class  BoardController {
 
         model.addAttribute("myBoardList01",myBoardList01);
 
-        return "board/feelMyBoard";
+        return "board/freeMyBoard";
     }
 
     // 내가 작성한 하소연게시글 리스트
