@@ -393,13 +393,20 @@ function handleJobPostings() {
 // 입력창 클리어 기능 추가
 function handleGeneralChat(isEndingChat = false) {
     const userInput = document.getElementById('userInput');
+    if (userInput.disabled) return; // 이미 전송 중이면 실행 방지
+    userInput.disabled = true; // 입력창 비활성화 (중복 입력 방지)
+
     const message = isEndingChat ? "대화종료" : userInput.value.trim();
 
     // 메시지가 비어있고 대화종료가 아니면 함수 종료
-    if (!message && !isEndingChat) return;
+    if (!message && !isEndingChat) {
+        userInput.disabled = false;
+        return;
+    }
 
     if (!isEndingChat) {
         appendUserMessage(message);
+        userInput.value = '';
 
         // 메시지 전송 즉시 입력창 초기화 (API 응답을 기다리지 않고)
         userInput.value = '';
@@ -445,7 +452,7 @@ function handleGeneralChat(isEndingChat = false) {
             conversationHistory.push({ role: 'assistant', content: data.responseMessage });
 
             appendBotMessage(data.responseMessage); // 챗봇 응답 메시지 처리
-
+      
             // 응답 후 스크롤을 아래로 이동
             scrollToBottom();
         })
