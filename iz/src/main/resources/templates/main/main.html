@@ -36,12 +36,15 @@
         }
 
         .animate-slide {
-            animation: slide 9s infinite;
+            /*animation: slide 9s infinite;*/
+            animation-name: slide;
+            animation-timing-function: ease-in-out;
+            animation-iteration-count: infinite;
         }
 
-        .popular-content-bubble-item:nth-child(1) { animation-delay: 0s; }
-        .popular-content-bubble-item:nth-child(2) { animation-delay: 3s; }
-        .popular-content-bubble-item:nth-child(3) { animation-delay: 6s; }
+        /*.popular-content-bubble-item:nth-child(1) { animation-delay: 0s; }*/
+        /*.popular-content-bubble-item:nth-child(2) { animation-delay: 3s; }*/
+        /*.popular-content-bubble-item:nth-child(3) { animation-delay: 6s; }*/
 
         .calendar-date {
             font-size: 1.2rem;
@@ -113,6 +116,24 @@
                 overflow_minutes: true
             });
         });
+
+        // 전광판
+        document.addEventListener("DOMContentLoaded", function () {
+            const items = document.querySelectorAll(".popular-content-bubble-item");
+            const itemCount = items.length;
+
+            if (itemCount == 1) {
+                items[0].classList.remove("animate-slide");
+                items[0].style.opacity = "1";
+                items[0].style.transform = "translateY(-100%)";
+            } else {
+                const animationDuration = itemCount * 3; // 총 애니메이션 시간
+                items.forEach((item, index) => {
+                    item.style.animationDuration = animationDuration + "s";
+                    item.style.animationDelay = (index * 3) + "s";
+                });
+            }
+        });
     </script>
 </head>
 <body class="mobile-container bg-[#f0f0f0]">
@@ -141,14 +162,13 @@
                 <div class="popular-content-bubble-item absolute w-full h-full flex justify-between items-center opacity-0 translate-y-full animate-slide cursor-pointer"
                      th:unless="${#lists.isEmpty(@mainService.getPopularBoardList())}"
                      th:each="board, iterStat : ${@mainService.getPopularBoardList()}"
-                     th:if="${iterStat.index < 3}"
-                     th:classappend="|delay-[${iterStat.index * 200}ms]|">
+                     th:if="${iterStat.index < 3}">
                     <a th:href="@{/board/{board_type}/{board_id}(board_type=${board.board_type}, board_id=${board.board_id})}"
                        class="flex items-center w-[93%] px-4 no-underline text-inherit">
                         <span class="text-base text-gray-800 flex-1 whitespace-nowrap overflow-hidden text-ellipsis mr-3" th:text="${board.title}"></span>
                         <span class="text-sm text-gray-600 whitespace-nowrap flex items-center gap-1 w-6">
-                    <img src="https://img.icons8.com/?size=100&id=Q3aHfaU0fLSX&format=png&color=000000"> <span th:text="${board.like_count}" class="text-lg"></span>
-                </span>
+                            <img src="https://img.icons8.com/?size=100&id=Q3aHfaU0fLSX&format=png&color=000000"> <span th:text="${board.like_count}" class="text-lg"></span>
+                        </span>
                     </a>
                 </div>
             </div>
