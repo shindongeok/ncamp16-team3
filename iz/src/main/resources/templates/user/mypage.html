@@ -95,65 +95,7 @@
             padding-left: 4px;
         }
 
-        @keyframes cloudMove1 {
-            0% { transform: translateX(0); }
-            50% { transform: translateX(200px) translateY(-30px);}
-            100% { transform: translateX(0); }
-        }
 
-        @keyframes cloudMove2 {
-            0% { transform: translateX(0) translateY(0); }
-            50% { transform: translateX(-60px) translateY(30px); }
-            100% { transform: translateX(0) translateY(0); }
-        }
-
-        @keyframes cloudMove3 {
-            0% { transform: translateX(0); }
-            50% { transform: translateX(60px) translateY(-10px); }
-            100% { transform: translateX(0); }
-        }
-
-        @keyframes cloudMove4 {
-            0% { transform: translateX(0); }
-            50% { transform: translateX(40px) translateY(-10px); }
-            100% { transform: translateX(0); }
-        }
-
-        @keyframes cloudMove5 {
-            0% { transform: translateX(0); }
-            50% { transform: translateX(120px) translateY(-10px); }
-            100% { transform: translateX(0); }
-        }
-
-        @keyframes cloudMove6 {
-            0% { transform: translateX(0); }
-            50% { transform: translateX(100px) translateY(-10px); }
-            100% { transform: translateX(0); }
-        }
-
-        .animate-cloud1 {
-            animation: cloudMove1 13s infinite linear;
-        }
-
-        .animate-cloud2 {
-            animation: cloudMove2 8s infinite ease-in-out;
-        }
-
-        .animate-cloud3 {
-            animation: cloudMove3 9s infinite ease-in-out;
-        }
-
-        .animate-cloud4 {
-            animation: cloudMove4 11s infinite ease-in-out;
-        }
-
-        .animate-cloud5 {
-            animation: cloudMove5 10s infinite ease-in-out;
-        }
-
-        .animate-cloud6 {
-            animation: cloudMove6 8s infinite ease-in-out;
-        }
     </style>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -205,61 +147,35 @@
         });
     </script>
 </head>
-<body class="mobile-container relative">
-<div class="pt-12"><header th:replace="~{header :: header} " class="pt-4"></header></div>
-<footer th:replace="~{footer :: footer}" class="pt-4"></footer>
-<div class="flex items-center justify-center">
-    <div class="flex flex-col items-center w-full max-w-sm px-6 py-12">
-        <div class="relative w-full flex flex-col items-center mb-10">
+<body class="mobile-container bg-[#f0f0f0]">
+<div sec:authorize="isAuthenticated()" class="flex flex-col w-full md:w-[600px] md:mx-auto md:shadow-md bg-white min-h-screen pt-8 relative">
 
-            <div class="absolute bg-main-sky-basic -bottom-85 w-[400px] h-[320px] z-0 rounded-[20px]"></div>
-            <!-- 구름 1 -->
-            <div class="absolute top-10 left-[-100px] w-[200px] h-[100px] bg-white opacity-90 rounded-full
-                blur-lg animate-cloud1"></div>
-            <!-- 구름 2 -->
-            <div class="absolute top-40 left-[50%] w-[250px] h-[120px] bg-white opacity-80 rounded-full
-                blur-lg animate-cloud2"></div>
+    <div class="pt-20"><header th:replace="~{header :: header}" class="pt-4"></header></div>
 
-            <!-- 구름 3 -->
-            <div class="absolute top-80 left-[0%] w-[180px] h-[90px] bg-white opacity-80 rounded-full
-                blur-md animate-cloud3"></div>
+    <div class="px-10 md:px-10 max-md:px-4">
+        <!-- MyPage Content -->
+        <div class="w-full">
+            <h2 class="text-[1.7rem] font-bold text-[#2C2C2C] text-left mb-8">마이페이지</h2>
 
-            <!-- 구름 3 -->
-            <div class="absolute top-135 left-[40%] w-[180px] h-[50px] bg-white opacity-80 rounded-full
-                blur-md animate-cloud4"></div>
-
-            <!-- 구름 4 -->
-            <div class="absolute top-100 left-[40%] w-[250px] h-[80px] bg-white opacity-85 rounded-full
-                blur-lg animate-cloud5"></div>
-
-            <!-- 구름 5 -->
-            <div class="absolute top-170 left-[-130px] w-[250px] h-[80px] bg-white opacity-85 rounded-full
-                blur-lg animate-cloud6"></div>
-
-
-            <!-- 게이지와 프로필 이미지를 포함하는 컨테이너 -->
-            <div class="absolute top-15 flex items-center justify-center">
-                <!-- SVG 게이지 - 크기를 조정하고 중앙 정렬 -->
+            <div class="relative flex justify-center items-center mb-12">
                 <svg width="230" height="230" viewBox="0 0 230 230" class="absolute" style="z-index: 1;">
-                    <!-- 배경 원 (전체 게이지 틀) -->
                     <circle
                             cx="115"
                             cy="115"
                             r="100"
-                            stroke="#dddddd"
-                            stroke-width="12"
+                            stroke="#e6e6e6"
+                            stroke-width="14"
                             fill="none"
                             stroke-linecap="round"
                     />
 
-                    <!-- 진행도 원 (퇴사지수) -->
                     <circle
                             id="gauge-progress"
                             cx="115"
                             cy="115"
                             r="100"
-                            stroke="var(--color-main-red-highlight)"
-                            stroke-width="12"
+                            stroke="var(--color-main-red-highlight, #ff4d4d)"
+                            stroke-width="14"
                             fill="none"
                             stroke-linecap="round"
                             transform="rotate(-90, 115, 115)"
@@ -268,71 +184,74 @@
                     />
                 </svg>
 
-                <!-- 프로필 이미지 컨테이너 - 호버 효과를 위한 컨테이너 추가 -->
-                <div class="profile-image-container">
-                    <div id="stress-percent" class="font-bold">0%</div>
+                <div class="profile-image-container relative flex flex-col items-center justify-center">
+                    <div id="stress-percent" class="font-bold text-2xl absolute top-[70px] text-gray-700">0%</div>
                     <img src="/images/chillguy.png" th:src="@{/images/chillguy.png}"
-                         class="profile-image w-[185px] h-[185px] rounded-[200px] shadow-md"
+                         class="profile-image w-[185px] h-[185px] rounded-full shadow-lg object-cover border-4 border-white"
                          alt="사용자프로필 이미지">
                 </div>
             </div>
-        </div>
 
-        <div id="mypageDiv" class="mt-6 text-center mt-44 w-100 z-1">
-            <div class="mt-6 text-center mt-15">
+            <div class="text-center mb-6">
                 <div sec:authorize="isAuthenticated()">
-                    <div th:text="${#authentication.getPrincipal().getUser().getNickname()}" class="text-xl font-bold text-gray-800 mb-1">nickname</div>
-                    <div th:text="${#authentication.getPrincipal().getUser().getIntro()}" class="text-gray-600 italic mb-4">자기소개</div>
+                    <div th:text="${#authentication.getPrincipal().getUser().getNickname()}" class="text-2xl font-bold text-gray-800 mb-1">nickname</div>
+                    <div th:text="${#authentication.getPrincipal().getUser().getIntro()}" class="text-gray-600 italic mb-6">자기소개</div>
                 </div>
             </div>
-            <div class="infoDiv mt-6 w-[400px] max-w-md mx-auto p-4 border border-gray-200 rounded-lg bg-white info-card shadow-sm">
-                <div class="space-y-5">
-                    <div class="flex items-center gap-3">
-                        <div class="bg-blue-50 p-2 rounded-lg">
-                            <img th:src="@{/images/people.png}" class="w-6 h-6" alt="프로필">
-                        </div>
-                        <div th:text="${#authentication.getPrincipal().getUser().getName()}" class="text-gray-700">사용자이름</div>
-                    </div>
-                    <div>
-                        <div class="flex items-center gap-3">
-                            <div class="bg-blue-50 p-2 rounded-lg">
-                                <img th:src="@{/images/email.png}" class="w-6 h-6" alt="이메일">
+
+            <div class="bg-[#f8f9fa] rounded-2xl p-8 mb-10">
+                <div class="w-full p-4 border border-gray-200 rounded-xl bg-white shadow-md transition-shadow hover:shadow-lg mb-6">
+                    <div class="space-y-6">
+                        <div class="flex items-center gap-4">
+                            <div class="bg-blue-100 p-3 rounded-lg">
+                                <img th:src="@{/images/people.png}" class="w-6 h-6" alt="프로필">
                             </div>
-                            <div th:text="${#authentication.getPrincipal().getUser().getEmail()}" class="text-gray-700">이메일</div>
+                            <div th:text="${#authentication.getPrincipal().getUser().getName()}" class="text-gray-700 font-medium">사용자이름</div>
                         </div>
-                    </div>
-                    <div>
-                        <div class="flex items-center gap-3">
-                            <div class="bg-blue-50 p-2 rounded-lg">
-                                <img th:src="@{/images/phone.png}" class="w-6 h-6" alt="전화번호">
+                        <div>
+                            <div class="flex items-center gap-4">
+                                <div class="bg-blue-100 p-3 rounded-lg">
+                                    <img th:src="@{/images/email.png}" class="w-6 h-6" alt="이메일">
+                                </div>
+                                <div th:text="${#authentication.getPrincipal().getUser().getEmail()}" class="text-gray-700 font-medium">이메일</div>
                             </div>
-                            <div th:text="${#authentication.getPrincipal().getUser().getPhone_num()}" class="text-gray-700">휴대폰번호</div>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-4">
+                                <div class="bg-blue-100 p-3 rounded-lg">
+                                    <img th:src="@{/images/phone.png}" class="w-6 h-6" alt="전화번호">
+                                </div>
+                                <div th:text="${#authentication.getPrincipal().getUser().getPhone_num()}" class="text-gray-700 font-medium">휴대폰번호</div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="infoDiv mt-6 w-[400px] mx-auto p-4 border border-gray-200 rounded-lg bg-white info-card shadow-sm">
-                <div class="space-y-5">
-                    <div>
-                        <div class="flex items-center gap-3">
-                            <div class="bg-blue-50 p-2 rounded-lg">
-                                <img th:src="@{/images/edit.png}" class="w-6 h-6" alt="수정">
+
+                <div class="w-full p-4 border border-gray-200 rounded-xl bg-white shadow-md transition-shadow hover:shadow-lg">
+                    <div class="space-y-6">
+                        <div>
+                            <div class="flex items-center gap-4">
+                                <div class="bg-blue-100 p-3 rounded-lg">
+                                    <img th:src="@{/images/edit.png}" class="w-6 h-6" alt="수정">
+                                </div>
+                                <a href="/user/update" th:href="@{/user/update}" class="hover-link cursor-pointer hover:text-blue-600 transition-colors text-gray-700 font-medium">개인정보수정</a>
                             </div>
-                            <a href="/user/update" th:href="@{/user/update}" class="cursor-pointer hover-link text-gray-700">개인정보수정</a>
                         </div>
-                    </div>
-                    <div>
-                        <div class="flex items-center gap-3">
-                            <div class="bg-blue-50 p-2 rounded-lg">
-                                <img th:src="@{/images/security.png}" class="w-6 h-6" alt="보안">
+                        <div>
+                            <div class="flex items-center gap-4">
+                                <div class="bg-blue-100 p-3 rounded-lg">
+                                    <img th:src="@{/images/security.png}" class="w-6 h-6" alt="보안">
+                                </div>
+                                <a href="/user/accountManagement" th:href="@{/user/accountManagement}" class="hover-link cursor-pointer hover:text-blue-600 transition-colors text-gray-700 font-medium">계정관리</a>
                             </div>
-                            <a href="/user/accountManagement" th:href="@{/user/accountManagement}" class="cursor-pointer hover-link text-gray-700">계정관리</a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <footer th:replace="~{footer :: footer}" class="pt-4"></footer>
 </div>
 </body>
 </html>
