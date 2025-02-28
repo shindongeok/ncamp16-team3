@@ -322,7 +322,7 @@ public class BoardService {
     }
 
     // 댓글 삭제 서비스
-    // 게시판 1 댓글 삭제 메서드
+    // 게시판 1 댓글
     public boolean deleteComment01(int commentId, int boardId) {
         try {
             log.info("쿼리 실행 전: commentId = {}, boardId = {}", commentId, boardId);
@@ -334,7 +334,7 @@ public class BoardService {
         }
     }
 
-    // 게시판 2 댓글 삭제 메서드
+    // 게시판 2 댓글
     public boolean deleteComment02(int commentId, int boardId) {
         try {
             boardMapper.deleteComment02(boardId, commentId);
@@ -370,7 +370,6 @@ public class BoardService {
         myBoardList01 = (myBoardList01.size() > 5) ? myBoardList01.subList(0, 5) : myBoardList01;
         myBoardList02 = (myBoardList02.size() > 5) ? myBoardList02.subList(0, 5) : myBoardList02;
 
-
         log.info("myBoardList01:{}, myBoardList02 {} ", myBoardList01, myBoardList02);
         map.put("myBoardList01", myBoardList01);
         map.put("myBoardList02", myBoardList02);
@@ -394,7 +393,6 @@ public class BoardService {
     public int updateComment(CommentDto commentDto) {
         int boardType = commentDto.getBoard_type();
 
-        // boardType에 따라 다른 테이블에서 업데이트 실행
         if (boardType == 1) {  // 자유게시판
             return boardMapper.updateComment01(commentDto.getComment_content(),
                     commentDto.getBoard_id(),
