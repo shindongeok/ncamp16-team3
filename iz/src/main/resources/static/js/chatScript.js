@@ -1,40 +1,49 @@
 // 대화 기록 저장용 배열
 let conversationHistory = [];
 
-// 사용자 메시지 추가 함수
+// 스크롤을 가장 아래로 이동시키는 함수
+function scrollToBottom() {
+    const messagesDiv = document.getElementById('messages');
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+}
+
+// 사용자 메시지 추가 함수 수정
 function appendUserMessage(text) {
     const messagesDiv = document.getElementById('messages');
     const messageContainer = document.createElement('div');
     messageContainer.classList.add('flex', 'justify-end', 'items-start');
 
     const userMessageDiv = document.createElement('div');
-    userMessageDiv.classList.add('bg-blue-500', 'text-white', 'px-3', 'py-2', 'rounded-lg', 'max-w-[70%]', 'break-words');
+    userMessageDiv.classList.add('bg-blue-500', 'text-white', 'px-3', 'py-2', 'rounded-lg', 'max-w-[80%]', 'break-words', 'text-sm');
     userMessageDiv.innerHTML = text.replace(/\n/g, '<br>');
 
     messageContainer.appendChild(userMessageDiv);
-
     messagesDiv.appendChild(messageContainer);
-    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+    // 메시지 추가 후 스크롤을 아래로 이동
+    scrollToBottom();
+
     return messagesDiv;
 }
 
-// 봇 메시지 추가 함수
+// 봇 메시지 추가 함수 수정
 function appendBotMessage(text) {
     const messagesDiv = document.getElementById('messages');
     const messageContainer = document.createElement('div');
     messageContainer.classList.add('flex', 'justify-start', 'items-start');
 
     const botMessageDiv = document.createElement('div');
-    botMessageDiv.classList.add('bg-gray-100', 'text-black', 'px-3', 'py-2', 'rounded-lg', 'max-w-[70%]', 'break-words');
+    botMessageDiv.classList.add('bg-gray-100', 'text-black', 'px-3', 'py-2', 'rounded-lg', 'max-w-[80%]', 'break-words', 'text-sm');
     botMessageDiv.innerHTML = text.replace(/\n/g, '<br>');
 
     messageContainer.appendChild(botMessageDiv);
-
     messagesDiv.appendChild(messageContainer);
-    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+    // 메시지 추가 후 스크롤을 아래로 이동
+    scrollToBottom();
 }
 
-// 로딩 메시지 추가 함수 (필요한 경우)
+// 로딩 메시지 추가 함수 수정
 function showLoading(message = '처리 중입니다...') {
     const messagesDiv = document.getElementById('messages');
     const loadingContainer = document.createElement('div');
@@ -54,9 +63,10 @@ function showLoading(message = '처리 중입니다...') {
     `;
 
     loadingContainer.appendChild(loadingDiv);
-
     messagesDiv.appendChild(loadingContainer);
-    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+    // 로딩 메시지 추가 후 스크롤을 아래로 이동
+    scrollToBottom();
 }
 
 // 로딩 메시지 제거 함수
@@ -122,6 +132,9 @@ function stresschat() {
         removeLoading();
         appendBotMessage(`오늘의 퇴사지수는 ${stressStr}% 입니다.`);
     }, 500);
+
+    // 결과 표시 후 스크롤을 아래로 이동
+    scrollToBottom();
 }
 
 function paydaychat() {
@@ -136,7 +149,7 @@ function paydaychat() {
     userHasSpoken = false;
 
     // 기존 paydaychat 로직
-    appendUserMessage("월급까지 남은 일수?");
+    appendUserMessage("월급까지 남은 날짜");
     showLoading("급여일 정보를 확인하고 있습니다...");
 
     // Thymeleaf를 통해 HTML에 주입된 데이터 가져오기
@@ -166,6 +179,9 @@ function paydaychat() {
         removeLoading();
         appendBotMessage(`월급일까지 ${daysLeft}일 남았습니다.`);
     }, 500);
+
+    // 결과 표시 후 스크롤을 아래로 이동
+    scrollToBottom();
 }
 
 function endtimechat() {
@@ -211,13 +227,9 @@ function endtimechat() {
         removeLoading();
         appendBotMessage(`퇴근까지 ${diffHours}시간 ${diffMinutes}분 남았습니다.`);
     }, 500); // 0.5초 대기 후 처리
-}
 
-function handleJobPostings() {
-    // 입력창 숨기기
-    document.getElementById('inputSection').classList.add('hidden');
-    // 기존 handleJobPostings 로직 유지
-    // ... (기존 코드)
+    // 결과 표시 후 스크롤을 아래로 이동
+    scrollToBottom();
 }
 
 function finishchat() {
@@ -248,6 +260,9 @@ function finishchat() {
 
     // 대화종료 버튼 숨기기
     document.getElementById('finishChatBtn').style.display = 'none';
+
+    // 결과 표시 후 스크롤을 아래로 이동
+    scrollToBottom();
 }
 
 function handleJobPostings() {
@@ -280,7 +295,7 @@ function handleJobPostings() {
 
                 // 채용공고 카드 생성을 위한 contentDiv 생성
                 const contentDiv = document.createElement('div');
-                contentDiv.innerHTML = '<p class="mb-3">맞춤형 채용공고를 찾았습니다:</p>';
+                contentDiv.innerHTML = '<p class="mb-3 text-sm">맞춤형 채용공고를 찾았습니다.</p>';
 
                 recommendedJobs.forEach((job, index) => {
                     // 경력 계산 (신입/경력 표시)
@@ -291,15 +306,15 @@ function handleJobPostings() {
                             : `${Math.min(job.experienceMax, job.experienceMin)}~${Math.max(job.experienceMax, job.experienceMin)}년 경력`);
 
                     const jobCard = document.createElement('div');
-                    jobCard.className = 'border rounded-lg p-4 mb-3 bg-white shadow-sm';
+                    jobCard.className = 'rounded-lg p-4 mb-3 bg-white shadow-sm';
 
                     jobCard.innerHTML = `
                     <div class="mb-2">
-                        <h3 class="text-base font-bold text-gray-800">${job.companyName}</h3>
+                        <h3 class="text-base text-gray-800">${job.companyName}</h3>
                     </div>
                     
                     <div class="mb-2">
-                        <h4 class="text-sm font-semibold text-gray-700">${job.title}</h4>
+                        <h4 class="text-sm text-gray-700">${job.title}</h4>
                     </div>
                     
                     <div class="text-xs text-gray-600 space-y-1">
@@ -369,10 +384,14 @@ function handleJobPostings() {
         appendBotMessage('맞춤형 채용공고를 불러오는 중 오류가 발생했습니다.');
         console.error('Error fetching recommended jobs:', error);
     }
+
+    // 결과 표시 후 스크롤을 아래로 이동
+    scrollToBottom();
 }
 
 // handleGeneralChat 함수
-async function handleGeneralChat(isEndingChat = false) {
+// 입력창 클리어 기능 추가
+function handleGeneralChat(isEndingChat = false) {
     const userInput = document.getElementById('userInput');
     if (userInput.disabled) return; // 이미 전송 중이면 실행 방지
     userInput.disabled = true; // 입력창 비활성화 (중복 입력 방지)
@@ -389,6 +408,9 @@ async function handleGeneralChat(isEndingChat = false) {
         appendUserMessage(message);
         userInput.value = '';
 
+        // 메시지 전송 즉시 입력창 초기화 (API 응답을 기다리지 않고)
+        userInput.value = '';
+
         // 하소연하기 모드에서 첫 메시지 입력 시 대화종료 버튼 표시
         if (feelChatStarted && !userHasSpoken) {
             userHasSpoken = true;
@@ -396,10 +418,10 @@ async function handleGeneralChat(isEndingChat = false) {
         }
     }
 
-    // 기존 handleGeneralChat 로직 유지 (나머지 부분은 그대로)
+    // 기존 handleGeneralChat 로직
     showLoading('답변을 준비중입니다...');
 
-    // 시스템 메시지 (초기 설정 메시지) - 대화 시작시 한 번만 설정됨
+    // 시스템 메시지 (초기 설정 메시지)
     if (conversationHistory.length === 0) {
         conversationHistory.push({
             "role": "system",
@@ -407,7 +429,7 @@ async function handleGeneralChat(isEndingChat = false) {
         });
     }
 
-    // API 호출의 일관성을 위해 여기서도 확인)
+    // API 호출 일관성 확인
     if (isEndingChat && conversationHistory.length > 0 &&
         conversationHistory[conversationHistory.length - 1].content === "대화종료") {
         // 이미 추가되어 있으면 다시 추가하지 않음
@@ -415,29 +437,37 @@ async function handleGeneralChat(isEndingChat = false) {
         conversationHistory.push({ role: 'user', content: message });
     }
 
-    try {
-        const response = await fetch('/chat/feelchat', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                messages: conversationHistory  // 전체 대화 기록 전송
-            })
+    fetch('/chat/feelchat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            messages: conversationHistory  // 전체 대화 기록 전송
+        })
+    })
+        .then(response => response.json())
+        .then(data => {
+            removeLoading();
+
+            // 챗봇 응답을 대화 기록에 추가
+            conversationHistory.push({ role: 'assistant', content: data.responseMessage });
+
+            appendBotMessage(data.responseMessage); // 챗봇 응답 메시지 처리
+      
+            // 응답 후 스크롤을 아래로 이동
+            scrollToBottom();
+        })
+        .catch(error => {
+            removeLoading();
+            appendBotMessage('죄송합니다. 답변 생성 중 오류가 발생했습니다.');
+
+            // 오류 메시지 후에도 스크롤을 아래로 이동
+            scrollToBottom();
         });
-
-        const data = await response.json();
-        removeLoading();
-
-        // 챗봇 응답을 대화 기록에 추가
-        conversationHistory.push({ role: 'assistant', content: data.responseMessage });
-
-        appendBotMessage(data.responseMessage); // 챗봇 응답 메시지 처리
-    } catch (error) {
-        removeLoading();
-        appendBotMessage('죄송합니다. 답변 생성 중 오류가 발생했습니다.');
-    } finally {
-        userInput.disabled = false;
-    }
 }
+
+// 페이지 로드 시 또는 창 크기 변경 시 스크롤을 아래로 이동
+window.addEventListener('load', scrollToBottom);
+window.addEventListener('resize', scrollToBottom);
 
 function formatTimestamp(timestamp) {
     const date = new Date(timestamp * 1000); // Unix timestamp를 밀리초로 변환

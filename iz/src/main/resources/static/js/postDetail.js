@@ -250,6 +250,7 @@ function CloseUpdateModal() {
 }
 
 
+// 댓글 수정
 function editComment(event) {
     const button = event.target;
     const commentDiv = button.closest('.idBoard');
@@ -274,10 +275,6 @@ function editComment(event) {
 
     // 원래 스타일 저장
     const originalBorder = inputField.style.border;
-    const originalOverflow = inputField.style.overflow; // 원래 overflow 값 저장
-
-    // 스크롤바 없애기
-    inputField.style.overflow = 'hidden'; // 스크롤바 숨기기
 
     // 읽기 전용 속성 제거 및 스타일 변경
     inputField.removeAttribute('readonly');
@@ -286,6 +283,9 @@ function editComment(event) {
     inputField.style.borderLeft = "none";
     inputField.style.borderRight = "none";
 
+    // 스크롤바를 없애기 위한 설정
+    inputField.style.overflow = 'hidden'; // 스크롤바 숨기기
+
     setTimeout(() => {
         inputField.focus();
         const length = inputField.value.length;
@@ -293,6 +293,18 @@ function editComment(event) {
     }, 10);
 
     button.innerText = '저장';
+
+    // 텍스트 영역 높이 동적으로 조정
+    function adjustHeight() {
+        inputField.style.height = 'auto';  // 높이를 'auto'로 설정하여 내용에 맞게 확장
+        inputField.style.height = inputField.scrollHeight + 'px';  // 내용에 맞는 높이로 설정
+    }
+
+    // 댓글 수정 후 내용에 맞게 높이 조정
+    adjustHeight();
+
+    // 입력할 때마다 높이 조정
+    inputField.addEventListener('input', adjustHeight);
 
     function saveEditedComment() {
         const updatedContent = inputField.value;
@@ -322,8 +334,8 @@ function editComment(event) {
                     inputField.setAttribute('readonly', 'true');
                     inputField.style.border = originalBorder;
 
-                    // 스크롤바 원상복구
-                    inputField.style.overflow = originalOverflow;
+                    // 텍스트 영역 높이 다시 조정 (저장 후에도 높이를 맞춰준다)
+                    adjustHeight();
 
                     button.innerText = '수정';
                     button.onclick = editComment;
@@ -352,4 +364,3 @@ function editComment(event) {
     inputField.addEventListener('keydown', handleEnterKey);
     button.onclick = saveEditedComment;
 }
-
