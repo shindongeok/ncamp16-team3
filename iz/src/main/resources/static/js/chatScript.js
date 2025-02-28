@@ -1,14 +1,14 @@
 // 대화 기록 저장용 배열
 let conversationHistory = [];
 
-// 공통 유틸리티 함수들
+// 사용자 메시지 추가 함수
 function appendUserMessage(text) {
     const messagesDiv = document.getElementById('messages');
     const messageContainer = document.createElement('div');
     messageContainer.classList.add('flex', 'justify-end', 'items-start');
 
     const userMessageDiv = document.createElement('div');
-    userMessageDiv.classList.add('chat-bubble-user');
+    userMessageDiv.classList.add('bg-blue-500', 'text-white', 'px-3', 'py-2', 'rounded-lg', 'max-w-[70%]', 'break-words');
     userMessageDiv.innerHTML = text.replace(/\n/g, '<br>');
 
     messageContainer.appendChild(userMessageDiv);
@@ -18,13 +18,14 @@ function appendUserMessage(text) {
     return messagesDiv;
 }
 
+// 봇 메시지 추가 함수
 function appendBotMessage(text) {
     const messagesDiv = document.getElementById('messages');
     const messageContainer = document.createElement('div');
     messageContainer.classList.add('flex', 'justify-start', 'items-start');
 
     const botMessageDiv = document.createElement('div');
-    botMessageDiv.classList.add('chat-bubble-bot');
+    botMessageDiv.classList.add('bg-gray-100', 'text-black', 'px-3', 'py-2', 'rounded-lg', 'max-w-[70%]', 'break-words');
     botMessageDiv.innerHTML = text.replace(/\n/g, '<br>');
 
     messageContainer.appendChild(botMessageDiv);
@@ -33,6 +34,7 @@ function appendBotMessage(text) {
     messagesDiv.scrollTop = messagesDiv.scrollHeight;
 }
 
+// 로딩 메시지 추가 함수 (필요한 경우)
 function showLoading(message = '처리 중입니다...') {
     const messagesDiv = document.getElementById('messages');
     const loadingContainer = document.createElement('div');
@@ -40,7 +42,7 @@ function showLoading(message = '처리 중입니다...') {
 
     const loadingDiv = document.createElement('div');
     loadingDiv.id = 'loadingMessage';
-    loadingDiv.classList.add('chat-bubble-bot', 'flex', 'items-center');
+    loadingDiv.classList.add('bg-gray-100', 'text-black', 'px-3', 'py-2', 'rounded-lg', 'flex', 'items-center');
 
     // 로딩 애니메이션 추가
     loadingDiv.innerHTML = `
@@ -57,6 +59,7 @@ function showLoading(message = '처리 중입니다...') {
     messagesDiv.scrollTop = messagesDiv.scrollHeight;
 }
 
+// 로딩 메시지 제거 함수
 function removeLoading() {
     const loadingMessage = document.getElementById('loadingMessage');
     if (loadingMessage) {
@@ -67,8 +70,72 @@ function removeLoading() {
     }
 }
 
-// 각 버튼별 핸들러 함수들
-async function paydaychat() {
+// 대화종료 버튼 표시/숨김 상태를 관리하는 변수 추가
+let userHasSpoken = false;
+let feelChatStarted = false;
+
+function feelchat() {
+    // 입력창 표시
+    document.getElementById('inputSection').classList.remove('hidden');
+
+    // 하소연하기 문장을 화면에 추가
+    appendUserMessage("하소연하기");
+    appendBotMessage(`안녕하세요. 오늘 하루 어떠셨나요? 말씀해주신 내용을 바탕으로 함께 해결책을 찾아보겠습니다.`);
+
+    // 대화 시작 플래그 설정
+    feelChatStarted = true;
+    userHasSpoken = false;
+
+    // 대화종료 버튼 숨기기
+    document.getElementById('finishChatBtn').style.display = 'none';
+}
+
+// 다른 버튼 함수들에 입력창 숨기기 로직 추가
+function stresschat() {
+    // 입력창 숨기기
+    document.getElementById('inputSection').classList.add('hidden');
+
+    // 대화종료 버튼 숨기기
+    document.getElementById('finishChatBtn').style.display = 'none';
+
+    // 대화 상태 초기화
+    feelChatStarted = false;
+    userHasSpoken = false;
+
+    // 기존 stresschat 로직
+    appendUserMessage("오늘의 퇴사 수치");
+    showLoading('퇴사 통계를 분석중입니다...');
+
+    setTimeout(() => {
+        const stressStr = document.getElementById('stressData').getAttribute('data-stress');
+
+        console.log(stressStr);  // 스트레스 값이 잘 나오는지 확인하기 위해 콘솔에 출력
+
+        if (!stressStr) {
+            // 데이터가 없으면 해당 메시지 출력
+            removeLoading();
+            appendBotMessage("퇴사 지수가 없습니다.");
+            return;
+        }
+
+        // 데이터가 있으면 퇴사 지수 출력
+        removeLoading();
+        appendBotMessage(`오늘의 퇴사지수는 ${stressStr}% 입니다.`);
+    }, 500);
+}
+
+function paydaychat() {
+    // 입력창 숨기기
+    document.getElementById('inputSection').classList.add('hidden');
+
+    // 대화종료 버튼 숨기기
+    document.getElementById('finishChatBtn').style.display = 'none';
+
+    // 대화 상태 초기화
+    feelChatStarted = false;
+    userHasSpoken = false;
+
+    // 기존 paydaychat 로직
     appendUserMessage("월급까지 남은 일수?");
     showLoading("급여일 정보를 확인하고 있습니다...");
 
@@ -101,7 +168,18 @@ async function paydaychat() {
     }, 500);
 }
 
-async function endtimechat() {
+function endtimechat() {
+    // 입력창 숨기기
+    document.getElementById('inputSection').classList.add('hidden');
+
+    // 대화종료 버튼 숨기기
+    document.getElementById('finishChatBtn').style.display = 'none';
+
+    // 대화 상태 초기화
+    feelChatStarted = false;
+    userHasSpoken = false;
+
+    // 기존 endtimechat 로직
     appendUserMessage("남은 퇴근시간");
     showLoading("퇴근시간 정보를 확인하고 있습니다...");
 
@@ -135,41 +213,22 @@ async function endtimechat() {
     }, 500); // 0.5초 대기 후 처리
 }
 
-async function stresschat() {
-    appendUserMessage("오늘의 퇴사 수치");
-    showLoading('퇴사 통계를 분석중입니다...');
-
-    // 500ms 후에 stress 수치 가져오기
-    setTimeout(() => {
-        const stressStr = document.getElementById('stressData').getAttribute('data-stress');
-
-        console.log(stressStr);  // 스트레스 값이 잘 나오는지 확인하기 위해 콘솔에 출력
-
-        if (!stressStr) {
-            // 데이터가 없으면 해당 메시지 출력
-            removeLoading();
-            appendBotMessage("퇴사 지수가 없습니다.");
-            return;
-        }
-
-        // 데이터가 있으면 퇴사 지수 출력
-        removeLoading();
-        appendBotMessage(`오늘의 퇴사지수는 ${stressStr}% 입니다.`);
-    }, 500);
+function handleJobPostings() {
+    // 입력창 숨기기
+    document.getElementById('inputSection').classList.add('hidden');
+    // 기존 handleJobPostings 로직 유지
+    // ... (기존 코드)
 }
 
-function feelchat() {
-    // 입력창 표시
-    document.getElementById('inputSection').classList.remove('hidden');
-
-    // 하소연하기 문장을 화면에 추가
-    appendUserMessage("하소연하기");
-    appendBotMessage(`안녕하세요. 오늘 하루 어떠셨나요? 말씀해주신 내용을 바탕으로 함께 해결책을 찾아보겠습니다.`);
-}
-
-// 대화 종료 처리 함수
 function finishchat() {
-    // 대화 종료 메시지 추가
+    // 입력창 숨기기
+    document.getElementById('inputSection').classList.add('hidden');
+
+    // 대화 상태 초기화
+    feelChatStarted = false;
+    userHasSpoken = false;
+
+    // 기존 finishchat 로직 유지
     const message = "대화종료";
 
     // 대화 종료 메시지를 화면에 추가
@@ -186,6 +245,130 @@ function finishchat() {
 
     // 원래 값으로 복원 (필요한 경우)
     userInput.value = originalValue;
+
+    // 대화종료 버튼 숨기기
+    document.getElementById('finishChatBtn').style.display = 'none';
+}
+
+function handleJobPostings() {
+    // 입력창 숨기기
+    document.getElementById('inputSection').classList.add('hidden');
+
+    // 대화종료 버튼 숨기기
+    document.getElementById('finishChatBtn').style.display = 'none';
+
+    // 대화 상태 초기화
+    feelChatStarted = false;
+    userHasSpoken = false;
+
+    // 기존 handleJobPostings 로직
+    appendUserMessage("맞춤형 이직 공고");
+    showLoading("맞춤형 채용공고를 찾고 있습니다...");
+
+    try {
+        fetch('/user/analyze/recommend-jobs', {
+            method: 'POST'
+        })
+            .then(response => response.json())
+            .then(recommendedJobs => {
+                removeLoading();
+
+                if (recommendedJobs.length === 0) {
+                    appendBotMessage("현재 맞춤형 채용공고가 없습니다.");
+                    return;
+                }
+
+                // 채용공고 카드 생성을 위한 contentDiv 생성
+                const contentDiv = document.createElement('div');
+                contentDiv.innerHTML = '<p class="mb-3">맞춤형 채용공고를 찾았습니다:</p>';
+
+                recommendedJobs.forEach((job, index) => {
+                    // 경력 계산 (신입/경력 표시)
+                    const experience = job.experienceMax === 0 && job.experienceMin === 0
+                        ? '신입'
+                        : (job.experienceMax === job.experienceMin
+                            ? `${job.experienceMax}년 경력`
+                            : `${Math.min(job.experienceMax, job.experienceMin)}~${Math.max(job.experienceMax, job.experienceMin)}년 경력`);
+
+                    const jobCard = document.createElement('div');
+                    jobCard.className = 'border rounded-lg p-4 mb-3 bg-white shadow-sm';
+
+                    jobCard.innerHTML = `
+                    <div class="mb-2">
+                        <h3 class="text-base font-bold text-gray-800">${job.companyName}</h3>
+                    </div>
+                    
+                    <div class="mb-2">
+                        <h4 class="text-sm font-semibold text-gray-700">${job.title}</h4>
+                    </div>
+                    
+                    <div class="text-xs text-gray-600 space-y-1">
+                        <div class="flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                            ${job.locationName}
+                        </div>
+                        <div class="flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            </svg>
+                            ${job.industryName}
+                        </div>
+                        <div class="flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            </svg>
+                            ${experience}
+                        </div>
+                        <div class="flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                            </svg>
+                            ${job.educationLevel || '학력 무관'}
+                        </div>
+                    </div>
+                    
+                    <div class="mt-3 flex justify-between items-center">
+                        <span class="text-xs text-gray-500">마감일: ${formatTimestamp(parseFloat(job.expirationTimestamp))}</span>
+                        <a href="${job.url}" target="_blank" class="text-xs text-blue-600 hover:underline">상세보기</a>
+                    </div>
+                `;
+
+                    contentDiv.appendChild(jobCard);
+                });
+
+                // 더보기 버튼 추가
+                const viewMoreBtn = document.createElement('a');
+                viewMoreBtn.href = '/job/hire';
+                viewMoreBtn.className = 'block w-full text-center text-sm text-blue-600 hover:underline mt-2';
+                viewMoreBtn.innerHTML = '더 많은 채용 공고 보기';
+                contentDiv.appendChild(viewMoreBtn);
+
+                // 메시지 영역에 추가
+                const messagesDiv = document.getElementById('messages');
+                const botMessageContainer = document.createElement('div');
+                botMessageContainer.classList.add('flex', 'justify-start', 'items-start');
+
+                const botMessageDiv = document.createElement('div');
+                botMessageDiv.classList.add('bg-gray-100', 'text-black', 'px-3', 'py-2', 'rounded-lg', 'max-w-[90%]', 'break-words');
+                botMessageDiv.appendChild(contentDiv);
+
+                botMessageContainer.appendChild(botMessageDiv);
+                messagesDiv.appendChild(botMessageContainer);
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            })
+            .catch(error => {
+                removeLoading();
+                appendBotMessage('맞춤형 채용공고를 불러오는 중 오류가 발생했습니다.');
+                console.error('Error fetching recommended jobs:', error);
+            });
+    } catch (error) {
+        removeLoading();
+        appendBotMessage('맞춤형 채용공고를 불러오는 중 오류가 발생했습니다.');
+        console.error('Error fetching recommended jobs:', error);
+    }
 }
 
 // handleGeneralChat 함수
@@ -198,15 +381,22 @@ async function handleGeneralChat(isEndingChat = false) {
 
     if (!isEndingChat) {
         appendUserMessage(message);
+
+        // 하소연하기 모드에서 첫 메시지 입력 시 대화종료 버튼 표시
+        if (feelChatStarted && !userHasSpoken) {
+            userHasSpoken = true;
+            document.getElementById('finishChatBtn').style.display = 'block';
+        }
     }
 
+    // 기존 handleGeneralChat 로직 유지 (나머지 부분은 그대로)
     showLoading('답변을 준비중입니다...');
 
     // 시스템 메시지 (초기 설정 메시지) - 대화 시작시 한 번만 설정됨
     if (conversationHistory.length === 0) {
         conversationHistory.push({
             "role": "system",
-            "content": "역할 설정: 저는 직장인들의 감정을 전문적으로 케어하는 AI 상담사로서, 사용자의 감정을 깊이 이해하고 공감하는 상담을 제공하겠습니다. 저는 항상 친절하고 따뜻한 어조로 대화하며, 전문적이고 세심하게 접근합니다.\\n\n감정 분석 프로세스: 사용자의 모든 대화를 감정적으로 분석하여, 현재 사용자의 감정 상태를 정확하게 파악합니다. 사용자의 감정 상태를 0~100 사이의 퇴사지수로 평가합니다. 이 퇴사지수는 사용자가 직장에서 얼마나 힘들어하는지를 나타내며, 대화 종료 시 제공됩니다.\\n\n대화 가이드라인: 사용자의 감정 상태를 세심하게 살펴보며, 필요할 경우 실질적인 조언과 심리적 지지를 제공합니다.\n 대화종료가 되기전까진 주고받은 내용을 기억하며 대화\n 대화가 종료될 때만 퇴사지수를 제공하며, \"대화종료\"라는 말이 나오면 대화가 종료됩니다.\n 대화에서는 과도하게 긍정적이거나 부정적이지 않게 균형을 잡아가며 대화를 이어갑니다.\n 사용자의 프라이버시와 감정을 최우선으로 존중하며, 필요한 경우 실질적인 대처 방안도 제안.\\n\n퇴사지수 계산 방식: 대화 중에 사용자의 발언을 감정적으로 분석. 부정적인 단어와 긍정적인 단어의 빈도에 따라 퇴사지수를 계산.\n 긍정적인 단어가 많이 사용되면 퇴사지수가 낮아지고, 부정적인 단어가 많이 사용되면 퇴사지수가 높아진다.\n 대화 종료 시 \"오늘의 퇴사지수는 [퇴사지수]입니다"
+            "content": "역할 설정: 저는 직장인들의 감정을 전문적으로 케어하는 AI 상담사로서, 사용자의 감정을 깊이 이해하고 공감하는 상담을 제공하겠습니다. 저는 항상 친절하고 따뜻한 어조로 대화하며, 전문적이고 세심하게 접근합니다.\n\n감정 분석 프로세스: 사용자의 모든 대화를 감정적으로 분석하여, 현재 사용자의 감정 상태를 정확하게 파악합니다. 사용자의 감정 상태를 0~100 사이의 퇴사지수로 평가합니다. 이 퇴사지수는 사용자가 직장에서 얼마나 힘들어하는지를 나타내며, 대화 종료 시 제공됩니다.\n\n대화 가이드라인: 사용자의 감정 상태를 세심하게 살펴보며, 필요할 경우 실질적인 조언과 심리적 지지를 제공합니다.\n 대화종료가 되기전까지 주고받은 내용을 기억하며 대화\n 대화가 종료될 때만 퇴사지수를 제공하며, \"대화종료\"라는 말이 나오면 대화가 종료됩니다.\n 대화에서는 과도하게 긍정적이거나 부정적이지 않게 균형을 잡아가며 대화를 이어갑니다.\n 사용자의 프라이버시와 감정을 최우선으로 존중하며, 필요한 경우 실질적인 대처 방안도 제안.\n\n퇴사지수 계산 방식: 대화 중에 사용자의 발언을 감정적으로 분석. 부정적인 단어와 긍정적인 단어의 빈도에 따라 퇴사지수를 계산.\n 긍정적인 단어가 많이 사용되면 퇴사지수가 낮아지고, 부정적인 단어가 많이 사용되면 퇴사지수가 높아진다.\n 대화 종료 시 \"오늘의 퇴사지수는 [퇴사지수]입니다"
         });
     }
 
@@ -251,102 +441,6 @@ function formatTimestamp(timestamp) {
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
-}
-
-// 맞춤형 이직 공고 핸들러
-async function handleJobPostings() {
-    appendUserMessage("맞춤형 이직 공고");
-    showLoading("맞춤형 채용공고를 찾고 있습니다...");
-
-    try {
-        const response = await fetch('/user/analyze/recommend-jobs', {
-            method: 'POST'
-        });
-
-        const recommendedJobs = await response.json();
-        removeLoading();
-
-        if (recommendedJobs.length === 0) {
-            appendBotMessage("현재 맞춤형 채용공고가 없습니다.");
-            return;
-        }
-
-        // 챗봇 메시지 컨테이너 생성
-        const messagesDiv = document.getElementById('messages');
-        const messageContainer = document.createElement('div');
-        messageContainer.classList.add('flex', 'justify-start', 'items-start');
-
-        const botMessageDiv = document.createElement('div');
-        botMessageDiv.classList.add('chat-bubble-bot');
-        botMessageDiv.style.maxWidth = '90%';  // 채용공고 카드를 위해 더 넓게
-
-        // 챗봇 메시지와 채용공고 카드들을 담을 컨테이너
-        const contentDiv = document.createElement('div');
-        contentDiv.innerHTML = '<p class="mb-3">맞춤형 채용공고를 찾았습니다:</p>';
-
-        // 채용공고 카드들 생성
-        recommendedJobs.forEach((job, index) => {
-            const experience = job.experienceMax === 0 && job.experienceMin === 0
-                ? '신입'
-                : (job.experienceMax === job.experienceMin
-                    ? `경력 ${job.experienceMax}년`
-                    : `경력 ${Math.min(job.experienceMax, job.experienceMin)}~${Math.max(job.experienceMax, job.experienceMin)}년`);
-
-            const expirationDate = formatTimestamp(parseFloat(job.expirationTimestamp));
-
-            const jobCard = document.createElement('div');
-            jobCard.className = 'job-card mb-3';
-            jobCard.innerHTML = `
-                <div>
-                    <h3 class="text-base font-bold mb-1 text-gray-800 break-words">${job.companyName}</h3>
-                    <p class="text-sm text-gray-700 mb-2 break-words">${job.title}</p>
-                    <div class="space-y-1 text-xs text-gray-600">
-                        <div class="flex items-start gap-2">
-                            <i class="fas fa-map-marker-alt w-4 text-center flex-shrink-0"></i>
-                            <span class="break-words">${job.locationName}</span>
-                        </div>
-                        <div class="flex items-start gap-2">
-                            <i class="fas fa-building w-4 text-center flex-shrink-0"></i>
-                            <span class="break-words">${job.industryName}</span>
-                        </div>
-                        <div class="flex items-start gap-2">
-                            <i class="fas fa-users w-4 text-center flex-shrink-0"></i>
-                            <span class="break-words">${experience}</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="mt-2 pt-2 border-t border-gray-200">
-                    <p class="text-xs text-gray-500 break-words">
-                        마감일: ${expirationDate}
-                    </p>
-                    <a href="${job.url}" target="_blank" class="mt-1 text-xs text-blue-600 hover:text-blue-800 flex items-center gap-1">
-                        <i class="fas fa-external-link-alt flex-shrink-0"></i>
-                        <span class="break-words">상세 페이지 바로가기</span>
-                    </a>
-                </div>
-            `;
-
-            contentDiv.appendChild(jobCard);
-        });
-
-        // 더보기 버튼 추가
-        const viewMoreBtn = document.createElement('a');
-        viewMoreBtn.href = '/job/hire';
-        viewMoreBtn.className = 'w-full flex justify-center items-center py-2 mt-1 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm text-gray-700 transition-colors';
-        viewMoreBtn.innerHTML = '더 많은 채용 공고 보기 <i class="fas fa-chevron-right ml-1"></i>';
-        contentDiv.appendChild(viewMoreBtn);
-
-        botMessageDiv.appendChild(contentDiv);
-        messageContainer.appendChild(botMessageDiv);
-
-        messagesDiv.appendChild(messageContainer);
-        messagesDiv.scrollTop = messagesDiv.scrollHeight;
-
-    } catch (error) {
-        removeLoading();
-        appendBotMessage('맞춤형 채용공고를 불러오는 중 오류가 발생했습니다.');
-        console.error('Error fetching recommended jobs:', error);
-    }
 }
 
 // Enter 키 이벤트 핸들러

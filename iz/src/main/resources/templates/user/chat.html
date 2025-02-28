@@ -5,16 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Izikgram</title>
     <link th:href="@{/images/Logo.png}" rel="shortcut icon" type="image/x-icon">
-    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" th:href="@{/css/default.css}">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
     <style type="text/tailwindcss">
         @theme {
             --color-main-sky-highlight: #00a3ed;
             --color-main-sky-basic: #9bdcfd;
             --color-main-red-highlight: #ff5353;
             --color-main-red-basic: #ff9898;
-            --color-main-yellow-highlight: #0c0b09;
+            --color-main-yellow-highlight: #fbc159ff;
             --color-main-yellow-basic: #fdd391;
 
             /* gray-400*/
@@ -25,155 +24,67 @@
             --color-bold-text: oklch(0.208 0.042 265.755);
         }
 
-        /* 말풍선 스타일 */
-        .chat-bubble-user {
-            position: relative;
-            background: #E3F2FD;
-            border-radius: 1rem;
-            padding: 0.75rem 1rem;
-            margin-bottom: 0.5rem;
-            max-width: 80%;
-            margin-left: auto;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-        }
-
-        .chat-bubble-user:after {
-            content: '';
-            position: absolute;
-            right: -0.5rem;
-            top: 50%;
-            width: 0.5rem;
-            height: 0.5rem;
-            background: #E3F2FD;
-            transform: rotate(45deg) translateY(-50%);
-        }
-
-        .chat-bubble-bot {
-            position: relative;
-            background: #F5F5F5;
-            border-radius: 1rem;
-            padding: 0.75rem 1rem;
-            margin-bottom: 0.5rem;
-            max-width: 80%;
-            margin-right: auto;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-        }
-
-        .chat-bubble-bot:after {
-            content: '';
-            position: absolute;
-            left: -0.5rem;
-            top: 50%;
-            width: 0.5rem;
-            height: 0.5rem;
-            background: #F5F5F5;
-            transform: rotate(45deg) translateY(-50%);
-        }
-
-        .chat-messages {
-            padding: 1rem;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-        }
-
-        /* 채용공고 카드 스타일 */
-        .job-card {
-            background: white;
-            border-radius: 0.5rem;
-            border: 1px solid #e2e8f0;
-            padding: 1rem;
-            margin-bottom: 0.5rem;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            word-wrap: break-word;
-            overflow-wrap: break-word;
-            word-break: break-word;
-            hyphens: auto;
-        }
-
-        /* 스크롤바를 숨기되 스크롤 기능은 유지 */
-        .chat-messages {
-            /* 기존 스타일 유지 */
-            padding: 1rem;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-
-            /* 스크롤바 숨기기 (여러 브라우저 지원) */
-            scrollbar-width: none; /* Firefox */
-            -ms-overflow-style: none; /* IE and Edge */
-        }
-
-        /* Webkit 브라우저(Chrome, Safari 등)에 대한 스크롤바 숨기기 */
-        .chat-messages::-webkit-scrollbar {
-            display: none;
-        }
-
-        /* 채용공고 컨테이너에도 동일하게 적용 */
-        #messages {
-            scrollbar-width: none; /* Firefox */
-            -ms-overflow-style: none; /* IE and Edge */
-        }
-
         #messages::-webkit-scrollbar {
             display: none;
         }
     </style>
 </head>
-<body class="mobile-container bg-[#f0f0f0]">
-<div class="flex flex-col w-full md:w-[600px] md:mx-auto md:shadow-md bg-white min-h-screen pt-8 relative">
-    <div class="pt-20"><header th:replace="~{header :: header} " class="pt-4"></header></div>
-
-    <div class="mr-5 ml-5">
-        <!-- 환영 메시지 -->
-        <div class="mb-6 flex items-center justify-between">
-            <div>
-                안녕하세요, <span th:text="${#authentication.getPrincipal().getUser().getNickname()}"></span>님!
-                <p class="text-sm text-gray-600">무엇을 도와드릴까요?</p>
+<body class="bg-white mobile-container">
+<div class="flex flex-col w-full md:w-[600px] md:mx-auto md:shadow-md bg-white min-h-screen pt-[120px]">
+    <div class="pt-20"><header th:replace="~{header :: header} " class="pt-4 z-100"></header></div>
+    <div class="ml-5 mr-5 bg-white rounded-xl shadow-lg border border-gray-100 relative">
+        <div class="sticky top-0 z-10 bg-white rounded-t-xl">
+            <div class="flex justify-between items-center p-4 border-b border-gray-100">
+                <div class="flex items-center gap-2">
+                    <div class="w-10 h-10 bg-main-sky-highlight rounded-full flex items-center justify-center text-white text-sm">
+                        <img src="/images/chat.png"/>
+                    </div>
+                    <div>
+                        <p class="text-sm">안녕하세요, <span th:text="${#authentication.getPrincipal().getUser().getNickname()}"></span>님!</p>
+                        <p class="text-xs text-gray-500">무엇을 도와드릴까요?</p>
+                    </div>
+                </div>
+                <button id="finishChatBtn" onclick="finishchat()" class="text-blue-500 text-sm hidden">
+                    대화종료
+                </button>
             </div>
-            <button onclick="finishchat()" class="p-3 text-sm text-white bg-[#00a3ed] rounded-full hover:bg-[#0091c7] transition-colors duration-200">
-                대화종료
-            </button>
+
+            <div class="grid grid-cols-2 gap-3 p-4">
+                <button onclick="stresschat()" class="bg-gray-100 text-black py-3 px-4 rounded-lg text-left text-sm cursor-pointer">
+                    오늘의 퇴사 수치
+                </button>
+                <button onclick="feelchat()" class="bg-gray-100 text-black py-3 px-4 rounded-lg text-left text-sm cursor-pointer">
+                    하소연하기
+                </button>
+                <button onclick="paydaychat()" class="bg-gray-100 text-black py-3 px-4 rounded-lg text-left text-sm cursor-pointer">
+                    월급일까지 남은 일수
+                </button>
+                <button onclick="endtimechat()" class="bg-gray-100 text-black py-3 px-4 rounded-lg text-left text-sm cursor-pointer">
+                    남은 퇴근시간
+                </button>
+                <button onclick="handleJobPostings()" class="bg-gray-100 text-black py-3 px-4 rounded-lg text-left text-sm cursor-pointer">
+                    맞춤형 이직 공고 보기
+                </button>
+            </div>
         </div>
 
-        <!-- 버튼 그리드 -->
-        <div class="grid grid-cols-2 gap-3 mb-4">
-            <button onclick="stresschat()" class="p-3 text-sm text-left bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200 flex items-center">
-                오늘의 퇴사 수치
-            </button>
-
-            <button onclick="feelchat()" class="p-3 text-sm text-left bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200 flex items-center">
-                하소연하기
-            </button>
-
-            <button onclick="paydaychat()" class="p-3 text-sm text-left bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200 flex items-center">
-                월급일까지 남은 일수
-            </button>
-
-            <button onclick="endtimechat()" class="p-3 text-sm text-left bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200 flex items-center">
-                남은 퇴근시간
-            </button>
-
-            <button onclick="handleJobPostings()" class="p-3 text-sm text-left bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200 flex items-center">
-                맞춤형 이직 공고 보기
-            </button>
+        <div id="messages" class="flex-grow overflow-y-auto px-4 space-y-2 scrollbar-hide">
+            <!-- 메시지 들어갈 자리 -->
         </div>
 
-        <!-- 메시지 영역 (말풍선 디자인으로 변경) -->
-        <div id="messages" class="max-h-96 overflow-y-auto mb-4 border border-gray-300 rounded-lg chat-messages">
-            <!-- 메시지가 여기에 표시됩니다 -->
-        </div>
-
-        <!-- 사용자 입력 영역 -->
-        <div id="inputSection" class="hidden flex">
-            <input id="userInput" type="text" class="w-full p-2 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="질문을 입력하세요..." onkeydown="checkEnter(event)">
-            <button onclick="handleGeneralChat()" class="bg-blue-500 text-white p-2 rounded-r-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400">전송</button>
+        <div id="inputSection" class="p-4 border-t border-gray-100 hidden">
+            <div class="flex items-center gap-2">
+                <input id="userInput" type="text" class="flex-grow p-2 border border-gray-300 rounded-lg"
+                       placeholder="메시지를 입력하세요" onkeydown="checkEnter(event)">
+                <button onclick="handleGeneralChat()" class="bg-blue-500 text-white px-4 py-2 rounded-lg">
+                    전송
+                </button>
+            </div>
         </div>
     </div>
 </div>
-<!-- Thymeleaf로 사용자 월급날 주입 -->
+
+<!-- Thymeleaf로 사용자 데이터 주입 -->
 <div id="paydayData" th:data-payday="${#authentication.getPrincipal().getUser().getPayday()}"></div>
 <div id="endtimeData" th:data-endtime="${#authentication.getPrincipal().getUser().getEnd_time()}"></div>
 <div id="stressData" th:data-stress="${@mainService.getStressNum(#authentication.principal.user.member_id)}"></div>
