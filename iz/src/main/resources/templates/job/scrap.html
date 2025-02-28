@@ -40,37 +40,40 @@
             저장된 채용공고가 없습니다.
         </div>
 
-        <div th:each="job : ${scrapedJobs}" class="bg-white shadow-md rounded-lg p-4 mb-4 relative">
+        <div th:each="job : ${scrapedJobs}" class="bg-white shadow-md rounded-lg p-4 mb-4 relative job-container cursor-pointer" th:data-url="${job.url}">
             <button th:data-job-id="${job.id}"
                     th:data-job-company-name="${job.companyName}"
                     th:data-job-expiration-timestamp="${job.expirationTimestamp}"
-                    class="scrap-btn absolute top-4 right-4 transition-colors duration-200 text-yellow-400">
+                    class="scrap-btn absolute top-4 right-4 transition-colors duration-200 text-yellow-400 z-10">
                 <i class="fas fa-star"></i>
             </button>
-            <h2 class="text-lg font-semibold mb-2" th:text="${job.companyName}">🔹 기업명</h2>
-            <p class="text-gray-600" th:text="${job.title}">채용 제목</p>
-            <div class="text-gray-500 text-sm space-y-1">
-                <div th:text="${job.locationName}">지역</div>
-                <div th:text="${job.experienceMax == 0 and job.experienceMin == 0} ? '신입'
-                    : (${job.experienceMax == job.experienceMin} ? '경력 ' + ${job.experienceMax} + '년'
-                    : '경력 ' + (${job.experienceMax} >= ${job.experienceMin} ? ${job.experienceMin} + '~' + ${job.experienceMax}
-                    : ${job.experienceMax} + '~' + ${job.experienceMin}) + '년')">경력</div>
-                <div>마감일 <span th:text="${job.expirationTimestamp}" class="timestamp"></span></div>
+            <div class="job-content">
+                <h2 class="text-lg font-semibold mb-2" th:text="${job.companyName}">🔹 기업명</h2>
+                <p class="text-gray-600" th:text="${job.title}">채용 제목</p>
+                <div class="text-gray-500 text-sm space-y-1">
+                    <div th:text="${job.locationName}">지역</div>
+                    <div th:text="${job.experienceMax == 0 and job.experienceMin == 0} ? '신입'
+                        : (${job.experienceMax == job.experienceMin} ? '경력 ' + ${job.experienceMax} + '년'
+                        : '경력 ' + (${job.experienceMax} >= ${job.experienceMin} ? ${job.experienceMin} + '~' + ${job.experienceMax}
+                        : ${job.experienceMax} + '~' + ${job.experienceMin}) + '년')">경력</div>
+                    <div>마감일 <span th:text="${job.expirationTimestamp}" class="timestamp"></span></div>
+                </div>
+                <a th:href="${job.url}" target="_blank" class="mt-2 inline-block text-blue-600 hover:text-blue-800 text-sm job-detail-link" onclick="event.stopPropagation();">
+                    상세보기
+                </a>
             </div>
-            <a th:href="${job.url}" target="_blank"
-               class="mt-2 inline-block text-blue-600 hover:text-blue-800 text-sm">
-                상세보기
-            </a>
         </div>
     </div>
 </div>
 <script>
     $(document).ready(function() {
+        // 찜 버튼 클릭 처리
         $('.scrap-btn').click(function(e) {
             e.preventDefault();
+            e.stopPropagation(); // 상위 요소로 이벤트 전파 방지
             const $btn = $(this);
-            const jobId = $btn.data('jobId');  // data-job-id
-            const companyName = $btn.data('jobCompanyName');  // data-company-name
+            const jobId = $btn.data('jobId');
+            const companyName = $btn.data('jobCompanyName');
             const expirationTimestamp = $btn.data('jobExpirationTimestamp');
 
             console.log('찜한채용공고 jobId:', jobId);
@@ -90,10 +93,10 @@
                     if (response.success) {
                         if (!response.isScraped) {
                             // 스크랩 해제된 경우 해당 요소 제거
-                            $btn.closest('.bg-white').remove();
+                            $btn.closest('.job-container').remove();
 
                             // 목록이 비어있으면 메시지 표시
-                            if ($('.bg-white').length === 0) {
+                            if ($('.job-container').length === 0) {
                                 $('.px-10').append(
                                     '<div class="text-center text-gray-500 py-10">' +
                                     '저장된 채용공고가 없습니다.' +
@@ -109,6 +112,14 @@
                     alert('서버 통신 중 오류가 발생했습니다.');
                 }
             });
+        });
+
+        // 채용공고 전체 영역 클릭 시 URL로 이동
+        $('.job-container').click(function() {
+            const url = $(this).data('url');
+            if (url) {
+                window.open(url, '_blank');
+            }
         });
 
         // Format timestamps
