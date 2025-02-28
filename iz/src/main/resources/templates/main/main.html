@@ -141,7 +141,8 @@
                 <div class="popular-content-bubble-item absolute w-full h-full flex justify-between items-center opacity-0 translate-y-full animate-slide cursor-pointer"
                      th:unless="${#lists.isEmpty(@mainService.getPopularBoardList())}"
                      th:each="board, iterStat : ${@mainService.getPopularBoardList()}"
-                     th:if="${iterStat.index < 3}">
+                     th:if="${iterStat.index < 3}"
+                     th:classappend="|delay-[${iterStat.index * 200}ms]|">
                     <a th:href="@{/board/{board_type}/{board_id}(board_type=${board.board_type}, board_id=${board.board_id})}"
                        class="flex items-center w-[93%] px-4 no-underline text-inherit">
                         <span class="text-base text-gray-800 flex-1 whitespace-nowrap overflow-hidden text-ellipsis mr-3" th:text="${board.title}"></span>
