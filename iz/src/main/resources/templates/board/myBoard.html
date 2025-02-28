@@ -41,8 +41,15 @@
                 <div class="flex justify-between items-center border-b border-gray-300">
                     <div class="flex items-center gap-3">
                         <div class="text-2xl font-semibold mb-3">자유 게시판</div>
-                        <a th:href="@{/board/myBoard/freeMyBoard}" class="mb-3 px-3 py-1 text-sm hover:bg-main-sky-basic text-white rounded-full bg-main-sky-highlight transition-colors">모두 보기</a>
+                        <a th:if="${myBoardList01.size() != 0}" th:href="@{/board/myBoard/freeMyBoard}" class="mt-5 mb-3 px-10 py-3 text-sm hover:bg-main-sky-basic text-white rounded-full bg-main-sky-highlight transition-colors">모두 보기</a>
                     </div>
+                </div>
+            </div>
+
+            <div th:if="${myBoardList01.isEmpty()}" class="p-10 text-center text-gray-500">
+                내가 쓴 글이 없습니다
+                <div class="mt-3">
+                    <a th:href="@{/board/1}" class="px-9 py-2 text-sm hover:bg-main-sky-basic text-white rounded-full bg-main-sky-highlight transition-colors">글 쓰러가기</a>
                 </div>
             </div>
 
@@ -91,8 +98,15 @@
             <div class="flex justify-between items-center border-b border-gray-300">
                 <div class="flex items-center gap-3">
                     <h2 class="text-2xl font-semibold mb-3">하소연 게시판</h2>
-                    <a th:href="@{/board/myBoard/whiningMyBoard}" class="mb-3 px-3 py-1 text-sm hover:bg-main-sky-basic text-white rounded-full bg-main-sky-highlight transition-colors">모두 보기</a>
+                    <a th:if="${myBoardList02.size() != 0}" th:href="@{/board/myBoard/whiningMyBoard}" class="mb-3 px-3 py-1 text-sm hover:bg-main-sky-basic text-white rounded-full bg-main-sky-highlight transition-colors">모두 보기</a>
                 </div>
+            </div>
+        </div>
+
+        <div th:if="${myBoardList02.isEmpty()}" class="p-10 text-center text-gray-500">
+            내가 쓴 글이 없습니다
+            <div class="mt-3">
+                <a th:href="@{/board/2}" class="px-9 py-2 text-sm hover:bg-main-sky-basic text-white rounded-full bg-main-sky-highlight transition-colors">글 쓰러가기</a>
             </div>
         </div>
 
