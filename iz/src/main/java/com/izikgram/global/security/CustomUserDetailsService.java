@@ -54,7 +54,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         }
         stress.setStress_num(stressList.isEmpty() ? 0 : stress.getStress_num());
 
-        log.info("{}의 스트레스 지수 : {}", user.getMember_id(), stress.getStress_num());
+//        log.info("{}의 스트레스 지수 : {}", user.getMember_id(), stress.getStress_num());
 
         return new CustomUserDetails(user, stress);
     }

@@ -193,7 +193,7 @@ public class UserController {
         loginUser.setPayday(user.getPayday());
         userService.updateUser(loginUser);
 
-        log.info("변경된 사용자 정보 : {}", loginUser);
+//        log.info("변경된 사용자 정보 : {}", loginUser);
         return "redirect:/main";
     }
 
@@ -208,8 +208,8 @@ public class UserController {
     public String verifyPassword(@AuthenticationPrincipal CustomUserDetails userDetails, User user,
                                  @RequestParam("password") String password) {
         if(passwordEncoder.matches(password, userDetails.getUser().getPassword())) {
-            log.info("사용자 현재 비밀번호: {}", userDetails.getUser().getPassword());
-            log.info("입력한 비밀번호: {}", password);
+//            log.info("사용자 현재 비밀번호: {}", userDetails.getUser().getPassword());
+//            log.info("입력한 비밀번호: {}", password);
             return "redirect:/user/updatePw";
         } else {
             return "redirect:/user/checkPwd";
@@ -223,13 +223,17 @@ public class UserController {
     }
 
     @PostMapping("/updatePw")
-    public String updatePw(@AuthenticationPrincipal CustomUserDetails userDetails, User user,
-                           @RequestParam("password") String newPassword) {
-        String encodedPassword = passwordEncoder.encode(newPassword);
+    public ResponseEntity<?> updatePw(@Valid @ModelAttribute PasswordDTO passwordDTO, BindingResult bindingResult,
+                           @AuthenticationPrincipal CustomUserDetails userDetails) {
+        if (bindingResult.hasErrors()) {
+            String defaultMessage = bindingResult.getFieldError().getDefaultMessage();
+            return ResponseEntity.badRequest().body(defaultMessage);
+        }
+        String encodedPassword = passwordEncoder.encode(passwordDTO.getPassword());
         User loginUser = userDetails.getUser();
         loginUser.setPassword(encodedPassword);
         userService.updateUserPw(loginUser.getPassword(), loginUser.getMember_id());
-        return "redirect:/";
+        return ResponseEntity.ok("비밀번호 변경 성공");
     }
 
 
