@@ -1,10 +1,13 @@
 package com.izikgram.user.controller;
 
 import com.izikgram.global.security.CustomUserDetails;
+import com.izikgram.global.security.CustomUserDetailsService;
 import com.izikgram.job.entity.Job;
 import com.izikgram.job.service.JobService;
 import com.izikgram.user.dto.PasswordDTO;
+import com.izikgram.user.entity.Stress;
 import com.izikgram.user.entity.User;
+import com.izikgram.user.repository.UserMapper;
 import com.izikgram.user.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -14,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -37,6 +41,8 @@ public class UserController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private UserMapper userMapper;
 
     @GetMapping("/register")
     public String register(Model model) {
@@ -164,7 +170,18 @@ public class UserController {
     }
 
     @GetMapping("/mypage")
-    public String mypage() {
+    public String mypage(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
+
+        String member_id = userDetails.getUser().getMember_id();
+
+        Integer stressNum = userService.getStressNum(member_id);
+
+        if(stressNum == null) {
+            stressNum = 0;
+        }
+
+        model.addAttribute("stressNum", stressNum);
+
         return "user/mypage";
     }
 
