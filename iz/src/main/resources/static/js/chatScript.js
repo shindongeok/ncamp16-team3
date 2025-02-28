@@ -406,8 +406,6 @@ function handleGeneralChat(isEndingChat = false) {
 
     if (!isEndingChat) {
         appendUserMessage(message);
-        userInput.value = '';
-
         // 메시지 전송 즉시 입력창 초기화 (API 응답을 기다리지 않고)
         userInput.value = '';
 
@@ -462,7 +460,10 @@ function handleGeneralChat(isEndingChat = false) {
 
             // 오류 메시지 후에도 스크롤을 아래로 이동
             scrollToBottom();
-        });
+        })
+        .finally(error => {
+            userInput.disabled = false;
+    });
 }
 
 // 페이지 로드 시 또는 창 크기 변경 시 스크롤을 아래로 이동
