@@ -1,5 +1,6 @@
 package com.izikgram.global.security;
 
+import com.izikgram.global.config.CorsConfig;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +17,8 @@ public class SecurityConfig {
 
     private final CustomLoginSuccessHandler loginSuccessHandler;
 
+    private CorsConfig corsConfig;
+
     public SecurityConfig(CustomLoginSuccessHandler loginSuccessHandler) {
         this.loginSuccessHandler = loginSuccessHandler;
     }
@@ -29,7 +32,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // CSRF 비활성화 (테스트용)
+                .cors(cors -> cors.configurationSource(corsConfig.corsConfigurationSource())) // CORS 설정
+                .csrf(csrf -> csrf.disable()) // CSRF 비활성화 (SSE 때문에 비활성화 해야함)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/login", "/user/findId", "/user/findIdResult", "/user/findPw", "/user/findPwResult", "/user/register", "/user/checkId/**", "/user/resetPw").permitAll() // 로그인 없이 접근 가능
                         .requestMatchers("/auth/**", "/sse/**").permitAll() // sms 인증주소

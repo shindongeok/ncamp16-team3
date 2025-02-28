@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @RestController
-@CrossOrigin(origins = "http://223.130.151.184:8080") // 특정 Origin 허용
 public class SseController {
 
     @Autowired
