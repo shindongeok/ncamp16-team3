@@ -131,11 +131,11 @@ public class BoardService {
     private void checkPopularBoardsAndSendAlarm() {
 
         // Top3 리스트 반환
-        List<BoardDto> issueBoardList01 = boardMapper.getPopularBoardList();
-//        List<BoardDto> issueBoardList02 = boardMapper.getIssueBoardList02();
+        List<BoardDto> issueBoardList01 = boardMapper.getPopularBoardListBoard1();
+        List<BoardDto> issueBoardList02 = boardMapper.getPopularBoardListBoard2();
 
         log.info("issueBoardList01 : {}", issueBoardList01);
-//        log.info("issueBoardList02 : {}", issueBoardList02);
+        log.info("issueBoardList02 : {}", issueBoardList02);
 
         for (BoardDto board : issueBoardList01) {
             // 읽음 여부 상관없이 인기게시글이면 (!true 값 반환) => 알림 안보냄
@@ -146,13 +146,13 @@ public class BoardService {
             }
         }
 
-//        for (BoardDto board : issueBoardList02) {
-//            if (!alarmService.hasPopularAlarm(board.getBoard_id())) {
-//                String content = "[" + board.getTitle() + "] \n 인기게시글이 되었습니다!!";
-//                sseEmitterService.popularSend(board.getWriter_id(), content);
-//                alarmService.save(board.getWriter_id(), board.getBoard_type(), board.getBoard_id(), content, AlarmType.POPULAR);
-//            }
-//        }
+        for (BoardDto board : issueBoardList02) {
+            if (!alarmService.hasPopularAlarm(board.getBoard_id())) {
+                String content = "[" + board.getTitle() + "] \n 인기게시글이 되었습니다!!";
+                sseEmitterService.popularSend(board.getWriter_id(), content);
+                alarmService.save(board.getWriter_id(), board.getBoard_type(), board.getBoard_id(), content, AlarmType.POPULAR);
+            }
+        }
     }
 
     // 좋아요 증가
@@ -330,7 +330,7 @@ public class BoardService {
             return true; // 삭제가 성공적으로 완료되면 true 반환
         } catch (Exception e) {
             e.printStackTrace();
-            return false; // 실패 시 false 반환
+            return false;
         }
     }
 
@@ -338,29 +338,27 @@ public class BoardService {
     public boolean deleteComment02(int commentId, int boardId) {
         try {
             boardMapper.deleteComment02(boardId, commentId);
-            return true; // 삭제가 성공적으로 완료되면 true 반환
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
-            return false; // 실패 시 false 반환
+            return false;
         }
     }
 
     //인기게시판
-//    public Map<String, List<BoardDto>> getIssueBoardList01(){
-//        Map<String, List<BoardDto>> map = new HashMap<>();
-//        List<BoardDto> issueBoardList01 = boardMapper.getIssueBoardList01();
-//        List<BoardDto> issueBoardList02 = boardMapper.getIssueBoardList02();
-//
-//        log.info("issueBoardList01:{}, issueBoardList02 {} ", issueBoardList01, issueBoardList02);
-//        map.put("issueBoardList01", issueBoardList01);
-//        map.put("issueBoardList02", issueBoardList02);
-//
-//        return map;
-//    }
+    public Map<String, List<BoardDto>> getIssueBoardList01(){
+        Map<String, List<BoardDto>> map = new HashMap<>();
+        List<BoardDto> issueBoardList01 = boardMapper.getPopularBoardListBoard1();
+        List<BoardDto> issueBoardList02 = boardMapper.getPopularBoardListBoard2();
 
-    public List<BoardDto> getPopularBoards() {
-        return boardMapper.getPopularBoardList();
+        log.info("issueBoardList01:{}, issueBoardList02 {} ", issueBoardList01, issueBoardList02);
+        map.put("issueBoardList01", issueBoardList01);
+        map.put("issueBoardList02", issueBoardList02);
+
+        return map;
     }
+
+
 
 
     //내가 작성한 게시글 5개 보여주기

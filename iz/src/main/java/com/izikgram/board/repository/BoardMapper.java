@@ -224,45 +224,27 @@ public interface BoardMapper {
     CommentDto getLastComment02(@Param("board_id") int boardId);
 
     //인기게시판(자유게시판)
-//    @Select("select b.*, " +
-//            "coalesce(count(c.comment_id), 0) AS comment_count " +
-//            "from iz_board_type t " +
-//            "join iz_board01 b on t.board_type = b.board_type " +
-//            "left join iz_board01_comment c on b.board_id = c.board_id " +
-//            "where b.board_type = 1 " +
-//            "group by b.board_id " +
-//            "order by  like_count desc, reg_date desc " +
-//            "limit 3")
-//    List<BoardDto> getIssueBoardList01();
-//
-//    @Select("select b.*, " +
-//            "coalesce(count(c.comment_id), 0) AS comment_count " +
-//            "from iz_board_type t " +
-//            "join iz_board02 b on t.board_type = b.board_type " +
-//            "left join iz_board02_comment c on b.board_id = c.board_id " +
-//            "where b.board_type = 2 " +
-//            "group by b.board_id " +
-//            "order by  like_count desc, reg_date desc  " +
-//            "limit 3")
-//    List<BoardDto> getIssueBoardList02();
+    @Select("SELECT b.*, " +
+            "COALESCE(COUNT(c.comment_id), 0) AS comment_count " +
+            "FROM iz_board_popular p " +
+            "JOIN iz_board01 b ON p.board_id = b.board_id " +
+            "LEFT JOIN iz_board01_comment c ON b.board_id = c.board_id " +
+            "WHERE p.board_type = 1 AND b.like_count >= 5 " +
+            "GROUP BY b.board_id, p.like_count, b.reg_date " +
+            "ORDER BY p.like_count DESC, b.reg_date DESC " +
+            "LIMIT 3")
+    List<BoardDto> getPopularBoardListBoard1();
 
-    @Select("(" +
-            "    SELECT 1 AS board_type, b1.title, b1.board_id, b1.like_count, b1.disLike_count, b1.reg_date , " +
-            "           (SELECT COUNT(*) FROM iz_board01_comment c WHERE c.board_id = b1.board_id) AS comment_count " +
-            "    FROM iz_board01 b1 " +
-            "    ORDER BY b1.like_count DESC, b1.board_id " +
-            "    LIMIT 3 " +
-            ") " +
-            "UNION ALL " +
-            "( " +
-            "    SELECT 2 AS board_type, b2.title, b2.board_id, b2.like_count, b2.disLike_count, b2.reg_date,  " +
-            "           (SELECT COUNT(*) FROM iz_board02_comment c WHERE c.board_id = b2.board_id) AS comment_count " +
-            "    FROM iz_board02 b2 " +
-            "    ORDER BY b2.like_count DESC, b2.board_id " +
-            "    LIMIT 3 " +
-            ") " +
-            "ORDER BY like_count DESC, board_type, board_id")
-    List<BoardDto> getPopularBoardList();
+    @Select("SELECT b.*, " +
+            "COALESCE(COUNT(c.comment_id), 0) AS comment_count " +
+            "FROM iz_board_popular p " +
+            "JOIN iz_board02 b ON p.board_id = b.board_id " +
+            "LEFT JOIN iz_board02_comment c ON b.board_id = c.board_id " +
+            "WHERE p.board_type = 2 AND b.like_count >= 5 " +
+            "GROUP BY b.board_id, p.like_count, b.reg_date " +
+            "ORDER BY p.like_count DESC, b.reg_date DESC " +
+            "LIMIT 3")
+    List<BoardDto> getPopularBoardListBoard2();
 
 
 
