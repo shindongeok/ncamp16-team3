@@ -174,7 +174,11 @@ public class UserController {
 
         String member_id = userDetails.getUser().getMember_id();
 
-        int stressNum = userService.getStressNum(member_id);
+        Integer stressNum = userService.getStressNum(member_id);
+
+        if(stressNum == null) {
+            stressNum = 0;
+        }
 
         model.addAttribute("stressNum", stressNum);
 
