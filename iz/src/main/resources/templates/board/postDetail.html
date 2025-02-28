@@ -17,6 +17,24 @@
             --color-main-yellow-basic: #fdd391;
         }
 
+        @media screen and (max-width: 599px) {
+            #like,
+            #dislike {
+                padding: 0.5em 1em;
+            }
+
+            .buttonSpan {
+                font-size: 0.7em;
+            }
+
+            #commentContent {
+                padding: 1em;
+            }
+
+            #listButton {
+                padding: 0.5em 1em;
+            }
+        }
     </style>
 </head>
 <body>
@@ -48,25 +66,25 @@
                             text-white px-4 py-2 rounded-lg transition cursor-pointer"
                         th:attr="data-board=${board.board_id}"
                         th:onclick="|toggleLikeDislike(${board.board_id}, 'like')|">
-                    <span>이직해</span> <span class="font-bold" th:id="likeCount" th:text="${board.like_count}">0</span>
+                    <span class="buttonSpan">이직해</span> <span class="font-bold buttonSpan" th:id="likeCount" th:text="${board.like_count}">0</span>
                 </button>
                 <button id="dislike" class="unlikeBtn flex items-center space-x-2 bg-main-sky-highlight hover:bg-main-sky-basic
                             text-white px-4 py-2 rounded-lg transition cursor-pointer"
                         th:attr="data-board=${board.board_id}"
                         th:onclick="|toggleLikeDislike(${board.board_id}, 'dislike')|">
-                    <span>존버해</span> <span class="font-bold" th:id="dislikeCount" th:text="${board.dislike_count}">0</span>
+                    <span class="buttonSpan">존버해</span> <span class="font-bold buttonSpan" th:id="dislikeCount" th:text="${board.dislike_count}">0</span>
                 </button>
             </div>
 
             <!-- 수정 / 삭제 버튼 -->
             <div class="flex space-x-2" th:if="${member_id == board.writer_id}">
                 <a class="px-4 py-2 bg-main-sky-highlight hover:bg-main-sky-basic text-white
-                       rounded-lg transition cursor-pointer"
+                       rounded-lg transition cursor-pointer buttonSpan"
                    th:href="@{/board/update/{board_type}/{board_id}(board_type=${board_type}, board_id=${board_id})}">
                     수정
                 </a>
                 <a onclick="OpenDeleteModalBoard()" class="px-4 py-2 bg-main-red-highlight hover:bg-main-red-basic text-white rounded-lg
-                       transition cursor-pointer">
+                       transition cursor-pointer buttonSpan">
                     삭제
                 </a>
             </div>
@@ -77,10 +95,10 @@
             <input type="hidden" id="boardIdd" th:value="${board.board_id}">
             <input type="hidden" id="boardTypee" th:value="${board.board_type}">
             <input id="commentContent" type="text" placeholder="댓글을 입력해주세요."
-                   class="flex-grow border border-gray-300 rounded-md p-3 focus:ring-2 focus:ring-blue-400 outline-none"
+                   class="flex-grow border border-gray-300 rounded-md p-3 focus:ring-2 focus:ring-blue-400 outline-none buttonSpan"
                    onkeydown="checkEnter(event)">
             <button type="button" onclick="saveComment()" class="px-4 py-3 bg-main-sky-highlight hover:bg-main-sky-basic
-                        text-white rounded-lg transition whitespace-nowrap cursor-pointer">
+                        text-white rounded-lg transition whitespace-nowrap cursor-pointer buttonSpan">
                 댓글 등록
             </button>
         </div>
@@ -114,8 +132,8 @@
         </div>
 
 
-        <div class="mt-8 mb-15 flex justify-end">
-            <a th:href="@{/board/{board_type}(board_type=${board_type})}" class="px-6 py-3 bg-main-sky-highlight hover:bg-main-sky-basic text-white rounded-lg transition cursor-pointer">
+        <div id="listDiv" class="mt-8 flex">
+            <a id="listButton" th:href="@{/board/{board_type}(board_type=${board_type})}" class="px-6 py-3 bg-main-sky-highlight hover:bg-main-sky-basic text-white rounded-lg transition cursor-pointer">
                 목록으로
             </a>
         </div>

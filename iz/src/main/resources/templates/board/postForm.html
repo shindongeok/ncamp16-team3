@@ -22,7 +22,7 @@
 <body>
 <div class="flex flex-col w-full mobile-container pt-8 relative bg-white rounded-lg shadow-lg mx-auto">
     <div class="pt-28"><header th:replace="~{header :: header} " class="pt-4"></header></div>
-    <div class="flex  justify-center min-h-screen ">
+    <div class="flex justify-center">
         <div class="w-1000 max-w-lg px-8 pb-8 bg-white">
 
             <h1 class="text-2xl font-bold text-gray-900 mb-4 text-center"
@@ -50,12 +50,12 @@
 
                 <div class="flex justify-center gap-4 pt-6">
                     <button type="submit"
-                            class="md:px-20 md:py-4 px-15 py-4  bg-main-sky-highlight text-white font-semibold
+                            class="md:px-20 md:py-4 px-11 py-4  bg-main-sky-highlight text-white font-semibold
                                 rounded-xl hover:bg-main-sky-basic transition-all cursor-pointer">
                         등록
                     </button>
                     <a th:href="@{/board/{board_type}(board_type=${board_type})}"
-                       class="md:px-20 md:py-4 px-15 py-4 bg-gray-300 rounded hover:bg-main-sky-basic text-white rounded-xl cursor-pointer">
+                       class="md:px-20 md:py-4 px-11 py-4 bg-gray-300 rounded hover:bg-main-sky-basic text-white rounded-xl cursor-pointer">
                         취소
                     </a>
                 </div>
