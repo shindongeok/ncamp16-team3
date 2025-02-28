@@ -24,61 +24,156 @@
             --color-bold-text: oklch(0.208 0.042 265.755);
         }
 
+        body {
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            width: 100%;
+            margin: 0 auto;
+            overflow: hidden;
+            position: relative;
+        }
+
+        @media (min-width: 768px) {
+            .app-container {
+                width: 600px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            }
+        }
+
+        .header-container {
+            position: fixed;
+            top: 0;
+            z-index: 50;
+            width: 100%;
+            background-color: white;
+        }
+
+        @media (min-width: 768px) {
+            .header-container {
+                width: 600px;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+        }
+
+        .chat-area {
+            margin-top: 120px; /* 헤더 높이만큼 마진 */
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 120px);
+            overflow: hidden;
+            padding: 0 20px;
+        }
+
+        .chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid #f3f4f6;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .chat-header {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: white;
+            border-top-left-radius: 0.75rem;
+            border-top-right-radius: 0.75rem;
+        }
+
+        #messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            padding-bottom: 2rem;
+        }
+
         #messages::-webkit-scrollbar {
             display: none;
         }
+
+        #inputSection {
+            border-top: 1px solid #f3f4f6;
+            padding: 1rem;
+            background: white;
+        }
     </style>
 </head>
-<body class="bg-white mobile-container">
-<div class="flex flex-col w-full md:w-[600px] md:mx-auto md:shadow-md bg-white min-h-screen pt-[120px]">
-    <div class="pt-20"><header th:replace="~{header :: header} " class="pt-4 z-100"></header></div>
-    <div class="ml-5 mr-5 bg-white rounded-xl shadow-lg border border-gray-100 relative">
-        <div class="sticky top-0 z-10 bg-white rounded-t-xl">
-            <div class="flex justify-between items-center p-4 border-b border-gray-100">
-                <div class="flex items-center gap-2">
-                    <div class="w-10 h-10 bg-main-sky-highlight rounded-full flex items-center justify-center text-white text-sm">
-                        <img src="/images/chat.png"/>
+<body>
+<div class="app-container bg-white">
+    <!-- 고정 헤더 -->
+    <div class="header-container">
+        <header th:replace="~{header :: header}" class="pt-4"></header>
+    </div>
+
+    <!-- 채팅 영역 -->
+    <div class="chat-area">
+        <div class="chat-container">
+            <div class="chat-header">
+                <!-- 챗 헤더 -->
+                <div class="flex justify-between items-center p-4 border-b border-gray-100">
+                    <div class="flex items-center gap-2">
+                        <div class="w-12 h-12 bg-main-sky-highlight rounded-full flex items-center justify-center text-white text-sm">
+                            <img src="/images/chat.png" class="w-10"/>
+                        </div>
+                        <div>
+                            <p class="text-sm">안녕하세요, <span th:text="${#authentication.getPrincipal().getUser().getNickname()}"></span>님!</p>
+                            <p class="text-xs text-gray-500">무엇을 도와드릴까요?</p>
+                        </div>
                     </div>
-                    <div>
-                        <p class="text-sm">안녕하세요, <span th:text="${#authentication.getPrincipal().getUser().getNickname()}"></span>님!</p>
-                        <p class="text-xs text-gray-500">무엇을 도와드릴까요?</p>
-                    </div>
+                    <button id="finishChatBtn" onclick="finishchat()" class="text-blue-500 text-sm hidden">
+                        대화종료
+                    </button>
                 </div>
-                <button id="finishChatBtn" onclick="finishchat()" class="text-blue-500 text-sm hidden">
-                    대화종료
-                </button>
+
+                <!-- 메뉴 버튼 그리드 -->
+                <div class="flex flex-wrap gap-3 p-4 border-b border-gray-100">
+                    <button onclick="stresschat()" class="bg-gray-100 text-black py-3 px-4 rounded-lg text-left text-sm cursor-pointer flex-auto min-w-fit">
+                        오늘의 퇴사 수치
+                    </button>
+                    <button onclick="feelchat()" class="bg-gray-100 text-black py-3 px-4 rounded-lg text-left text-sm cursor-pointer flex-auto min-w-fit">
+                        하소연하기
+                    </button>
+                    <button onclick="paydaychat()" class="bg-gray-100 text-black py-3 px-4 rounded-lg text-left text-sm cursor-pointer flex-auto min-w-fit">
+                        월급일까지 남은 일수
+                    </button>
+                    <button onclick="endtimechat()" class="bg-gray-100 text-black py-3 px-4 rounded-lg text-left text-sm cursor-pointer flex-auto min-w-fit">
+                        남은 퇴근시간
+                    </button>
+                    <button onclick="handleJobPostings()" class="bg-gray-100 text-black py-3 px-4 rounded-lg text-left text-sm cursor-pointer flex-auto min-w-fit">
+                        맞춤형 이직 공고 보기
+                    </button>
+                </div>
             </div>
 
-            <div class="grid grid-cols-2 gap-3 p-4">
-                <button onclick="stresschat()" class="bg-gray-100 text-black py-3 px-4 rounded-lg text-left text-sm cursor-pointer">
-                    오늘의 퇴사 수치
-                </button>
-                <button onclick="feelchat()" class="bg-gray-100 text-black py-3 px-4 rounded-lg text-left text-sm cursor-pointer">
-                    하소연하기
-                </button>
-                <button onclick="paydaychat()" class="bg-gray-100 text-black py-3 px-4 rounded-lg text-left text-sm cursor-pointer">
-                    월급일까지 남은 일수
-                </button>
-                <button onclick="endtimechat()" class="bg-gray-100 text-black py-3 px-4 rounded-lg text-left text-sm cursor-pointer">
-                    남은 퇴근시간
-                </button>
-                <button onclick="handleJobPostings()" class="bg-gray-100 text-black py-3 px-4 rounded-lg text-left text-sm cursor-pointer">
-                    맞춤형 이직 공고 보기
-                </button>
+            <!-- 메시지 영역 -->
+            <div id="messages" class="space-y-2">
+                <!-- 메시지 들어갈 자리 -->
             </div>
-        </div>
 
-        <div id="messages" class="flex-grow overflow-y-auto px-4 space-y-2 scrollbar-hide">
-            <!-- 메시지 들어갈 자리 -->
-        </div>
-
-        <div id="inputSection" class="p-4 border-t border-gray-100 hidden">
-            <div class="flex items-center gap-2">
-                <input id="userInput" type="text" class="flex-grow p-2 border border-gray-300 rounded-lg"
-                       placeholder="메시지를 입력하세요" onkeydown="checkEnter(event)">
-                <button onclick="handleGeneralChat()" class="bg-blue-500 text-white px-4 py-2 rounded-lg">
-                    전송
-                </button>
+            <!-- 입력 영역 -->
+            <div id="inputSection" class="hidden">
+                <div class="flex items-center gap-2">
+                    <input id="userInput" type="text" class="flex-grow p-2 border border-gray-300 rounded-lg"
+                           placeholder="메시지를 입력하세요" onkeydown="checkEnter(event)">
+                    <button onclick="handleGeneralChat()" class="bg-blue-500 text-white p-2 rounded-lg flex items-center justify-center w-10 h-10 hover:bg-blue-600 transition-colors">
+                        <!-- 종이비행기 아이콘 (SVG) -->
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
+                        </svg>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
