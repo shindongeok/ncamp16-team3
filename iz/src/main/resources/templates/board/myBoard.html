@@ -41,7 +41,7 @@
                 <div class="flex justify-between items-center border-b border-gray-300">
                     <div class="flex items-center gap-3">
                         <div class="text-2xl font-semibold mb-3">자유 게시판</div>
-                        <a th:if="${myBoardList01.size() != 0}" th:href="@{/board/myBoard/freeMyBoard}" class="mt-5 mb-3 px-10 py-3 text-sm hover:bg-main-sky-basic text-white rounded-full bg-main-sky-highlight transition-colors">모두 보기</a>
+                        <a th:if="${myBoardList01.size() != 0}" th:href="@{/board/myBoard/freeMyBoard}" class="mb-3 px-3 py-1 text-sm hover:bg-main-sky-basic text-white rounded-full bg-main-sky-highlight transition-colors">모두 보기</a>
                     </div>
                 </div>
             </div>
@@ -97,7 +97,7 @@
         <div class="rounded-lg mt-5 w-auto">
             <div class="flex justify-between items-center border-b border-gray-300">
                 <div class="flex items-center gap-3">
-                    <h2 class="text-2xl font-semibold mb-3">하소연 게시판</h2>
+                    <div class="text-2xl font-semibold mb-3">하소연 게시판</div>
                     <a th:if="${myBoardList02.size() != 0}" th:href="@{/board/myBoard/whiningMyBoard}" class="mb-3 px-3 py-1 text-sm hover:bg-main-sky-basic text-white rounded-full bg-main-sky-highlight transition-colors">모두 보기</a>
                 </div>
             </div>
