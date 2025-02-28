@@ -1,7 +1,9 @@
 package com.izikgram.user.service;
 
+import com.izikgram.main.repository.MainMapper;
 import com.izikgram.user.entity.User;
 import com.izikgram.user.repository.UserMapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -11,6 +13,9 @@ public class UserService {
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private MainMapper mainMapper;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -40,6 +45,12 @@ public class UserService {
 
     public User getUserInfo(String member_id) {
         return userMapper.getUserInfo(member_id);
+    }
+
+
+    public Integer getStressNum(String member_id) {  // int -> Integer로 변경
+        Integer stressNum = mainMapper.getStressNum(member_id);
+        return stressNum;  // null이 반환될 수 있음
     }
 
     public void deleteUser(String member_id) {
