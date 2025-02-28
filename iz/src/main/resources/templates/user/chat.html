@@ -5,359 +5,91 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Izikgram</title>
     <link th:href="@{/images/Logo.png}" rel="shortcut icon" type="image/x-icon">
-    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" th:href="@{/css/default.css}">
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <style type="text/tailwindcss">
+        @theme {
+            --color-main-sky-highlight: #00a3ed;
+            --color-main-sky-basic: #9bdcfd;
+            --color-main-red-highlight: #ff5353;
+            --color-main-red-basic: #ff9898;
+            --color-main-yellow-highlight: #fbc159ff;
+            --color-main-yellow-basic: #fdd391;
+
+            /* gray-400*/
+            --color-light-text: oklch(0.704 0.04 256.788);
+            /* gray-600 */
+            --color-basic-text: oklch(0.446 0.043 257.281);
+            /* gray-900 */
+            --color-bold-text: oklch(0.208 0.042 265.755);
+        }
+
+        #messages::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
 </head>
-<body class="bg-gray-100 flex items-center justify-center h-screen">
-<div class="bg-white p-6 rounded-lg shadow-xl w-full max-w-lg relative">
-    <div class="pt-20"><header th:replace="~{header :: header} " class="pt-4"></header></div>
+<body class="bg-white mobile-container">
+<div class="flex flex-col w-full md:w-[600px] md:mx-auto md:shadow-md bg-white min-h-screen pt-[120px]">
+    <div class="pt-20"><header th:replace="~{header :: header} " class="pt-4 z-100"></header></div>
+    <div class="ml-5 mr-5 bg-white rounded-xl shadow-lg border border-gray-100 relative">
+        <div class="sticky top-0 z-10 bg-white rounded-t-xl">
+            <div class="flex justify-between items-center p-4 border-b border-gray-100">
+                <div class="flex items-center gap-2">
+                    <div class="w-10 h-10 bg-main-sky-highlight rounded-full flex items-center justify-center text-white text-sm">
+                        <img src="/images/chat.png"/>
+                    </div>
+                    <div>
+                        <p class="text-sm">안녕하세요, <span th:text="${#authentication.getPrincipal().getUser().getNickname()}"></span>님!</p>
+                        <p class="text-xs text-gray-500">무엇을 도와드릴까요?</p>
+                    </div>
+                </div>
+                <button id="finishChatBtn" onclick="finishchat()" class="text-blue-500 text-sm hidden">
+                    대화종료
+                </button>
+            </div>
 
-    <!-- 환영 메시지 -->
-    <div class="mb-6 flex items-center justify-between">
-        <div>
-            안녕하세요, <span th:text="${#authentication.getPrincipal().getUser().getNickname()}"></span>님!
-            <p class="text-sm text-gray-600">무엇을 도와드릴까요?</p>
+            <div class="grid grid-cols-2 gap-3 p-4">
+                <button onclick="stresschat()" class="bg-gray-100 text-black py-3 px-4 rounded-lg text-left text-sm cursor-pointer">
+                    오늘의 퇴사 수치
+                </button>
+                <button onclick="feelchat()" class="bg-gray-100 text-black py-3 px-4 rounded-lg text-left text-sm cursor-pointer">
+                    하소연하기
+                </button>
+                <button onclick="paydaychat()" class="bg-gray-100 text-black py-3 px-4 rounded-lg text-left text-sm cursor-pointer">
+                    월급일까지 남은 일수
+                </button>
+                <button onclick="endtimechat()" class="bg-gray-100 text-black py-3 px-4 rounded-lg text-left text-sm cursor-pointer">
+                    남은 퇴근시간
+                </button>
+                <button onclick="handleJobPostings()" class="bg-gray-100 text-black py-3 px-4 rounded-lg text-left text-sm cursor-pointer">
+                    맞춤형 이직 공고 보기
+                </button>
+            </div>
         </div>
-        <button onclick="finishchat()" class="p-3 text-sm text-left bg-[#00a3ed] rounded-full hover:bg-[#0091c7] transition-colors duration-200">
-            대화종료
-        </button>
-    </div>
 
+        <div id="messages" class="flex-grow overflow-y-auto px-4 space-y-2 scrollbar-hide">
+            <!-- 메시지 들어갈 자리 -->
+        </div>
 
-
-    <!-- 버튼 그리드 -->
-    <div class="grid grid-cols-2 gap-3 mb-4">
-        <button onclick="stresschat()" class="p-3 text-sm text-left bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200">
-            오늘의 퇴사 수치
-        </button>
-
-        <button onclick="feelchat()" class="p-3 text-sm text-left bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200">
-            하소연하기
-        </button>
-
-        <button onclick="paydaychat()" class="p-3 text-sm text-left bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200">
-            월급일까지 남은 일수
-        </button>
-
-        <button onclick="endtimechat()" class="p-3 text-sm text-left bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200">
-            남은 퇴근시간
-        </button>
-
-        <button onclick="handleJobPostings()" class="p-3 text-sm text-left bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200">
-            맞춤형 이직 공고 보기
-        </button>
-    </div>
-
-    <!-- 메시지 영역 -->
-    <div id="messages" class="max-h-96 overflow-y-auto mb-4 p-4 border border-gray-300 rounded-lg space-y-3">
-        <!-- 메시지가 여기에 표시됩니다 -->
-    </div>
-
-    <!-- 사용자 입력 영역 -->
-    <div id="inputSection" class="hidden flex">
-        <input id="userInput" type="text" class="w-full p-2 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="질문을 입력하세요..." onkeydown="checkEnter(event)">
-        <button onclick="handleGeneralChat()" class="bg-blue-500 text-white p-2 rounded-r-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400">전송</button>
+        <div id="inputSection" class="p-4 border-t border-gray-100 hidden">
+            <div class="flex items-center gap-2">
+                <input id="userInput" type="text" class="flex-grow p-2 border border-gray-300 rounded-lg"
+                       placeholder="메시지를 입력하세요" onkeydown="checkEnter(event)">
+                <button onclick="handleGeneralChat()" class="bg-blue-500 text-white px-4 py-2 rounded-lg">
+                    전송
+                </button>
+            </div>
+        </div>
     </div>
 </div>
-<!-- Thymeleaf로 사용자 월급날 주입 -->
+
+<!-- Thymeleaf로 사용자 데이터 주입 -->
 <div id="paydayData" th:data-payday="${#authentication.getPrincipal().getUser().getPayday()}"></div>
 <div id="endtimeData" th:data-endtime="${#authentication.getPrincipal().getUser().getEnd_time()}"></div>
 <div id="stressData" th:data-stress="${@mainService.getStressNum(#authentication.principal.user.member_id)}"></div>
 
-<script>
-    // 공통 유틸리티 함수들
-    function appendUserMessage(text) {
-        const messagesDiv = document.getElementById('messages');
-        const userMessageDiv = document.createElement('div');
-        userMessageDiv.classList.add('text-right', 'text-sm', 'bg-blue-100', 'rounded-lg', 'p-2');
-        userMessageDiv.innerText = text;
-        messagesDiv.appendChild(userMessageDiv);
-        return messagesDiv;
-    }
-
-    function appendBotMessage(text) {
-        const messagesDiv = document.getElementById('messages');
-        const botMessageDiv = document.createElement('div');
-        botMessageDiv.classList.add('text-left', 'text-sm', 'bg-gray-100', 'rounded-lg', 'p-2');
-        botMessageDiv.innerText = text;
-        messagesDiv.appendChild(botMessageDiv);
-        messagesDiv.scrollTop = messagesDiv.scrollHeight;
-    }
-
-    function showLoading(message = '처리 중입니다...') {
-        const messagesDiv = document.getElementById('messages');
-        const loadingDiv = document.createElement('div');
-        loadingDiv.id = 'loadingMessage';
-        loadingDiv.classList.add('text-center', 'text-sm', 'text-gray-500');
-        loadingDiv.innerText = message;
-        messagesDiv.appendChild(loadingDiv);
-    }
-
-    function removeLoading() {
-        const loadingMessage = document.getElementById('loadingMessage');
-        if (loadingMessage) loadingMessage.remove();
-    }
-
-    // 각 버튼별 핸들러 함수들
-    async function paydaychat() {
-        appendUserMessage("월급까지 남은 일수?");
-        showLoading("급여일 정보를 확인하고 있습니다...");
-
-        // Thymeleaf를 통해 HTML에 주입된 데이터 가져오기
-        const paydayStr = document.getElementById('paydayData').getAttribute('data-payday');
-
-        if (!paydayStr) {
-            removeLoading();
-            appendBotMessage("급여일 정보를 찾을 수 없습니다.");
-            return;
-        }
-
-        // 오늘 날짜
-        const today = new Date();
-        const payday = new Date(today.getFullYear(), today.getMonth(), parseInt(paydayStr));
-
-        // 월급날이 이미 지났으면 다음 달로 변경
-        if (payday < today) {
-            payday.setMonth(payday.getMonth() + 1);
-        }
-
-        // D-DAY 계산
-        setTimeout(() => {
-            const timeDiff = payday - today;
-            const daysLeft = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
-
-            // 로딩 메시지 제거 후 챗봇 응답 추가
-            removeLoading();
-            appendBotMessage(`월급일까지 ${daysLeft}일 남았습니다.`);
-        }, 500);
-    }
-
-    async function endtimechat() {
-        appendUserMessage("남은 퇴근시간");
-        showLoading("퇴근시간 정보를 확인하고 있습니다...");
-
-        setTimeout(() => {
-            const endtimeElement = document.getElementById('endtimeData');
-            const endtimeStr = endtimeElement.getAttribute('data-endtime'); // "2025-02-21 18:00" 같은 형태
-
-            if (!endtimeStr) {
-                appendBotMessage("퇴근시간 정보를 불러올 수 없습니다.");
-                return;
-            }
-
-            const today = new Date();
-            const [endHour, endMinute] = endtimeStr.split(":").map(Number);
-            const endtime = new Date(today.getFullYear(), today.getMonth(), today.getDate(), endHour, endMinute);
-
-            const diffTime = endtime - today;
-
-            if (diffTime <= 0) {
-                removeLoading();
-                appendBotMessage("퇴근 시간이 지났습니다!");
-                return;
-            }
-
-            const diffHours = Math.floor(diffTime / (1000 * 60 * 60)); // 남은 시간
-            const diffMinutes = Math.floor((diffTime % (1000 * 60 * 60)) / (1000 * 60)); // 남은 분
-
-            removeLoading();
-            appendBotMessage(`퇴근까지 ${diffHours}시간 ${diffMinutes}분 남았습니다.`);
-        }, 500); // 1초 대기 후 처리
-    }
-
-    async function stresschat() {
-        const messagesDiv = appendUserMessage("오늘의 퇴사 수치");
-        showLoading('퇴사 통계를 분석중입니다...');
-
-        // 500ms 후에 stress 수치 가져오기
-        setTimeout(() => {
-            const stressStr = document.getElementById('stressData').getAttribute('data-stress');
-
-            console.log(stressStr);  // 스트레스 값이 잘 나오는지 확인하기 위해 콘솔에 출력
-
-            if (!stressStr) {
-                // 데이터가 없으면 해당 메시지 출력
-                removeLoading();
-                appendBotMessage("퇴사 지수가 없습니다.");
-                return;
-            }
-
-            // 데이터가 있으면 퇴사 지수 출력
-            removeLoading();
-            appendBotMessage(`오늘의 퇴사지수는 ${stressStr}% 입니다.`);
-        }, 500);
-    }
-
-
-
-    function feelchat() {
-        // 입력창 표시
-        document.getElementById('inputSection').classList.remove('hidden');
-
-        // 하소연하기 문장을 화면에 추가
-        appendUserMessage("하소연하기");
-        appendBotMessage(`안녕하세요. 오늘 하루 어떠셨나요? 말씀해주신 내용을 바탕으로 함께 해결책을 찾아보겠습니다.`);
-
-        handleGeneralChat();
-    }
-
-
-
-        let conversationHistory = [];
-
-    // 대화 종료 처리 함수
-    function finishchat() {
-        // 대화 종료 메시지 추가
-        const message = "대화종료";
-
-        // 대화 종료 메시지를 화면에 추가
-        appendUserMessage(message);
-
-        // 임시로 userInput 값을 설정하고 handleGeneralChat 호출
-        const userInput = document.getElementById('userInput');
-        const originalValue = userInput.value; // 기존 값 저장
-
-        userInput.value = message; // userInput 값을 "대화종료"로 변경
-
-        // handleGeneralChat 호출 (이로써 "대화종료" 메시지가 API로 전송됨)
-        handleGeneralChat(true); // true 파라미터로 대화종료 모드 표시
-
-        // 원래 값으로 복원 (필요한 경우)
-        userInput.value = originalValue;
-    }
-
-    // handleGeneralChat 함수 수정
-    async function handleGeneralChat(isEndingChat = false) {
-        const userInput = document.getElementById('userInput');
-        const message = isEndingChat ? "대화종료" : userInput.value.trim();
-
-        // 메시지가 비어있고 대화종료가 아니면 함수 종료
-        if (!message && !isEndingChat) return;
-
-        if (!isEndingChat) {
-            appendUserMessage(message);
-        }
-
-        showLoading('답변을 준비중입니다...');
-
-        // 시스템 메시지 (초기 설정 메시지) - 대화 시작시 한 번만 설정됨
-        if (conversationHistory.length === 0) {
-            conversationHistory.push({
-                "role": "system",
-                "content": "역할 설정: 저는 직장인들의 감정을 전문적으로 케어하는 AI 상담사로서, 사용자의 감정을 깊이 이해하고 공감하는 상담을 제공하겠습니다. 저는 항상 친절하고 따뜻한 어조로 대화하며, 전문적이고 세심하게 접근합니다.\\n\n감정 분석 프로세스: 사용자의 모든 대화를 감정적으로 분석하여, 현재 사용자의 감정 상태를 정확하게 파악합니다. 사용자의 감정 상태를 0~100 사이의 퇴사지수로 평가합니다. 이 퇴사지수는 사용자가 직장에서 얼마나 힘들어하는지를 나타내며, 대화 종료 시 제공됩니다.\\n\n대화 가이드라인: 사용자의 감정 상태를 세심하게 살펴보며, 필요할 경우 실질적인 조언과 심리적 지지를 제공합니다.\n 대화종료가 되기전까진 주고받은 내용을 기억하며 대화\n 대화가 종료될 때만 퇴사지수를 제공하며, \"대화종료\"라는 말이 나오면 대화가 종료됩니다.\n 대화에서는 과도하게 긍정적이거나 부정적이지 않게 균형을 잡아가며 대화를 이어갑니다.\n 사용자의 프라이버시와 감정을 최우선으로 존중하며, 필요한 경우 실질적인 대처 방안도 제안.\\n\n퇴사지수 계산 방식: 대화 중에 사용자의 발언을 감정적으로 분석. 부정적인 단어와 긍정적인 단어의 빈도에 따라 퇴사지수를 계산.\n 긍정적인 단어가 많이 사용되면 퇴사지수가 낮아지고, 부정적인 단어가 많이 사용되면 퇴사지수가 높아진다.\n 대화 종료 시 \"오늘의 퇴사지수는 [퇴사지수]입니다"
-            });
-        }
-
-        // API 호출의 일관성을 위해 여기서도 확인)
-        if (isEndingChat && conversationHistory.length > 0 &&
-            conversationHistory[conversationHistory.length - 1].content === "대화종료") {
-            // 이미 추가되어 있으면 다시 추가하지 않음
-        } else {
-            conversationHistory.push({ role: 'user', content: message });
-        }
-
-        try {
-            const response = await fetch('/chat/feelchat', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    messages: conversationHistory  // 전체 대화 기록 전송
-                })
-            });
-
-            const data = await response.json();
-            removeLoading();
-
-            // 챗봇 응답을 대화 기록에 추가
-            conversationHistory.push({ role: 'assistant', content: data.responseMessage });
-
-            appendBotMessage(data.responseMessage); // 챗봇 응답 메시지 처리
-        } catch (error) {
-            removeLoading();
-            appendBotMessage('죄송합니다. 답변 생성 중 오류가 발생했습니다.');
-        }
-
-        // 대화종료 모드가 아닌 경우에만 입력창 초기화
-        if (!isEndingChat) {
-            userInput.value = '';  // 입력창 초기화
-        }
-    }
-
-
-
-    function formatTimestamp(timestamp) {
-        const date = new Date(timestamp * 1000); // Unix timestamp를 밀리초로 변환
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-        return `${year}-${month}-${day}`;
-    }
-
-    // 맞춤형 이직 공고 핸들러
-    async function handleJobPostings() {
-        appendUserMessage("맞춤형 이직 공고");
-        showLoading("맞춤형 채용공고를 찾고 있습니다...");
-
-        try {
-            const response = await fetch('/user/analyze/recommend-jobs', {
-                method: 'POST'
-            });
-
-            const recommendedJobs = await response.json();
-
-            removeLoading();
-
-            if (recommendedJobs.length === 0) {
-                appendBotMessage("현재 맞춤형 채용공고가 없습니다.");
-                return;
-            }
-
-            // 맞춤형 공고 메시지 생성
-            recommendedJobs.forEach(job => {
-                const jobMessage = `🌟 추천 채용공고
-
-📍 기업명: ${job.companyName}
-📋 제목: ${job.title}
-📍 지역: ${job.locationName}
-💼 업종: ${job.industryName}
-👥 경력: ${job.experienceMax === 0 && job.experienceMin === 0 ? '신입'
-                    : (job.experienceMax === job.experienceMin ? `경력 ${job.experienceMax}년`
-                        : `경력 ${Math.min(job.experienceMax, job.experienceMin)}~${Math.max(job.experienceMax, job.experienceMin)}년`)}
-📅 마감일: ${formatTimestamp(parseFloat(job.expirationTimestamp))}`;
-
-                // HTML 링크를 포함한 메시지 생성
-                const linkMessage = `${jobMessage}\n\n👉 <a href="${job.url}" target="_blank" style="color: blue; text-decoration: underline;">상세 페이지 바로가기</a>`;
-
-                appendBotMessage(linkMessage);
-            });
-
-        } catch (error) {
-            removeLoading();
-            appendBotMessage('맞춤형 채용공고를 불러오는 중 오류가 발생했습니다.');
-            console.error('Error fetching recommended jobs:', error);
-        }
-    }
-
-    function appendBotMessage(text) {
-        const messagesDiv = document.getElementById('messages');
-        const botMessageDiv = document.createElement('div');
-        botMessageDiv.classList.add('text-left', 'text-sm', 'bg-gray-100', 'rounded-lg', 'p-2');
-
-        // HTML을 안전하게 파싱하여 추가
-        botMessageDiv.innerHTML = text.replace(/\n/g, '<br>');
-
-        messagesDiv.appendChild(botMessageDiv);
-        messagesDiv.scrollTop = messagesDiv.scrollHeight;
-    }
-
-    // Enter 키 이벤트 핸들러
-    function checkEnter(event) {
-        if (event.key === 'Enter') {
-            handleGeneralChat();
-        }
-    }
-    const stressNum = /*[[${@mainService.getStressNum(#authentication.principal.user.member_id)}]]*/ 0;
-
-</script>
+<!-- 외부 JS 파일 로드 -->
+<script th:src="@{/js/chatScript.js}"></script>
 </body>
 </html>
