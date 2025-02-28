@@ -374,13 +374,20 @@ function handleJobPostings() {
 // handleGeneralChat 함수
 async function handleGeneralChat(isEndingChat = false) {
     const userInput = document.getElementById('userInput');
+    if (userInput.disabled) return; // 이미 전송 중이면 실행 방지
+    userInput.disabled = true; // 입력창 비활성화 (중복 입력 방지)
+
     const message = isEndingChat ? "대화종료" : userInput.value.trim();
 
     // 메시지가 비어있고 대화종료가 아니면 함수 종료
-    if (!message && !isEndingChat) return;
+    if (!message && !isEndingChat) {
+        userInput.disabled = false;
+        return;
+    }
 
     if (!isEndingChat) {
         appendUserMessage(message);
+        userInput.value = '';
 
         // 하소연하기 모드에서 첫 메시지 입력 시 대화종료 버튼 표시
         if (feelChatStarted && !userHasSpoken) {
@@ -427,11 +434,8 @@ async function handleGeneralChat(isEndingChat = false) {
     } catch (error) {
         removeLoading();
         appendBotMessage('죄송합니다. 답변 생성 중 오류가 발생했습니다.');
-    }
-
-    // 대화종료 모드가 아닌 경우에만 입력창 초기화
-    if (!isEndingChat) {
-        userInput.value = '';  // 입력창 초기화
+    } finally {
+        userInput.disabled = false;
     }
 }
 
