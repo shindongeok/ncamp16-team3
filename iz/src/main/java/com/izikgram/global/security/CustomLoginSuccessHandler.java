@@ -28,8 +28,8 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler {
             String member_id = authentication.getName(); // 로그인한 사용자 ID 가져오기
             User loginuser = userMapper.getUserInfo(member_id); // DB에서 사용자 정보 조회
 
-            log.info("로그인 성공!!!!!: {} -> /main 이동", loginuser.getMember_id());
-            log.info("사용자 정보 : {}", loginuser);
+//            log.info("로그인 성공!!!!!: {} -> /main 이동", loginuser.getMember_id());
+//            log.info("사용자 정보 : {}", loginuser);
 
         } catch (Exception e) {
             throw new RuntimeException(e);
