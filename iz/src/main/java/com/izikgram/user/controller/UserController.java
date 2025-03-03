@@ -210,10 +210,8 @@ public class UserController {
         loginUser.setPayday(user.getPayday());
         userService.updateUser(loginUser);
 
-//        log.info("변경된 사용자 정보 : {}", loginUser);
         return "redirect:/main";
     }
-
 
     //비밀번호 확인(비밀번호 변경 클릭시)
     @GetMapping("/checkPwd")
@@ -222,11 +220,9 @@ public class UserController {
     }
 
     @PostMapping("/checkPwd")
-    public String verifyPassword(@AuthenticationPrincipal CustomUserDetails userDetails, User user,
+    public String verifyPassword(@AuthenticationPrincipal CustomUserDetails userDetails,
                                  @RequestParam("password") String password) {
         if(passwordEncoder.matches(password, userDetails.getUser().getPassword())) {
-//            log.info("사용자 현재 비밀번호: {}", userDetails.getUser().getPassword());
-//            log.info("입력한 비밀번호: {}", password);
             return "redirect:/user/updatePw";
         } else {
             return "redirect:/user/checkPwd";
@@ -253,11 +249,10 @@ public class UserController {
         return ResponseEntity.ok("비밀번호 변경 성공");
     }
 
-
     @PostMapping("/delete")
     public String user_delete(@AuthenticationPrincipal CustomUserDetails userDetails) {
         User deleteUser = userDetails.getUser();
-        userService.deleteUser(deleteUser.getMember_id()); // DB에서 status 변경
+        userService.deleteUser(deleteUser.getMember_id()); // DB에서 status컬럼 -> "DELETED" 변경
         return "redirect:/";
     }
 
@@ -271,8 +266,7 @@ public class UserController {
     @PostMapping("/analyze/recommend-jobs")
     @ResponseBody
     public List<Job> getRecommendedJobs(
-            @AuthenticationPrincipal CustomUserDetails userDetails
-    ) {
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
         User user = userDetails.getUser();
 
         // 사용자의 기본 검색 조건 사용

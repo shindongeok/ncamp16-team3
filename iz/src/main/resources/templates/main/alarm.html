@@ -282,6 +282,7 @@
                             if (currentAlarmElement) {
                                 currentAlarmElement.remove(); // 삭제된 알림 화면에서 제거
                             }
+                            updateAlarmCount(); // 알림 개수 즉시 업데이트
                             closeAlarmModal(); // 모달 닫기
                         } else {
                             alert("알림 삭제 실패!");
@@ -293,6 +294,26 @@
                     });
             }
         });
+
+        // 알림 개수 업데이트 함수
+        function updateAlarmCount() {
+            fetch('/main/alarm/count')  // 최신 알림 개수 가져오기
+                .then(response => response.json()) // count : {count=1}
+                .then(data => {
+                    let headerAlarmCount = document.getElementById('alarmCount'); // 헤더에 있는 알림 개수 id값
+                    if (headerAlarmCount && data.count !== undefined) {
+                        // 알림 개수가 0보다 클 때만 표시
+                        if (data.count > 0) {
+                            headerAlarmCount.innerText = data.count; // 최신 개수로 업데이트
+                            headerAlarmCount.style.display = 'inline-flex'; // 개수 표시
+                        } else {
+                            headerAlarmCount.style.display = 'none'; // 알림 온 게 없으면 숨김
+                        }
+                    }
+                })
+                .catch(error => console.error('Error updating alarm count:', error));
+        }
+
     });
 
     // 모바일 스와이프 기능 구현

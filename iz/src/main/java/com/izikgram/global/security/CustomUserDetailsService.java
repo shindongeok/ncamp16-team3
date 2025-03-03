@@ -39,11 +39,6 @@ public class CustomUserDetailsService implements UserDetailsService {
             throw new DisabledException("삭제된 계정입니다.");
         }
 
-//        User loginUser = userMapper.login(member_id, user.getPassword());
-//        if(loginUser == null) {
-//            throw new UsernameNotFoundException("비밀번호가 틀렸습니다.");
-//        }
-
         // 회원의 스트레스 값 가져오기
         List<Stress> stressList = userMapper.getUserStress(member_id);
 
@@ -53,8 +48,6 @@ public class CustomUserDetailsService implements UserDetailsService {
             stress = stressList.get(0);  // 최신 데이터 사용
         }
         stress.setStress_num(stressList.isEmpty() ? 0 : stress.getStress_num());
-
-//        log.info("{}의 스트레스 지수 : {}", user.getMember_id(), stress.getStress_num());
 
         return new CustomUserDetails(user, stress);
     }
