@@ -62,13 +62,23 @@
             }
         }
 
+        /* chat-area 수정 */
         .chat-area {
-            margin-top: 120px; /* 헤더 높이만큼 마진 */
+            margin-top: 0; /* 기존 120px에서 0으로 변경 */
+            padding-top: 120px; /* 대신 padding-top 추가 */
             display: flex;
             flex-direction: column;
-            height: calc(100vh - 120px);
+            height: 100vh; /* calc(100vh - 120px)에서 변경 */
             overflow: hidden;
-            padding: 0 20px;
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+
+        /* 모바일 화면에서는 padding-top 줄이기 */
+        @media (max-width: 767px) {
+            .chat-area {
+                padding-top: 80px; /* 모바일에서는 더 작게 조정 */
+            }
         }
 
         .chat-container {
