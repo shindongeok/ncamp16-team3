@@ -37,28 +37,28 @@ public class SseEmitterService {
     }
 
     public void send(String member_id, String content) {
-        // 2️⃣ 작성자가 SSE에 연결되어 있으면 알림 전송
+        // 작성자가 SSE에 연결되어 있으면 알림 전송
         if (sseEmitterRepository.containsKey(member_id)) {
             SseEmitter sseEmitter = sseEmitterRepository.findByMemberId(member_id);
             try {
-                // 3️⃣ SSE를 통해 "새로운 댓글이 달렸습니다!" 이벤트 전송
+                // SSE를 통해 "새로운 댓글이 달렸습니다!" 이벤트 전송
                 sseEmitter.send(SseEmitter.event().name("message").data(content));
             } catch (IOException e) {
-                // 4️⃣ SSE 연결이 끊어졌다면 해당 사용자 제거
+                // SSE 연결이 끊어졌다면 해당 사용자 제거
                 sseEmitterRepository.remove(member_id);
             }
         }
     }
 
     public void popularSend(String member_id, String content) {
-        // 2️⃣ 작성자가 SSE에 연결되어 있으면 알림 전송
+        // 작성자가 SSE에 연결되어 있으면 알림 전송
         if (sseEmitterRepository.containsKey(member_id)) {
             SseEmitter sseEmitter = sseEmitterRepository.findByMemberId(member_id);
             try {
-                // 3️⃣ SSE를 통해 "인기게시글이 되었습니다!!" 이벤트 전송
+                // SSE를 통해 "인기게시글이 되었습니다!!" 이벤트 전송
                 sseEmitter.send(SseEmitter.event().name("popular-message").data(content));
             } catch (IOException e) {
-                // 4️⃣ SSE 연결이 끊어졌다면 해당 사용자 제거
+                // SSE 연결이 끊어졌다면 해당 사용자 제거
                 sseEmitterRepository.remove(member_id);
             }
         }
@@ -104,5 +104,4 @@ public class SseEmitterService {
             System.out.println("SSE 연결 끊김 : " + member_id);
         }
     }
-
 }

@@ -15,12 +15,9 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private final CustomLoginSuccessHandler loginSuccessHandler;
-
     private CorsConfig corsConfig;
 
-    public SecurityConfig(CustomLoginSuccessHandler loginSuccessHandler, CorsConfig corsConfig) {
-        this.loginSuccessHandler = loginSuccessHandler;
+    public SecurityConfig(CorsConfig corsConfig) {
         this.corsConfig = corsConfig;
     }
 
@@ -46,7 +43,7 @@ public class SecurityConfig {
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) // *JWT 사용하면 STATELESS(세션 아예사용X)로 바꿔야함
-                        .maximumSessions(10) // 하나의 아이디에 대한 다중 로그인 허용 개수 1개
+                        .maximumSessions(2) // 하나의 아이디에 대한 다중 로그인 허용 개수 2개
                         .maxSessionsPreventsLogin(true) // ture : 새로운 로그인 차단, false : 기존 세션 하나 삭제
                 )
                 .formLogin(login -> login
@@ -54,7 +51,6 @@ public class SecurityConfig {
                         .loginProcessingUrl("/login") // 로그인 처리 엔드포인트
                         .usernameParameter("member_id")
                         .passwordParameter("password")
-                        .successHandler(loginSuccessHandler) // 로그인 성공 핸들러 적용
                         .failureHandler((request, response, exception) -> {
                             response.setContentType("application/json;charset=UTF-8");
                             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

@@ -37,7 +37,8 @@ public class User {
     // 학력조건
     private String edu_lv;
 
-    // ACTIVE(default) : 활동중, DELETED : 탈퇴
+    // ACTIVE(default) : 활동중
+    // DELETED : 회원탈퇴
     private String status;
 
 }

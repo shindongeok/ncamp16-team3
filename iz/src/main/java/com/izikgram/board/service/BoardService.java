@@ -134,9 +134,6 @@ public class BoardService {
         List<BoardDto> issueBoardList01 = boardMapper.getPopularBoardListBoard1();
         List<BoardDto> issueBoardList02 = boardMapper.getPopularBoardListBoard2();
 
-        log.info("issueBoardList01 : {}", issueBoardList01);
-        log.info("issueBoardList02 : {}", issueBoardList02);
-
         for (BoardDto board : issueBoardList01) {
             // 읽음 여부 상관없이 인기게시글이면 (!true 값 반환) => 알림 안보냄
             if (!alarmService.hasPopularAlarm(board.getBoard_id())) {

@@ -43,11 +43,6 @@ public class UserService {
         return userMapper.findUserFromFindPw(name, phoneNumber);
     }
 
-    public User getUserInfo(String member_id) {
-        return userMapper.getUserInfo(member_id);
-    }
-
-
     public Integer getStressNum(String member_id) {  // int -> Integer로 변경
         Integer stressNum = mainMapper.getStressNum(member_id);
         return stressNum;  // null이 반환될 수 있음
