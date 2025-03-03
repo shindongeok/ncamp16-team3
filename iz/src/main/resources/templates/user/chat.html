@@ -128,7 +128,7 @@
                             <img src="/images/chat.png" class="w-10"/>
                         </div>
                         <div>
-                            <p class="text-sm">안녕하세요, <span th:text="${#authentication.getPrincipal().getUser().getNickname()}"></span>님! 무엇을 도와드릴까요?</p>
+                            <p class="text-sm">안녕하세요, <span th:text="${#authentication.getPrincipal().getUser().getNickname()}"></span>님!<br>무엇을 도와드릴까요?</p>
                             <p class="text-xs text-gray-500 flex items-center">
                                 <!-- 초록색 활성 상태 표시 원 추가 -->
                                 <span class="w-2 h-2 bg-green-500 rounded-full inline-block mr-1"></span>

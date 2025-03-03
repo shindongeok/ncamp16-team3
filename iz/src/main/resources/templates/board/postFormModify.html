@@ -20,8 +20,8 @@
     </style>
 </head>
 <body>
-<div class="flex flex-col w-full mobile-container pt-8 relative bg-white rounded-lg mx-auto">
-    <div class="pt-28"><header th:replace="~{header :: header} " class="pt-4"></header></div>
+<div class="flex flex-col w-full mobile-container relative bg-white rounded-lg mx-auto">
+    <div class="pt-20"><header th:replace="~{header :: header} " class="pt-4"></header></div>
     <div class="p-6">
         <div class="border-b pb-2">
             <h2 class="text-4xl font-black" th:text="${board.board_type == 1 ? '자유게시판 글수정' : (board.board_type == 2 ? '하소연 게시판 글수정' : '잘못된 요청이다.')}"></h2>

@@ -1,14 +1,14 @@
 <div th:fragment="header" class="fixed top-0 z-10 w-full md:w-[600px]" xmlns:sec="http://www.w3.org/1999/xhtml">
     <!-- 헤더 부분 -->
     <div class="bg-white">
-        <div id="B" class="flex items-center px-10 py-2 text-white w-full h-26">
+        <div id="B" class="flex items-center px-10 py-2 text-white w-full h-20">
             <!-- 첫 번째 버튼 (왼쪽) -->
             <button id="openBtn" onclick="openTop()" class="text-black text-3xl cursor-pointer mt-[-6px]">☰</button>
 
             <!-- 로고 이미지 (가운데 정렬) -->
             <div class="flex-1 flex justify-center">
                 <a th:href="@{/main}">
-                    <img th:src="@{/images/izikgram.png}" alt="로고" class="w-[200px] h-[80px] mt-12px ml-2">
+                    <img th:src="@{/images/izikgram.png}" alt="로고" class="w-[180px] mt-12px ml-2">
                 </a>
             </div>
 
