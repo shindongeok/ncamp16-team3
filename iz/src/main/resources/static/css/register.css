@@ -22,11 +22,11 @@
     }
 
     #paydayLabel {
-        margin-right: 1.8em;
+        margin-right: 2.3em;
     }
 
     #timeDiv1 div label {
-        width: 6em;
+        width: 8em;
         margin-left: 0;
     }
 
@@ -40,6 +40,9 @@
     .meridian {
         width: 2em;
         font-size: 1em;
+    }
+    .timepicker_wrap {
+        left: -20px !important;
     }
     .time_pick {
         width: 100%;
@@ -62,7 +65,7 @@
     }
 
     #timeDiv2 div label {
-        width: 6em;
+        width: 8em;
         margin-right: 0;
     }
 
