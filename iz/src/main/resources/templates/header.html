@@ -27,14 +27,13 @@
 
     <!-- 상단 네비게이션 바 - 컨테이너 내부에 위치 -->
     <div id="slidePanel" class="fixed top-0 md:left-1/2 w-full md:w-[600px] h-full hidden opacity-0 visibility-hidden transition-all duration-500 z-50 md:transform md:-translate-x-1/2" style="overflow: hidden;">
-        <div id="sidebar" class="absolute top-0 left-0 bottom-0 bg-white shadow-lg p-5 z-50 w-4/5 overflow-y-auto">
-            <!-- 사이드 바 스타일 -->
+        <div id="sidebar" class="absolute top-0 left-0 bottom-0 bg-white shadow-lg p-5 z-50 w-4/5" style="overflow-y: auto; scrollbar-width: none; -ms-overflow-style: none;">            <!-- 사이드 바 스타일 -->
             <div class="absolute top-[-15px] left-0 w-full h-48 rounded-b-[200px]" style="background-color: #9bdcfd;"></div>
             <!-- 닫기 버튼 -->
             <button id="closeBtn" type="button" onclick="closeTop()" class="absolute top-5 right-5 text-gray-500 hover:text-gray-700 text-sm cursor-pointer z-10"><img src="https://img.icons8.com/?size=100&id=71200&format=png&color=000000" class="w-6"></button>
 
             <!-- 프로필 이미지 -->
-            <img th:src="@{/images/chillguy.png}" class="w-[150px] h-[150px] rounded-[100px] relative mt-7 mx-auto top-14 z-10" alt="사용자프로필 이미지">
+            <img th:src="@{/images/chillguy.png}" class="w-[150px] h-[150px] rounded-[100px] relative mx-auto top-14 z-10" alt="사용자프로필 이미지">
             <div class="text-center mt-20">
                 <div sec:authorize="isAuthenticated()">
                     <div th:text="${#authentication.getPrincipal() != null && #authentication.getPrincipal().getUser().getNickname() != null ? #authentication.getPrincipal().getUser().getNickname() : '닉네임을 정해주세요'}"></div>
@@ -43,51 +42,55 @@
             </div>
 
             <!-- 메뉴 리스트 -->
-            <nav class="mt-6 list-none space-y-2 pb-20 ml-4">
+            <nav class="mt-5 list-none space-y-2 pb-20">
                 <a th:href="@{/user/mypage}" class="flex items-center p-2 text-gray-700 hover:bg-gray-200 rounded">
-                    <img src="https://img.icons8.com/?size=100&id=85356&format=png&color=000000" class="w-8 h-8"/>
-                    <span class="ml-4 text-xl">마이페이지</span>
+                    <img src="https://img.icons8.com/?size=100&id=rrtYnzKMTlUr&format=png&color=9C9C9C" class="w-7 h-7"/>
+                    <span class="ml-4 text-l">마이페이지</span>
                 </a>
 
-                <a th:href="@{/board/1}" class="flex items-center p-2 text-gray-700 hover:bg-gray-200 rounded">
-                    <img src="https://img.icons8.com/?size=100&id=122808&format=png&color=000000" class="w-8 h-8"/>
-                    <span class="ml-4 text-xl"> 자유게시판</span>
-                </a>
-
-                <a th:href="@{/board/2}" class="flex items-center p-2 text-gray-700 hover:bg-gray-200 rounded">
-                    <img src="https://img.icons8.com/?size=100&id=6669&format=png&color=000000" class="w-8 h-8"/>
-                    <span class="ml-4 text-xl">하소연게시판</span>
-                </a>
-
-                <a th:href="@{/board/hot}" class="flex items-center p-2 text-gray-700 hover:bg-gray-200 rounded">
-                    <img src="https://img.icons8.com/?size=100&id=104&format=png&color=000000" class="w-8 h-8"/>
-                    <span class="ml-4 text-xl"> 인기게시판</span>
-                </a>
-
-                <a th:href="@{/board/myboard}" class="flex items-center p-2 text-gray-700 hover:bg-gray-200 rounded">
-                    <img src="https://img.icons8.com/?size=100&id=dfiNvwAesiYh&format=png&color=000000" class="w-8 h-8"/>
-                    <span class="ml-4 text-xl">내 게시물</span>
-                </a>
+                <div class="post" id="post1">
+                    <a class="flex items-center p-2 text-gray-700 hover:bg-gray-200 rounded" onclick="toggleLinks('post1')">
+                        <img src="https://img.icons8.com/?size=100&id=RTtgojKjgbjv&format=png&color=9C9C9C" class="w-7 h-7"/>
+                        <span class="ml-4 text-l">게시글</span>
+                        <svg class="w-4 h-4 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </a>
+                    <div id="post1-links" class="mt-2 overflow-hidden max-h-0 transition-all duration-300 ease-in-out">
+                        <a th:href="@{/board/1}" class="flex items-center p-2 text-gray-700 hover:bg-gray-200 rounded">
+                            <span class="ml-8 text-l">자유게시판</span>
+                        </a>
+                        <a th:href="@{/board/2}" class="flex items-center p-2 text-gray-700 hover:bg-gray-200 rounded">
+                            <span class="ml-8 text-l">하소연게시판</span>
+                        </a>
+                        <a th:href="@{/board/hot}" class="flex items-center p-2 text-gray-700 hover:bg-gray-200 rounded">
+                            <span class="ml-8 text-l">인기게시판</span>
+                        </a>
+                        <a th:href="@{/board/myboard}" class="flex items-center p-2 text-gray-700 hover:bg-gray-200 rounded">
+                            <span class="ml-8 text-l">내 게시물</span>
+                        </a>
+                    </div>
+                </div>
 
                 <a th:href="@{/job/scrap}" class="flex items-center p-2 text-gray-700 hover:bg-gray-200 rounded">
-                    <img src="https://img.icons8.com/?size=100&id=123439&format=png&color=000000" class="w-8 h-8"/>
-                    <span class="ml-4 text-xl">찜한 채용공고</span>
+                    <img src="https://img.icons8.com/?size=100&id=26083&format=png&color=9C9C9C" class="w-7 h-7"/>
+                    <span class="ml-4 text-l">찜한 채용공고</span>
                 </a>
 
                 <a th:href="@{/job/hire}" class="flex items-center p-2 text-gray-700 hover:bg-gray-200 rounded">
-                    <img src="https://img.icons8.com/?size=100&id=23877&format=png&color=000000" class="w-8 h-8"/>
-                    <span class="ml-4 text-xl">채용공고 바로가기</span>
+                    <img src="https://img.icons8.com/?size=100&id=86983&format=png&color=9C9C9C" class="w-7 h-7"/>
+                    <span class="ml-4 text-l">채용공고 바로가기</span>
                 </a>
 
                 <a th:href="@{/draw/draw}" class="flex items-center p-2 text-gray-700 hover:bg-gray-200 rounded">
-                    <img src="https://img.icons8.com/?size=100&id=5N7rMqNKJWhK&format=png&color=000000" class="w-8 h-8"/>
-                    <span class="ml-4 text-xl">제비뽑기</span>
+                    <img src="https://img.icons8.com/?size=100&id=568&format=png&color=9C9C9C" class="w-7 h-7"/>
+                    <span class="ml-4 text-l">제비뽑기</span>
                 </a>
 
 
                 <a th:href="@{/logout}" class="flex items-center p-2 text-red-600 hover:bg-red-100 rounded">
-                    <img src="https://img.icons8.com/?size=100&id=2445&format=png&color=000000" class="w-8 h-8"/>
-                    <span class="ml-4 text-xl">로그아웃</span>
+                    <img src="https://img.icons8.com/?size=100&id=59781&format=png&color=9C9C9C" class="w-7 h-7"/>
+                    <span class="ml-4 text-l">로그아웃</span>
                 </a>
             </nav>
         </div>
@@ -101,6 +104,9 @@
                 let target = document.getElementById('slidePanel');
                 target.style.opacity = '0';
                 target.style.visibility = 'hidden';
+
+                document.getElementById("slidePanel").classList.add("hidden");
+                document.body.style.overflow = "auto";
 
                 // 푸터(챗봇 아이콘) z-index 복원
                 let chatbotIcon = document.querySelector('.fixed.bottom-5.right-5, #chatbotIcon');
@@ -116,6 +122,9 @@
             function openTop() {
                 let target = document.getElementById('slidePanel');
                 let sidebar = document.getElementById('sidebar');
+
+                document.getElementById("slidePanel").classList.remove("hidden");
+                document.body.style.overflow = "hidden";
 
                 // 푸터(챗봇 아이콘) z-index 낮추기
                 let chatbotIcon = document.querySelector('.fixed.bottom-5.right-5, #chatbotIcon');
@@ -160,6 +169,42 @@
                     }
                 }
             });
+
+            function toggleLinks(postId) {
+                const linksContainer = document.getElementById(postId + '-links');
+                const arrow = linksContainer.previousElementSibling.querySelector('svg');
+
+                if (linksContainer.style.maxHeight === '0px' || linksContainer.style.maxHeight === '') {
+                    // 메뉴 열기
+                    linksContainer.style.maxHeight = linksContainer.scrollHeight + 'px';
+                    arrow.style.transform = 'rotate(180deg)';
+                } else {
+                    // 메뉴 닫기
+                    linksContainer.style.maxHeight = '0px';
+                    arrow.style.transform = 'rotate(0deg)';
+                }
+            }
+
+            // 페이지 로드 시 초기화
+            document.addEventListener('DOMContentLoaded', function() {
+                const linksContainers = document.querySelectorAll('[id$="-links"]');
+                linksContainers.forEach(container => {
+                    container.style.maxHeight = '0px';
+                });
+            });
+
         </script>
     </th:block>
 </div>
+<style>
+    #sidebar {
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        overflow-y: auto;
+    }
+
+
+    #sidebar::-webkit-scrollbar {
+        display: none;
+    }
+</style>
