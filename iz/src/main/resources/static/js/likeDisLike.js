@@ -21,6 +21,36 @@ function toggleLikeDislike(boardId, type) {
         success: function(response) {
             console.log("좋아요, 싫어요 개수 가져오기 성공!");
 
+            let thumbsUp = document.getElementById("thumbsUp");
+            let thumbsDown = document.getElementById("thumbsDown");
+            if (boardType == 1) {
+                if (isLiked) {
+                    thumbsUp.innerHTML = "<img src=\"https://img.icons8.com/?size=100&id=83166&format=png&color=000000\" alt=\"like\" class=\"w-4 h-4\">";
+                } else {
+                    thumbsUp.innerHTML = "<img src=\"https://img.icons8.com/?size=100&id=82788&format=png&color=000000\" alt=\"like\" class=\"w-4 h-4\">";
+                }
+            } else {
+                if (isLiked) {
+                    thumbsUp.innerHTML = "<img src=\"https://img.icons8.com/?size=100&id=83166&format=png&color=000000\" alt=\"like\" class=\"w-4 h-4\">";
+                } else {
+                    thumbsUp.innerHTML = "<img src=\"https://img.icons8.com/?size=100&id=82788&format=png&color=000000\" alt=\"like\" class=\"w-4 h-4\">";
+                }
+            }
+
+            if (boardType == 1) {
+                if (isLiked) {
+                    thumbsDown.innerHTML = "<img src=\"https://img.icons8.com/?size=100&id=82788&format=png&color=000000\" alt=\"like\" class=\"w-4 h-4 rotate-180 inline-block transform\">";
+                } else {
+                    thumbsDown.innerHTML = "<img src=\"https://img.icons8.com/?size=100&id=83166&format=png&color=000000\" alt=\"like\" class=\"w-4 h-4 rotate-180 inline-block transform\">";
+                }
+            } else {
+                if (isLiked) {
+                    thumbsDown.innerHTML = "<img src=\"https://img.icons8.com/?size=100&id=82788&format=png&color=000000\" alt=\"like\" class=\"w-4 h-4 rotate-180 inline-block transform\">";
+                } else {
+                    thumbsDown.innerHTML = "<img src=\"https://img.icons8.com/?size=100&id=83166&format=png&color=000000\" alt=\"like\" class=\"w-4 h-4 rotate-180 inline-block transform\">";
+                }
+            }
+
             // 화면 배치
             let likeEl = document.getElementById('likeCount');
             let dislikeEl = document.getElementById('dislikeCount');
