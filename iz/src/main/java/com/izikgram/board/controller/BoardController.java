@@ -100,17 +100,17 @@ public class  BoardController {
         if (board_type == 1) {
             commentList = boardService.selectComment01(board_id);
             board = boardService.selectDetail01(board_id);
-//            boolean isLike = boardService.isLike01(board_id);
-//            boolean isDislike = boardService.isDislike01(board_id);
-//            model.addAttribute("isLike01", isLike);
-//            model.addAttribute("isDislike01", isDislike);
+            boolean isLike = boardService.isLike01(userDetails.getUser().getMember_id(), board_id);
+            boolean isDislike = boardService.isDislike01(userDetails.getUser().getMember_id(), board_id);
+            model.addAttribute("isLike01", isLike);
+            model.addAttribute("isDislike01", isDislike);
         } else if (board_type == 2) {
             commentList = boardService.selectComment02(board_id);
             board = boardService.selectDetail02(board_id);
-//            boolean isLike = boardService.isLike02(board_id);
-//            boolean isDislike = boardService.isDislike02(board_id);
-//            model.addAttribute("isLike02", isLike);
-//            model.addAttribute("isDislike02", isDislike);
+            boolean isLike = boardService.isLike02(userDetails.getUser().getMember_id(), board_id);
+            boolean isDislike = boardService.isDislike02(userDetails.getUser().getMember_id(), board_id);
+            model.addAttribute("isLike02", isLike);
+            model.addAttribute("isDislike02", isDislike);
         } else {
             model.addAttribute("error", "유효하지 않은 게시판 타입입니다.");
             return "redirect:/board/" + board_type;
