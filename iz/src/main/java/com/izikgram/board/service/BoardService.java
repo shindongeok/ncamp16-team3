@@ -134,6 +134,9 @@ public class BoardService {
         List<BoardDto> issueBoardList01 = boardMapper.getPopularBoardListBoard1();
         List<BoardDto> issueBoardList02 = boardMapper.getPopularBoardListBoard2();
 
+        log.info("issueBoardList01 : {}", issueBoardList01);
+        log.info("issueBoardList02 : {}", issueBoardList02);
+
         for (BoardDto board : issueBoardList01) {
             // 읽음 여부 상관없이 인기게시글이면 (!true 값 반환) => 알림 안보냄
             if (!alarmService.hasPopularAlarm(board.getBoard_id())) {
@@ -175,13 +178,22 @@ public class BoardService {
         checkAndInsertPopularBoard(boardId);
     }
 
+    // 좋아요를 눌렀을때 인기 테이블 반영
     private void checkAndInsertPopularBoard(int boardId) {
         int likeCount = boardMapper.getLikeCount(boardId); // 현재 좋아요 개수 조회
-        boolean isPopular = boardMapper.isPopularBoard(boardId,1); // 이미 등록된 게시글인지 확인
+        boolean isPopular = boardMapper.isPopularBoard(boardId, 1); // 이미 인기 게시글인지 확인
 
-        if (likeCount >= 5 && !isPopular) { // 5개 이상이고, 아직 등록되지 않았다면 추가
-            boardMapper.insertPopularBoard(boardId,1);
-            log.info("01게시글 {}이(가) 인기 게시판에 등록되었습니다!", boardId);
+        if (likeCount >= 5) {
+            if (!isPopular) { // 등록되지 않았다면 추가
+                boardMapper.insertPopularBoard(boardId, 1);
+                log.info("01게시글 {}이(가) 인기 게시판에 등록되었습니다!", boardId);
+            } else { // 이미 등록된 경우 업데이트
+                boardMapper.updatePopularBoard(boardId, 1, likeCount);
+                log.info("01게시글 {}의 인기 게시판 정보가 업데이트되었습니다!", boardId);
+            }
+        } else if (likeCount <= 4) { // 좋아요 수가 4개 이하이면 인기 게시판에서 삭제
+            boardMapper.deletePopularBoard(boardId, 1);
+            log.info("01게시글 {}이(가) 인기 게시판에서 삭제되었습니다!", boardId);
         }
     }
 
@@ -219,6 +231,25 @@ public class BoardService {
             boardMapper.deleteDislike(boardId, memberId);
             boardMapper.downDislikeCount(boardId);
         }
+
+        // 인기 게시판 상태 업데이트
+        updatePopularBoardOnLikeDislikeChange01(boardId);
+    }
+
+    //싫어요 눌렀을 때 인기테이블 반영
+    private void updatePopularBoardOnLikeDislikeChange01(int boardId) {
+        int likeCount = boardMapper.getLikeCount(boardId); // 좋아요 개수 조회
+        boolean isPopular = boardMapper.isPopularBoard(boardId, 2); // 인기 게시판에 있는지 확인
+
+        if (likeCount >= 5 && !isPopular) {
+            // 좋아요가 5개 이상일 때 인기 게시판에 등록
+            boardMapper.insertPopularBoard(boardId, 1);
+            log.info("게시글 {}이(가) 인기 게시판에 등록되었습니다!", boardId);
+        } else if (likeCount < 5 && isPopular) {
+            // 좋아요가 5개 미만일 때 인기 게시판에서 삭제
+            boardMapper.deletePopularBoard(boardId, 1);
+            log.info("게시글 {}이(가) 인기 게시판에서 삭제되었습니다!", boardId);
+        }
     }
 
 
@@ -246,12 +277,20 @@ public class BoardService {
     }
 
     private void checkAndInsertPopularBoard02(int boardId) {
-        int likeCount = boardMapper.getLikeCount02(boardId); // 현재 좋아요 개수 조회
-        boolean isPopular = boardMapper.isPopularBoard(boardId, 2); // 이미 등록된 게시글인지 확인
+        int likeCount = boardMapper.getLikeCount02(boardId);
+        boolean isPopular = boardMapper.isPopularBoard(boardId, 2);
 
-        if (likeCount >= 5 && !isPopular) { // 5개 이상이고, 아직 등록되지 않았다면 추가
-            boardMapper.insertPopularBoard(boardId,2);
-            log.info("02게시글 {}이(가) 인기 게시판에 등록되었습니다!", boardId);
+        if (likeCount >= 5) {
+            if (!isPopular) { // 등록되지 않았다면 추가
+                boardMapper.insertPopularBoard(boardId, 2);
+                log.info("01게시글 {}이(가) 인기 게시판에 등록되었습니다!", boardId);
+            } else { // 이미 등록된 경우 업데이트
+                boardMapper.updatePopularBoard(boardId, 2, likeCount);
+                log.info("02게시글 {}의 인기 게시판 정보가 업데이트되었습니다!", boardId);
+            }
+        } else if (likeCount <= 4 ) { // 좋아요 수가 4개 이하이면 인기 게시판에서 삭제
+            boardMapper.deletePopularBoard(boardId, 2);
+            log.info("02게시글 {}이(가) 인기 게시판에서 삭제되었습니다!", boardId);
         }
     }
 
@@ -274,6 +313,24 @@ public class BoardService {
             // 싫어요 상태인 경우
             boardMapper.deleteDislike02(boardId, memberId);
             boardMapper.downDislikeCount02(boardId);
+        }
+
+        updatePopularBoardOnLikeDislikeChange02(boardId);
+    }
+
+    //싫어요 눌렀을 때 인기테이블 반영
+    private void updatePopularBoardOnLikeDislikeChange02(int boardId) {
+        int likeCount = boardMapper.getLikeCount02(boardId); // 좋아요 개수 조회
+        boolean isPopular = boardMapper.isPopularBoard(boardId, 2); // 인기 게시판에 있는지 확인
+
+        if (likeCount >= 5 && !isPopular) {
+            // 좋아요가 5개 이상일 때 인기 게시판에 등록
+            boardMapper.insertPopularBoard(boardId, 2);
+            log.info("게시글 {}이(가) 인기 게시판에 등록되었습니다!", boardId);
+        } else if (likeCount < 5 && isPopular) {
+            // 좋아요가 5개 미만일 때 인기 게시판에서 삭제
+            boardMapper.deletePopularBoard(boardId, 2);
+            log.info("게시글 {}이(가) 인기 게시판에서 삭제되었습니다!", boardId);
         }
     }
 
@@ -318,7 +375,7 @@ public class BoardService {
         return null;
     }
 
-    // 댓글 삭제 서비스
+    // 댓글 삭제
     // 게시판 1 댓글
     public boolean deleteComment01(int commentId, int boardId) {
         try {

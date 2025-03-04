@@ -251,6 +251,7 @@ public interface BoardMapper {
     // 현재 게시글의 board01 좋아요 개수 조회
     @Select("SELECT like_count FROM iz_board01 WHERE board_id = #{board_id}")
     int getLikeCount(@Param("board_id")int boardId);
+
     // 현재 게시글의 board02 좋아요 개수 조회
     @Select("SELECT like_count FROM iz_board02 WHERE board_id = #{board_id}")
     int getLikeCount02(@Param("board_id") int boardId);
@@ -268,6 +269,19 @@ public interface BoardMapper {
             "    ELSE 0 " +
             "  END, NOW()")
     void insertPopularBoard(@Param("board_id") int boardId, @Param("board_type") int boardType);
+
+    //등록 되어있다면 업데이트
+    @Update("UPDATE iz_board_popular " +
+            "SET like_count = #{like_count} " +
+            "WHERE board_id = #{board_id} AND board_type = #{board_type}")
+    void updatePopularBoard(@Param("board_id") int boardId,
+                            @Param("board_type") int boardType,
+                            @Param("like_count") int likeCount);
+
+    // 좋아요 수가 4개 이하면 인기테이블에서 삭제
+    @Delete("DELETE FROM iz_board_popular WHERE board_id = #{board_id} AND board_type = #{board_type}")
+    void deletePopularBoard(@Param("board_id") int boardId, @Param("board_type") int boardType);
+
 
     // 내 게시물
     @Select("SELECT b.*, " +
