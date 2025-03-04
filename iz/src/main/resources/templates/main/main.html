@@ -89,8 +89,11 @@
     </style>
     <script>
         $(document).ready(function(){
+            let workStartTimeVal = $("#workStartTime").val();
+            // console.log(workStartTimeVal);
+            let startTimeArray = workStartTimeVal.split(":");
             $('#workStartTime').timepicki({
-                start_time: ["09", "00", "AM"],
+                start_time: [startTimeArray[0], startTimeArray[1]],
                 step_size_minutes: 30,
                 disable_keyboard_mobile: true,
                 show_meridian: false,
@@ -99,8 +102,10 @@
                 overflow_minutes: true
             });
 
+            let workEndTimeVal = $("#workEndTime").val();
+            let endTimeArray = workEndTimeVal.split(":");
             $('#workEndTime').timepicki({
-                start_time: ["18", "00"],
+                start_time: [endTimeArray[0], endTimeArray[1]],
                 step_size_minutes: 30,
                 disable_keyboard_mobile: true,
                 show_meridian: false,
@@ -109,8 +114,10 @@
                 overflow_minutes: true
             });
 
+            let lunchTimeVal = $("#lunchTime").val();
+            let lunchTimeArray = lunchTimeVal.split(":");
             $('#lunchTime').timepicki({
-                start_time: ["12", "00"],
+                start_time: [lunchTimeArray[0], lunchTimeArray[1]],
                 step_size_minutes: 30,
                 disable_keyboard_mobile: true,
                 show_meridian: false,
