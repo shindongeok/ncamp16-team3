@@ -11,199 +11,45 @@
         @theme {
             --color-main-sky-highlight: #00a3ed;
             --color-main-sky-basic: #9bdcfd;
+            --color-main-sky-hover: #00689b;
             --color-main-red-highlight: #ff5353;
             --color-main-red-basic: #ff9898;
             --color-main-yellow-highlight: #fbc159ff;
             --color-main-yellow-basic: #fdd391;
-
-            /* gray-400*/
             --color-light-text: oklch(0.704 0.04 256.788);
-            /* gray-600 */
             --color-basic-text: oklch(0.446 0.043 257.281);
-            /* gray-900 */
             --color-bold-text: oklch(0.208 0.042 265.755);
         }
 
-        body {
-            height: 100vh;
-            overflow: hidden;
+        /* Hide scrollbar while maintaining functionality */
+        .scrollbar-hide {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
         }
 
-        .app-container {
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            width: 100%;
-            margin: 0 auto;
-            overflow: hidden;
-            position: relative;
-        }
-
-        @media (min-width: 768px) {
-            .app-container {
-                width: 600px;
-                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            }
-        }
-
-        .header-container {
-            position: fixed;
-            top: 0;
-            z-index: 50;
-            width: 100%;
-            background-color: white;
-        }
-
-        @media (min-width: 768px) {
-            .header-container {
-                width: 600px;
-                left: 50%;
-                transform: translateX(-50%);
-            }
-        }
-
-        /* chat-area 수정 */
-        .chat-area {
-            margin-top: 0;
-            padding-top: 80px; /* 헤더 높이만큼만 패딩 추가 */
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            overflow: hidden;
-            padding-left: 20px;
-            padding-right: 20px;
-        }
-
-        .chat-container {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            background: white;
-            border-radius: 0.75rem;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            border: 1px solid #f3f4f6;
-            overflow: hidden;
-            margin-bottom: 20px;
-        }
-
-        /* 버튼 그룹을 위한 스타일 */
-        .button-group-container {
-            position: sticky;
-            top: 0;
-            z-index: 10;
-            background: white;
-            border-top-left-radius: 0.75rem;
-            border-top-right-radius: 0.75rem;
-            border-bottom: 1px solid #f3f4f6;
-            padding-top: 0.5rem;
-            transition: all 0.3s ease;
-            overflow: hidden;
-            max-height: 200px; /* 충분히 큰 값으로 설정해 버튼들이 모두 표시되도록 */
-        }
-
-        /* 접혔을 때의 스타일 */
-        .button-group-container.collapsed {
-            max-height: 40px; /* 토글 버튼만 표시할 높이 */
-            padding-bottom: 0;
-        }
-
-        /* 토글 버튼 스타일 */
-        .toggle-button {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            padding: 4px 0;
-            cursor: pointer;
-            background-color: transparent;
-            border: none;
-            outline: none;
-        }
-
-        /* 토글 아이콘 스타일 */
-        .toggle-icon {
-            width: 24px;
-            height: 24px;
-            transition: transform 0.3s ease;
-        }
-
-        /* 접혔을 때 아이콘 회전 */
-        .button-group-container.collapsed .toggle-icon {
-            transform: rotate(180deg);
-        }
-
-        /* 버튼 컨테이너 스타일 */
-        .buttons-wrapper {
-            transition: opacity 0.3s ease, transform 0.3s ease;
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* 접혔을 때 버튼 컨테이너 스타일 */
-        .button-group-container.collapsed .buttons-wrapper {
-            opacity: 0;
-            transform: translateY(-20px);
-            pointer-events: none;
-        }
-
-        #messages {
-            flex: 1;
-            overflow-y: auto;
-            padding: 0 1rem 2rem 1rem;
-        }
-
-        #messages::-webkit-scrollbar {
+        /* Hide scrollbar for Chrome, Safari and Opera */
+        .scrollbar-hide::-webkit-scrollbar {
             display: none;
-        }
-
-        #inputSection {
-            border-top: 1px solid #f3f4f6;
-            padding: 1rem;
-            background: white;
-        }
-
-        /* 새로 추가한 챗봇 메시지 스타일 */
-        .bot-message {
-            background-color: #f2f7ff;
-            border-radius: 0.75rem;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            max-width: 80%;
-            align-self: flex-start;
-        }
-
-        /* 챗봇 프로필 스타일 */
-        .bot-profile {
-            display: flex;
-            align-items: center;
-            margin-bottom: 0.5rem;
         }
     </style>
 </head>
-<body>
-<div class="app-container bg-white">
-    <!-- 고정 헤더 -->
-    <div class="header-container">
+<body class="h-screen overflow-hidden">
+<div class="mx-auto h-screen w-full relative overflow-hidden md:w-[600px] md:shadow-md bg-white">
+    <div class="fixed top-0 z-50 w-full bg-white md:w-[600px] md:left-1/2 md:-translate-x-1/2">
         <header th:replace="~{header :: header}" class="pt-4"></header>
     </div>
 
-    <!-- 채팅 영역 -->
-    <div class="chat-area">
-        <div class="chat-container">
-            <!-- 메시지 영역 -->
-            <div id="messages" class="space-y-2">
-
-                <!-- 버튼 그룹을 상단에 고정 - 접기/펼치기 가능 -->
-                <div id="buttonGroupContainer" class="button-group-container">
-                    <!-- 토글 버튼 추가 -->
-                    <button id="toggleButton" class="toggle-button" onclick="toggleButtonGroup()">
-                        <svg class="toggle-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <div class="pt-20 flex flex-col h-screen overflow-hidden px-5">
+        <div class="flex-1 flex flex-col bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-5">
+            <div id="messages" class="flex-1 overflow-y-auto px-4 pb-8 space-y-2 scrollbar-hide">
+                <div id="buttonGroupContainer" class="sticky top-0 z-10 bg-white rounded-t-xl border-b border-gray-100 pt-2 transition-all duration-300 overflow-hidden max-h-[200px]">
+                    <button id="toggleButton" class="flex items-center justify-center w-full py-1 cursor-pointer bg-transparent border-none outline-none" onclick="toggleButtonGroup()">
+                        <svg class="w-6 h-6 transition-transform duration-300" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <polyline points="6 9 12 15 18 9"></polyline>
                         </svg>
                     </button>
 
-                    <!-- 버튼 그룹 -->
-                    <div class="buttons-wrapper">
+                    <div class="transition-all duration-300 opacity-100 transform translate-y-0">
                         <div class="flex flex-wrap gap-3 mb-2">
                             <button onclick="stresschat()" class="bg-gray-100 text-black py-3 px-4 rounded-lg text-left text-sm cursor-pointer flex-auto min-w-fit">
                                 오늘의 퇴사 수치
@@ -224,9 +70,9 @@
                     </div>
                 </div>
 
-                <div class="bot-message">
-                    <div class="bot-profile">
-                        <div class="w-10 h-10 bg-main-sky-highlight rounded-full flex items-center justify-center text-white text-sm mr-3 shadow-sm">
+                <div class="bg-[#def0ff] rounded-xl p-4 mb-4 max-w-[80%] self-start">
+                    <div class="flex items-center mb-2">
+                        <div class="w-10 h-10 bg-[#00a3ed] rounded-full flex items-center justify-center text-white text-sm mr-3 shadow-sm">
                             <img src="/images/chat.png" class="w-8"/>
                         </div>
                         <div>
@@ -235,20 +81,15 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- 이후 메시지들이 여기에 추가됨 -->
             </div>
 
-            <!-- 입력 영역 -->
-            <div id="inputSection" class="">
+            <!-- 여기에 hidden 클래스를 추가하여 초기 상태에서 입력란 숨김 -->
+            <div id="inputSection" class="border-t border-gray-100 p-4 bg-white hidden">
                 <div class="flex items-center gap-2">
                     <input id="userInput" type="text" class="flex-grow p-2 border border-gray-300 rounded-lg"
                            placeholder="메시지를 입력하세요" onkeydown="checkEnter(event)">
-                    <button onclick="handleGeneralChat()" class="bg-blue-500 text-white p-2 rounded-lg flex items-center justify-center w-10 h-10 hover:bg-blue-600 transition-colors">
-                        <!-- 종이비행기 아이콘 (SVG) -->
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
-                        </svg>
+                    <button onclick="handleGeneralChat()" class="bg-main-sky-highlight text-white p-2 rounded-lg flex items-center justify-center w-10 h-10 hover:bg-main-sky-hover transition-colors cursor-pointer">
+                        <img src="https://img.icons8.com/?size=100&id=7874&format=png&color=FFFFFF">
                     </button>
                 </div>
                 <button id="finishChatBtn" onclick="finishchat()" class="text-blue-500 text-sm mt-2 hidden">
@@ -256,7 +97,6 @@
                 </button>
             </div>
         </div>
-        <!-- 홈으로 돌아가기 링크 (Tailwind 클래스로 스타일링) -->
         <div class="flex justify-center mb-5 px-2">
             <a href="/main" class="flex items-center justify-center text-gray-600 py-2 px-4 text-sm transition-colors hover:underline">
                 홈으로 돌아가기
@@ -265,38 +105,10 @@
     </div>
 </div>
 
-<!-- Thymeleaf로 사용자 데이터 주입 -->
 <div id="paydayData" th:data-payday="${#authentication.getPrincipal().getUser().getPayday()}"></div>
 <div id="endtimeData" th:data-endtime="${#authentication.getPrincipal().getUser().getEnd_time()}"></div>
 <div id="stressData" th:data-stress="${@mainService.getStressNum(#authentication.principal.user.member_id)}"></div>
 
-<!-- 외부 JS 파일 로드 -->
 <script th:src="@{/js/chatScript.js}"></script>
-
-<!-- 버튼 그룹 토글 스크립트 -->
-<script>
-    // 버튼 그룹 접기/펼치기 함수
-    function toggleButtonGroup() {
-        const container = document.getElementById('buttonGroupContainer');
-        container.classList.toggle('collapsed');
-
-        // 로컬 스토리지에 상태 저장 (페이지 새로고침 후에도 유지)
-        if (container.classList.contains('collapsed')) {
-            localStorage.setItem('buttonGroupCollapsed', 'true');
-        } else {
-            localStorage.setItem('buttonGroupCollapsed', 'false');
-        }
-    }
-
-    // 페이지 로드 시 이전 상태 복원
-    document.addEventListener('DOMContentLoaded', function() {
-        const container = document.getElementById('buttonGroupContainer');
-        const isCollapsed = localStorage.getItem('buttonGroupCollapsed') === 'true';
-
-        if (isCollapsed) {
-            container.classList.add('collapsed');
-        }
-    });
-</script>
 </body>
 </html>

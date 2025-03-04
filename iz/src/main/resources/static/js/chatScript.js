@@ -1,35 +1,87 @@
-// 대화 기록 저장용 배열
 let conversationHistory = [];
+let userHasSpoken = false;
+let feelChatStarted = false;
 
-// 스크롤을 가장 아래로 이동시키는 함수
-function scrollToBottom() {
-    const messagesDiv = document.getElementById('messages');
-    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+window.addEventListener('load', () => {
+    // 페이지 로드 시 입력란 숨기기
+    document.getElementById('inputSection').classList.add('hidden');
+    scrollToBottom();
+    initButtonGroupState();
+});
+window.addEventListener('resize', scrollToBottom);
+
+function initButtonGroupState() {
+    const container = document.getElementById('buttonGroupContainer');
+    if (!container) return;
+
+    const buttonsWrapper = container.querySelector('div');
+    const toggleIcon = container.querySelector('svg');
+    const isCollapsed = localStorage.getItem('buttonGroupCollapsed') === 'true';
+
+    if (isCollapsed) {
+        container.classList.remove('max-h-[200px]');
+        container.classList.add('max-h-10');
+        toggleIcon.classList.add('rotate-180');
+        buttonsWrapper.classList.add('opacity-0', 'translate-y-[-20px]', 'pointer-events-none');
+    }
 }
 
-// 사용자 메시지 추가 함수 수정
+function scrollToBottom() {
+    const messagesDiv = document.getElementById('messages');
+    if (messagesDiv) {
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+}
+
+function toggleButtonGroup() {
+    const container = document.getElementById('buttonGroupContainer');
+    container.classList.toggle('max-h-[200px]');
+    container.classList.toggle('max-h-10');
+
+    const toggleIcon = container.querySelector('svg');
+    toggleIcon.classList.toggle('rotate-180');
+
+    const buttonsWrapper = container.querySelector('div');
+    if (container.classList.contains('max-h-10')) {
+        buttonsWrapper.classList.add('opacity-0', 'translate-y-[-20px]', 'pointer-events-none');
+        localStorage.setItem('buttonGroupCollapsed', 'true');
+    } else {
+        buttonsWrapper.classList.remove('opacity-0', 'translate-y-[-20px]', 'pointer-events-none');
+        localStorage.setItem('buttonGroupCollapsed', 'false');
+    }
+}
+
+function checkEnter(event) {
+    if (event.key === 'Enter') {
+        handleGeneralChat();
+    }
+}
+
+function formatTimestamp(timestamp) {
+    const date = new Date(timestamp * 1000);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
 function appendUserMessage(text) {
     const messagesDiv = document.getElementById('messages');
     const messageContainer = document.createElement('div');
     messageContainer.classList.add('flex', 'justify-end', 'items-start', 'mb-2', 'user-message-container');
 
-    // 메시지가 보여지는 영역
     const userMessageDiv = document.createElement('div');
-    userMessageDiv.classList.add('bg-blue-500', 'text-white', 'px-3', 'py-2', 'rounded-lg', 'max-w-[80%]', 'break-words', 'text-sm');
+    userMessageDiv.classList.add('bg-main-sky-highlight', 'text-white', 'px-3', 'py-2', 'rounded-lg', 'max-w-[80%]', 'break-words', 'text-sm');
     userMessageDiv.innerHTML = text.replace(/\n/g, '<br>');
 
     messageContainer.appendChild(userMessageDiv);
     messagesDiv.appendChild(messageContainer);
 
-    // 참고: 대화종료 버튼은 더 이상 여기서 추가하지 않습니다
-
-    // 메시지 추가 후 스크롤을 아래로 이동
     scrollToBottom();
 
     return messagesDiv;
 }
 
-// 봇 메시지 추가 함수 수정
 function appendBotMessage(text) {
     const messagesDiv = document.getElementById('messages');
     const messageContainer = document.createElement('div');
@@ -42,11 +94,9 @@ function appendBotMessage(text) {
     messageContainer.appendChild(botMessageDiv);
     messagesDiv.appendChild(messageContainer);
 
-    // 메시지 추가 후 스크롤을 아래로 이동
     scrollToBottom();
 }
 
-// 로딩 메시지 추가 함수 수정
 function showLoading(message = '처리 중입니다...') {
     const messagesDiv = document.getElementById('messages');
     const loadingContainer = document.createElement('div');
@@ -56,7 +106,6 @@ function showLoading(message = '처리 중입니다...') {
     loadingDiv.id = 'loadingMessage';
     loadingDiv.classList.add('bg-gray-100', 'text-black', 'px-3', 'py-2', 'rounded-lg', 'flex', 'items-center');
 
-    // 로딩 애니메이션 추가
     loadingDiv.innerHTML = `
         <div class="flex space-x-1">
             <div class="animate-bounce h-2 w-2 bg-gray-500 rounded-full"></div>
@@ -68,11 +117,9 @@ function showLoading(message = '처리 중입니다...') {
     loadingContainer.appendChild(loadingDiv);
     messagesDiv.appendChild(loadingContainer);
 
-    // 로딩 메시지 추가 후 스크롤을 아래로 이동
     scrollToBottom();
 }
 
-// 로딩 메시지 제거 함수
 function removeLoading() {
     const loadingMessage = document.getElementById('loadingMessage');
     if (loadingMessage) {
@@ -83,17 +130,14 @@ function removeLoading() {
     }
 }
 
-// 대화종료 버튼 생성 함수
 function addEndChatButton() {
     const messagesDiv = document.getElementById('messages');
 
-    // 기존 대화종료 버튼 제거
     const existingButtons = document.querySelectorAll('#userMessageEndChatBtn');
     existingButtons.forEach(button => {
         button.parentElement.remove();
     });
 
-    // 새 대화종료 버튼 추가
     const buttonContainer = document.createElement('div');
     buttonContainer.classList.add('flex', 'justify-end', 'mt-1', 'mb-2');
 
@@ -105,97 +149,127 @@ function addEndChatButton() {
 
     buttonContainer.appendChild(endChatButton);
 
-    // 마지막 사용자 메시지 컨테이너 바로 다음에 버튼 삽입
     const userMessages = document.querySelectorAll('.user-message-container');
     if (userMessages.length > 0) {
         const lastUserMessage = userMessages[userMessages.length - 1];
-        // 버튼을 사용자 메시지 바로 뒤에 삽입
         lastUserMessage.after(buttonContainer);
     } else {
-        // 사용자 메시지가 없는 경우 (발생하지 않겠지만) 그냥 마지막에 추가
         messagesDiv.appendChild(buttonContainer);
     }
 
-    // 스크롤 조정
     scrollToBottom();
 }
 
-// 대화종료 버튼 표시/숨김 상태를 관리하는 변수 추가
-let userHasSpoken = false;
-let feelChatStarted = false;
+function handleGeneralChat(isEndingChat = false) {
+    const userInput = document.getElementById('userInput');
+    if (userInput.disabled) return;
+    userInput.disabled = true;
+
+    const message = userInput.value.trim();
+
+    if (!message) {
+        userInput.disabled = false;
+        return;
+    }
+
+    appendUserMessage(message);
+    userInput.value = '';
+
+    if (feelChatStarted) {
+        if (!userHasSpoken) {
+            userHasSpoken = true;
+        }
+
+        if (message !== "대화종료") {
+            addEndChatButton();
+        }
+    }
+
+    showLoading('답변을 준비중입니다...');
+
+    if (conversationHistory.length === 0) {
+        conversationHistory.push({
+            "role": "system",
+            "content": "역할 설정: 저는 직장인들의 감정을 전문적으로 케어하는 AI 상담사로서, 사용자의 감정을 깊이 이해하고 공감하는 상담을 제공하겠습니다. 저는 항상 친절하고 따뜻한 어조로 대화하며, 전문적이고 세심하게 접근합니다.\n\n감정 분석 프로세스: 사용자의 모든 대화를 감정적으로 분석하여, 현재 사용자의 감정 상태를 정확하게 파악합니다. 사용자의 감정 상태를 0~100 사이의 퇴사지수로 평가합니다. 이 퇴사지수는 사용자가 직장에서 얼마나 힘들어하는지를 나타내며, 대화 종료 시 제공됩니다.\n\n대화 가이드라인: 사용자의 감정 상태를 세심하게 살펴보며, 필요할 경우 실질적인 조언과 심리적 지지를 제공합니다.\n 대화종료가 되기전까지 주고받은 내용을 기억하며 대화\n 대화가 종료될 때만 퇴사지수를 제공하며, \"대화종료\"라는 말이 나오면 대화가 종료됩니다.\n 대화에서는 과도하게 긍정적이거나 부정적이지 않게 균형을 잡아가며 대화를 이어갑니다.\n 사용자의 프라이버시와 감정을 최우선으로 존중하며, 필요한 경우 실질적인 대처 방안도 제안.\n\n퇴사지수 계산 방식: 대화 중에 사용자의 발언을 감정적으로 분석. 부정적인 단어와 긍정적인 단어의 빈도에 따라 퇴사지수를 계산.\n 긍정적인 단어가 많이 사용되면 퇴사지수가 낮아지고, 부정적인 단어가 많이 사용되면 퇴사지수가 높아진다.\n 대화 종료 시 \"오늘의 퇴사지수는 [퇴사지수]입니다"
+        });
+    }
+
+    conversationHistory.push({ role: 'user', content: message });
+
+    fetch('/chat/feelchat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            messages: conversationHistory
+        })
+    })
+        .then(response => response.json())
+        .then(data => {
+            removeLoading();
+            conversationHistory.push({ role: 'assistant', content: data.responseMessage });
+            appendBotMessage(data.responseMessage);
+            scrollToBottom();
+        })
+        .catch(error => {
+            removeLoading();
+            appendBotMessage('죄송합니다. 답변 생성 중 오류가 발생했습니다.');
+            scrollToBottom();
+        })
+        .finally(() => {
+            userInput.disabled = false;
+        });
+}
 
 function feelchat() {
-    // 입력창 표시
+    // 하소연하기 버튼 클릭 시 입력란 표시
     document.getElementById('inputSection').classList.remove('hidden');
-
-    // 하소연하기 문장을 화면에 추가
     appendUserMessage("하소연하기");
     appendBotMessage(`안녕하세요. 오늘 하루 어떠셨나요? 말씀해주신 내용을 바탕으로 함께 해결책을 찾아보겠습니다.`);
 
-    // 대화 시작 플래그 설정
     feelChatStarted = true;
     userHasSpoken = false;
 
-    // 대화종료 버튼 숨기기 (기존 finishChatBtn 숨기기)
     document.getElementById('finishChatBtn').style.display = 'none';
-
-    // 대화 초기화
     conversationHistory = [];
 }
 
-// 다른 버튼 함수들에 입력창 숨기기 로직 추가
 function stresschat() {
-    // 입력창 숨기기
     document.getElementById('inputSection').classList.add('hidden');
-
-    // 대화종료 버튼 숨기기
     document.getElementById('finishChatBtn').style.display = 'none';
 
-    // 대화 상태 초기화
     feelChatStarted = false;
     userHasSpoken = false;
 
-    // 기존 stresschat 로직
     appendUserMessage("오늘의 퇴사 수치");
     showLoading('퇴사 통계를 분석중입니다...');
 
     setTimeout(() => {
         const stressStr = document.getElementById('stressData').getAttribute('data-stress');
-
-        console.log(stressStr);  // 스트레스 값이 잘 나오는지 확인하기 위해 콘솔에 출력
+        console.log(stressStr);
 
         if (!stressStr) {
-            // 데이터가 없으면 해당 메시지 출력
             removeLoading();
             appendBotMessage("퇴사 지수가 없습니다.");
             return;
         }
 
-        // 데이터가 있으면 퇴사 지수 출력
         removeLoading();
         appendBotMessage(`오늘의 퇴사지수는 ${stressStr}% 입니다.`);
     }, 500);
 
-    // 결과 표시 후 스크롤을 아래로 이동
     scrollToBottom();
 }
 
 function paydaychat() {
-    // 입력창 숨기기
     document.getElementById('inputSection').classList.add('hidden');
-
-    // 대화종료 버튼 숨기기
     document.getElementById('finishChatBtn').style.display = 'none';
 
-    // 대화 상태 초기화
     feelChatStarted = false;
     userHasSpoken = false;
 
-    // 기존 paydaychat 로직
     appendUserMessage("월급까지 남은 날짜");
     showLoading("급여일 정보를 확인하고 있습니다...");
 
-    // Thymeleaf를 통해 HTML에 주입된 데이터 가져오기
     const paydayStr = document.getElementById('paydayData').getAttribute('data-payday');
 
     if (!paydayStr) {
@@ -204,47 +278,37 @@ function paydaychat() {
         return;
     }
 
-    // 오늘 날짜
     const today = new Date();
     const payday = new Date(today.getFullYear(), today.getMonth(), parseInt(paydayStr));
 
-    // 월급날이 이미 지났으면 다음 달로 변경
     if (payday < today) {
         payday.setMonth(payday.getMonth() + 1);
     }
 
-    // D-DAY 계산
     setTimeout(() => {
         const timeDiff = payday - today;
         const daysLeft = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
 
-        // 로딩 메시지 제거 후 챗봇 응답 추가
         removeLoading();
         appendBotMessage(`월급일까지 ${daysLeft}일 남았습니다.`);
     }, 500);
 
-    // 결과 표시 후 스크롤을 아래로 이동
     scrollToBottom();
 }
 
 function endtimechat() {
-    // 입력창 숨기기
     document.getElementById('inputSection').classList.add('hidden');
-
-    // 대화종료 버튼 숨기기
     document.getElementById('finishChatBtn').style.display = 'none';
 
-    // 대화 상태 초기화
     feelChatStarted = false;
     userHasSpoken = false;
 
-    // 기존 endtimechat 로직
     appendUserMessage("남은 퇴근시간");
     showLoading("퇴근시간 정보를 확인하고 있습니다...");
 
     setTimeout(() => {
         const endtimeElement = document.getElementById('endtimeData');
-        const endtimeStr = endtimeElement.getAttribute('data-endtime'); // "2025-02-21 18:00" 같은 형태
+        const endtimeStr = endtimeElement.getAttribute('data-endtime');
 
         if (!endtimeStr) {
             removeLoading();
@@ -264,35 +328,26 @@ function endtimechat() {
             return;
         }
 
-        const diffHours = Math.floor(diffTime / (1000 * 60 * 60)); // 남은 시간
-        const diffMinutes = Math.floor((diffTime % (1000 * 60 * 60)) / (1000 * 60)); // 남은 분
+        const diffHours = Math.floor(diffTime / (1000 * 60 * 60));
+        const diffMinutes = Math.floor((diffTime % (1000 * 60 * 60)) / (1000 * 60));
 
         removeLoading();
         appendBotMessage(`퇴근까지 ${diffHours}시간 ${diffMinutes}분 남았습니다.`);
-    }, 500); // 0.5초 대기 후 처리
+    }, 500);
 
-    // 결과 표시 후 스크롤을 아래로 이동
     scrollToBottom();
 }
 
 function finishchat() {
-    // 모든 대화종료 버튼 제거
     const endChatButtons = document.querySelectorAll('#userMessageEndChatBtn');
     endChatButtons.forEach(button => {
-        button.parentElement.remove(); // 버튼의 컨테이너 요소 제거
+        button.parentElement.remove();
     });
 
-    // "대화종료" 메시지 표시
     appendUserMessage("대화종료");
-
-    // API로 대화종료 메시지 전송
-    // userInput 값을 직접 변경하지 않고 conversationHistory에 추가
     conversationHistory.push({ role: 'user', content: "대화종료" });
-
-    // 로딩 표시
     showLoading('대화를 종료중입니다...');
 
-    // 대화종료 API 호출
     fetch('/chat/feelchat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -312,29 +367,19 @@ function finishchat() {
             scrollToBottom();
         });
 
-    // 입력창 비활성화
     document.getElementById('inputSection').classList.add('hidden');
-
-    // 대화 상태 초기화
     feelChatStarted = false;
     userHasSpoken = false;
-
-    // 페이지에 있는 모든 대화종료 버튼 숨기기
     document.getElementById('finishChatBtn').style.display = 'none';
 }
 
 function handleJobPostings() {
-    // 입력창 숨기기
     document.getElementById('inputSection').classList.add('hidden');
-
-    // 대화종료 버튼 숨기기
     document.getElementById('finishChatBtn').style.display = 'none';
 
-    // 대화 상태 초기화
     feelChatStarted = false;
     userHasSpoken = false;
 
-    // 기존 handleJobPostings 로직
     appendUserMessage("맞춤형 이직 공고");
     showLoading("맞춤형 채용공고를 찾고 있습니다...");
 
@@ -351,12 +396,10 @@ function handleJobPostings() {
                     return;
                 }
 
-                // 채용공고 카드 생성을 위한 contentDiv 생성
                 const contentDiv = document.createElement('div');
                 contentDiv.innerHTML = '<p class="mb-3 text-sm">맞춤형 채용공고를 찾았습니다.</p>';
 
                 recommendedJobs.forEach((job, index) => {
-                    // 경력 계산 (신입/경력 표시)
                     const experience = job.experienceMax === 0 && job.experienceMin === 0
                         ? '신입'
                         : (job.experienceMax === job.experienceMin
@@ -412,14 +455,12 @@ function handleJobPostings() {
                     contentDiv.appendChild(jobCard);
                 });
 
-                // 더보기 버튼 추가
                 const viewMoreBtn = document.createElement('a');
                 viewMoreBtn.href = '/job/hire';
                 viewMoreBtn.className = 'block w-full text-center text-sm text-blue-600 hover:underline mt-2';
                 viewMoreBtn.innerHTML = '더 많은 채용 공고 보기';
                 contentDiv.appendChild(viewMoreBtn);
 
-                // 메시지 영역에 추가
                 const messagesDiv = document.getElementById('messages');
                 const botMessageContainer = document.createElement('div');
                 botMessageContainer.classList.add('flex', 'justify-start', 'items-start');
@@ -443,104 +484,5 @@ function handleJobPostings() {
         console.error('Error fetching recommended jobs:', error);
     }
 
-    // 결과 표시 후 스크롤을 아래로 이동
     scrollToBottom();
-}
-
-// handleGeneralChat 함수
-function handleGeneralChat(isEndingChat = false) {
-    const userInput = document.getElementById('userInput');
-    if (userInput.disabled) return; // 이미 전송 중이면 실행 방지
-    userInput.disabled = true; // 입력창 비활성화 (중복 입력 방지)
-
-    const message = userInput.value.trim();
-
-    // 메시지가 비어있으면 함수 종료
-    if (!message) {
-        userInput.disabled = false;
-        return;
-    }
-
-    // 일반 대화 처리
-    appendUserMessage(message);
-
-    // 메시지 전송 즉시 입력창 초기화 (API 응답을 기다리지 않고)
-    userInput.value = '';
-
-    // 하소연하기 모드일 때 대화종료 버튼 표시
-    if (feelChatStarted) {
-        // 첫 메시지인 경우 상태 업데이트
-        if (!userHasSpoken) {
-            userHasSpoken = true;
-        }
-
-        // "대화종료" 메시지가 아닌 경우에만 대화종료 버튼 추가
-        if (message !== "대화종료") {
-            // 대화종료 버튼 즉시 추가
-            addEndChatButton();
-        }
-    }
-
-    // 기존 handleGeneralChat 로직
-    showLoading('답변을 준비중입니다...');
-
-    // 시스템 메시지 (초기 설정 메시지)
-    if (conversationHistory.length === 0) {
-        conversationHistory.push({
-            "role": "system",
-            "content": "역할 설정: 저는 직장인들의 감정을 전문적으로 케어하는 AI 상담사로서, 사용자의 감정을 깊이 이해하고 공감하는 상담을 제공하겠습니다. 저는 항상 친절하고 따뜻한 어조로 대화하며, 전문적이고 세심하게 접근합니다.\n\n감정 분석 프로세스: 사용자의 모든 대화를 감정적으로 분석하여, 현재 사용자의 감정 상태를 정확하게 파악합니다. 사용자의 감정 상태를 0~100 사이의 퇴사지수로 평가합니다. 이 퇴사지수는 사용자가 직장에서 얼마나 힘들어하는지를 나타내며, 대화 종료 시 제공됩니다.\n\n대화 가이드라인: 사용자의 감정 상태를 세심하게 살펴보며, 필요할 경우 실질적인 조언과 심리적 지지를 제공합니다.\n 대화종료가 되기전까지 주고받은 내용을 기억하며 대화\n 대화가 종료될 때만 퇴사지수를 제공하며, \"대화종료\"라는 말이 나오면 대화가 종료됩니다.\n 대화에서는 과도하게 긍정적이거나 부정적이지 않게 균형을 잡아가며 대화를 이어갑니다.\n 사용자의 프라이버시와 감정을 최우선으로 존중하며, 필요한 경우 실질적인 대처 방안도 제안.\n\n퇴사지수 계산 방식: 대화 중에 사용자의 발언을 감정적으로 분석. 부정적인 단어와 긍정적인 단어의 빈도에 따라 퇴사지수를 계산.\n 긍정적인 단어가 많이 사용되면 퇴사지수가 낮아지고, 부정적인 단어가 많이 사용되면 퇴사지수가 높아진다.\n 대화 종료 시 \"오늘의 퇴사지수는 [퇴사지수]입니다"
-        });
-    }
-
-    // 사용자 메시지를 대화 기록에 추가
-    conversationHistory.push({ role: 'user', content: message });
-
-    fetch('/chat/feelchat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            messages: conversationHistory  // 전체 대화 기록 전송
-        })
-    })
-        .then(response => response.json())
-        .then(data => {
-            removeLoading();
-
-            // 챗봇 응답을 대화 기록에 추가
-            conversationHistory.push({ role: 'assistant', content: data.responseMessage });
-
-            appendBotMessage(data.responseMessage); // 챗봇 응답 메시지 처리
-
-            // 응답 후 스크롤을 아래로 이동
-            scrollToBottom();
-        })
-        .catch(error => {
-            removeLoading();
-            appendBotMessage('죄송합니다. 답변 생성 중 오류가 발생했습니다.');
-
-            // 오류 메시지 후에도 스크롤을 아래로 이동
-            scrollToBottom();
-        })
-        .finally(() => {
-            userInput.disabled = false;
-        });
-}
-
-// 페이지 로드 시 또는 창 크기 변경 시 스크롤을 아래로 이동
-window.addEventListener('load', scrollToBottom);
-window.addEventListener('resize', scrollToBottom);
-
-function formatTimestamp(timestamp) {
-    const date = new Date(timestamp * 1000); // Unix timestamp를 밀리초로 변환
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-}
-
-// Enter 키 이벤트 핸들러
-function checkEnter(event) {
-    if (event.key === 'Enter') {
-        handleGeneralChat();
-    }
 }
