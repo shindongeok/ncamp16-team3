@@ -267,7 +267,12 @@ public interface BoardMapper {
             "    WHEN #{board_type} = 1 THEN (SELECT IFNULL(like_count, 0) FROM iz_board01 WHERE board_id = #{board_id}) " +
             "    WHEN #{board_type} = 2 THEN (SELECT IFNULL(like_count, 0) FROM iz_board02 WHERE board_id = #{board_id}) " +
             "    ELSE 0 " +
-            "  END, NOW()")
+            "  END, " +
+            "  CASE " +
+            "    WHEN #{board_type} = 1 THEN (SELECT reg_date FROM iz_board01 WHERE board_id = #{board_id}) " +
+            "    WHEN #{board_type} = 2 THEN (SELECT reg_date FROM iz_board02 WHERE board_id = #{board_id}) " +
+            "    ELSE NOW() " +
+            "  END")
     void insertPopularBoard(@Param("board_id") int boardId, @Param("board_type") int boardType);
 
     //등록 되어있다면 업데이트

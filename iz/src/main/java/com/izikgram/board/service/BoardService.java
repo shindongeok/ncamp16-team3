@@ -243,7 +243,7 @@ public class BoardService {
 
         if (likeCount >= 5 && !isPopular) {
             // 좋아요가 5개 이상일 때 인기 게시판에 등록
-            boardMapper.insertPopularBoard(boardId, 1);
+            boardMapper.updatePopularBoard(boardId, 1,likeCount);
             log.info("게시글 {}이(가) 인기 게시판에 등록되었습니다!", boardId);
         } else if (likeCount < 5 && isPopular) {
             // 좋아요가 5개 미만일 때 인기 게시판에서 삭제
@@ -324,8 +324,8 @@ public class BoardService {
         boolean isPopular = boardMapper.isPopularBoard(boardId, 2); // 인기 게시판에 있는지 확인
 
         if (likeCount >= 5 && !isPopular) {
-            // 좋아요가 5개 이상일 때 인기 게시판에 등록
-            boardMapper.insertPopularBoard(boardId, 2);
+            // 좋아요가 5개 이상일 때 인기게시판 업데이트
+            boardMapper.updatePopularBoard(boardId, 2,likeCount);
             log.info("게시글 {}이(가) 인기 게시판에 등록되었습니다!", boardId);
         } else if (likeCount < 5 && isPopular) {
             // 좋아요가 5개 미만일 때 인기 게시판에서 삭제
