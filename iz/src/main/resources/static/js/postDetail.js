@@ -1,5 +1,5 @@
 
-//게시글 작성 널값 확인
+//게시글 작성 널값 확인 및 등록
 function OpenUpdateModal(message) {
     const modal = document.getElementById("postFormModal");
     const modalMessage = document.getElementById("postFormModalMessage");
@@ -9,6 +9,7 @@ function OpenUpdateModal(message) {
 
     setTimeout(CloseModal, 1000);
 }
+
 function CloseModal() {
     document.getElementById("postFormModal").classList.add("hidden");
 }
@@ -18,14 +19,22 @@ function PostFormInsertBut(){
     const content = document.getElementById("content").value.trim();
 
     if(!title){
-        OpenUpdateModal("제목 입력해야쥐~")
+        OpenUpdateModal("제목을 입력해주세요!")
         return false;
     }
 
     if(!content){
-        OpenUpdateModal("게시글 내용입력해야쥐~")
+        OpenUpdateModal("게시글을 입력해주세요!")
         return false;
     }
+
+    OpenUpdateModal("등록되었습니다!");
+
+    setTimeout(function () {
+        document.querySelector('form').submit();
+    }, 1000);
+
+    return false;
 }
 
 //날짜 형식 변경
@@ -80,12 +89,10 @@ function toggleComment(button) {
     const moreButton = button;
 
     if (textarea.classList.contains('overflow-hidden')) {
-        // 댓글 확장
         textarea.classList.remove('overflow-hidden');
         textarea.style.height = textarea.scrollHeight + 'px';
         moreButton.textContent = '닫기';
     } else {
-        // 댓글 접기
         textarea.classList.add('overflow-hidden');
         textarea.style.height = '4rem';
         moreButton.textContent = '더보기';
@@ -102,7 +109,6 @@ function saveComment() {
     const commentHeight = document.getElementById('commentContent').scrollHeight;
 
     if (!content.trim()) {
-        // 댓글 내용이 없으면 경고
         OpenDupdateModal("댓글을 입력하세요.");
         return;
     }
@@ -192,8 +198,6 @@ function deleteComment() {
     const boardType = selectedComment.querySelector("input[id='boardTypeD']").value;
     const writerId = selectedComment.querySelector("input[id='writerId']").value;
 
-    console.log(commentId, boardId, boardType, writerId);
-
     if (!commentId || !boardId || !boardType || !writerId) {
         alert('필요한 값 안넘어옴.');
         return;
@@ -267,20 +271,15 @@ function editComment(event) {
         return;
     }
 
-    console.log("comment_id: " + commentId.value + ", board_id: " + boardIde.value + ", board_type: " + boardTypeD.value + ", writer_id: " + writerId.value);
-
-    // 원래 스타일 저장
     const originalBorder = inputField.style.border;
 
-    // 읽기 전용 속성 제거 및 스타일 변경
     inputField.removeAttribute('readonly');
     inputField.style.border = "2px solid #9bdcfd";
     inputField.style.borderTop = "none";
     inputField.style.borderLeft = "none";
     inputField.style.borderRight = "none";
 
-    // 스크롤바를 없애기 위한 설정
-    inputField.style.overflow = 'hidden'; // 스크롤바 숨기기
+    inputField.style.overflow = 'hidden';
 
     setTimeout(() => {
         inputField.focus();
@@ -292,11 +291,10 @@ function editComment(event) {
 
     // 텍스트 영역 높이 동적으로 조정
     function adjustHeight() {
-        inputField.style.height = 'auto';  // 높이를 'auto'로 설정하여 내용에 맞게 확장
-        inputField.style.height = inputField.scrollHeight + 'px';  // 내용에 맞는 높이로 설정
+        inputField.style.height = 'auto';
+        inputField.style.height = inputField.scrollHeight + 'px';
     }
 
-    // 댓글 수정 후 내용에 맞게 높이 조정
     adjustHeight();
 
     // 입력할 때마다 높이 조정
@@ -306,7 +304,7 @@ function editComment(event) {
         const updatedContent = inputField.value;
 
         if (!updatedContent.trim()) {
-            OpenDupdateModal("댓글을 입력하세요.");
+            OpenDupdateModal("수정할 댓글을 입력하세요.");
             inputField.focus();
             return;
         }
@@ -330,16 +328,14 @@ function editComment(event) {
                     inputField.setAttribute('readonly', 'true');
                     inputField.style.border = originalBorder;
 
-                    // 텍스트 영역 높이 다시 조정 (저장 후에도 높이를 맞춰준다)
                     adjustHeight();
 
                     button.innerText = '수정';
                     button.onclick = editComment;
 
-                    // Enter 키 이벤트 제거
                     inputField.removeEventListener('keydown', handleEnterKey);
 
-                    OpenDupdateModal("수정했습니다.");
+                    OpenDupdateModal("댓글이 수정됐습니다.");
                 } else {
                     alert('댓글 수정 실패!');
                 }

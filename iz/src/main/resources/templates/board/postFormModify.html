@@ -26,7 +26,7 @@
         <div class="border-b pb-2">
             <h2 class="text-4xl font-black" th:text="${board.board_type == 1 ? '자유게시판 글수정' : (board.board_type == 2 ? '하소연 게시판 글수정' : '잘못된 요청이다.')}"></h2>
         </div>
-        <form id="postForm" th:action="@{/board/{board_type}/{board_id}(board_type=${board.board_type}, board_id=${board.board_id})}" method="post" onsubmit="return PostFormInsertBut()" class="">
+        <form id="postForm" th:action="@{/board/{board_type}/{board_id}(board_type=${board.board_type}, board_id=${board.board_id})}" method="post" onsubmit="return PostFormInsertButM()" class="">
             <input type="text" id="title" name="title" th:value="${board.title}"   class="border border-gray-300 rounded-md p-2 w-full my-5" maxlength="45" readonly>
 
             <div class="md:h-100 h-60">
@@ -45,29 +45,54 @@
         </form>
     </div>
 
-    <!-- 게시글 수정 빈값 모달   -->
     <div id="postFormModal" class="relative z-10 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
         <div class="fixed inset-0 bg-gray-500/75 transition-opacity max-w-[600px] mx-auto left-0 right-0"></div>
         <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
-            <div class="flex min-h-full items-center justify-center p-4 text-center sm:items-center sm:p-0">
-                <div class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
-                    <div class="bg-main-sky-highlight sm:p-4 sm:pb-4">
-                        <div class="sm:flex sm:items-start">
-                            <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                                <h3 id="postFormModalMessage" class="text-2xl font-semibold text-gray-900 p-2" >제목을 입력하세요</h3>
-                            </div>
-
-                        </div>
-                    </div>
-                    <div class="px-4 pt-20 pb-5 sm:flex sm:flex-row-reverse sm:px-6">
-                        :)
+            <div class="flex min-h-full items-center justify-center p-4 text-center">
+                <div class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all max-w-sm w-full">
+                    <div class="bg-sky-100 p-6 flex items-center justify-center">
+                        <h3 id="postFormModalMessage" class="text-xl font-semibold text-gray-800">제목을 입력하세요</h3>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
     <footer th:replace="~{footer :: footer}" class="pt-4"></footer>
 </div>
-<script th:src="@{/js/postDetail.js}"></script>
+
+<script>
+    //게시글 수정 널값 확인 및 등록
+    function OpenUpdateModal(message) {
+        const modal = document.getElementById("postFormModal");
+        const modalMessage = document.getElementById("postFormModalMessage");
+
+        modalMessage.textContent = message;
+        modal.classList.remove("hidden");
+
+        setTimeout(CloseModal, 1000);
+    }
+
+    function CloseModal() {
+        document.getElementById("postFormModal").classList.add("hidden");
+    }
+
+    function PostFormInsertButM(){
+        const content = document.getElementById("content").value.trim();
+
+        if(!content){
+            OpenUpdateModal("수정할 게시글을 입력해주세요!")
+            return false;
+        }
+
+        OpenUpdateModal("게시글이 수정 되었습니다!");
+
+        setTimeout(function () {
+            document.querySelector('form').submit();
+        }, 1000);
+
+        return false;
+    }
+</script>
 </body>
 </html>
