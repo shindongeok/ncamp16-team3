@@ -83,7 +83,6 @@
                 </div>
             </div>
 
-            <!-- 여기에 hidden 클래스를 추가하여 초기 상태에서 입력란 숨김 -->
             <div id="inputSection" class="border-t border-gray-100 p-4 bg-white hidden">
                 <div class="flex items-center gap-2">
                     <input id="userInput" type="text" class="flex-grow p-2 border border-gray-300 rounded-lg"
@@ -91,10 +90,10 @@
                     <button onclick="handleGeneralChat()" class="bg-main-sky-highlight text-white p-2 rounded-lg flex items-center justify-center w-10 h-10 hover:bg-main-sky-hover transition-colors cursor-pointer">
                         <img src="https://img.icons8.com/?size=100&id=7874&format=png&color=FFFFFF">
                     </button>
+                    <button id="finishChatBtn" onclick="finishchat()" class="bg-main-red-highlight text-white p-2 rounded-lg flex items-center justify-center px-3 h-10 hover:bg-main-red-basic transition-colors cursor-pointer text-sm hidden">
+                        대화종료
+                    </button>
                 </div>
-                <button id="finishChatBtn" onclick="finishchat()" class="text-blue-500 text-sm mt-2 hidden">
-                    대화종료
-                </button>
             </div>
         </div>
         <div class="flex justify-center mb-5 px-2">
