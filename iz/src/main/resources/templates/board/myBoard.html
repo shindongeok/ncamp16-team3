@@ -32,9 +32,7 @@
     <div class="pt-20"><header th:replace="~{header :: header}" class="pt-4"></header></div>
     <footer th:replace="~{footer :: footer}" class="pt-4"></footer>
     <div class="px-10 pb-5">
-        <!-- 페이지 제목 -->
         <div class="text-[1.7rem] font-bold text-[#2C2C2C]">내가 쓴 게시글</div>
-
         <div class="mb-10">
             <!-- 자유 게시판 -->
             <div class="rounded-lg mt-5 w-auto">
@@ -56,7 +54,6 @@
             <!-- 게시글 리스트 (자유 게시판 - 최신 5개만) -->
             <div th:each="myList01, iterStat : ${myBoardList01}" th:if="${iterStat.index < 5}" class="rounded-lg">
                 <div class="flex flex-col w-full">
-                    <!-- 게시글 리스트 (데이터 제외) -->
                     <div class="flex border-b border-gray-300 p-4 cursor-pointer hover:bg-gray-50"
                          th:onclick="'location.href=\'' + @{/board/{board_type}/{board_id}(board_type=${myList01.board_type}, board_id=${myList01.board_id})} + '\''">
                         <div class="flex-1 pr-6">
@@ -113,7 +110,6 @@
         <!-- 게시글 리스트 (하소연 게시판 - 최신 5개만) -->
         <div th:each="myList02, iterStat : ${myBoardList02}" th:if="${iterStat.index < 5}" class="rounded-lg">
             <div class="flex flex-col w-full">
-                <!-- 게시글 리스트 -->
                 <div class="flex border-b border-gray-300 p-4 cursor-pointer hover:bg-gray-50"
                      th:onclick="'location.href=\'' + @{/board/{board_type}/{board_id}(board_type=${myList02.board_type}, board_id=${myList02.board_id})} + '\''">
                     <div class="flex-1 pr-6">

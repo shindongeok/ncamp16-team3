@@ -31,20 +31,16 @@
 <div class="flex flex-col w-full md:w-[600px] md:mx-auto md:shadow-md bg-white min-h-screen relative">
     <div class="pt-22"><header th:replace="~{header :: header}" class="pt-4"></header></div>
     <div class="px-10">
-        <!-- 페이지 제목, 정렬 옵션, 글쓰기 버튼을 일렬로 배치 -->
         <div class="flex items-center justify-between pb-5 border-b border-gray-300">
             <h2 th:text="${board_name}" class="md:text-[1.7rem] text-[1.7rem] font-bold text-[#2C2C2C]">자유게시판</h2>
             <input type="hidden" id="type" th:value="${board_type}">
-
             <div class="flex items-center gap-3">
-                <!-- 정렬 옵션 -->
                 <select id="sortOptions" onchange="loadBoardList(this.value)" class="rounded-xl py-1.5 text-gray-500 transition duration-300 w-20">
                     <option value="newest">최신순</option>
                     <option value="oldest">오래된 순</option>
                     <option value="likes">좋아요 순</option>
                     <option value="comments">댓글 많은 순</option>
                 </select>
-                <!-- 글쓰기 버튼 -->
                 <a class="text-[0.75rem] rounded-md bg-main-sky-highlight px-3 py-1.5
                             text-sm md:text-base text-white shadow-xs hover:bg-sky-800 focus-visible:outline-2
                             focus-visible:outline-offset-2 focus-visible:outline-sky-800"
@@ -68,17 +64,16 @@
 
     // 게시글 목록을 가져오는 함수
     function loadBoardList(sort) {
-        const boardType = $('#type').val();  // board_type 값을 읽어옵니다.
-        console.log("게시글 목록 불러오기 요청:", sort, boardType); // 요청 로그
+        const boardType = $('#type').val();
 
         $.ajax({
-            url: '/board/' + boardType,  // RESTful API URL
+            url: '/board/' + boardType,
             type: 'post',
             data: {
                 sort: sort  // 정렬 기준
             },
             success: function (data) {
-                console.log("서버 응답 데이터:", data);  // 서버 응답 데이터 확인
+                console.log("서버 응답 데이터:", data);
                 if (data && data.boardList) {
                     renderBoardList(data.boardList, boardType);
                 } else {
@@ -91,11 +86,11 @@
         });
     }
 
-    // 게시글 목록을 HTML로 렌더링하는 함수
+    // 게시글 목록
     function renderBoardList(boardList, boardType) {
         const boardListContainer = $('#boardList01');
-        boardListContainer.empty();  // 기존 내용 비우기
-        console.log(boardList.length);
+        boardListContainer.empty();
+
         if (boardList.length == 0) {
             const boardHtml = `
             <div class="p-10 text-center text-gray-500">
@@ -106,7 +101,7 @@
         }
 
         boardList.forEach(function (board) {
-            const timeAgoText = timeAgo(board.reg_date); // 날짜를 timeAgo 함수로 변환
+            const timeAgoText = timeAgo(board.reg_date);
             const boardHtml = `
         <div class="rounded-lg">
             <div class="flex flex-col w-full">
