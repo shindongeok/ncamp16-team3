@@ -43,7 +43,7 @@ function toggleLikeDislike(boardId, type) {
                         falseChecked01 = "false";
                         thumbsDown.innerHTML = "<img src=\"https://img.icons8.com/?size=100&id=82788&format=png&color=000000\" alt=\"holeDislike\" class=\"w-4 h-4 rotate-180 inline-block transform\">";
                     }
-                    thumbsUp.innerHTML = "<img src=\"https://img.icons8.com/?size=100&id=83166&format=png&color=000000\" alt=\"coloredLike\" class=\"w-4 h-4\">";
+                    thumbsUp.innerHTML = "<img src=\"https://img.icons8.com/?size=100&id=83166&format=png&color=000000\" alt=\"coloredLike\" class=\"w-4 h-4 on\">";
                 } else if (!isLiked && falseChecked01 == "true") {
                     falseChecked01 = "false";
                     thumbsDown.innerHTML = "<img src=\"https://img.icons8.com/?size=100&id=82788&format=png&color=000000\" alt=\"holeDislike\" class=\"w-4 h-4 rotate-180 inline-block transform\">";
@@ -53,7 +53,7 @@ function toggleLikeDislike(boardId, type) {
                         trueChecked01 = "false";
                         thumbsUp.innerHTML = "<img src=\"https://img.icons8.com/?size=100&id=82788&format=png&color=000000\" alt=\"holeLike\" class=\"w-4 h-4\">";
                     }
-                    thumbsDown.innerHTML = "<img src=\"https://img.icons8.com/?size=100&id=83166&format=png&color=000000\" alt=\"coloredDislike\" class=\"w-4 h-4 rotate-180 inline-block transform\">";
+                    thumbsDown.innerHTML = "<img src=\"https://img.icons8.com/?size=100&id=83166&format=png&color=000000\" alt=\"coloredDislike\" class=\"w-4 h-4 rotate-180 inline-block transform on\">";
                 }
             } else if (boardType == 2) {
                 if (isLiked && trueChecked02 == "true") {
@@ -65,7 +65,7 @@ function toggleLikeDislike(boardId, type) {
                         falseChecked02 = "false";
                         thumbsDown.innerHTML = "<img src=\"https://img.icons8.com/?size=100&id=82788&format=png&color=000000\" alt=\"holeDislike\" class=\"w-4 h-4 rotate-180 inline-block transform\">";
                     }
-                    thumbsUp.innerHTML = "<img src=\"https://img.icons8.com/?size=100&id=83166&format=png&color=000000\" alt=\"coloredLike\" class=\"w-4 h-4\">";
+                    thumbsUp.innerHTML = "<img src=\"https://img.icons8.com/?size=100&id=83166&format=png&color=000000\" alt=\"coloredLike\" class=\"w-4 h-4 on\">";
                 } else if (!isLiked && falseChecked02 == "true") {
                     falseChecked02 = "false";
                     thumbsDown.innerHTML = "<img src=\"https://img.icons8.com/?size=100&id=82788&format=png&color=000000\" alt=\"holeDislike\" class=\"w-4 h-4 rotate-180 inline-block transform\">";
@@ -75,10 +75,9 @@ function toggleLikeDislike(boardId, type) {
                         trueChecked02 = "false";
                         thumbsUp.innerHTML = "<img src=\"https://img.icons8.com/?size=100&id=82788&format=png&color=000000\" alt=\"holeLike\" class=\"w-4 h-4\">";
                     }
-                    thumbsDown.innerHTML = "<img src=\"https://img.icons8.com/?size=100&id=83166&format=png&color=000000\" alt=\"coloredDislike\" class=\"w-4 h-4 rotate-180 inline-block transform\">";
+                    thumbsDown.innerHTML = "<img src=\"https://img.icons8.com/?size=100&id=83166&format=png&color=000000\" alt=\"coloredDislike\" class=\"w-4 h-4 rotate-180 inline-block transform on\">";
                 }
             }
-
 
             // 화면 배치
             let likeEl = document.getElementById('likeCount');

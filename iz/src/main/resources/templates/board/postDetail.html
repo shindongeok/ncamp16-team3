@@ -42,6 +42,16 @@
             }
         }
 
+        .on {
+            animation: beating .5s 1 alternate;
+        }
+
+        @keyframes beating {
+            0% {transform: scale(1);}
+            40% {transform: scale(1.25);}
+            70% {transform: scale(0.9);}
+            100% {transform: scale(1);}
+        }
     </style>
 </head>
 <body>
@@ -73,12 +83,12 @@
                             <input type="hidden" id="checkDislike02" th:value="${isDislike02}">
                         <div id="thumbsUp">
                             <th:block th:if="${board_type==1}">
-                                <img th:if="${isLike01}" src="https://img.icons8.com/?size=100&id=83166&format=png&color=000000" alt="like" class="w-4 h-4">
-                                <img th:if="${!isLike01}" src="https://img.icons8.com/?size=100&id=82788&format=png&color=000000" alt="like" class="w-4 h-4">
+                                <img th:if="${isLike01}" src="https://img.icons8.com/?size=100&id=83166&format=png&color=000000" alt="coloredLike" class="w-4 h-4">
+                                <img th:if="${!isLike01}" src="https://img.icons8.com/?size=100&id=82788&format=png&color=000000" alt="holeLike" class="w-4 h-4">
                             </th:block>
                             <th:block th:if="${board_type==2}">
-                                <img th:if="${isLike02}" src="https://img.icons8.com/?size=100&id=83166&format=png&color=000000" alt="like" class="w-4 h-4">
-                                <img th:if="${!isLike02}" src="https://img.icons8.com/?size=100&id=82788&format=png&color=000000" alt="like" class="w-4 h-4">
+                                <img th:if="${isLike02}" src="https://img.icons8.com/?size=100&id=83166&format=png&color=000000" alt="coloredLike" class="w-4 h-4">
+                                <img th:if="${!isLike02}" src="https://img.icons8.com/?size=100&id=82788&format=png&color=000000" alt="holeLike" class="w-4 h-4">
                             </th:block>
                         </div>
                         <span class="buttonSpan">이직해</span> <span class="font-bold buttonSpan" th:id="likeCount" th:text="${board.like_count}">0</span>
@@ -89,12 +99,12 @@
                             th:onclick="|toggleLikeDislike(${board.board_id}, 'dislike')|">
                         <div id="thumbsDown">
                             <th:block th:if="${board_type==1}">
-                                <img th:if="${isDislike01}" src="https://img.icons8.com/?size=100&id=83166&format=png&color=000000" alt="like" class="w-4 h-4 rotate-180 inline-block transform">
-                                <img th:if="${!isDislike01}" src="https://img.icons8.com/?size=100&id=82788&format=png&color=000000" alt="like" class="w-4 h-4 rotate-180 inline-block transform">
+                                <img th:if="${isDislike01}" src="https://img.icons8.com/?size=100&id=83166&format=png&color=000000" alt="coloredDislike" class="w-4 h-4 rotate-180 inline-block transform">
+                                <img th:if="${!isDislike01}" src="https://img.icons8.com/?size=100&id=82788&format=png&color=000000" alt="holeDislike" class="w-4 h-4 rotate-180 inline-block transform">
                             </th:block>
                             <th:block th:if="${board_type==2}">
-                                <img th:if="${isDislike02}" src="https://img.icons8.com/?size=100&id=83166&format=png&color=000000" alt="like" class="w-4 h-4 rotate-180 inline-block transform">
-                                <img th:if="${!isDislike02}" src="https://img.icons8.com/?size=100&id=82788&format=png&color=000000" alt="like" class="w-4 h-4 rotate-180 inline-block transform">
+                                <img th:if="${isDislike02}" src="https://img.icons8.com/?size=100&id=83166&format=png&color=000000" alt="coloredDislike" class="w-4 h-4 rotate-180 inline-block transform">
+                                <img th:if="${!isDislike02}" src="https://img.icons8.com/?size=100&id=82788&format=png&color=000000" alt="holeDislike" class="w-4 h-4 rotate-180 inline-block transform">
                             </th:block>
                         </div>
                         <span class="buttonSpan">존버해</span> <span class="font-bold buttonSpan" th:id="dislikeCount" th:text="${board.dislike_count}">0</span>
