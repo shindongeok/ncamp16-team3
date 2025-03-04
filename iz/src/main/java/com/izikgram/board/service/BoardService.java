@@ -446,4 +446,23 @@ public class BoardService {
         boardMapper.deleteBoard02(board_id);
     }
 
+//    public boolean isLike01(int board_id) {
+//        boolean isLike = boardMapper.isLike01(board_id);
+//        return isLike ? true : false;
+//    }
+//
+//    public boolean isDislike01(int board_id) {
+//        boolean isLike = boardMapper.isDislike01(board_id);
+//        return isLike ? true : false;
+//    }
+//
+//    public boolean isLike02(int board_id) {
+//        boolean isLike = boardMapper.isLike02(board_id);
+//        return isLike ? true : false;
+//    }
+//
+//    public boolean isDislike02(int board_id) {
+//        boolean isLike = boardMapper.isDislike02(board_id);
+//        return isLike ? true : false;
+//    }
 }

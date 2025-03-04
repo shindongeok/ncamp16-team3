@@ -20,7 +20,7 @@
         @media screen and (max-width: 599px) {
             #like,
             #dislike {
-                padding: 0.5em 1em;
+                padding: 0.5em 0.5em;
             }
 
             .buttonSpan {
@@ -33,6 +33,11 @@
 
             #listButton {
                 padding: 0.5em 1em;
+            }
+
+            #like,
+            #dislike {
+                width: 6em;
             }
         }
 
@@ -74,28 +79,48 @@
             <div class="flex space-x-2">
                 <input id="boardType" type="hidden" th:value="${board_type}" />
                 <input id="boardId" type="hidden" th:value="${board.board_id}" />
-                <button id="like" class="likeBtn flex items-center space-x-2 bg-main-sky-highlight hover:bg-main-sky-basic
+                <button id="like" class="w-30 mr-1 likeBtn flex items-center space-x-2 bg-main-sky-highlight hover:bg-main-sky-basic
                             text-white px-4 py-2 rounded-lg transition cursor-pointer"
                         th:attr="data-board=${board.board_id}"
                         th:onclick="|toggleLikeDislike(${board.board_id}, 'like')|">
+<!--                    <div id="thumbsUp">-->
+<!--                        <th:block th:if="${board_type==1}">-->
+<!--                            <img th:if="${isLike01}" src="https://img.icons8.com/?size=100&id=83166&format=png&color=000000" alt="like" class="w-4 h-4">-->
+<!--                            <img th:if="${!isLike01}" src="https://img.icons8.com/?size=100&id=82788&format=png&color=000000" alt="like" class="w-4 h-4">-->
+<!--                        </th:block>-->
+<!--                        <th:block th:if="${board_type==2}">-->
+<!--                            <img th:if="${isLike02}" src="https://img.icons8.com/?size=100&id=83166&format=png&color=000000" alt="like" class="w-4 h-4">-->
+<!--                            <img th:if="${!isLike02}" src="https://img.icons8.com/?size=100&id=82788&format=png&color=000000" alt="like" class="w-4 h-4">-->
+<!--                        </th:block>-->
+<!--                    </div>-->
                     <span class="buttonSpan">이직해</span> <span class="font-bold buttonSpan" th:id="likeCount" th:text="${board.like_count}">0</span>
                 </button>
-                <button id="dislike" class="unlikeBtn flex items-center space-x-2 bg-main-sky-highlight hover:bg-main-sky-basic
+                <button id="dislike" class="w-30 unlikeBtn flex items-center space-x-2 bg-main-sky-highlight hover:bg-main-sky-basic
                             text-white px-4 py-2 rounded-lg transition cursor-pointer"
                         th:attr="data-board=${board.board_id}"
                         th:onclick="|toggleLikeDislike(${board.board_id}, 'dislike')|">
+<!--                    <div id="thumbsDown">-->
+<!--                        <th:block th:if="${board_type==1}">-->
+<!--                            <img th:if="${isDislike01}" src="https://img.icons8.com/?size=100&id=83166&format=png&color=000000" alt="like" class="w-4 h-4 rotate-180 inline-block transform">-->
+<!--                            <img th:if="${!isDislike01}" src="https://img.icons8.com/?size=100&id=82788&format=png&color=000000" alt="like" class="w-4 h-4 rotate-180 inline-block transform">-->
+<!--                        </th:block>-->
+<!--                        <th:block th:if="${board_type==2}">-->
+<!--                            <img th:if="${isDislike02}" src="https://img.icons8.com/?size=100&id=83166&format=png&color=000000" alt="like" class="w-4 h-4 rotate-180 inline-block transform">-->
+<!--                            <img th:if="${!isDislike02}" src="https://img.icons8.com/?size=100&id=82788&format=png&color=000000" alt="like" class="w-4 h-4 rotate-180 inline-block transform">-->
+<!--                        </th:block>-->
+<!--                    </div>-->
                     <span class="buttonSpan">존버해</span> <span class="font-bold buttonSpan" th:id="dislikeCount" th:text="${board.dislike_count}">0</span>
                 </button>
             </div>
 
             <!-- 수정 / 삭제 버튼 -->
             <div class="flex space-x-2" th:if="${member_id == board.writer_id}">
-                <a class="px-4 py-2 bg-main-sky-highlight hover:bg-main-sky-basic text-white
+                <a class="px-3 py-2 mr-1 bg-main-sky-highlight hover:bg-main-sky-basic text-white
                        rounded-lg transition cursor-pointer buttonSpan"
                    th:href="@{/board/update/{board_type}/{board_id}(board_type=${board_type}, board_id=${board_id})}">
                     수정
                 </a>
-                <a onclick="OpenDeleteModalBoard()" class="px-4 py-2 bg-main-red-highlight hover:bg-main-red-basic text-white rounded-lg
+                <a onclick="OpenDeleteModalBoard()" class="px-3 py-2 bg-main-red-highlight hover:bg-main-red-basic text-white rounded-lg
                        transition cursor-pointer buttonSpan">
                     삭제
                 </a>
