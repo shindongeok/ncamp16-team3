@@ -446,36 +446,38 @@ public class BoardService {
         boardMapper.deleteBoard02(board_id);
     }
 
-    public boolean isLike01(int board_id) {
-        String isLike = boardMapper.isLike01(board_id);
-        if (isLike != null) {
+    public boolean isLike01(String member_id, int board_id) {
+        int like01 = boardMapper.isLike01(member_id, board_id);
+//        log.info("like01: {}", like01);
+        if (like01 != 0) {
             return true;
         } else {
             return false;
         }
     }
 
-    public boolean isDislike01(int board_id) {
-        String isLike = boardMapper.isDislike01(board_id);
-        if (isLike != null) {
+    public boolean isDislike01(String member_id, int board_id) {
+        int dislike01 = boardMapper.isDislike01(member_id, board_id);
+//        log.info("disLike01: {}", dislike01);
+        if (dislike01 != 0) {
             return true;
         } else {
             return false;
         }
     }
 
-    public boolean isLike02(int board_id) {
-        String isLike = boardMapper.isLike02(board_id);
-        if (isLike != null) {
+    public boolean isLike02(String member_id, int board_id) {
+        int like02 = boardMapper.isLike02(member_id, board_id);
+        if (like02 != 0) {
             return true;
         } else {
             return false;
         }
     }
 
-    public boolean isDislike02(int board_id) {
-        String isLike = boardMapper.isDislike02(board_id);
-        if (isLike != null) {
+    public boolean isDislike02(String member_id, int board_id) {
+        int dislike02 = boardMapper.isDislike02(member_id, board_id);
+        if (dislike02 != 0) {
             return true;
         } else {
             return false;
