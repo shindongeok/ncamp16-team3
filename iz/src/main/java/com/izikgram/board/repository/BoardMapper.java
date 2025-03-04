@@ -356,5 +356,15 @@ public interface BoardMapper {
     @Delete("delete from iz_board02 where board_id = #{board_id}")
     void deleteBoard02(@Param("board_id") int board_id);
 
+    @Select("select member_id from iz_board01_like where board_id=#{board_id}")
+    String isLike01(int board_id);
 
+    @Select("select member_id from iz_board01_dislike where board_id=#{board_id}")
+    String isDislike01(int board_id);
+
+    @Select("select member_id from iz_board02_like where board_id=#{board_id}")
+    String isLike02(int board_id);
+
+    @Select("select member_id from iz_board02_dislike where board_id=#{board_id}")
+    String isDislike02(int board_id);
 }
