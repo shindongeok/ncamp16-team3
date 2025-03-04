@@ -239,7 +239,7 @@ public class BoardService {
     //싫어요 눌렀을 때 인기테이블 반영
     private void updatePopularBoardOnLikeDislikeChange01(int boardId) {
         int likeCount = boardMapper.getLikeCount(boardId); // 좋아요 개수 조회
-        boolean isPopular = boardMapper.isPopularBoard(boardId, 2); // 인기 게시판에 있는지 확인
+        boolean isPopular = boardMapper.isPopularBoard(boardId, 1); // 인기 게시판에 있는지 확인
 
         if (likeCount >= 5 && !isPopular) {
             // 좋아요가 5개 이상일 때 인기 게시판에 등록
