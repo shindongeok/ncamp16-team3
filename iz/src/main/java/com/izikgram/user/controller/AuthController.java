@@ -25,7 +25,7 @@ public class AuthController {
     @PostMapping("/send-sms")
     public ResponseEntity<String> sendSms(@RequestParam String phone_num) {
 //        log.info("phone_num: {}", phone_num);
-//        authService.sendVerificationCode(phone_num);
+        authService.sendVerificationCode(phone_num);
         return ResponseEntity.ok("인증번호가 전송되었습니다.");
     }
 
