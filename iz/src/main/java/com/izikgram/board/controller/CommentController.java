@@ -54,7 +54,6 @@ public class CommentController {
 
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            log.error("댓글 작성 중 오류 발생: {}", e.getMessage(), e);
             response.put("success", false);
             response.put("error", "댓글 저장에 실패했습니다.");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
@@ -85,7 +84,6 @@ public class CommentController {
             }
 
             if (isDeleted) {
-                log.info("댓글 삭제 성공: commentId = {}, boardId = {}", commentId, boardId);
                 response.put("message", "댓글이 삭제되었습니다.");
                 return ResponseEntity.ok(response);
             } else {

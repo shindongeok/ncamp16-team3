@@ -18,13 +18,11 @@ function PostFormInsertBut(){
     const content = document.getElementById("content").value.trim();
 
     if(!title){
-        // alert("제목을 입력해주세요!");
         OpenUpdateModal("제목 입력해야쥐~")
         return false;
     }
 
     if(!content){
-        // alert("내용을 입력해주세요!!");
         OpenUpdateModal("게시글 내용입력해야쥐~")
         return false;
     }
@@ -62,12 +60,11 @@ $(document).ready(function() {
 });
 
 // 댓글 작성
-
 //댓글 입력할때 높이 조절
 function autoResize(textarea) {
     // 텍스트 내용에 맞춰서 높이를 자동으로 변경
-    textarea.style.height = 'auto';  // 먼저 높이를 'auto'로 리셋한 뒤
-    textarea.style.height = (textarea.scrollHeight) + 'px';  // 텍스트의 높이에 맞게 설정
+    textarea.style.height = 'auto';
+    textarea.style.height = (textarea.scrollHeight) + 'px';
 }
 
 function checkEnter(event) {
@@ -77,22 +74,21 @@ function checkEnter(event) {
     }
 }
 
-// // 더보기 기능
 // 더보기 기능
 function toggleComment(button) {
-    const textarea = button.closest('.comment-content').querySelector('textarea');  // textarea를 선택
+    const textarea = button.closest('.comment-content').querySelector('textarea');
     const moreButton = button;
 
     if (textarea.classList.contains('overflow-hidden')) {
         // 댓글 확장
         textarea.classList.remove('overflow-hidden');
-        textarea.style.height = textarea.scrollHeight + 'px';  // 댓글 높이를 내용에 맞게 확장
-        moreButton.textContent = '닫기';  // 버튼 텍스트 변경
+        textarea.style.height = textarea.scrollHeight + 'px';
+        moreButton.textContent = '닫기';
     } else {
         // 댓글 접기
         textarea.classList.add('overflow-hidden');
-        textarea.style.height = '4rem';  // 기본 높이로 설정
-        moreButton.textContent = '더보기';  // 버튼 텍스트 변경
+        textarea.style.height = '4rem';
+        moreButton.textContent = '더보기';
     }
 }
 
@@ -102,8 +98,8 @@ function toggleComment(button) {
 function saveComment() {
     const content = document.getElementById('commentContent').value;
     const boardId = document.getElementById('boardIdd').value;
-    const boardType = document.getElementById('boardTypee').value;
-    const commentHeight = document.getElementById('commentContent').scrollHeight;  // 댓글 높이 정보
+    const boardType = document.getElementById('commentBoardType').value;
+    const commentHeight = document.getElementById('commentContent').scrollHeight;
 
     if (!content.trim()) {
         // 댓글 내용이 없으면 경고
