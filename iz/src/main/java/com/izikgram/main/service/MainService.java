@@ -39,14 +39,18 @@ public class MainService {
     }
 
     public String getStartTime(String member_id) {
-        return mainMapper.getStartTime(member_id);
+        String startTime = mainMapper.getStartTime(member_id);
+        return startTime.substring(0, 5);
+//        return mainMapper.getStartTime(member_id);
     }
 
     public String getLunchTime(String member_id) {
-        return mainMapper.getLunchTime(member_id);
+        String lunchTime = mainMapper.getLunchTime(member_id);
+        return lunchTime.substring(0, 5);
     }
 
     public String getEndTime(String member_id) {
-        return mainMapper.getEndTime(member_id);
+        String endTime = mainMapper.getEndTime(member_id);
+        return endTime.substring(0, 5);
     }
 }
