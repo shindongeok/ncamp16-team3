@@ -11,14 +11,17 @@ function scrollToBottom() {
 function appendUserMessage(text) {
     const messagesDiv = document.getElementById('messages');
     const messageContainer = document.createElement('div');
-    messageContainer.classList.add('flex', 'justify-end', 'items-start');
+    messageContainer.classList.add('flex', 'justify-end', 'items-start', 'mb-2', 'user-message-container');
 
+    // 메시지가 보여지는 영역
     const userMessageDiv = document.createElement('div');
     userMessageDiv.classList.add('bg-blue-500', 'text-white', 'px-3', 'py-2', 'rounded-lg', 'max-w-[80%]', 'break-words', 'text-sm');
     userMessageDiv.innerHTML = text.replace(/\n/g, '<br>');
 
     messageContainer.appendChild(userMessageDiv);
     messagesDiv.appendChild(messageContainer);
+
+    // 참고: 대화종료 버튼은 더 이상 여기서 추가하지 않습니다
 
     // 메시지 추가 후 스크롤을 아래로 이동
     scrollToBottom();
@@ -30,7 +33,7 @@ function appendUserMessage(text) {
 function appendBotMessage(text) {
     const messagesDiv = document.getElementById('messages');
     const messageContainer = document.createElement('div');
-    messageContainer.classList.add('flex', 'justify-start', 'items-start');
+    messageContainer.classList.add('flex', 'justify-start', 'items-start', 'mb-2');
 
     const botMessageDiv = document.createElement('div');
     botMessageDiv.classList.add('bg-gray-100', 'text-black', 'px-3', 'py-2', 'rounded-lg', 'max-w-[80%]', 'break-words', 'text-sm');
@@ -80,6 +83,43 @@ function removeLoading() {
     }
 }
 
+// 대화종료 버튼 생성 함수
+function addEndChatButton() {
+    const messagesDiv = document.getElementById('messages');
+
+    // 기존 대화종료 버튼 제거
+    const existingButtons = document.querySelectorAll('#userMessageEndChatBtn');
+    existingButtons.forEach(button => {
+        button.parentElement.remove();
+    });
+
+    // 새 대화종료 버튼 추가
+    const buttonContainer = document.createElement('div');
+    buttonContainer.classList.add('flex', 'justify-end', 'mt-1', 'mb-2');
+
+    const endChatButton = document.createElement('button');
+    endChatButton.classList.add('text-xs', 'text-gray-500', 'hover:underline', 'cursor-pointer');
+    endChatButton.textContent = '대화종료';
+    endChatButton.onclick = finishchat;
+    endChatButton.id = 'userMessageEndChatBtn';
+
+    buttonContainer.appendChild(endChatButton);
+
+    // 마지막 사용자 메시지 컨테이너 바로 다음에 버튼 삽입
+    const userMessages = document.querySelectorAll('.user-message-container');
+    if (userMessages.length > 0) {
+        const lastUserMessage = userMessages[userMessages.length - 1];
+        // 버튼을 사용자 메시지 바로 뒤에 삽입
+        lastUserMessage.after(buttonContainer);
+    } else {
+        // 사용자 메시지가 없는 경우 (발생하지 않겠지만) 그냥 마지막에 추가
+        messagesDiv.appendChild(buttonContainer);
+    }
+
+    // 스크롤 조정
+    scrollToBottom();
+}
+
 // 대화종료 버튼 표시/숨김 상태를 관리하는 변수 추가
 let userHasSpoken = false;
 let feelChatStarted = false;
@@ -96,8 +136,11 @@ function feelchat() {
     feelChatStarted = true;
     userHasSpoken = false;
 
-    // 대화종료 버튼 숨기기
+    // 대화종료 버튼 숨기기 (기존 finishChatBtn 숨기기)
     document.getElementById('finishChatBtn').style.display = 'none';
+
+    // 대화 초기화
+    conversationHistory = [];
 }
 
 // 다른 버튼 함수들에 입력창 숨기기 로직 추가
@@ -233,36 +276,51 @@ function endtimechat() {
 }
 
 function finishchat() {
-    // 입력창 숨기기
+    // 모든 대화종료 버튼 제거
+    const endChatButtons = document.querySelectorAll('#userMessageEndChatBtn');
+    endChatButtons.forEach(button => {
+        button.parentElement.remove(); // 버튼의 컨테이너 요소 제거
+    });
+
+    // "대화종료" 메시지 표시
+    appendUserMessage("대화종료");
+
+    // API로 대화종료 메시지 전송
+    // userInput 값을 직접 변경하지 않고 conversationHistory에 추가
+    conversationHistory.push({ role: 'user', content: "대화종료" });
+
+    // 로딩 표시
+    showLoading('대화를 종료중입니다...');
+
+    // 대화종료 API 호출
+    fetch('/chat/feelchat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            messages: conversationHistory
+        })
+    })
+        .then(response => response.json())
+        .then(data => {
+            removeLoading();
+            appendBotMessage(data.responseMessage);
+            scrollToBottom();
+        })
+        .catch(error => {
+            removeLoading();
+            appendBotMessage('죄송합니다. 대화 종료 중 오류가 발생했습니다.');
+            scrollToBottom();
+        });
+
+    // 입력창 비활성화
     document.getElementById('inputSection').classList.add('hidden');
 
     // 대화 상태 초기화
     feelChatStarted = false;
     userHasSpoken = false;
 
-    // 기존 finishchat 로직 유지
-    const message = "대화종료";
-
-    // 대화 종료 메시지를 화면에 추가
-    appendUserMessage(message);
-
-    // 임시로 userInput 값을 설정하고 handleGeneralChat 호출
-    const userInput = document.getElementById('userInput');
-    const originalValue = userInput.value; // 기존 값 저장
-
-    userInput.value = message; // userInput 값을 "대화종료"로 변경
-
-    // handleGeneralChat 호출 (이로써 "대화종료" 메시지가 API로 전송됨)
-    handleGeneralChat(true); // true 파라미터로 대화종료 모드 표시
-
-    // 원래 값으로 복원 (필요한 경우)
-    userInput.value = originalValue;
-
-    // 대화종료 버튼 숨기기
+    // 페이지에 있는 모든 대화종료 버튼 숨기기
     document.getElementById('finishChatBtn').style.display = 'none';
-
-    // 결과 표시 후 스크롤을 아래로 이동
-    scrollToBottom();
 }
 
 function handleJobPostings() {
@@ -390,29 +448,36 @@ function handleJobPostings() {
 }
 
 // handleGeneralChat 함수
-// 입력창 클리어 기능 추가
 function handleGeneralChat(isEndingChat = false) {
     const userInput = document.getElementById('userInput');
     if (userInput.disabled) return; // 이미 전송 중이면 실행 방지
     userInput.disabled = true; // 입력창 비활성화 (중복 입력 방지)
 
-    const message = isEndingChat ? "대화종료" : userInput.value.trim();
+    const message = userInput.value.trim();
 
-    // 메시지가 비어있고 대화종료가 아니면 함수 종료
-    if (!message && !isEndingChat) {
+    // 메시지가 비어있으면 함수 종료
+    if (!message) {
         userInput.disabled = false;
         return;
     }
 
-    if (!isEndingChat) {
-        appendUserMessage(message);
-        // 메시지 전송 즉시 입력창 초기화 (API 응답을 기다리지 않고)
-        userInput.value = '';
+    // 일반 대화 처리
+    appendUserMessage(message);
 
-        // 하소연하기 모드에서 첫 메시지 입력 시 대화종료 버튼 표시
-        if (feelChatStarted && !userHasSpoken) {
+    // 메시지 전송 즉시 입력창 초기화 (API 응답을 기다리지 않고)
+    userInput.value = '';
+
+    // 하소연하기 모드일 때 대화종료 버튼 표시
+    if (feelChatStarted) {
+        // 첫 메시지인 경우 상태 업데이트
+        if (!userHasSpoken) {
             userHasSpoken = true;
-            document.getElementById('finishChatBtn').style.display = 'block';
+        }
+
+        // "대화종료" 메시지가 아닌 경우에만 대화종료 버튼 추가
+        if (message !== "대화종료") {
+            // 대화종료 버튼 즉시 추가
+            addEndChatButton();
         }
     }
 
@@ -427,13 +492,8 @@ function handleGeneralChat(isEndingChat = false) {
         });
     }
 
-    // API 호출 일관성 확인
-    if (isEndingChat && conversationHistory.length > 0 &&
-        conversationHistory[conversationHistory.length - 1].content === "대화종료") {
-        // 이미 추가되어 있으면 다시 추가하지 않음
-    } else {
-        conversationHistory.push({ role: 'user', content: message });
-    }
+    // 사용자 메시지를 대화 기록에 추가
+    conversationHistory.push({ role: 'user', content: message });
 
     fetch('/chat/feelchat', {
         method: 'POST',
@@ -450,7 +510,7 @@ function handleGeneralChat(isEndingChat = false) {
             conversationHistory.push({ role: 'assistant', content: data.responseMessage });
 
             appendBotMessage(data.responseMessage); // 챗봇 응답 메시지 처리
-      
+
             // 응답 후 스크롤을 아래로 이동
             scrollToBottom();
         })
@@ -461,9 +521,9 @@ function handleGeneralChat(isEndingChat = false) {
             // 오류 메시지 후에도 스크롤을 아래로 이동
             scrollToBottom();
         })
-        .finally(error => {
+        .finally(() => {
             userInput.disabled = false;
-    });
+        });
 }
 
 // 페이지 로드 시 또는 창 크기 변경 시 스크롤을 아래로 이동
