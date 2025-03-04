@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Izikgram</title>
     <link th:href="@{/images/Logo.png}" rel="shortcut icon" type="image/x-icon">
+    <script src="https://code.jquery.com/jquery-3.6.4.js"></script>
     <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" th:href="@{/css/default.css}">
     <style type="text/tailwindcss">
@@ -83,6 +84,10 @@
                             text-white px-4 py-2 rounded-lg transition cursor-pointer"
                         th:attr="data-board=${board.board_id}"
                         th:onclick="|toggleLikeDislike(${board.board_id}, 'like')|">
+                        <input type="hidden" id="checkLike01" th:value="${isLike01}">
+                        <input type="hidden" id="checkDislike01" th:value="${isDislike01}">
+                        <input type="hidden" id="checkLike02" th:value="${isLike02}">
+                        <input type="hidden" id="checkDislike02" th:value="${isDislike02}">
                     <div id="thumbsUp">
                         <th:block th:if="${board_type==1}">
                             <img th:if="${isLike01}" src="https://img.icons8.com/?size=100&id=83166&format=png&color=000000" alt="like" class="w-4 h-4">
@@ -276,7 +281,6 @@
 </div>
 <footer th:replace="~{footer :: footer}" class="pt-4"></footer>
 </div>
-<script src="https://code.jquery.com/jquery-3.6.4.js"></script>
 <script th:src="@{/js/postDetail.js}"></script>
 <script th:src="@{/js/likeDisLike.js}"></script>
 </body>
