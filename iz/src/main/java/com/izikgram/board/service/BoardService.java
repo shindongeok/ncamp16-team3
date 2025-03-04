@@ -53,8 +53,6 @@ public class BoardService {
         return boardMapper.commentGetList02(board_id);
     }
 
-    //댁슬 카운트 조회
-
     // 작성글 삽입
     public void insertPost01(int board_type, String writer_id, String title, String content) {
         boardMapper.insertBoard01(writer_id,title, content, board_type);
@@ -89,8 +87,6 @@ public class BoardService {
             int like = boardMapper.countLikeByMember(boardId, memberId);
             int dislike = boardMapper.countDislikeByMember(boardId, memberId);
 
-            log.info("like: {}, dislike: {}", like, dislike);
-
             if (isLiked) {
                 // 좋아요를 요청한 경우
                 increaseLike(boardId, memberId, like, dislike);
@@ -107,8 +103,6 @@ public class BoardService {
         }else if (boardType == 2) {
             int like = boardMapper.countLikeByMember02(boardId, memberId);
             int dislike = boardMapper.countDislikeByMember02(boardId, memberId);
-
-            log.info("like: {}, dislike: {}", like, dislike);
 
             if (isLiked) {
                 // 좋아요를 요청한 경우
@@ -134,9 +128,6 @@ public class BoardService {
         List<BoardDto> issueBoardList01 = boardMapper.getPopularBoardListBoard1();
         List<BoardDto> issueBoardList02 = boardMapper.getPopularBoardListBoard2();
 
-        log.info("issueBoardList01 : {}", issueBoardList01);
-        log.info("issueBoardList02 : {}", issueBoardList02);
-
         for (BoardDto board : issueBoardList01) {
             // 읽음 여부 상관없이 인기게시글이면 (!true 값 반환) => 알림 안보냄
             if (!alarmService.hasPopularAlarm(board.getBoard_id())) {
@@ -157,7 +148,6 @@ public class BoardService {
 
     // 좋아요 증가
     private void increaseLike(int boardId, String memberId, int like, int dislike) {
-        log.info("좋아요 증가");
 
         if (like == 0 && dislike == 0) {
             // 선택한 적이 없는 경우
@@ -180,20 +170,17 @@ public class BoardService {
 
     // 좋아요를 눌렀을때 인기 테이블 반영
     private void checkAndInsertPopularBoard(int boardId) {
-        int likeCount = boardMapper.getLikeCount(boardId); // 현재 좋아요 개수 조회
-        boolean isPopular = boardMapper.isPopularBoard(boardId, 1); // 이미 인기 게시글인지 확인
+        int likeCount = boardMapper.getLikeCount(boardId);
+        boolean isPopular = boardMapper.isPopularBoard(boardId, 1);
 
         if (likeCount >= 5) {
-            if (!isPopular) { // 등록되지 않았다면 추가
+            if (!isPopular) {
                 boardMapper.insertPopularBoard(boardId, 1);
-                log.info("01게시글 {}이(가) 인기 게시판에 등록되었습니다!", boardId);
-            } else { // 이미 등록된 경우 업데이트
+            } else {
                 boardMapper.updatePopularBoard(boardId, 1, likeCount);
-                log.info("01게시글 {}의 인기 게시판 정보가 업데이트되었습니다!", boardId);
             }
-        } else if (likeCount <= 4) { // 좋아요 수가 4개 이하이면 인기 게시판에서 삭제
+        } else if (likeCount <= 4) {
             boardMapper.deletePopularBoard(boardId, 1);
-            log.info("01게시글 {}이(가) 인기 게시판에서 삭제되었습니다!", boardId);
         }
     }
 
@@ -214,7 +201,6 @@ public class BoardService {
 
     // 싫어요 증가
     private void increaseDisLike(int boardId, String memberId, int like, int dislike) {
-        log.info("싫어요 증가");
 
         if (like == 0 && dislike == 0) {
             // 선택한적이 없는 경우
@@ -238,24 +224,21 @@ public class BoardService {
 
     //싫어요 눌렀을 때 인기테이블 반영
     private void updatePopularBoardOnLikeDislikeChange01(int boardId) {
-        int likeCount = boardMapper.getLikeCount(boardId); // 좋아요 개수 조회
-        boolean isPopular = boardMapper.isPopularBoard(boardId, 1); // 인기 게시판에 있는지 확인
+        int likeCount = boardMapper.getLikeCount(boardId);
+        boolean isPopular = boardMapper.isPopularBoard(boardId, 1);
 
         if (likeCount >= 5 && isPopular) {
             // 좋아요가 5개 이상일 때 인기 게시판에 등록
             boardMapper.updatePopularBoard(boardId, 1,likeCount);
-            log.info("게시글 {}이(가) 인기 게시판에 등록되었습니다!", boardId);
         } else if (likeCount < 5 && isPopular) {
             // 좋아요가 5개 미만일 때 인기 게시판에서 삭제
             boardMapper.deletePopularBoard(boardId, 1);
-            log.info("게시글 {}이(가) 인기 게시판에서 삭제되었습니다!", boardId);
         }
     }
 
 
     // 좋아요 증가
     private void increaseLike02(int boardId, String memberId, int like, int dislike) {
-        log.info("좋아요 증가");
 
         if (like == 0 && dislike == 0) {
             // 선택한 적이 없는 경우
@@ -281,23 +264,20 @@ public class BoardService {
         boolean isPopular = boardMapper.isPopularBoard(boardId, 2);
 
         if (likeCount >= 5) {
-            if (!isPopular) { // 등록되지 않았다면 추가
+            if (!isPopular) {
                 boardMapper.insertPopularBoard(boardId, 2);
-                log.info("01게시글 {}이(가) 인기 게시판에 등록되었습니다!", boardId);
-            } else { // 이미 등록된 경우 업데이트
+            } else {
                 boardMapper.updatePopularBoard(boardId, 2, likeCount);
-                log.info("02게시글 {}의 인기 게시판 정보가 업데이트되었습니다!", boardId);
             }
-        } else if (likeCount <= 4 ) { // 좋아요 수가 4개 이하이면 인기 게시판에서 삭제
+        } else if (likeCount <= 4 ) {
             boardMapper.deletePopularBoard(boardId, 2);
-            log.info("02게시글 {}이(가) 인기 게시판에서 삭제되었습니다!", boardId);
         }
     }
 
 
     // 싫어요 증가
     private void increaseDisLike02(int boardId, String memberId, int like, int dislike) {
-        log.info("싫어요 증가");
+
 
         if (like == 0 && dislike == 0) {
             // 선택한적이 없는 경우
@@ -320,17 +300,15 @@ public class BoardService {
 
     //싫어요 눌렀을 때 인기테이블 반영
     private void updatePopularBoardOnLikeDislikeChange02(int boardId) {
-        int likeCount = boardMapper.getLikeCount02(boardId); // 좋아요 개수 조회
-        boolean isPopular = boardMapper.isPopularBoard(boardId, 2); // 인기 게시판에 있는지 확인
+        int likeCount = boardMapper.getLikeCount02(boardId);
+        boolean isPopular = boardMapper.isPopularBoard(boardId, 2);
 
         if (likeCount >= 5 && isPopular) {
             // 좋아요가 5개 이상일 때 인기게시판 업데이트
             boardMapper.updatePopularBoard(boardId, 2,likeCount);
-            log.info("게시글 {}이(가) 인기 게시판에 등록되었습니다!", boardId);
         } else if (likeCount < 5 && isPopular) {
             // 좋아요가 5개 미만일 때 인기 게시판에서 삭제
             boardMapper.deletePopularBoard(boardId, 2);
-            log.info("게시글 {}이(가) 인기 게시판에서 삭제되었습니다!", boardId);
         }
     }
 
@@ -355,7 +333,6 @@ public class BoardService {
         String content = "[" + board.getTitle()  + "] \n게시글에 댓글이 달렸습니다.";
         sseEmitterService.send(board.getWriter_id(), content);
         alarmService.save(board.getWriter_id(), board.getBoard_type(), board.getBoard_id(), content, AlarmType.valueOf("COMMENT"));
-        log.info(board.toString());
     }
     public void addComment02(int board_id, String writer_id, String comment){
         boardMapper.addComment02(board_id, writer_id, comment);
@@ -379,7 +356,6 @@ public class BoardService {
     // 게시판 1 댓글
     public boolean deleteComment01(int commentId, int boardId) {
         try {
-            log.info("쿼리 실행 전: commentId = {}, boardId = {}", commentId, boardId);
             boardMapper.deleteComment01(boardId, commentId);
             return true; // 삭제가 성공적으로 완료되면 true 반환
         } catch (Exception e) {
@@ -405,15 +381,11 @@ public class BoardService {
         List<BoardDto> issueBoardList01 = boardMapper.getPopularBoardListBoard1();
         List<BoardDto> issueBoardList02 = boardMapper.getPopularBoardListBoard2();
 
-        log.info("issueBoardList01:{}, issueBoardList02 {} ", issueBoardList01, issueBoardList02);
         map.put("issueBoardList01", issueBoardList01);
         map.put("issueBoardList02", issueBoardList02);
 
         return map;
     }
-
-
-
 
     //내가 작성한 게시글 5개 보여주기
     public Map<String, List<BoardDto>> getMyBoardList(String writer_id){
@@ -424,7 +396,6 @@ public class BoardService {
         myBoardList01 = (myBoardList01.size() > 5) ? myBoardList01.subList(0, 5) : myBoardList01;
         myBoardList02 = (myBoardList02.size() > 5) ? myBoardList02.subList(0, 5) : myBoardList02;
 
-        log.info("myBoardList01:{}, myBoardList02 {} ", myBoardList01, myBoardList02);
         map.put("myBoardList01", myBoardList01);
         map.put("myBoardList02", myBoardList02);
 
@@ -456,7 +427,7 @@ public class BoardService {
                     commentDto.getBoard_id(),
                     commentDto.getComment_id());
         } else {
-            return 0;  // 존재하지 않는 boardType일 경우 실패 처리
+            return 0;
         }
     }
 

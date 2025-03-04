@@ -45,7 +45,7 @@ public class  BoardController {
     @GetMapping("/postForm")
     public String postForm(@RequestParam("board_type")int board_type,
                            Model model){
-        log.info("boardType : {}",board_type);
+
         if (board_type != 1 && board_type != 2) {
             model.addAttribute("error", "유효하지 않은 게시판 타입입니다.");
             return "redirect:/board/" + board_type;
@@ -173,8 +173,6 @@ public class  BoardController {
         List<BoardDto> issueBoardList01 = issueBoardList.get("issueBoardList01");
         List<BoardDto> issueBoardList02 = issueBoardList.get("issueBoardList02");
 
-        log.info("issueBoardList01: {}", issueBoardList01);
-        log.info("issueBoardList02: {}", issueBoardList02);
         model.addAttribute("issueBoardList01",issueBoardList01);
         model.addAttribute("issueBoardList02",issueBoardList02);
 
