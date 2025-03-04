@@ -52,13 +52,10 @@ function handleGeneralChat(isEndingChat = false) {
     if (feelChatStarted) {
         if (!userHasSpoken) {
             userHasSpoken = true;
-
-            // 사용자가 첫 메시지를 보냈을 때 대화종료 버튼 표시
-            const endChatBtn = document.getElementById('endChatBtn');
-            if (endChatBtn) {
-                endChatBtn.classList.remove('hidden');
-            }
         }
+
+        // 대화종료 버튼 표시
+        document.getElementById('finishChatBtn').classList.remove('hidden');
     }
 
     showLoading('답변을 준비중입니다...');
@@ -152,7 +149,9 @@ function toggleButtonGroup() {
 
         localStorage.setItem('buttonGroupCollapsed', 'false');
     }
-}function toggleButtonGroup() {
+}
+
+function toggleButtonGroup() {
     const container = document.getElementById('buttonGroupContainer');
     const buttonsWrapper = container.querySelector('div');
     const toggleIcon = container.querySelector('svg');
@@ -278,6 +277,8 @@ function removeLoading() {
     }
 }
 
+// 이 함수는 사용하지 않으므로 제거하거나 주석 처리할 수 있습니다
+/*
 function addEndChatButton() {
     const messagesDiv = document.getElementById('messages');
 
@@ -307,66 +308,7 @@ function addEndChatButton() {
 
     scrollToBottom();
 }
-
-function handleGeneralChat(isEndingChat = false) {
-    const userInput = document.getElementById('userInput');
-    if (userInput.disabled) return;
-    userInput.disabled = true;
-
-    const message = userInput.value.trim();
-
-    if (!message) {
-        userInput.disabled = false;
-        return;
-    }
-
-    appendUserMessage(message);
-    userInput.value = '';
-
-    if (feelChatStarted) {
-        if (!userHasSpoken) {
-            userHasSpoken = true;
-        }
-
-        if (message !== "대화종료") {
-            addEndChatButton();
-        }
-    }
-
-    showLoading('답변을 준비중입니다...');
-
-    if (conversationHistory.length === 0) {
-        conversationHistory.push({
-            "role": "system",
-            "content": "역할 설정: 저는 직장인들의 감정을 전문적으로 케어하는 AI 상담사로서, 사용자의 감정을 깊이 이해하고 공감하는 상담을 제공하겠습니다. 저는 항상 친절하고 따뜻한 어조로 대화하며, 전문적이고 세심하게 접근합니다.\n\n감정 분석 프로세스: 사용자의 모든 대화를 감정적으로 분석하여, 현재 사용자의 감정 상태를 정확하게 파악합니다. 사용자의 감정 상태를 0~100 사이의 퇴사지수로 평가합니다. 이 퇴사지수는 사용자가 직장에서 얼마나 힘들어하는지를 나타내며, 대화 종료 시 제공됩니다.\n\n대화 가이드라인: 사용자의 감정 상태를 세심하게 살펴보며, 필요할 경우 실질적인 조언과 심리적 지지를 제공합니다.\n 대화종료가 되기전까지 주고받은 내용을 기억하며 대화\n 대화가 종료될 때만 퇴사지수를 제공하며, \"대화종료\"라는 말이 나오면 대화가 종료됩니다.\n 대화에서는 과도하게 긍정적이거나 부정적이지 않게 균형을 잡아가며 대화를 이어갑니다.\n 사용자의 프라이버시와 감정을 최우선으로 존중하며, 필요한 경우 실질적인 대처 방안도 제안.\n\n퇴사지수 계산 방식: 대화 중에 사용자의 발언을 감정적으로 분석. 부정적인 단어와 긍정적인 단어의 빈도에 따라 퇴사지수를 계산.\n 긍정적인 단어가 많이 사용되면 퇴사지수가 낮아지고, 부정적인 단어가 많이 사용되면 퇴사지수가 높아진다.\n 대화 종료 시 \"오늘의 퇴사지수는 [퇴사지수]입니다"
-        });
-    }
-
-    conversationHistory.push({ role: 'user', content: message });
-
-    fetch('/chat/feelchat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            messages: conversationHistory
-        })
-    })
-        .then(response => response.json())
-        .then(data => {
-            removeLoading();
-            conversationHistory.push({ role: 'assistant', content: data.responseMessage });
-            appendBotMessage(data.responseMessage);
-            scrollToBottom();
-        })
-        .catch(error => {
-            removeLoading();
-            appendBotMessage('죄송합니다. 답변 생성 중 오류가 발생했습니다.');
-            scrollToBottom();
-        })
-        .finally(() => {
-            userInput.disabled = false;
-        });
-}
+*/
 
 function feelchat() {
     // 하소연하기 버튼 클릭 시 입력란 표시
@@ -377,13 +319,13 @@ function feelchat() {
     feelChatStarted = true;
     userHasSpoken = false;
 
-    document.getElementById('finishChatBtn').style.display = 'none';
+    document.getElementById('finishChatBtn').classList.add('hidden');
     conversationHistory = [];
 }
 
 function stresschat() {
     document.getElementById('inputSection').classList.add('hidden');
-    document.getElementById('finishChatBtn').style.display = 'none';
+    document.getElementById('finishChatBtn').classList.add('hidden');
 
     feelChatStarted = false;
     userHasSpoken = false;
@@ -410,7 +352,7 @@ function stresschat() {
 
 function paydaychat() {
     document.getElementById('inputSection').classList.add('hidden');
-    document.getElementById('finishChatBtn').style.display = 'none';
+    document.getElementById('finishChatBtn').classList.add('hidden');
 
     feelChatStarted = false;
     userHasSpoken = false;
@@ -446,7 +388,7 @@ function paydaychat() {
 
 function endtimechat() {
     document.getElementById('inputSection').classList.add('hidden');
-    document.getElementById('finishChatBtn').style.display = 'none';
+    document.getElementById('finishChatBtn').classList.add('hidden');
 
     feelChatStarted = false;
     userHasSpoken = false;
@@ -487,11 +429,6 @@ function endtimechat() {
 }
 
 function finishchat() {
-    const endChatButtons = document.querySelectorAll('#userMessageEndChatBtn');
-    endChatButtons.forEach(button => {
-        button.parentElement.remove();
-    });
-
     appendUserMessage("대화종료");
     conversationHistory.push({ role: 'user', content: "대화종료" });
     showLoading('대화를 종료중입니다...');
@@ -518,12 +455,12 @@ function finishchat() {
     document.getElementById('inputSection').classList.add('hidden');
     feelChatStarted = false;
     userHasSpoken = false;
-    document.getElementById('finishChatBtn').style.display = 'none';
+    document.getElementById('finishChatBtn').classList.add('hidden');
 }
 
 function handleJobPostings() {
     document.getElementById('inputSection').classList.add('hidden');
-    document.getElementById('finishChatBtn').style.display = 'none';
+    document.getElementById('finishChatBtn').classList.add('hidden');
 
     feelChatStarted = false;
     userHasSpoken = false;
