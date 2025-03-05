@@ -94,7 +94,7 @@ function toggleComment(button) {
         moreButton.textContent = '닫기';
     } else {
         textarea.classList.add('overflow-hidden');
-        textarea.style.height = '4rem';
+        textarea.style.height = '2rem';
         moreButton.textContent = '더보기';
     }
 }
@@ -123,7 +123,7 @@ function saveComment() {
         type: 'POST',
         data: {
             comment_content: content,
-            comment_height: commentHeight,  // 댓글 높이 정보 추가
+            comment_height: commentHeight,
             board_type: boardType
         },
         success: function(response) {
@@ -136,7 +136,7 @@ function saveComment() {
                     </div>
                     <div class="flex justify-between items-start relative mt-2">
                         <div class="comment-content w-full" style="height: ${response.comment_height}px;">
-                            <textarea class="comment-input focus:outline-none p-2 text-sm font-black w-full resize-none overflow-hidden" readonly>${response.comment_content}</textarea>
+                            <textarea class="comment-input focus:outline-none p-2 text-sm font-black w-full resize-none overflow-hidden h-8" readonly>${response.comment_content}</textarea>
                             <button type="button" class="text-blue-500 hover:text-blue-600 cursor-pointer" id="moreBtn" onclick="toggleComment(this)">
                                 더보기
                             </button>
@@ -159,8 +159,8 @@ function saveComment() {
 
                 $('.comment-list').prepend(newComment);
 
-                $('#commentContent').val('');  // 입력된 내용 초기화
-                $('#commentContent').css('height', '48px');  // 텍스트박스 높이 초기화
+                $('#commentContent').val('');
+                $('#commentContent').css('height', '48px');
             } else {
                 alert('댓글 등록 실패!');
             }
