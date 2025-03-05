@@ -258,6 +258,8 @@ function CloseUpdateModal() {
 function editComment(event) {
     const button = event.target;
     const commentDiv = button.closest('.idBoard');
+    const moreButton = commentDiv.querySelector('#moreBtn'); // 해당 댓글 내의 moreBtn 찾기
+
 
     if (!commentDiv) {
         console.error('댓글 요소를 찾을 수 없습니다.');
@@ -282,16 +284,19 @@ function editComment(event) {
     inputField.style.borderTop = "none";
     inputField.style.borderLeft = "none";
     inputField.style.borderRight = "none";
-
     inputField.style.overflow = 'hidden';
+
+    moreButton.textContent = '닫기'; // 더보기 버튼을 "닫기"로 변경
 
     setTimeout(() => {
         inputField.focus();
         const length = inputField.value.length;
         inputField.setSelectionRange(length, length);
+        moreButton.textContent = '닫기';
     }, 10);
 
     button.innerText = '저장';
+
 
     function adjustHeight() {
         inputField.style.height = '40px';
@@ -335,6 +340,11 @@ function editComment(event) {
                     button.innerText = '수정';
                     button.onclick = editComment;
 
+                    // 수정이 완료되면 다시 '더보기'로 변경
+                    if (moreButton.textContent === '닫기') {
+                        toggleComment(moreButton);
+                    }
+
                     inputField.removeEventListener('keydown', handleEnterKey);
 
                     OpenDupdateModal("댓글이 수정됐습니다.");
@@ -358,3 +368,5 @@ function editComment(event) {
     inputField.addEventListener('keydown', handleEnterKey);
     button.onclick = saveEditedComment;
 }
+
+
