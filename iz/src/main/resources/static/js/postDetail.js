@@ -293,15 +293,13 @@ function editComment(event) {
 
     button.innerText = '저장';
 
-    // 텍스트 영역 높이 동적으로 조정
     function adjustHeight() {
-        inputField.style.height = 'auto';
+        inputField.style.height = '40px';
         inputField.style.height = inputField.scrollHeight + 'px';
     }
 
     adjustHeight();
 
-    // 입력할 때마다 높이 조정
     inputField.addEventListener('input', adjustHeight);
 
     function saveEditedComment() {
@@ -352,8 +350,8 @@ function editComment(event) {
 
     function handleEnterKey(event) {
         if (event.key === 'Enter' && !event.shiftKey) {
-            event.preventDefault(); // 기본 동작(줄 바꿈) 방지
-            saveEditedComment(); // 댓글 저장
+            event.preventDefault();
+            saveEditedComment();
         }
     }
 
