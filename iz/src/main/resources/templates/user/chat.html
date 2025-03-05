@@ -26,6 +26,10 @@
                 text-align: center;
                 padding-left: 16px;
             }
+
+            #homeLink {
+                margin-bottom: 2em;
+            }
         }
 
         /* Hide scrollbar while maintaining functionality */
@@ -42,11 +46,13 @@
 </head>
 <body class="h-screen overflow-hidden">
 <div class="mx-auto h-screen w-full relative overflow-hidden md:w-[600px] md:shadow-md bg-white">
-    <div class="fixed top-0 z-50 w-full bg-white md:w-[600px] md:left-1/2 md:-translate-x-1/2">
-        <header th:replace="~{header :: header}" class="pt-4"></header>
-    </div>
+<!--    <div class="fixed top-0 z-50 w-full bg-white md:w-[600px] md:left-1/2 md:-translate-x-1/2">-->
+<!--        <header th:replace="~{header :: header}" class="pt-4"></header>-->
+<!--    </div>-->
+    <div class="pt-20"><header th:replace="~{header :: header}" class="pt-4"></header></div>
 
-    <div class="pt-20 flex flex-col h-screen overflow-hidden px-5">
+
+    <div id="chatContainer" class="flex flex-col h-11/12 overflow-hidden px-5">
         <div class="flex-1 flex flex-col bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-5">
             <div id="messages" class="flex-1 overflow-y-auto px-4 pb-8 space-y-2 scrollbar-hide">
                 <div id="buttonGroupContainer" class="sticky top-0 z-10 bg-white border-b border-gray-100 pt-2 transition-all duration-300 overflow-hidden max-h-[200px]">
@@ -108,7 +114,7 @@
                 </div>
             </div>
         </div>
-        <div class="flex justify-center mb-5 px-2">
+        <div id="homeLink" class="flex justify-center mb-5 px-2">
             <a href="/main" class="flex items-center justify-center text-gray-600 py-2 px-4 text-sm transition-colors hover:underline">
                 홈으로 돌아가기
             </a>

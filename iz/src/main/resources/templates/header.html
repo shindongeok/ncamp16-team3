@@ -110,13 +110,17 @@
 
                 // 푸터(챗봇 아이콘) z-index 복원
                 let chatbotIcon = document.querySelector('.fixed.bottom-5.right-5, #chatbotIcon');
-                if (chatbotIcon) {
-                    chatbotIcon.style.zIndex = '50';
-                }
+                // if (chatbotIcon) {
+                //     chatbotIcon.style.zIndex = '50';
+                // }
 
                 setTimeout(function() {
                     target.style.display = 'none';
                 }, 300); // 트랜지션 시간 후에 display none 설정
+
+                setTimeout(function() {
+                    chatbotIcon.style.zIndex = '50';
+                }, 300);
             }
 
             function openTop() {
@@ -125,6 +129,12 @@
 
                 document.getElementById("slidePanel").classList.remove("hidden");
                 document.body.style.overflow = "hidden";
+
+                // 채팅쪽 버튼그룹 z-index 낮추기
+                let chatButtonGroup = document.getElementById("buttonGroupContainer");
+                if (chatButtonGroup) {
+                    chatButtonGroup.style.zIndex = '1';
+                }
 
                 // 푸터(챗봇 아이콘) z-index 낮추기
                 let chatbotIcon = document.querySelector('.fixed.bottom-5.right-5, #chatbotIcon');
