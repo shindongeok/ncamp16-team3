@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body, html {
+            overscroll-behavior-y: contain;
+            overflow: hidden;
+        }
+        @keyframes popIn {
+            0% { transform: scale(0.5) rotate(20deg); opacity: 0; }
+            80% { transform: scale(1.1) rotate(-10deg); opacity: 1; }
+            100% { transform: scale(1) rotate(0deg); }
+        }
+        .winner-popup {
+            animation: popIn 0.7s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
+        }
+        @media screen and (max-width: 599px) {
+            .mobile-container {
+                width: 100%;
+                background: white;
+                min-height: 100vh;
+            }
+
+            canvas {
+                width: 90%;
+                height: 90%;
+            }
+
+            #dolimPopup {
+                min-width: 17em;
+                font-size: 1.2em;
+                line-height: 0;
+                padding: 1.5em;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body class="mobile-container bg-[#f7f8fc] min-h-screen flex justify-center items-center">
+<div id="initialSetup" class="w-full max-w-md p-8 bg-white rounded-xl shadow-2xl">
+    <h2 class="text-2xl font-bold mb-6 text-center">룰렛 메뉴 설정</h2>
+    <div id="menuInputs" class="space-y-4">
+        <div class="flex items-center space-x-2">
+            <input type="text" class="menu-input flex-grow px-4 py-2 border rounded-md" placeholder="메뉴 1">
+            <button onclick="addMenuInput()" class="bg-green-500 text-white px-4 py-2 rounded-md">+</button>
+            <button onclick="removeMenuInput()" class="bg-red-500 text-white px-4 py-2 rounded-md">-</button>
+        </div>
+    </div>
+    <button onclick="startRoulette()" class="w-full mt-6 bg-[#febf00] text-white py-3 rounded-full hover:bg-yellow-600 transition">
+        룰렛 시작
+    </button>
+</div>
+
+<div id="rouletteContainer" class="hidden mobile-container w-full max-w-4xl relative">
+    <!-- 디버그 정보 -->
+    <div id="debugInfo" class="absolute top-0 left-0 bg-white p-2 z-50 text-xs"></div>
+
+    <!-- 승자 팝업 -->
+    <div id="winnerPopup" class="fixed z-50 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 hidden"></div>
+
+    <!-- 룰렛 캔버스 -->
+    <canvas width="600" height="600" class="mx-auto mt-[20px] transition-all"></canvas>
+
+    <!-- 화살표 -->
+    <svg id="arrow" viewBox="0 0 100 100" class="absolute top-[5px] left-1/2 transform -translate-x-1/2 w-16 h-16 z-10" style="fill: red;">
+        <path d="M50 90 L30 30 L70 30 Z" />
+    </svg>
+
+    <!-- 버튼 컨테이너 -->
+    <div id="buttonContainer" class="flex justify-center items-center space-x-4 mt-4">
+        <button id="rotateButton" onclick="rotate()" class="bg-[#febf00] py-3 px-10 text-2xl font-semibold rounded-full text-[#fff] hover:bg-[#444] hover:text-[#f9f9f9] transition duration-300 transform hover:scale-105">
+            돌려돌려 돌림판
+        </button>
+    </div>
+</div>
+
+<script>
+    const initialSetup = document.getElementById('initialSetup');
+    const rouletteContainer = document.getElementById('rouletteContainer');
+    const menuInputs = document.getElementById('menuInputs');
+    const $c = document.querySelector("canvas");
+    const ctx = $c.getContext(`2d`);
+    const rotateButton = document.querySelector('#rotateButton');
+    const winnerPopup = document.querySelector('#winnerPopup');
+    const debugInfo = document.getElementById('debugInfo');
+
+    let product = [];
+    const colors = ['#87CEEB', '#4682B4', '#5FA8D3']; // 하늘색 계열
+    let isRotating = false;
+    let currentRotation = 0;
+
+    function addMenuInput() {
+        if (menuInputs.children.length < 12) {
+            const newInputDiv = document.createElement('div');
+            newInputDiv.classList.add('flex', 'items-center', 'space-x-2');
+            newInputDiv.innerHTML = `
+                <input type="text" class="menu-input flex-grow px-4 py-2 border rounded-md" placeholder="메뉴 ${menuInputs.children.length + 1}">
+            `;
+            menuInputs.appendChild(newInputDiv);
+        }
+    }
+
+    function removeMenuInput() {
+        if (menuInputs.children.length > 1) {
+            menuInputs.removeChild(menuInputs.lastChild);
+        }
+    }
+
+    function startRoulette() {
+        // 메뉴 입력 검증
+        const inputs = document.querySelectorAll('.menu-input');
+        product = Array.from(inputs)
+            .map(input => input.value.trim())
+            .filter(value => value !== '');
+
+        if (product.length < 2) {
+            alert('최소 2개의 메뉴를 입력해주세요!');
+            return;
+        }
+
+        // 초기 설정 화면 숨기고 룰렛 화면 표시
+        initialSetup.classList.add('hidden');
+        rouletteContainer.classList.remove('hidden');
+
+        // 룰렛 그리기
+        newMake();
+    }
+
+    // 룰렛 그리기 함수
+    const newMake = () => {
+        const [cw, ch] = [$c.width / 2, $c.height / 2];
+        const arc = (2 * Math.PI) / product.length;
+
+        for (let i = 0; i < product.length; i++) {
+            ctx.beginPath();
+            ctx.fillStyle = colors[i % colors.length];
+            ctx.moveTo(cw, ch);
+            ctx.arc(cw, ch, cw - 2, arc * i - Math.PI / 2, arc * (i + 1) - Math.PI / 2);
+            ctx.fill();
+            ctx.closePath();
+        }
+
+        ctx.strokeStyle = "#000";
+        ctx.lineWidth = 1;
+
+        ctx.fillStyle = "#000";
+        ctx.font = "1.8rem Pretendard";
+        ctx.textAlign = "center";
+
+        for (let i = 0; i < product.length; i++) {
+            const angle = arc * i + arc / 2 - Math.PI / 2;
+
+            ctx.save();
+
+            ctx.translate(
+                cw + Math.cos(angle) * (cw - 50),
+                ch + Math.sin(angle) * (ch - 50)
+            );
+
+            ctx.rotate(angle + Math.PI / 2);
+
+            product[i].split(" ").forEach((text, j) => {
+                ctx.fillText(text, 0, 30 * j);
+            });
+
+            ctx.restore();
+        }
+
+        ctx.fillStyle = "#000";
+        ctx.beginPath();
+        ctx.moveTo(cw, ch);
+        ctx.arc(cw, ch, 3, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.closePath();
+    };
+
+    const rotate = () => {
+        if (isRotating) return;
+        isRotating = true;
+        $c.style.transform = `initial`;
+        $c.style.transition = `initial`;
+        rotateButton.classList.add('hidden');
+
+        // 당첨 메뉴 표시
+        setTimeout(() => {
+            // 세그먼트 각도 계산
+            const ran = Math.floor(Math.random() * product.length);
+
+            // 화살표 위치(0도)에 해당하는 인덱스 계산
+            const arc = 360 / product.length;
+            const rotate = (360 - arc * (ran + 1) + 3600) + (arc / 3);
+
+            $c.style.transform = `rotate(${rotate}deg)`;
+            $c.style.transition = `2s`;
+
+            setTimeout(() =>
+                    winnerPopup.innerHTML = `
+            <div id="dolimPopup" class="bg-[#febf00] text-white text-3xl font-bold px-8 py-6 rounded-2xl winner-popup shadow-2xl">
+                🎉 "${product[ran]}" 당첨!
+            </div>
+            `
+                , 2000);
+
+            // 버튼 다시 표시
+            const rerotateButton = document.createElement('button');
+            rerotateButton.textContent = '다시 설정하기';
+            rerotateButton.className = 'bg-[#febf00] py-3 px-10 text-2xl font-semibold rounded-full text-[#fff] hover:bg-[#444] hover:text-[#f9f9f9] transition duration-300 transform hover:scale-105 mt-4';
+            rerotateButton.onclick = () => {
+                // 룰렛 설정 화면으로 돌아가기
+                rouletteContainer.classList.add('hidden');
+                initialSetup.classList.remove('hidden');
+
+                // 초기화
+                $c.style.transform = 'rotate(0deg)';
+                currentRotation = 0;
+                winnerPopup.classList.add('hidden');
+                isRotating = false;
+                document.querySelector('#buttonContainer').removeChild(rerotateButton);
+                rotateButton.classList.remove('hidden');
+                debugInfo.innerHTML = '';
+            };
+            document.querySelector('#buttonContainer').appendChild(rerotateButton);
+
+            winnerPopup.classList.remove('hidden');
+            // 4초 후 팝업 제거
+            setTimeout(() => {
+                winnerPopup.classList.add('hidden');
+            }, 4000);
+
+            winnerPopup.innerHTML="";
+            isRotating = false;
+        }, 1);
+    };
+</script>
+</body>
+</html>

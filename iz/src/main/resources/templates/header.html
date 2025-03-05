@@ -56,7 +56,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                         </svg>
                     </a>
-                    <div id="post1-links" class="mt-2 overflow-hidden max-h-0 transition-all duration-300 ease-in-out">
+                    <div id="post1-links" class="overflow-hidden max-h-0 transition-all duration-300 ease-in-out">
                         <a th:href="@{/board/1}" class="flex items-center p-2 text-gray-700 hover:bg-gray-200 rounded">
                             <span class="ml-8 text-l">자유게시판</span>
                         </a>
@@ -82,16 +82,32 @@
                     <span class="ml-4 text-l">채용공고 바로가기</span>
                 </a>
 
-                <a th:href="@{/draw/draw}" class="flex items-center p-2 text-gray-700 hover:bg-gray-200 rounded">
-                    <img src="https://img.icons8.com/?size=100&id=568&format=png&color=9C9C9C" class="w-7 h-7"/>
+                <div class="post" id="post2">
+                    <a class="flex items-center mt-[-8] p-2 text-gray-700 hover:bg-gray-200 rounded" onclick="toggleLinks('post2')">
+                        <img src="https://img.icons8.com/?size=100&id=7317&format=png&color=9C9C9C" class="w-7 h-7"/>
+                        <span class="ml-4 text-l">미니게임</span>
+                        <svg class="w-4 h-4 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </a>
+                    <div id="post2-links" class="overflow-hidden max-h-0 transition-all duration-300 ease-in-out">
+
+
+                        <a th:href="@{/draw/draw}" class="flex items-center p-2 text-gray-700 hover:bg-gray-200 rounded">
                     <span class="ml-4 text-l">제비뽑기</span>
                 </a>
-
-
+                <a th:href="@{/draw/roulette}" class="flex items-center p-2 text-gray-700 hover:bg-gray-200 rounded">
+                    <span class="ml-4 text-l">룰렛 돌리기</span>
+                </a>
+                </div>
+            </div>
                 <a th:href="@{/logout}" class="flex items-center p-2 text-red-600 hover:bg-red-100 rounded">
                     <img src="https://img.icons8.com/?size=100&id=59781&format=png&color=9C9C9C" class="w-7 h-7"/>
                     <span class="ml-4 text-l">로그아웃</span>
                 </a>
+
+
+
             </nav>
         </div>
 

@@ -84,4 +84,9 @@ public class DrawController {
 
         return "draw";
     }
+
+    @GetMapping("/roulette")
+    public String roulette(){
+        return "roulette";
+    }
 }
