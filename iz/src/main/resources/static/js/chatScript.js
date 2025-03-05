@@ -317,6 +317,7 @@ function addEndChatButton() {
 
 function feelchat() {
     // 하소연하기 버튼 클릭 시 입력란 표시
+    document.getElementById("hasoSection").classList.add('hidden');
     document.getElementById('inputSection').classList.remove('hidden');
     document.getElementById("userInput").focus();
     appendUserMessage("하소연하기");
@@ -458,6 +459,7 @@ function finishchat() {
             scrollToBottom();
         });
 
+    document.getElementById("hasoSection").classList.remove('hidden');
     document.getElementById('inputSection').classList.add('hidden');
     feelChatStarted = false;
     userHasSpoken = false;
