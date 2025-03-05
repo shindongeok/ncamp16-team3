@@ -110,6 +110,11 @@ function saveComment() {
 
     if (!content.trim()) {
         OpenDupdateModal("댓글을 입력하세요.");
+
+        setTimeout(function() {
+            document.getElementById("commentContent").focus();
+        }, 500);
+
         return;
     }
 
