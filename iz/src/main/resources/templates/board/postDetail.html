@@ -142,7 +142,7 @@
 
             <!-- 댓글 목록 -->
             <div class="comment-list mt-6 space-y-4">
-                <div th:each="commentList : ${comment}" class="idBoard p-4 border rounded-lg bg-gray-50">
+                <div th:each="commentList : ${comment}" class="idBoard p-4 border rounded-lg bg-gray-50 relative">
                     <div class="flex justify-between text-gray-600 text-sm font-semibold">
                         <span th:text="${commentList.nickname}">익명01</span>
                         <span class="reg_date" th:data-reg-date="${commentList.reg_date}">2025-02-24</span> <!-- 날짜 추가 -->
@@ -158,18 +158,20 @@
                                 더보기
                             </button>
                         </div>
-                        <div class="space-x-2 w-40 text-right" th:if="${member_id == commentList.writer_id}">
-                            <button id="dd" type="button" onclick="editComment(event)" class="text-blue-500 hover:text-blue-600 cursor-pointer">
-                                수정
-                            </button>
-                            <input type="hidden" id="commentId" class="comment-id" th:value="${commentList.comment_id}"/>
-                            <input type="hidden" id="boardIde" class="board-id" th:value="${commentList.board_id}"/>
-                            <input type="hidden" id="boardTypeD" class="board-type" th:value="${board_type}"/>
-                            <input type="hidden" id="writerId" class="writer-id" th:value="${commentList.writer_id}"/>
-                            <button type="button" class="text-red-500 hover:text-red-600 cursor-pointer" onclick="OpenDeleteModal(this)">
-                                삭제
-                            </button>
-                        </div>
+                    </div>
+
+                    <!-- 수정, 삭제 버튼 고정 -->
+                    <div class="absolute top-16 right-2 space-x-2 w-40 text-right" th:if="${member_id == commentList.writer_id}">
+                        <button id="dd" type="button" onclick="editComment(event)" class="text-blue-500 hover:text-blue-600 cursor-pointer">
+                            수정
+                        </button>
+                        <input type="hidden" id="commentId" class="comment-id" th:value="${commentList.comment_id}"/>
+                        <input type="hidden" id="boardIde" class="board-id" th:value="${commentList.board_id}"/>
+                        <input type="hidden" id="boardTypeD" class="board-type" th:value="${board_type}"/>
+                        <input type="hidden" id="writerId" class="writer-id" th:value="${commentList.writer_id}"/>
+                        <button type="button" class="text-red-500 hover:text-red-600 cursor-pointer" onclick="OpenDeleteModal(this)">
+                            삭제
+                        </button>
                     </div>
                 </div>
             </div>
