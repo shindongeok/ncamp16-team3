@@ -90,6 +90,7 @@ function handleGeneralChat(isEndingChat = false) {
         })
         .finally(() => {
             userInput.disabled = false;
+            userInput.focus();
         });
 }
 
@@ -231,13 +232,17 @@ function appendUserMessage(text) {
 
 function appendBotMessage(text) {
     const messagesDiv = document.getElementById('messages');
+    const imageContainer = document.createElement('div');
+    imageContainer.classList.add('w-10', 'h-10', 'bg-[#00a3ed]', 'rounded-full', 'flex', 'items-center', 'justify-center', 'text-white', 'text-sm', 'mr-3', 'shadow-sm');
+    imageContainer.innerHTML = "<img src=\"/images/chat.png\" class=\"w-8\"/>";
     const messageContainer = document.createElement('div');
     messageContainer.classList.add('flex', 'justify-start', 'items-start', 'mb-2');
 
     const botMessageDiv = document.createElement('div');
-    botMessageDiv.classList.add('bg-gray-100', 'text-black', 'px-3', 'py-2', 'rounded-lg', 'max-w-[80%]', 'break-words', 'text-sm');
+    botMessageDiv.classList.add('bg-gray-100', 'text-black', 'px-3', 'py-2', 'rounded-lg', 'max-w-[70%]', 'break-words', 'text-sm');
     botMessageDiv.innerHTML = text.replace(/\n/g, '<br>');
 
+    messageContainer.appendChild(imageContainer);
     messageContainer.appendChild(botMessageDiv);
     messagesDiv.appendChild(messageContainer);
 
@@ -313,6 +318,7 @@ function addEndChatButton() {
 function feelchat() {
     // 하소연하기 버튼 클릭 시 입력란 표시
     document.getElementById('inputSection').classList.remove('hidden');
+    document.getElementById("userInput").focus();
     appendUserMessage("하소연하기");
     appendBotMessage(`안녕하세요. 오늘 하루 어떠셨나요? 말씀해주신 내용을 바탕으로 함께 해결책을 찾아보겠습니다.`);
 
