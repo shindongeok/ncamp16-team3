@@ -261,6 +261,7 @@ public class UserController {
         return "user/chat";
     }
 
+
     private final JobService jobService;
 
     @PostMapping("/analyze/recommend-jobs")
