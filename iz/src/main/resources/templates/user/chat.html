@@ -21,6 +21,13 @@
             --color-bold-text: oklch(0.208 0.042 265.755);
         }
 
+        @media screen and (max-width: 599px) {
+            #gongGo {
+                text-align: center;
+                padding-left: 16px;
+            }
+        }
+
         /* Hide scrollbar while maintaining functionality */
         .scrollbar-hide {
             -ms-overflow-style: none;  /* IE and Edge */
@@ -51,19 +58,19 @@
 
                     <div class="transition-all duration-300 opacity-100 transform translate-y-0">
                         <div class="flex flex-wrap gap-3 mb-2">
-                            <button onclick="stresschat()" class="bg-gray-100 text-black py-3 px-4 rounded-lg text-left text-sm cursor-pointer flex-auto min-w-fit">
+                            <button onclick="stresschat()" class="bg-gray-100 text-black py-3 px-4 rounded-lg text-center text-sm cursor-pointer flex-auto min-w-fit">
                                 오늘의 퇴사 수치
                             </button>
-                            <button onclick="feelchat()" class="bg-gray-100 text-black py-3 px-4 rounded-lg text-left text-sm cursor-pointer flex-auto min-w-fit">
-                                하소연하기
-                            </button>
-                            <button onclick="paydaychat()" class="bg-gray-100 text-black py-3 px-4 rounded-lg text-left text-sm cursor-pointer flex-auto min-w-fit">
+<!--                            <button onclick="feelchat()" class="bg-gray-100 text-black py-3 px-4 rounded-lg text-left text-sm cursor-pointer flex-auto min-w-fit">-->
+<!--                                하소연하기-->
+<!--                            </button>-->
+                            <button onclick="paydaychat()" class="bg-gray-100 text-black py-3 px-4 rounded-lg text-center text-sm cursor-pointer flex-auto min-w-fit">
                                 월급일까지 남은 일수
                             </button>
-                            <button onclick="endtimechat()" class="bg-gray-100 text-black py-3 px-4 rounded-lg text-left text-sm cursor-pointer flex-auto min-w-fit">
+                            <button onclick="endtimechat()" class="bg-gray-100 text-black py-3 px-4 rounded-lg text-center text-sm cursor-pointer flex-auto min-w-fit">
                                 남은 퇴근시간
                             </button>
-                            <button onclick="handleJobPostings()" class="bg-gray-100 text-black py-3 px-4 rounded-lg text-left text-sm cursor-pointer flex-auto min-w-fit">
+                            <button id="gongGo" onclick="handleJobPostings()" class="bg-gray-100 text-black py-3 px-4 pl-9 rounded-lg text-left text-sm cursor-pointer flex-auto min-w-fit">
                                 맞춤형 이직 공고 보기
                             </button>
                         </div>
@@ -83,6 +90,11 @@
                 </div>
             </div>
 
+            <div id="hasoSection" class="text-center border-t border-gray-100 p-4 bg-white">
+                <button onclick="feelchat()" class="bg-main-sky-basic text-black py-3 px-4 rounded-lg text-center text-sm cursor-pointer flex-auto min-w-fit w-full">
+                    하소연하기
+                </button>
+            </div>
             <div id="inputSection" class="border-t border-gray-100 p-4 bg-white hidden">
                 <div class="flex items-center gap-2">
                     <input id="userInput" type="text" class="flex-grow p-2 border border-gray-300 rounded-lg"
@@ -90,8 +102,8 @@
                     <button onclick="handleGeneralChat()" class="bg-main-sky-highlight text-white p-2 rounded-lg flex items-center justify-center w-10 h-10 hover:bg-main-sky-hover transition-colors cursor-pointer">
                         <img src="https://img.icons8.com/?size=100&id=7874&format=png&color=FFFFFF">
                     </button>
-                    <button id="finishChatBtn" onclick="finishchat()" class="bg-main-red-highlight text-white p-2 rounded-lg flex items-center justify-center px-3 h-10 hover:bg-main-red-basic transition-colors cursor-pointer text-sm hidden">
-                        대화종료
+                    <button id="finishChatBtn" onclick="finishchat()" class="bg-main-red-highlight text-white p-2 rounded-lg flex items-center justify-center w-10 h-10 hover:bg-main-sky-hover transition-colors cursor-pointer hidden">
+                        <img src="https://img.icons8.com/?size=24&id=71200&format=png&color=FFFFFF">
                     </button>
                 </div>
             </div>
