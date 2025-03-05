@@ -37,7 +37,7 @@
 
             <div class="h-full mt-5">
                 <!-- 자유 게시판 -->
-                <div class="rounded-lg pb-4 w-auto">
+                <div class="w-auto">
                     <div class="flex justify-between items-center border-b border-gray-300">
                         <h2 class="text-2xl font-semibold mb-3">자유 게시판</h2>
                     </div>
@@ -48,18 +48,19 @@
                 </div>
 
                 <!-- 게시글 리스트 -->
-                <div th:each="issueList01, iterStat : ${issueBoardList01}" class="bg-gray-100 rounded-lg mb-4 p-4">
+                <div th:each="issueList01, iterStat : ${issueBoardList01}" class="mb-4 p-4 border-gray-200">
                     <div class="flex flex-col">
-                        <div class="flex border-b border-gray-200 pb-1">
+                        <div class="flex border-b border-gray-300 p-4 cursor-pointer hover:bg-gray-50"
+                             th:onclick="'location.href=\'' + @{/board/{board_type}/{board_id}(board_type=${issueList01.board_type},
+                                           board_id=${issueList01.board_id})} + '\''">
                             <div class="flex-1 pr-6">
-                                <div class="flex items-center gap-2"> <!-- flex로 수평 배치, gap으로 간격 조정 -->
+                                <div class="flex items-center gap-2">
                                     <img th:src="@{${iterStat.index == 0 ? 'https://img.icons8.com/?size=100&id=33486&format=png&color=000000' :
                                     iterStat.index == 1 ? 'https://img.icons8.com/?size=100&id=23876&format=png&color=000000' :
                                     'https://img.icons8.com/?size=100&id=23875&format=png&color=000000'}}" class="w-10 h-10" alt="순위">
                                     <a class="hover:text-main-sky-highlight inline-block w-40 truncate no-underline
-                                           hover:no-underline text-xl"
-                                       th:href="@{/board/{board_type}/{board_id}(board_type=${issueList01.board_type},
-                                           board_id=${issueList01.board_id})}" th:text="${issueList01.title}" >인기글1 제목입니다.</a>
+                                        hover:no-underline text-xl"
+                                       th:text="${issueList01.title}" >인기글1 제목입니다.</a>
                                 </div>
                                 <p class="mb-1 text-sm ml-12 w-40 truncate" th:text="${issueList01.content}">게시글 내용</p>
                                 <span class="text-xs ml-12 reg_date" th:data-reg-date="${issueList01.reg_date}">2025-02-21</span>
@@ -90,7 +91,7 @@
             </div>
 
             <!-- 하소연 게시판 -->
-            <div class="rounded-lg pb-4 mt-5 w-auto">
+            <div class="mt-5 w-auto">
                 <div class="flex justify-between items-center border-b border-gray-300">
                     <h2 class="text-2xl font-semibold mb-3">하소연 게시판</h2>
                 </div>
@@ -101,18 +102,18 @@
             </div>
 
             <!-- 게시글 리스트 -->
-            <div th:each="issueList02,iterStat : ${issueBoardList02}" class="bg-gray-100 rounded-lg mb-4 p-4">
+            <div th:each="issueList02,iterStat : ${issueBoardList02}">
                 <div class="flex flex-col">
-                    <div class="flex border-b border-gray-200 pb-1">
+                    <div class="flex border-b border-gray-300 p-4 cursor-pointer hover:bg-gray-50"
+                         th:onclick="'location.href=\'' + @{/board/{board_type}/{board_id}(board_type=${issueList02.board_type},
+                                       board_id=${issueList02.board_id})} + '\''">
                         <div class="flex-1 pr-6">
-                            <div class="flex items-center gap-2"> <!-- flex로 수평 배치, gap으로 간격 조정 -->
+                            <div class="flex items-center gap-2">
                                 <img th:src="@{${iterStat.index == 0 ? 'https://img.icons8.com/?size=100&id=33486&format=png&color=000000' :
                                     iterStat.index == 1 ? 'https://img.icons8.com/?size=100&id=23876&format=png&color=000000' :
                                     'https://img.icons8.com/?size=100&id=23875&format=png&color=000000'}}" class="w-10 h-10" alt="순위">
                                 <a class="hover:text-main-sky-highlight inline-block w-40 truncate no-underline
-                                       hover:no-underline text-xl"
-                                   th:href="@{/board/{board_type}/{board_id}(board_type=${issueList02.board_type},
-                                       board_id=${issueList02.board_id})}" th:text="${issueList02.title}" >인기글1 제목입니다.</a>
+                                       hover:no-underline text-xl" th:text="${issueList02.title}" >인기글1 제목입니다.</a>
                             </div>
                             <p class="mb-1 text-sm ml-12 w-40 truncate" th:text="${issueList02.content}">게시글 내용</p>
                             <span class="text-xs ml-12 reg_date" th:data-reg-date="${issueList02.reg_date}">2025-02-21</span>

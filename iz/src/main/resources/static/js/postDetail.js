@@ -72,7 +72,7 @@ $(document).ready(function() {
 //댓글 입력할때 높이 조절
 function autoResize(textarea) {
     // 텍스트 내용에 맞춰서 높이를 자동으로 변경
-    textarea.style.height = 'auto';
+    textarea.style.height = '48px';
     textarea.style.height = (textarea.scrollHeight) + 'px';
 }
 
@@ -129,16 +129,15 @@ function saveComment() {
                         <span>${response.nickname}</span>
                         <span class="reg_date" data-reg-date="${response.reg_date}">방금 전</span>
                     </div>
-                    <div class="flex justify-between items-center mt-2">
+                    <div class="flex justify-between items-start relative mt-2">
                         <div class="comment-content w-full" style="height: ${response.comment_height}px;">
                             <textarea class="comment-input focus:outline-none p-2 text-sm font-black w-full resize-none overflow-hidden" readonly>${response.comment_content}</textarea>
-                            <!-- 더보기 버튼 -->
-                        <button type="button" class="text-blue-500 hover:text-blue-600 cursor-pointer" id="moreBtn" onclick="toggleComment(this)">
-                            더보기
-                        </button>
+                            <button type="button" class="text-blue-500 hover:text-blue-600 cursor-pointer" id="moreBtn" onclick="toggleComment(this)">
+                                더보기
+                            </button>
                         </div>
-
-                        <div class="space-x-2 w-40 text-right">
+                    
+                        <div class="w-40 text-right">
                             <button type="button" onclick="editComment(event)" class="text-blue-500 hover:text-blue-600 cursor-pointer">
                                 수정
                             </button>
@@ -146,17 +145,17 @@ function saveComment() {
                             <input type="hidden" id="boardIde" class="board-id" value="${boardId}"/>
                             <input type="hidden" id="boardTypeD" class="board-type" value="${boardType}"/>
                             <input type="hidden" id="writerId" class="writer-id" value="${response.writer_id}"/>
-                            <button type="button" onclick="OpenDeleteModal(this)" class="text-red-500 hover:text-red-600 cursor-pointer">삭제</button>
+                            <button type="button" onclick="OpenDeleteModal(this)" class="text-red-500 hover:text-red-600 cursor-pointer">
+                                삭제
+                            </button>
                         </div>
                     </div>
                 </div>`;
 
-                // 댓글 목록의 최상단에 새 댓글 추가
                 $('.comment-list').prepend(newComment);
 
-                // 입력창 초기화
                 $('#commentContent').val('');  // 입력된 내용 초기화
-                $('#commentContent').css('height', 'auto');  // 텍스트박스 높이 초기화
+                $('#commentContent').css('height', '48px');  // 텍스트박스 높이 초기화
             } else {
                 alert('댓글 등록 실패!');
             }

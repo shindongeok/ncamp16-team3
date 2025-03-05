@@ -130,15 +130,15 @@
                 <input type="hidden" id="boardIdd" th:value="${board.board_id}">
                 <input type="hidden" id="commentBoardType" th:value="${board.board_type}">
                 <textarea id="commentContent" placeholder="댓글을 입력해주세요."
-                          class="h-20 flex-grow border border-gray-300 rounded-md p-3 focus:ring-2 focus:ring-blue-400 outline-none resize-none overflow-hidden buttonSpan"
+                          class="flex-grow border border-gray-300 rounded-md p-3 focus:ring-2 focus:ring-blue-400
+                                outline-none resize-none overflow-hidden buttonSpan h-12"
                           onkeydown="checkEnter(event)" oninput="autoResize(this)"></textarea>
 
                 <button type="button" onclick="saveComment()" class="px-4 py-3 bg-main-sky-highlight hover:bg-main-sky-basic
-                text-white rounded-lg transition whitespace-nowrap cursor-pointer buttonSpan">
+                text-white rounded-lg transition whitespace-nowrap cursor-pointer buttonSpan h-12">
                     댓글 등록
                 </button>
             </div>
-
 
             <!-- 댓글 목록 -->
             <div class="comment-list mt-6 space-y-4">
