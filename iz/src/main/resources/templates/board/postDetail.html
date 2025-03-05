@@ -55,203 +55,201 @@
     </style>
 </head>
 <body>
-    <div class=" flex flex-col w-full mobile-container relative bg-white rounded-lg  mx-auto">
-        <div class="pt-20"><header th:replace="~{header :: header} " class="pt-4"></header></div>
-        <div class="bg-white rounded-xl pb-8 pl-8 pr-8">
-            <header class="text-2xl font-semibold border-b pb-4" th:text="${board_name}">게시글 상세보기</header>
+<div class=" flex flex-col w-full mobile-container relative bg-white rounded-lg  mx-auto">
+    <div class="pt-20"><header th:replace="~{header :: header} " class="pt-4"></header></div>
+    <div class="bg-white rounded-xl pb-8 pl-8 pr-8">
+        <header class="text-2xl font-semibold border-b pb-4" th:text="${board_name}">게시글 상세보기</header>
 
-            <div class="mt-6">
-                <h2 class="text-3xl font-bold text-gray-900 truncate" th:text="${board.title}">게시글 제목</h2>
-            </div>
-            <div class="text-gray-500 text-sm mt-2 reg_date" th:data-reg-date="${board.reg_date}">2025-02-24</div>
-            <div class="mt-6 border border-gray-200 p-6 rounded-lg bg-gray-50 md:h-100 h-60">
-                <p id="contentText" class="text-gray-800 leading-relaxed overflow-auto md:h-90 h-50" th:utext="${board.content}"></p>
-            </div>
+        <div class="mt-6">
+            <h2 class="text-3xl font-bold text-gray-900 truncate" th:text="${board.title}">게시글 제목</h2>
+        </div>
+        <div class="text-gray-500 text-sm mt-2 reg_date" th:data-reg-date="${board.reg_date}">2025-02-24</div>
+        <div class="mt-6 border border-gray-200 p-6 rounded-lg bg-gray-50 md:h-100 h-60">
+            <p id="contentText" class="text-gray-800 leading-relaxed overflow-auto md:h-90 h-50" th:utext="${board.content}"></p>
+        </div>
 
-            <div class="flex justify-between items-center mt-6">
-                <!-- 좋아요 / 싫어요 버튼 -->
-                <div class="flex space-x-2">
-                    <input id="boardType" type="hidden" th:value="${board_type}" />
-                    <input id="boardId" type="hidden" th:value="${board.board_id}" />
-                    <button id="like" class="w-31 mr-1 likeBtn flex items-center space-x-2 bg-main-sky-highlight hover:bg-main-sky-basic
+        <div class="flex justify-between items-center mt-6">
+            <!-- 좋아요 / 싫어요 버튼 -->
+            <div class="flex space-x-2">
+                <input id="boardType" type="hidden" th:value="${board_type}" />
+                <input id="boardId" type="hidden" th:value="${board.board_id}" />
+                <button id="like" class="w-31 mr-1 likeBtn flex items-center space-x-2 bg-main-sky-highlight hover:bg-main-sky-basic
                                 text-white px-4 py-2 rounded-lg transition cursor-pointer"
-                            th:attr="data-board=${board.board_id}"
-                            th:onclick="|toggleLikeDislike(${board.board_id}, 'like')|">
-                            <input type="hidden" id="checkLike01" th:value="${isLike01}">
-                            <input type="hidden" id="checkDislike01" th:value="${isDislike01}">
-                            <input type="hidden" id="checkLike02" th:value="${isLike02}">
-                            <input type="hidden" id="checkDislike02" th:value="${isDislike02}">
-                        <div id="thumbsUp">
-                            <th:block th:if="${board_type==1}">
-                                <img th:if="${isLike01}" src="https://img.icons8.com/?size=100&id=83166&format=png&color=000000" alt="coloredLike" class="w-4 h-4">
-                                <img th:if="${!isLike01}" src="https://img.icons8.com/?size=100&id=82788&format=png&color=000000" alt="holeLike" class="w-4 h-4">
-                            </th:block>
-                            <th:block th:if="${board_type==2}">
-                                <img th:if="${isLike02}" src="https://img.icons8.com/?size=100&id=83166&format=png&color=000000" alt="coloredLike" class="w-4 h-4">
-                                <img th:if="${!isLike02}" src="https://img.icons8.com/?size=100&id=82788&format=png&color=000000" alt="holeLike" class="w-4 h-4">
-                            </th:block>
-                        </div>
-                        <span class="buttonSpan">이직해</span> <span class="font-bold buttonSpan" th:id="likeCount" th:text="${board.like_count}">0</span>
-                    </button>
-                    <button id="dislike" class="w-31 unlikeBtn flex items-center space-x-2 bg-main-sky-highlight hover:bg-main-sky-basic
+                        th:attr="data-board=${board.board_id}"
+                        th:onclick="|toggleLikeDislike(${board.board_id}, 'like')|">
+                    <input type="hidden" id="checkLike01" th:value="${isLike01}">
+                    <input type="hidden" id="checkDislike01" th:value="${isDislike01}">
+                    <input type="hidden" id="checkLike02" th:value="${isLike02}">
+                    <input type="hidden" id="checkDislike02" th:value="${isDislike02}">
+                    <div id="thumbsUp">
+                        <th:block th:if="${board_type==1}">
+                            <img th:if="${isLike01}" src="https://img.icons8.com/?size=100&id=83166&format=png&color=000000" alt="coloredLike" class="w-4 h-4">
+                            <img th:if="${!isLike01}" src="https://img.icons8.com/?size=100&id=82788&format=png&color=000000" alt="holeLike" class="w-4 h-4">
+                        </th:block>
+                        <th:block th:if="${board_type==2}">
+                            <img th:if="${isLike02}" src="https://img.icons8.com/?size=100&id=83166&format=png&color=000000" alt="coloredLike" class="w-4 h-4">
+                            <img th:if="${!isLike02}" src="https://img.icons8.com/?size=100&id=82788&format=png&color=000000" alt="holeLike" class="w-4 h-4">
+                        </th:block>
+                    </div>
+                    <span class="buttonSpan">이직해</span> <span class="font-bold buttonSpan" th:id="likeCount" th:text="${board.like_count}">0</span>
+                </button>
+                <button id="dislike" class="w-31 unlikeBtn flex items-center space-x-2 bg-main-sky-highlight hover:bg-main-sky-basic
                                 text-white px-4 py-2 rounded-lg transition cursor-pointer"
-                            th:attr="data-board=${board.board_id}"
-                            th:onclick="|toggleLikeDislike(${board.board_id}, 'dislike')|">
-                        <div id="thumbsDown">
-                            <th:block th:if="${board_type==1}">
-                                <img th:if="${isDislike01}" src="https://img.icons8.com/?size=100&id=83166&format=png&color=000000" alt="coloredDislike" class="w-4 h-4 rotate-180 inline-block transform">
-                                <img th:if="${!isDislike01}" src="https://img.icons8.com/?size=100&id=82788&format=png&color=000000" alt="holeDislike" class="w-4 h-4 rotate-180 inline-block transform">
-                            </th:block>
-                            <th:block th:if="${board_type==2}">
-                                <img th:if="${isDislike02}" src="https://img.icons8.com/?size=100&id=83166&format=png&color=000000" alt="coloredDislike" class="w-4 h-4 rotate-180 inline-block transform">
-                                <img th:if="${!isDislike02}" src="https://img.icons8.com/?size=100&id=82788&format=png&color=000000" alt="holeDislike" class="w-4 h-4 rotate-180 inline-block transform">
-                            </th:block>
-                        </div>
-                        <span class="buttonSpan">존버해</span> <span class="font-bold buttonSpan" th:id="dislikeCount" th:text="${board.dislike_count}">0</span>
-                    </button>
-                </div>
-
-                <!-- 게시글 수정 / 삭제 버튼 -->
-                <div class="flex space-x-2" th:if="${member_id == board.writer_id}">
-                    <a class="px-3 py-2 mr-1 bg-main-sky-highlight hover:bg-main-sky-basic text-white
-                           rounded-lg transition cursor-pointer buttonSpan"
-                       th:href="@{/board/update/{board_type}/{board_id}(board_type=${board_type}, board_id=${board_id})}">
-                        수정
-                    </a>
-                    <a onclick="OpenDeleteModalBoard()" class="px-3 py-2 bg-main-red-highlight hover:bg-main-red-basic text-white rounded-lg
-                           transition cursor-pointer buttonSpan">
-                        삭제
-                    </a>
-                </div>
-            </div>
-
-            <!-- 댓글 입력 -->
-            <div class="mt-8 flex space-x-2">
-                <input type="hidden" id="boardIdd" th:value="${board.board_id}">
-                <input type="hidden" id="commentBoardType" th:value="${board.board_type}">
-                <textarea id="commentContent" placeholder="댓글을 입력해주세요."
-                          class="flex-grow border border-gray-300 rounded-md p-3 focus:ring-2 focus:ring-blue-400
-                                outline-none resize-none overflow-hidden buttonSpan h-12"
-                          onkeydown="checkEnter(event)" oninput="autoResize(this)"></textarea>
-
-                <button type="button" onclick="saveComment()" class="px-4 py-3 bg-main-sky-highlight hover:bg-main-sky-basic
-                text-white rounded-lg transition whitespace-nowrap cursor-pointer buttonSpan h-12">
-                    댓글 등록
+                        th:attr="data-board=${board.board_id}"
+                        th:onclick="|toggleLikeDislike(${board.board_id}, 'dislike')|">
+                    <div id="thumbsDown">
+                        <th:block th:if="${board_type==1}">
+                            <img th:if="${isDislike01}" src="https://img.icons8.com/?size=100&id=83166&format=png&color=000000" alt="coloredDislike" class="w-4 h-4 rotate-180 inline-block transform">
+                            <img th:if="${!isDislike01}" src="https://img.icons8.com/?size=100&id=82788&format=png&color=000000" alt="holeDislike" class="w-4 h-4 rotate-180 inline-block transform">
+                        </th:block>
+                        <th:block th:if="${board_type==2}">
+                            <img th:if="${isDislike02}" src="https://img.icons8.com/?size=100&id=83166&format=png&color=000000" alt="coloredDislike" class="w-4 h-4 rotate-180 inline-block transform">
+                            <img th:if="${!isDislike02}" src="https://img.icons8.com/?size=100&id=82788&format=png&color=000000" alt="holeDislike" class="w-4 h-4 rotate-180 inline-block transform">
+                        </th:block>
+                    </div>
+                    <span class="buttonSpan">존버해</span> <span class="font-bold buttonSpan" th:id="dislikeCount" th:text="${board.dislike_count}">0</span>
                 </button>
             </div>
 
-            <!-- 댓글 목록 -->
-            <div class="comment-list mt-6 space-y-4">
-                <div th:each="commentList : ${comment}" class="idBoard p-4 border rounded-lg bg-gray-50 relative">
-                    <div class="flex justify-between text-gray-600 text-sm font-semibold">
-                        <span th:text="${commentList.nickname}">익명01</span>
-                        <span class="reg_date" th:data-reg-date="${commentList.reg_date}">2025-02-24</span> <!-- 날짜 추가 -->
-                    </div>
-                    <div class="flex justify-between items-center mt-2">
-                        <div class="comment-content w-full">
-                            <!-- 텍스트 영역에 댓글 내용 표시 -->
+            <!-- 게시글 수정 / 삭제 버튼 -->
+            <div class="flex space-x-2" th:if="${member_id == board.writer_id}">
+                <a class="px-3 py-2 mr-1 bg-main-sky-highlight hover:bg-main-sky-basic text-white
+                           rounded-lg transition cursor-pointer buttonSpan"
+                   th:href="@{/board/update/{board_type}/{board_id}(board_type=${board_type}, board_id=${board_id})}">
+                    수정
+                </a>
+                <a onclick="OpenDeleteModalBoard()" class="px-3 py-2 bg-main-red-highlight hover:bg-main-red-basic text-white rounded-lg
+                           transition cursor-pointer buttonSpan">
+                    삭제
+                </a>
+            </div>
+        </div>
+
+        <!-- 댓글 입력 -->
+        <div class="mt-8 flex space-x-2">
+            <input type="hidden" id="boardIdd" th:value="${board.board_id}">
+            <input type="hidden" id="commentBoardType" th:value="${board.board_type}">
+            <textarea id="commentContent" placeholder="댓글을 입력해주세요."
+                      class="flex-grow border border-gray-300 rounded-md p-3 focus:ring-2 focus:ring-blue-400
+                                outline-none resize-none overflow-hidden buttonSpan h-12"
+                      onkeydown="checkEnter(event)" oninput="autoResize(this)"></textarea>
+
+            <button type="button" onclick="saveComment()" class="px-4 py-3 bg-main-sky-highlight hover:bg-main-sky-basic
+                text-white rounded-lg transition whitespace-nowrap cursor-pointer buttonSpan h-12">
+                댓글 등록
+            </button>
+        </div>
+
+        <!-- 댓글 목록 -->
+        <div class="comment-list mt-6 space-y-4">
+            <div th:each="commentList : ${comment}" class="idBoard p-4 border rounded-lg bg-gray-50 relative">
+                <div class="flex justify-between text-gray-600 text-sm font-semibold">
+                    <span th:text="${commentList.nickname}">익명01</span>
+                    <span class="reg_date" th:data-reg-date="${commentList.reg_date}">2025-02-24</span> <!-- 날짜 추가 -->
+                </div>
+                <div class="flex justify-between items-start relative mt-2">
+                    <div class="comment-content w-full">
                             <textarea id="inpuu" class="comment-input focus:outline-none p-2 text-sm font-black w-full resize-none overflow-hidden"
                                       th:text="${commentList.comment_content}" readonly></textarea>
 
-                            <!-- 더보기 버튼 -->
-                            <button type="button" class="text-blue-500 hover:text-blue-600 cursor-pointer" id="moreBtn" onclick="toggleComment(this)">
-                                더보기
+                        <button type="button" class="text-blue-500 hover:text-blue-600 cursor-pointer" id="moreBtn" onclick="toggleComment(this)">
+                            더보기
+                        </button>
+                    </div>
+                    <div class="w-40 text-right">
+                        <div th:if="${member_id == commentList.writer_id}">
+                            <button id="dd" type="button" onclick="editComment(event)" class="text-blue-500 hover:text-blue-600 cursor-pointer">
+                                수정
+                            </button>
+                            <input type="hidden" id="commentId" class="comment-id" th:value="${commentList.comment_id}"/>
+                            <input type="hidden" id="boardIde" class="board-id" th:value="${commentList.board_id}"/>
+                            <input type="hidden" id="boardTypeD" class="board-type" th:value="${board_type}"/>
+                            <input type="hidden" id="writerId" class="writer-id" th:value="${commentList.writer_id}"/>
+                            <button type="button" class="text-red-500 hover:text-red-600 cursor-pointer" onclick="OpenDeleteModal(this)">
+                                삭제
                             </button>
                         </div>
                     </div>
-
-                    <!-- 수정, 삭제 버튼 고정 -->
-                    <div class="absolute top-16 right-2 space-x-2 w-40 text-right" th:if="${member_id == commentList.writer_id}">
-                        <button id="dd" type="button" onclick="editComment(event)" class="text-blue-500 hover:text-blue-600 cursor-pointer">
-                            수정
-                        </button>
-                        <input type="hidden" id="commentId" class="comment-id" th:value="${commentList.comment_id}"/>
-                        <input type="hidden" id="boardIde" class="board-id" th:value="${commentList.board_id}"/>
-                        <input type="hidden" id="boardTypeD" class="board-type" th:value="${board_type}"/>
-                        <input type="hidden" id="writerId" class="writer-id" th:value="${commentList.writer_id}"/>
-                        <button type="button" class="text-red-500 hover:text-red-600 cursor-pointer" onclick="OpenDeleteModal(this)">
-                            삭제
-                        </button>
-                    </div>
                 </div>
             </div>
+        </div>
 
-            <div id="listDiv" class="mt-8 flex">
-                <a id="listButton" th:href="@{/board/{board_type}(board_type=${board_type})}" class="px-6 py-3 bg-main-sky-highlight hover:bg-main-sky-basic text-white rounded-lg transition cursor-pointer">
-                    목록으로
-                </a>
-            </div>
+        <div id="listDiv" class="mt-8 flex">
+            <a id="listButton" th:href="@{/board/{board_type}(board_type=${board_type})}" class="px-6 py-3 bg-main-sky-highlight hover:bg-main-sky-basic text-white rounded-lg transition cursor-pointer">
+                목록으로
+            </a>
+        </div>
 
-            <!-- 게시글 삭제 모달 -->
-            <div id="boardDeleteModal" class="relative z-10 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-                <div class="fixed inset-0 bg-gray-500/75 transition-opacity"></div>
-                <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
-                    <div class="flex min-h-full items-center justify-center p-4">
-                        <div class="relative transform overflow-hidden rounded-lg bg-white shadow-xl transition-all sm:max-w-md w-full">
-                            <div class="bg-main-sky-highlight p-5 border-b">
-                                <h3 class="text-xl font-semibold text-gray-900 text-center">삭제하시겠습니까?</h3>
-                            </div>
-                            <form id="deleteForm" method="POST" th:action="@{/board/delete/{board_type}/{board_id}(board_type=${board_type}, board_id=${board_id})}">
-                                <div class="p-6">
-                                    <p class="text-center text-gray-600 mb-6">이 게시글을 삭제하면 복구할 수 없습니다.</p>
-                                    <input type="hidden" name="board_id" id="board_id" th:value="${board_id}">
-                                    <input type="hidden" name="board_type" id="board_type" th:value="${board_type}">
-                                    <div class="flex justify-center space-x-4 mt-4">
-                                        <button type="button" onclick="CloseDeleteModalBoard()" class="inline-flex justify-center rounded-md bg-white px-5 py-2 text-sm font-semibold text-gray-900 ring-1 ring-gray-300 ring-inset hover:bg-gray-50">
-                                            취소
-                                        </button>
-                                        <button type="submit" id="deletedBoard" class="inline-flex justify-center rounded-md bg-main-sky-basic px-5 py-2 text-sm font-semibold text-white hover:bg-main-sky-highlight">
-                                            삭제
-                                        </button>
-                                    </div>
-                                </div>
-                            </form>
+        <!-- 게시글 삭제 모달 -->
+        <div id="boardDeleteModal" class="relative z-10 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+            <div class="fixed inset-0 bg-gray-500/75 transition-opacity"></div>
+            <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+                <div class="flex min-h-full items-center justify-center p-4">
+                    <div class="relative transform overflow-hidden rounded-lg bg-white shadow-xl transition-all sm:max-w-md w-full">
+                        <div class="bg-main-sky-highlight p-5 border-b">
+                            <h3 class="text-xl font-semibold text-gray-900 text-center">삭제하시겠습니까?</h3>
                         </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 댓글 삭제 모달창 -->
-            <div id="communityDeleteModal" class="relative z-10 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-                <div class="fixed inset-0 bg-gray-500/75 transition-opacity"></div>
-                <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
-                    <div class="flex min-h-full items-center justify-center p-4">
-                        <div class="relative transform overflow-hidden rounded-lg bg-white shadow-xl transition-all sm:max-w-md w-full">
-                            <div class="bg-main-sky-highlight p-5 border-b">
-                                <h3 class="text-xl font-semibold text-gray-900 text-center">삭제하시겠습니까?</h3>
-                            </div>
+                        <form id="deleteForm" method="POST" th:action="@{/board/delete/{board_type}/{board_id}(board_type=${board_type}, board_id=${board_id})}">
                             <div class="p-6">
-                                <p class="text-center text-gray-600 mb-6">이 댓글을 삭제하면 복구할 수 없습니다.</p>
+                                <p class="text-center text-gray-600 mb-6">이 게시글을 삭제하면 복구할 수 없습니다.</p>
+                                <input type="hidden" name="board_id" id="board_id" th:value="${board_id}">
+                                <input type="hidden" name="board_type" id="board_type" th:value="${board_type}">
                                 <div class="flex justify-center space-x-4 mt-4">
-                                    <button type="button" onclick="CloseDeleteModal()" class="inline-flex justify-center rounded-md bg-white px-5 py-2 text-sm font-semibold text-gray-900 ring-1 ring-gray-300 ring-inset hover:bg-gray-50">
+                                    <button type="button" onclick="CloseDeleteModalBoard()" class="inline-flex justify-center rounded-md bg-white px-5 py-2 text-sm font-semibold text-gray-900 ring-1 ring-gray-300 ring-inset hover:bg-gray-50">
                                         취소
                                     </button>
-                                    <button id="confirmDelete" onclick="deleteComment(this)"  class="inline-flex justify-center rounded-md bg-main-sky-basic px-5 py-2 text-sm font-semibold text-white hover:bg-main-sky-highlight">
+                                    <button type="submit" id="deletedBoard" class="inline-flex justify-center rounded-md bg-main-sky-basic px-5 py-2 text-sm font-semibold text-white hover:bg-main-sky-highlight">
                                         삭제
                                     </button>
                                 </div>
                             </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 댓글 삭제 모달창 -->
+        <div id="communityDeleteModal" class="relative z-10 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+            <div class="fixed inset-0 bg-gray-500/75 transition-opacity"></div>
+            <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+                <div class="flex min-h-full items-center justify-center p-4">
+                    <div class="relative transform overflow-hidden rounded-lg bg-white shadow-xl transition-all sm:max-w-md w-full">
+                        <div class="bg-main-sky-highlight p-5 border-b">
+                            <h3 class="text-xl font-semibold text-gray-900 text-center">삭제하시겠습니까?</h3>
+                        </div>
+                        <div class="p-6">
+                            <p class="text-center text-gray-600 mb-6">이 댓글을 삭제하면 복구할 수 없습니다.</p>
+                            <div class="flex justify-center space-x-4 mt-4">
+                                <button type="button" onclick="CloseDeleteModal()" class="inline-flex justify-center rounded-md bg-white px-5 py-2 text-sm font-semibold text-gray-900 ring-1 ring-gray-300 ring-inset hover:bg-gray-50">
+                                    취소
+                                </button>
+                                <button id="confirmDelete" onclick="deleteComment(this)"  class="inline-flex justify-center rounded-md bg-main-sky-basic px-5 py-2 text-sm font-semibold text-white hover:bg-main-sky-highlight">
+                                    삭제
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-
         </div>
 
-        <!-- 댓글 수정 모달창 -->
-        <div id="updateModal" class="relative z-10 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-            <div class="fixed inset-0 bg-gray-500/75 transition-opacity max-w-[600px] mx-auto left-0 right-0"></div>
-            <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
-                <div class="flex min-h-full items-center justify-center p-4 text-center">
-                    <div class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all max-w-sm w-full">
-                        <div class="bg-sky-100 p-6 flex items-center justify-center">
-                            <h3 id="alarmModalM" class="text-l font-semibold text-gray-800">수정됐습니다.</h3>
-                        </div>
+    </div>
+
+    <!-- 댓글 수정 모달창 -->
+    <div id="updateModal" class="relative z-10 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="fixed inset-0 bg-gray-500/75 transition-opacity max-w-[600px] mx-auto left-0 right-0"></div>
+        <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+            <div class="flex min-h-full items-center justify-center p-4 text-center">
+                <div class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all max-w-sm w-full">
+                    <div class="bg-sky-100 p-6 flex items-center justify-center">
+                        <h3 id="alarmModalM" class="text-l font-semibold text-gray-800">수정됐습니다.</h3>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 <footer th:replace="~{footer :: footer}" class="pt-4"></footer>
 
 <script th:src="@{/js/postDetail.js}"></script>
