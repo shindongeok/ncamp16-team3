@@ -30,13 +30,13 @@ public class  BoardController {
             @RequestParam(defaultValue = "newest") String sort,
             Model model) {
 
-        List<BoardDto> boardList = boardService.getBoardList(boardType,sort);
+//        List<BoardDto> boardList = boardService.getBoardList(boardType,sort);
         String board_name = boardService.findBoardName(boardType);
 
-        model.addAttribute("listBoard", boardList);
+//        model.addAttribute("listBoard", boardList);
         model.addAttribute("board_type", boardType);
         model.addAttribute("board_name", board_name);
-        model.addAttribute("sort"); // 정렬 정보도 전달
+//        model.addAttribute("sort"); // 정렬 정보도 전달
 
         return "board/community";
     }
