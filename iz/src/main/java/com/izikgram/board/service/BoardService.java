@@ -39,9 +39,9 @@ public class BoardService {
     }
 
     // 게시판 리스트조회
-    public List<BoardDto> getBoardList(int boardType, String sort) {
+    public List<BoardDto> getBoardList(int boardType, String sort, int limit, int offset) {
 
-        return boardMapper.getBoardList(boardType, sort);
+        return boardMapper.getBoardList(boardType, sort, limit, offset);
     }
 
     // 댓글리스트 조회

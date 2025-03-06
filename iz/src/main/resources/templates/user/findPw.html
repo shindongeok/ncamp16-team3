@@ -2,6 +2,10 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/font.css}">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Izikgram</title>
@@ -28,7 +32,7 @@
     <link rel="stylesheet" th:href="@{/css/default.css}">
     <link rel="stylesheet" th:href="@{/css/register.css}">
 </head>
-<body class="font-roboto mobile-container">
+<body class="nanum-gothic-regular mobile-container">
 <div class="flex flex-col justify-center px-6 lg:px-8">
     <div class="sm:mx-auto sm:w-full sm:max-w-sm mt-10 h-40">
         <a th:href="@{/}">
@@ -56,7 +60,7 @@
                     <div class="relative">
                         <input oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" maxlength="11" placeholder="01012345678" type="tel" name="phone_num" id="phone_num" required class="block w-full rounded-md bg-white px-3 py-1.5 text-lg text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-sky-500 sm:text-sm/6">
                         <div class="absolute bottom-1 right-1">
-                            <button id="sendSmsBtn" type="button" class="flex w-23 h-7 justify-center rounded-md bg-main-sky-highlight px-3 py-1.5 text-xs text-white shadow-xs hover:bg-sky-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-800">인증번호 받기</button>
+                            <button id="sendSmsBtn" type="button" class="flex w-25 h-7 justify-center rounded-md bg-main-sky-highlight px-3 py-1.5 text-xs text-white shadow-xs hover:bg-sky-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-800">인증번호 받기</button>
                         </div>
                     </div>
                 </div>
