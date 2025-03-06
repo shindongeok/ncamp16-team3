@@ -2,6 +2,10 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/font.css}">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Izikgram</title>
@@ -61,7 +65,7 @@
     <link rel="stylesheet" th:href="@{/css/default.css}">
     <link rel="stylesheet" th:href="@{/css/register.css}">
 </head>
-<body class="font-roboto mobile-container">
+<body class="nanum-gothic-regular mobile-container">
 <div class="flex flex-col justify-center px-6 lg:px-8">
     <div class="sm:mx-auto sm:w-full sm:max-w-sm mt-10 h-40">
         <a th:href="@{/}">
@@ -167,28 +171,28 @@
 
             <div id="timeDiv1" class="flex justify-between">
                 <div class="flex">
-                    <label id="paydayLabel" for="payday" class="text-s w-20 max-w-12 text-bold-text mr-4">월급날</label>
-                    <select id="payday" name="payday" class="w-22 max-h-5 rounded-md text-bold-text text-right outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-sky-500">
+                    <label id="paydayLabel" for="payday" class="text-s w-20 max-w-12 text-bold-text mr-5">월급날</label>
+                    <select id="payday" name="payday" class="mt-0.5 w-22 max-h-5 rounded-md text-bold-text text-right outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-sky-500">
                         <option th:each="i : ${#numbers.sequence(1, 31)}" th:value="${i}" th:text="${i + '일'}"></option>
                     </select>
                 </div>
                 <div class="flex">
-                    <label for="start_time" class="text-s w-15 text-bold-text ml-5">출근시간</label>
-                    <input type="text" name="start_time" id="start_time" th:value="${'09:00 AM'}" class="p-2 time_element w-22 h-5 rounded-md text-bold-text text-right outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-sky-500">
+                    <label for="start_time" class="text-s w-17 text-bold-text ml-2">출근시간</label>
+                    <input type="text" name="start_time" id="start_time" th:value="${'09:00 AM'}" class="mt-0.5 p-1 time_element w-22 h-5 rounded-md text-bold-text text-right outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-sky-500">
                 </div>
             </div>
 
             <div id="timeDiv2" class="flex relative">
                 <div id="timeDiv2_div" class="flex">
                     <div class="flex">
-                        <label id="end_time_label" for="end_time" class="text-s w-15 text-bold-text mr-1">퇴근시간</label>
-                        <input type="text" name="end_time" id="end_time" th:value="${'06:00 PM'}" class="p-2 time_element w-22 h-5 rounded-md text-bold-text text-right outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-sky-500">
+                        <label id="end_time_label" for="end_time" class="text-s w-17 text-bold-text">퇴근시간</label>
+                        <input type="text" name="end_time" id="end_time" th:value="${'06:00 PM'}" class="mt-0.5 p-1 time_element w-22 h-5 rounded-md text-bold-text text-right outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-sky-500">
                     </div>
                 </div>
-                <div id="lunch_time_div" class="flex absolute left-43">
+                <div id="lunch_time_div" class="flex absolute left-41">
                     <div class="flex">
-                        <label for="lunch_time" class="text-s w-15 text-bold-text">점심시간</label>
-                        <input type="text" name="lunch_time" id="lunch_time" th:value="${'12:00 PM'}" class="p-2 time_element w-22 h-5 rounded-md text-bold-text text-right outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-sky-500">
+                        <label for="lunch_time" class="text-s w-17 text-bold-text">점심시간</label>
+                        <input type="text" name="lunch_time" id="lunch_time" th:value="${'12:00 PM'}" class="mt-1 p-1 time_element w-22 h-5 rounded-md text-bold-text text-right outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-sky-500">
                     </div>
                 </div>
             </div>
@@ -222,7 +226,7 @@
             <div id="indEduDiv" class="flex justify-between">
                 <div id="indDiv" class="flex flex-col w-1/2 mr-5">
                     <label for="ind_cd" class="text-bold-text text-center">산업/업종</label>
-                    <select id="ind_cd" name="ind_cd" class="rounded-md text-bold-text text-center outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-sky-500">
+                    <select id="ind_cd" name="ind_cd" class="p-1 rounded-md text-bold-text text-center outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-sky-500">
                         <option value="1">서비스업</option>
                         <option value="2">제조.화학</option>
                         <option value="3">IT.웹.통신</option>
@@ -237,7 +241,7 @@
                 </div>
                 <div id="eduDiv" class="flex flex-col w-1/2">
                     <label for="edu_lv" class="text-bold-text text-center">학력</label>
-                    <select id="edu_lv" name="edu_lv" class="rounded-md text-bold-text text-center outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-sky-500">
+                    <select id="edu_lv" name="edu_lv" class="p-1 rounded-md text-bold-text text-center outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-sky-500">
                         <option value="0">학력무관</option>
                         <option value="6">고등학교졸업이상</option>
                         <option value="7">대학졸업(2,3년)이상</option>
