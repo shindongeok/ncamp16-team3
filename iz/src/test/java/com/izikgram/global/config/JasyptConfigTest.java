@@ -100,6 +100,21 @@ class JasyptConfigTest extends JasyptConfig {
         assertThat(clovaUrl).isEqualTo(jasyptDecrypt(encUrl));
     }
 
+    @Test
+    void naver_api() {
+        String apiKeyId = "";
+        String apiKey = "";
+
+        String encKeyId = jasyptEncrypt(apiKeyId);
+        String encKey = jasyptEncrypt(apiKey);
+
+        System.out.println("encApiKeyId: " + encKeyId);
+        System.out.println("encApiKey: " + encKey);
+
+        assertThat(apiKeyId).isEqualTo(jasyptDecrypt(encKeyId));
+        assertThat(apiKey).isEqualTo(jasyptDecrypt(encKey));
+    }
+
     private String jasyptEncrypt(String input) { // 암호화
         String key = "";
         StandardPBEStringEncryptor encryptor = new StandardPBEStringEncryptor();
