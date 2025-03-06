@@ -160,7 +160,7 @@ function saveComment() {
                 $('.comment-list').prepend(newComment);
 
                 $('#commentContent').val('');
-                $('#commentContent').css('height', '1.7erm');
+                $('#commentContent').css('height', '48px');
             } else {
                 alert('댓글 등록 실패!');
             }
@@ -299,7 +299,7 @@ function editComment(event) {
 
 
     function adjustHeight() {
-        inputField.style.height = '40px';
+        inputField.style.height = '1.7erm';
         inputField.style.height = inputField.scrollHeight + 'px';
     }
 
