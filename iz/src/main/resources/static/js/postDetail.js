@@ -160,7 +160,7 @@ function saveComment() {
                 $('.comment-list').prepend(newComment);
 
                 $('#commentContent').val('');
-                $('#commentContent').css('height', '48px');
+                $('#commentContent').css('height', '1.7erm');
             } else {
                 alert('댓글 등록 실패!');
             }
