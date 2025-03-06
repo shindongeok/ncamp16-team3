@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>주변 맛집</title>
+    <link th:href="@{/images/Logo.png}" rel="shortcut icon" type="image/x-icon">
+    <link rel="stylesheet" th:href="@{/css/default.css}">
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <style type="text/tailwindcss">
+        @theme {
+            --color-main-sky-highlight: #00a3ed;
+            --color-main-sky-basic: #9bdcfd;
+            --color-main-red-highlight: #ff5353;
+            --color-main-red-basic: #ff9898;
+            --color-main-yellow-highlight: #fbc159ff;
+            --color-main-yellow-basic: #fdd391;
+
+            /* gray-400*/
+            --color-light-text: oklch(0.704 0.04 256.788);
+            /* gray-600 */
+            --color-basic-text: oklch(0.446 0.043 257.281);
+            /* gray-900 */
+            --color-bold-text: oklch(0.208 0.042 265.755);
+        }
+    </style>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f0f0;
+        }
+        .restaurant-item {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            background-color: #fff;
+            transition: transform 0.3s ease;
+        }
+        .restaurant-item:hover {
+            transform: scale(1.02);
+        }
+        .restaurant-item h2 {
+            margin-top: 0;
+            color: #2c3e50;
+            font-size: 1.2em;
+        }
+        .restaurant-item p {
+            margin: 5px 0;
+            color: #555;
+        }
+        .restaurant-item .distance {
+            font-weight: bold;
+            color: #007bff;
+        }
+        .restaurant-item a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .restaurant-item a:hover {
+            text-decoration: underline;
+        }
+        .category-tag {
+            padding: 8px 15px;
+            border-radius: 20px;
+            background-color: #e9ecef;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9em;
+        }
+        .category-tag:hover {
+            background-color: #dee2e6;
+        }
+        .category-tag.active {
+            background-color: #007bff;
+            color: white;
+        }
+        .loading, .error, .empty-result {
+            text-align: center;
+            padding: 30px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            color: #666;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body class="mobile-container bg-[#f0f0f0]">
+<div sec:authorize="isAuthenticated()" class="flex flex-col w-full md:w-[600px] md:mx-auto md:shadow-md bg-white min-h-screen relative">
+    <div class="pt-20">
+        <header th:replace="~{header :: header}" class="pt-4"></header>
+    </div>
+
+    <div class="px-10 md:px-10 max-md:px-4">
+        <div class="text-[1.7rem] font-bold text-[#2C2C2C] mb-4">근처 맛집찾기</div>
+
+        <div class="search-options">
+            <div class="category-tags flex flex-wrap justify-center gap-2 mb-4">
+                <span class="category-tag active" data-category="전체">전체</span>
+                <span class="category-tag" data-category="한식">한식</span>
+                <span class="category-tag" data-category="중식">중식</span>
+                <span class="category-tag" data-category="일식">일식</span>
+                <span class="category-tag" data-category="양식">양식</span>
+                <span class="category-tag" data-category="카페">카페</span>
+                <span class="category-tag" data-category="분식">분식</span>
+                <span class="category-tag" data-category="베이커리">베이커리</span>
+                <span class="category-tag" data-category="햄버거">햄버거</span>
+                <span class="category-tag" data-category="베트남음식">베트남음식</span>
+                <span class="category-tag" data-category="치킨">치킨</span>
+                <span class="category-tag" data-category="피자">피자</span>
+            </div>
+        </div>
+
+        <div id="resultCount" class="text-center font-bold text-gray-700 mb-3"></div>
+
+        <div id="restaurantList">
+            <p class="loading">위치 정보를 가져오는 중...</p>
+        </div>
+    </div>
+
+    <footer th:replace="~{footer :: footer}" class="pt-4"></footer>
+</div>
+
+<script>
+    let userLatitude, userLongitude;
+    let selectedCategory = '전체';
+
+    // 카테고리 태그 설정
+    document.querySelectorAll('.category-tag').forEach(tag => {
+        tag.addEventListener('click', function() {
+            // 모든 태그에서 active 클래스 제거
+            document.querySelectorAll('.category-tag').forEach(t => t.classList.remove('active'));
+
+            // 클릭한 태그에 active 클래스 추가
+            this.classList.add('active');
+
+            // 선택된 카테고리 저장
+            selectedCategory = this.dataset.category;
+
+            // 바로 검색 수행
+            searchRestaurants();
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        if ("geolocation" in navigator) {
+            navigator.geolocation.getCurrentPosition(
+                function(position) {
+                    userLatitude = position.coords.latitude;
+                    userLongitude = position.coords.longitude;
+
+                    searchRestaurants();
+                },
+                function(error) {
+                    document.getElementById('restaurantList').innerHTML =
+                        '<p class="error">위치 정보를 가져올 수 없습니다. 위치 권한을 확인해주세요.</p>';
+                },
+                { timeout: 10000, enableHighAccuracy: true }
+            );
+        } else {
+            document.getElementById('restaurantList').innerHTML =
+                '<p class="error">이 브라우저는 위치 정보를 지원하지 않습니다.</p>';
+        }
+    });
+
+    function searchRestaurants() {
+        if (!userLatitude || !userLongitude) {
+            return;
+        }
+
+        document.getElementById('restaurantList').innerHTML = '<p class="loading">맛집을 검색 중입니다...</p>';
+        document.getElementById('resultCount').textContent = '';
+
+        const apiUrl = `/user/api/search-restaurants?latitude=${userLatitude}&longitude=${userLongitude}&category=${selectedCategory}&limit=50`;
+
+        fetch(apiUrl)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(restaurants => {
+                const restaurantList = document.getElementById('restaurantList');
+
+                if (!restaurants || restaurants.length === 0) {
+                    restaurantList.innerHTML = '<div class="empty-result">주변에 맛집이 없습니다.</div>';
+                    document.getElementById('resultCount').textContent = '검색 결과: 0개';
+                } else {
+                    restaurantList.innerHTML = ''; // 기존 내용 지우기
+
+                    // 결과 개수 표시
+                    document.getElementById('resultCount').textContent = `검색 결과: ${restaurants.length}개`;
+
+                    // 거리순으로 정렬
+                    restaurants.sort((a, b) => a.distance - b.distance);
+
+                    restaurants.forEach((restaurant) => {
+                        const restaurantElement = document.createElement('div');
+                        restaurantElement.className = 'restaurant-item';
+
+                        // HTML 태그 제거 및 에스케이프 처리
+                        const title = escapeHtml(restaurant.title || '이름 없음').replace(/<[^>]*>/g, '');
+                        const category = escapeHtml(restaurant.category || '정보 없음');
+                        const address = escapeHtml(restaurant.roadAddress || restaurant.address || '주소 정보 없음');
+
+                        // 거리를 km/m 형식으로 변환
+                        const formattedDistance = formatDistance(restaurant.distance);
+
+                        restaurantElement.innerHTML = `
+                            <h2>${title}</h2>
+                            <p class="distance">거리: ${formattedDistance}</p>
+                            <p>카테고리: ${category}</p>
+                            <p>주소: ${address}</p>
+                            ${restaurant.link ? `<p><a href="${escapeHtml(restaurant.link)}" target="_blank">상세 정보</a></p>` : ''}
+                        `;
+                        restaurantList.appendChild(restaurantElement);
+                    });
+                }
+            })
+            .catch(error => {
+                document.getElementById('restaurantList').innerHTML =
+                    '<p class="error">맛집 정보를 불러오는 중 오류가 발생했습니다.</p>';
+                document.getElementById('resultCount').textContent = '';
+            });
+    }
+
+    // 거리를 적절한 형식으로 변환하는 함수
+    function formatDistance(meters) {
+        if (!meters && meters !== 0) return '거리 정보 없음';
+
+        if (meters >= 1000) {
+            // 소수점 한 자리까지 표시하는 km 단위
+            return (meters / 1000).toFixed(1) + 'km';
+        } else {
+            // m 단위
+            return meters + 'm';
+        }
+    }
+
+    // HTML 인젝션 방지를 위한 이스케이프 함수
+    function escapeHtml(text) {
+        if (!text) return '';
+        return text
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+</script>
+</body>
+</html>
