@@ -40,9 +40,16 @@ public class BoardRestController {
     @PostMapping("/{board_type}")
     public ResponseEntity<Map<String, Object>> getBoardList(
             @PathVariable("board_type") int boardType,
-            @RequestParam(defaultValue = "newest") String sort) {
+            @RequestParam(defaultValue = "newest") String sort,
+            @RequestParam(defaultValue = "10") int limit,
+            @RequestParam(defaultValue = "0") int offset) {
 
-        List<BoardDto> boardList = boardService.getBoardList(boardType, sort);
+        System.out.println("boardType: " + boardType);  // 확인용 로그
+        System.out.println("sort: " + sort);
+        System.out.println("limit: " + limit);
+        System.out.println("offset: " + offset);
+
+        List<BoardDto> boardList = boardService.getBoardList(boardType, sort, limit, offset);
 
         Map<String, Object> response = new HashMap<>();
         response.put("boardList", boardList);

@@ -32,10 +32,13 @@ public interface BoardMapper {
             "        <when test='sort == \"comments\"'> ORDER BY comment_count DESC </when>" +
             "    </choose>" +
             "</if>" +
+            "LIMIT #{limit} OFFSET #{offset} " +
             "</script>")
     List<BoardDto> getBoardList(
             @Param("board_type") int board_type,
-            @Param("sort") String sort
+            @Param("sort") String sort,
+            @Param("limit") int limit,   // 한 번에 가져올 게시글 개수
+            @Param("offset") int offset  // 시작 위치
     );
 
     // 글작성
@@ -231,7 +234,7 @@ public interface BoardMapper {
             "LEFT JOIN iz_board01_comment c ON b.board_id = c.board_id " +
             "WHERE p.board_type = 1 AND b.like_count >= 5 " +
             "GROUP BY b.board_id, p.like_count, b.reg_date " +
-            "ORDER BY p.like_count DESC, b.reg_date DESC " +
+            "ORDER BY p.like_count DESC, count(c.comment_id) desc, b.reg_date DESC " +
             "LIMIT 3")
     List<BoardDto> getPopularBoardListBoard1();
 
@@ -242,7 +245,7 @@ public interface BoardMapper {
             "LEFT JOIN iz_board02_comment c ON b.board_id = c.board_id " +
             "WHERE p.board_type = 2 AND b.like_count >= 5 " +
             "GROUP BY b.board_id, p.like_count, b.reg_date " +
-            "ORDER BY p.like_count DESC, b.reg_date DESC " +
+            "ORDER BY p.like_count DESC, count(c.comment_id) desc, b.reg_date DESC " +
             "LIMIT 3")
     List<BoardDto> getPopularBoardListBoard2();
 
